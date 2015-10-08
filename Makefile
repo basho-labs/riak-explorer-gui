@@ -9,3 +9,6 @@ deps:
 	-npm install && bower install
 test:
 	ember test
+
+mock-server:
+	python tests/mock/server.py
