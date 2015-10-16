@@ -41,6 +41,9 @@ var Bucket = DS.Model.extend({
         if(this.get('props').get('isSet')) {
             return 'riak-object.set';
         }
+        if(this.get('props').get('isMap')) {
+            return 'riak-object.map';
+        }
         return 'riak-object';
     }.property('props'),
 

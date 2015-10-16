@@ -1,23 +1,18 @@
 import Ember from 'ember';
 import RiakObjectController from "../controller";
 
-var RiakObjectSetController = RiakObjectController.extend({
+/**
+ * @class RiakObjectMapController
+ * @extends RiakObjectController
+ * @constructor
+ */
+var RiakObjectMapController = RiakObjectController.extend({
     actions: {
-        /**
-        Adds element from the textbox to the set.
-        @param {RiakSetObject} model
-        @param {String} newItem Element to be added
-        */
-        addElement: function(model, newItem) {
-            this.get('explorer').updateDataType(model, 'addElement', newItem);
-
-            model.addElement(newItem);
-        },
-
         /**
         Polls the server to refresh the model
         (kicks off a delayed call to +refreshModel+)
-        @param {RiakSetObject} model
+        @method pollForModel
+        @param {RiakMapObject} model
         @param {Integer} delay Delay in milliseconds
         */
         pollForModel: function(model, delay) {
@@ -29,7 +24,8 @@ var RiakObjectSetController = RiakObjectController.extend({
 
         /**
         Reloads the model from the server, updates the controller with it.
-        @param {RiakSetObject} model
+        @method refreshModel
+        @param {RiakMapObject} model
         */
         refreshModel: function(model) {
             var controller = this;
@@ -38,18 +34,7 @@ var RiakObjectSetController = RiakObjectController.extend({
                 .then(function(model) {
                     controller.set('model', model);
                 });
-        },
-
-        /**
-        Removes specified element from the set.
-        @param {RiakSetObject} model
-        @param {String} item Element to be removed
-        */
-        removeElement: function(model, item) {
-            this.get('explorer').updateDataType(model, 'remove', item);
-
-            model.removeElement(item);
         }
     }
 });
-export default RiakObjectSetController;
+export default RiakObjectMapController;

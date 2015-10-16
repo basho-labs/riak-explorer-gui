@@ -31,19 +31,6 @@ function cacheRefresh(url) {
     });
 }
 
-function displayContentsForType(headers, contents) {
-    var contentType = headers.other['content-type'];
-    var displayContents;
-    // Determine whether this is browser-displayable contents
-    if(contentType.startsWith('text') ||
-        contentType.startsWith('application/json') ||
-        contentType.startsWith('application/xml') ||
-        contentType.startsWith('multipart/mixed') ) {
-        displayContents = contents;
-    }
-    return displayContents;
-}
-
 function deleteBucket(bucket) {
     var url = '/explore/clusters/' + bucket.get('clusterId') +
         '/bucket_types/' + bucket.get('bucketTypeId') +
@@ -265,6 +252,47 @@ export default Ember.Service.extend({
 
     bucketCacheRefresh: bucketCacheRefresh,
 
+    /**
+     * @method collectMapFields
+     * @param {Object} payload Value of the JSON payload of an HTTP GET
+     *                   to the map object
+     * @param {DS.Store} store
+     * @return {Object} A hash of fields indexed by CRDT type and field name.
+     */
+    collectMapFields: function collectMapFields(payload, store) {
+        var contents = {
+            counters: {},
+            flags: {},
+            registers: {},
+            sets: {},
+            maps: {}
+        };
+        var field;
+
+        for(var fieldName in payload) {
+            if(fieldName.endsWith('_counter')) {
+                contents.counters[fieldName] = payload[fieldName];
+            }
+            if(fieldName.endsWith('_flag')) {
+                contents.flags[fieldName] = payload[fieldName];
+            }
+            if(fieldName.endsWith('_register')) {
+                field = store.createRecord('riak-object.register', {
+                    name: fieldName,
+                    value: payload[fieldName]
+                });
+                contents.registers[fieldName] = field;
+            }
+            if(fieldName.endsWith('_set')) {
+                contents.sets[fieldName] = payload[fieldName];
+            }
+            if(fieldName.endsWith('_map')) {
+                contents.maps[fieldName] = this.collectMapFields(payload[fieldName]);
+            }
+        }
+        return contents;
+    },
+
     compositeId: function(clusterId, bucketTypeId) {
         return clusterId + '/' + bucketTypeId;
     },
@@ -321,12 +349,21 @@ export default Ember.Service.extend({
         });
     },
 
+    createObjectContents: function(bucket, payload, store) {
+        var contents;
+        if(bucket.get('props').get('isMap')) {
+            contents = this.collectMapFields(payload.value, store);
+        } else {
+            contents = payload;
+        }
+        return contents;
+    },
+
     createObjectFromAjax: function(key, bucket, rawHeader,
-                responseText, store, url) {
+                payload, store, url) {
         var metadata = this.createObjectMetadata(rawHeader, store);
-        var contents = displayContentsForType(metadata.get('headers'),
-            responseText);
         var modelName = bucket.get('objectModelName');
+        var contents = this.createObjectContents(bucket, payload, store);
 
         return store.createRecord(modelName, {
             key: key,
@@ -347,6 +384,48 @@ export default Ember.Service.extend({
         return store.createRecord('object-metadata', {
             headers: this.parseHeaderString(rawHeader)
         });
+    },
+
+    /**
+     * Composes the JSON action object for the specified operation type for use
+     *    with the Riak Data Type HTTP API.
+     *
+     * @method dataTypeActionFor
+     * @param {RiakObjectCounter|RiakObjectMap|RiakObjectSet} object
+     * @param {String} operationType
+     * @param {String|RiakObjectRegister|RiakObjectFlag} item
+     */
+    dataTypeActionFor: function dataTypeActionFor(object, operationType, item) {
+        var bucket = object.get('bucket');
+        var operation;
+        if(bucket.get('props').get('isCounter')) {
+            if(operationType === 'increment') {
+                operation = {increment: object.get('incrementBy')};
+            } else {
+                operation = {decrement: object.get('decrementBy')};
+            }
+        } else if(bucket.get('props').get('isSet')) {
+            if(operationType === 'remove') {
+                operation = { remove: item };
+            } else if(operationType === 'addElement') {
+                operation = { add: item };
+            }
+        } else if(bucket.get('props').get('isMap')) {
+            if(operationType === 'removeRegister') {
+                operation = { remove: item.get('name') };
+            } else if(operationType === 'addRegister') {
+                let update = {};
+                update[item.get('name')] = item.get('value');
+                operation = {
+                    update: update
+                };
+            }
+        }
+        if(!operation) {
+            console.log('Error: unsupported operationType %s', operationType);
+        }
+
+        return JSON.stringify(operation);
     },
 
     deletedCacheFor: deletedCacheFor,
@@ -607,11 +686,20 @@ export default Ember.Service.extend({
 
     saveObject: saveObject,
 
-    updateCounter: function(object, operationType) {
+    /**
+     * Performs an update AJAX operation to the Riak Data Type HTTP API endpoint
+     *
+     * @method updateDataType
+     * @param {RiakObjectCounter|RiakObjectMap|RiakObjectSet} object
+     * @param {String} operationType
+     * @param {String|RiakObjectRegister|RiakObjectFlag} item
+     */
+    updateDataType: function updateDataType(object, operationType, item) {
         var bucket = object.get('bucket');
         var url = getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
             bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId') +
             '/datatypes/' + object.get('key');
+        var self = this;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
             var ajaxHash = {
@@ -619,6 +707,7 @@ export default Ember.Service.extend({
                 type: 'POST',
                 dataType: 'json',
                 url: url,
+                data: self.dataTypeActionFor(object, operationType, item),
                 success: function(data) {
                     resolve(data);
                 },
@@ -630,43 +719,6 @@ export default Ember.Service.extend({
                     }
                 }
             };
-            if(operationType === 'increment') {
-                ajaxHash.data = JSON.stringify({increment: object.get('incrementBy')});
-            } else {
-                ajaxHash.data = JSON.stringify({decrement: object.get('decrementBy')});
-            }
-            Ember.$.ajax(ajaxHash);
-        });
-    },
-
-    updateSet: function(object, item, operationType) {
-        var bucket = object.get('bucket');
-        var url = getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
-            bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId') +
-            '/datatypes/' + object.get('key');
-
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            var ajaxHash = {
-                contentType: 'application/json',
-                type: 'POST',
-                dataType: 'json',
-                url: url,
-                success: function(data) {
-                    resolve(data);
-                },
-                error: function(jqXHR) {
-                    if(jqXHR.status === 204) {
-                        resolve(jqXHR.status);
-                    } else {
-                        reject(jqXHR);
-                    }
-                }
-            };
-            if(operationType === 'remove') {
-                ajaxHash.data = JSON.stringify({remove: item});
-            } else if(operationType === 'addElement') {
-                ajaxHash.data = JSON.stringify({add: item});
-            }
             Ember.$.ajax(ajaxHash);
         });
     },

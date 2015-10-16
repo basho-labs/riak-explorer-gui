@@ -20,6 +20,8 @@ export default Router.map(function() {
         { path: '/cluster/:clusterId/bucket_type/:bucketTypeId/bucket/:bucketId/counter/:key' });
     this.route('riak-object.set',
         { path: '/cluster/:clusterId/bucket_type/:bucketTypeId/bucket/:bucketId/set/:key' });
+    this.route('riak-object.map',
+        { path: '/cluster/:clusterId/bucket_type/:bucketTypeId/bucket/:bucketId/map/:key' });
     this.route('riak_ping');
     this.route('node_stats');
     this.route('error', { path: '/error' }, function() {

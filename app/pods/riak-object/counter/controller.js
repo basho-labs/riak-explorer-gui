@@ -4,12 +4,12 @@ import RiakObjectController from "../controller";
 var RiakObjectCounterController = RiakObjectController.extend({
     actions: {
         incrementCounter: function(object) {
-            this.get('explorer').updateCounter(object, 'increment');
+            this.get('explorer').updateDataType(object, 'increment');
 
             object.increment(object.get('incrementBy'));
         },
         decrementCounter: function(object) {
-            this.get('explorer').updateCounter(object, 'decrement');
+            this.get('explorer').updateDataType(object, 'decrement');
 
             object.decrement(object.get('decrementBy'));
         },
