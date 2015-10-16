@@ -1,6 +1,9 @@
 import Ember from 'ember';
+import config from '../config/environment';
 
 export default Ember.Service.extend({
+    apiURL: config.baseURL,
+
     name: 'explorer',
     availableIn: ['controllers', 'routes'],
 
@@ -12,7 +15,7 @@ export default Ember.Service.extend({
     bucketCacheRefresh(clusterId, bucketTypeId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
-        var url = '/explore/clusters/' + clusterId + '/bucket_types/' + bucketTypeId +
+        var url = this.apiURL + 'explore/clusters/' + clusterId + '/bucket_types/' + bucketTypeId +
             '/refresh_buckets/source/riak_kv';
         return this.cacheRefresh(url);
     },
@@ -217,7 +220,7 @@ export default Ember.Service.extend({
     },
 
     deleteBucket(bucket) {
-        var url = '/explore/clusters/' + bucket.get('clusterId') +
+        var url = this.apiURL + 'explore/clusters/' + bucket.get('clusterId') +
             '/bucket_types/' + bucket.get('bucketTypeId') +
             '/buckets/' + bucket.get('bucketId');
 
@@ -298,7 +301,7 @@ export default Ember.Service.extend({
         console.log('Refreshing buckets for bucketType: %O', bucketType);
         var clusterId = cluster.get('clusterId');
         var bucketTypeId = bucketType.get('bucketTypeId');
-        var url = '/explore/clusters/' + clusterId +
+        var url = this.apiURL + 'explore/clusters/' + clusterId +
             '/bucket_types/' + bucketTypeId + '/buckets' ;
         var explorer = this;
 
@@ -412,7 +415,7 @@ export default Ember.Service.extend({
     },
 
     getClusterProxyUrl(clusterId) {
-        return '/riak/clusters/'+clusterId;
+        return this.apiURL + 'riak/clusters/'+clusterId;
     },
 
     getIndexes(clusterId) {
@@ -448,7 +451,7 @@ export default Ember.Service.extend({
         var bucketId = bucket.get('bucketId');
         var explorer = this;
 
-        var url = '/explore/clusters/' + clusterId +
+        var url = this.apiURL + 'explore/clusters/' + clusterId +
             '/bucket_types/' + bucketTypeId + '/buckets/' +
             bucketId + '/keys' ;
             // console.log('Retrieving key list, url: %s', url);
@@ -480,7 +483,7 @@ export default Ember.Service.extend({
 
     // Return all nodes for a particular cluster
     getNodes(clusterId) {
-        var url = '/explore/clusters/'+ clusterId + '/nodes';
+        var url = this.apiURL + 'explore/clusters/'+ clusterId + '/nodes';
 
         var request = new Ember.RSVP.Promise(function(resolve, reject) {
             Ember.$.ajax({
@@ -569,7 +572,8 @@ export default Ember.Service.extend({
     keyCacheRefresh(clusterId, bucketTypeId, bucketId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
-        var url = '/explore/clusters/' + clusterId + '/bucket_types/' + bucketTypeId +
+        var url = this.apiURL + 'explore/clusters/' + clusterId +
+            '/bucket_types/' + bucketTypeId +
             '/buckets/' + bucketId + '/refresh_keys/source/riak_kv';
         return this.cacheRefresh(url);
     },
