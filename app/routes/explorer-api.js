@@ -1,10 +1,11 @@
 import Ember from 'ember';
+import config from '../config/environment';
 
 export default Ember.Route.extend({
     model: function() {
         var serviceName = 'Riak Explorer';
-        var pingUrl = '/explore/ping';
-        var propsUrl = '/explore/props';
+        var pingUrl = config.baseURL + 'explore/ping';
+        var propsUrl = config.baseURL + 'explore/props';
 
         return new Ember.RSVP.hash({
             service: serviceName,

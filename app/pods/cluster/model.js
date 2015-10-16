@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import config from '../../config/environment';
 
 /**
 * Represents a Riak cluster as a whole.
@@ -38,8 +39,10 @@ var Cluster = DS.Model.extend({
 
     // URL which Explorer uses to forward requests to the Riak cluster
     // Currently in the form of /riak/clusters/$clusterId
+    // This is used to link to Search schemas, on the Cluster view.
+    // Having the config and url here is hacky, but no good alternatives.
     proxyUrl: function() {
-        return '/riak/clusters/' + this.get('id');
+        return config.baseURL + 'riak/clusters/' + this.get('id');
     }.property('id')
 });
 

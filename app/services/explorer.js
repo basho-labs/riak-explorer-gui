@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import config from '../config/environment';
+import objectToArray from '../utils/riak-util';
 
 export default Ember.Service.extend({
     apiURL: config.baseURL,
@@ -481,6 +482,30 @@ export default Ember.Service.extend({
         });
     },
 
+    getNodePing(nodeId) {
+        var url = this.apiURL + 'riak/nodes/' + nodeId + '/ping';
+
+        var result = Ember.$.ajax({ url: url });  // returns a Promise obj
+        return result.then(
+            // Success
+            function(data) {
+                return {
+                    message: 'Available (' + data + ')'
+                };
+            },
+            // Error
+            function(error) {
+                return {
+                    message: 'Unavailable. Error encountered: ' + error.message
+                };
+            }
+        ).fail(function(error) {
+            return {
+                message: 'Unavailable. Error encountered: ' + error.message
+            };
+        });
+    },
+
     // Return all nodes for a particular cluster
     getNodes(clusterId) {
         var url = this.apiURL + 'explore/clusters/'+ clusterId + '/nodes';
@@ -507,6 +532,20 @@ export default Ember.Service.extend({
             );
         });
         return request;
+    },
+
+    getNodeStats(nodeId) {
+        var propsUrl = this.apiURL + 'riak/nodes/' + nodeId + '/stats' ;
+        var propsResult = Ember.$.ajax( propsUrl, { dataType: "json" } );
+        return propsResult.then(
+            function(data) {
+                var statsArray = objectToArray(data);
+                return {
+                    node: nodeId,
+                    stats: statsArray
+                };
+            }
+        );
     },
 
     getRiakObject(bucket, key, store) {
