@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'ember-riak-explorer',
     podModulePrefix: 'ember-riak-explorer/pods',
     environment: environment,
-    baseURL: '/admin',
+    baseURL: '/admin/',
     locationType: 'auto',
 
     EmberENV: {
