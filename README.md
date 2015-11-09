@@ -3,7 +3,11 @@
 This is the GUI component of the [Riak Explorer](https://github.com/basho-labs/riak_explorer)
 project.
 
-## Prerequisites
+If you just want to try it out, download the pre-compiled package from the
+[Riak Explorer Installation](https://github.com/basho-labs/riak_explorer#installation)
+section of the main project's repo. For development instructions, see below.
+
+## Development Prerequisites
 
 You will need the following things properly installed on your computer.
 
@@ -57,10 +61,6 @@ make recompile && cp -R dist/* $EXPLORER_PATH/priv/ember_riak_explorer/dist
 ```
 
 (#TODO - consider moving `$EXPLORER_PATH` into the `Makefile`?)
-
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
 
 ### Running Tests
 
