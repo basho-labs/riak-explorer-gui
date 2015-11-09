@@ -1,7 +1,7 @@
-# Ember-riak-explorer
+# Riak Explorer GUI
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+This is the GUI component of the [Riak Explorer](https://github.com/basho-labs/riak_explorer)
+project.
 
 ## Prerequisites
 
@@ -13,17 +13,50 @@ You will need the following things properly installed on your computer.
 * [Ember CLI](http://www.ember-cli.com/)
 * [PhantomJS](http://phantomjs.org/)
 
-## Installation
+Also, it will need [Riak KV](http://basho.com/products/riak-kv/) installed
+and running, as well as the [Riak Explorer
+API](https://github.com/basho-labs/riak_explorer).
+See the [Explorer
+API Dev Instructions](https://github.com/basho-labs/riak_explorer/blob/master/DEVELOPMENT.md)
+for more details.
+
+## Installing Ember pre-requisites
 
 * `git clone <repository-url>` this repository
-* change into the new directory
+* `cd` into this new directory
 * `npm install`
 * `bower install`
 
 ## Running / Development
 
-* `ember server`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+Unfortunately, for the moment we're unable to have this app work with the built-
+in Ember dev server (the one you get by running `ember server`). Instead, the
+development cycle is as follows:
+
+1. Run `make`. This compiles everything in the Ember
+    build pipeline, and copies it into the local `dist/` directory.
+
+2. Copy the contents of the build from the local `dist/` into Riak Explorer API's
+    `dist/` directory.
+
+3. Refresh the browser to see changes, as usual.
+
+For example, if your riak_explorer repo is located at
+`/Users/yourusername/code/riak_explorer`, you can do:
+
+```bash
+export EXPLORER_PATH=/Users/yourusername/code/riak_explorer
+
+cp -R dist/* $EXPLORER_PATH/priv/ember_riak_explorer/dist
+```
+
+Then, during subsequent development, you can just run:
+
+```bash
+make recompile && cp -R dist/* $EXPLORER_PATH/priv/ember_riak_explorer/dist
+```
+
+(#TODO - consider moving `$EXPLORER_PATH` into the `Makefile`?)
 
 ### Code Generators
 
@@ -31,17 +64,17 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Running Tests
 
+(Default Ember doc copy)
+
 * `ember test`
 * `ember test --server`
 
 ### Building
 
+(Default Ember doc copy)
+
 * `ember build` (development)
 * `ember build --environment production` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
 
 ## Further Reading / Useful Links
 
@@ -50,4 +83,3 @@ Specify what it takes to deploy your app.
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
-
