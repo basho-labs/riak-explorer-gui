@@ -71,25 +71,7 @@ still a few standalone routes and models, however.
 The main interface to Riak is through plain AJAX calls, done in the `explorer`
 service, in `app/services/explorer.js`.
 
-Take a look at the [listing of Explorer API
-resources](https://github.com/basho-labs/riak_explorer#api). The three types of
-API endpoints available are:
-
-  1. The Riak proxy endpoints, `/riak/nodes/` and `/riak/clusters/`. The app
-      uses these endpoints to make calls to the plain [Riak HTTP
-      API](http://docs.basho.com/riak/latest/dev/references/http/). The proxy
-      endpoints are used for several reasons, primarily due to CORS issues
-      (on the Riak API side).
-
-  2. Explorer endpoints, at `/explorer/`. Think of it as an enhancement to
-      Riak's own HTTP API, to fill in missing functionality. For example,
-      the plain Riak API doesn't have a 'list bucket types' functionality --
-      that can only be done via `riak-admin` CLI. The Explorer endpoints enable
-      this, at `/explore/clusters/$cluster/bucket_types`.
-
-  3. Control endpoints at `/control/`. These provide a REST API to cluster
-      operations that are normally available only through the Riak CLI
-      (for example, `riak-admin cluster join`).
+### Ember Data and Riak Explorer
 
 In general, neither the Riak API nor the Explorer API are Ember Data-friendly.
 None of the Riak HTTP API results are in JSON-API format (no unique IDs, etc).
