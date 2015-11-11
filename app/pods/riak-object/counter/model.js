@@ -7,6 +7,7 @@ import RiakObject from "../model";
  * @class RiakObjectCounter
  * @extends RiakObject
  * @constructor
+ * @see RiakObjectMap
  */
 var RiakObjectCounter = RiakObject.extend({
     /**

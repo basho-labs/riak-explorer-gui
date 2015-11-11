@@ -6,6 +6,7 @@ import RiakObject from "../model";
  * @class RiakObjectSet
  * @extends RiakObject
  * @constructor
+ * @see RiakObjectMap
  */
 var RiakObjectSet = RiakObject.extend({
     /**
