@@ -584,7 +584,7 @@ export default Ember.Service.extend({
     },
 
     /**
-     * Fetches, creates a returns a Bucket Type instance as well as the
+     * Fetches, creates and returns a Bucket Type instance as well as the
      * BucketList that goes along with it.
      *
      * @method getBucketTypeWithBucketList
