@@ -52,13 +52,9 @@ For example, if your riak_explorer repo is located at
 ```bash
 export EXPLORER_PATH=/Users/yourusername/code/riak_explorer
 
+make recompile
+
 cp -R dist/* $EXPLORER_PATH/priv/ember_riak_explorer/dist
-```
-
-Then, during subsequent development, you can just run:
-
-```bash
-make recompile && cp -R dist/* $EXPLORER_PATH/priv/ember_riak_explorer/dist
 ```
 
 (#TODO - consider moving `$EXPLORER_PATH` into the `Makefile`?)
