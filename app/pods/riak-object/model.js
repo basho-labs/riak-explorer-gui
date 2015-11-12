@@ -1,7 +1,8 @@
 import DS from 'ember-data';
 
 /**
- * Represents a Riak Object.
+ * Represents a plain (non Data Type) Riak Object.
+ *
  * @class RiakObject
  * @extends DS.Model
  * @constructor
@@ -117,6 +118,8 @@ var RiakObject = DS.Model.extend({
     }.property(),
 
     /**
+     * Returns the name of the cluster in which this bucket type resides.
+     * (As specified in the `riak_explorer.conf` file)
      * @property clusterId
      * @type String
      */

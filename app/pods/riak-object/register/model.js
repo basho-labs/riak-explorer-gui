@@ -2,6 +2,8 @@ import DS from 'ember-data';
 
 /**
  * Represents an individual `Register` field that lives in a Riak Map data type.
+ * @see RiakObjectMap
+ *
  * @class RiakObjectRegister
  * @extends DS.Model
  * @constructor

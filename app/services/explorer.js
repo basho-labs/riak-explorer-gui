@@ -2,17 +2,71 @@ import Ember from 'ember';
 import config from '../config/environment';
 import objectToArray from '../utils/riak-util';
 
+/**
+ * An Ember service responsible for AJAX communication with the Explorer API.
+ *
+ * @class ExplorerService
+ * @extends Ember.Service
+ * @constructor
+ * @uses Bucket
+ * @uses BucketType
+ * @uses BucketProps
+ * @uses Cluster
+ * @uses RiakObject
+ * @uses ObjectMetadata
+ */
 export default Ember.Service.extend({
+    /**
+     * User-configurable URL prefix for the Explorer GUI.
+     * (Also the URL prefix for the Explorer API).
+     * Currently, the options are: '/' or '/admin/'.
+     * @property apiURL
+     * @type String
+     * @default '/'
+     */
     apiURL: config.baseURL,
 
     name: 'explorer',
     availableIn: ['controllers', 'routes'],
 
-    // Keep track of keys/buckets deleted through the Explorer UI
+    /**
+     * The 'deleted' cache is a way for the Ember GUI to keep track of which
+     * objects have been deleted via user actions.
+     *
+     * Currently, deleting an object does not remove
+     * its key from the Explorer API key list cache.
+     * So, when a user presses 'Delete' on an object, they are returned to the
+     * cached Key List for that bucket. But since the deleted object's key was
+     * not removed from the cache, the key shows up.
+     * To account for this and to provide a better user experience, this cache
+     * was implemented.
+     *
+     * This cache tracks object deletions keyed by cluster/bucket type/bucket.
+     *
+     * @todo If/when the Explorer API caching code supports the removal of a key
+     *     on object delete, this logic will be obsolete.
+     *
+     * @property deleted
+     * @type Hash
+     */
     deleted: {
         clusters: {}
     },
 
+    /**
+     * Re-populates the Bucket List cached by the Explorer API.
+     * Currently, this is done via a Streaming List Buckets HTTP call to Riak,
+     * and only available in Development Mode.
+     * @todo Implement other methods of populating the bucket cache
+     *    (for example, a user-supplied text file, or a Search query).
+     *
+     * @see http://docs.basho.com/riak/latest/dev/references/http/list-buckets/
+     *
+     * @method bucketCacheRefresh
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     * @return Ember.RSVP.Promise
+     */
     bucketCacheRefresh(clusterId, bucketTypeId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
@@ -22,7 +76,14 @@ export default Ember.Service.extend({
     },
 
     /**
-    * Refresh a key list cache or bucket list cache on the Explorer API side
+    * Refreshes a key list cache or bucket list cache on the Explorer API side.
+    * Usually invoked when the user presses the 'Refresh List' button on the UI.
+    * @see bucketCacheRefresh
+    * @see keyCacheRefresh
+    *
+    * @method cacheRefresh
+    * @param {String} url
+    * @return Ember.RSVP.Promise
     */
     cacheRefresh(url) {
         return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -45,10 +106,16 @@ export default Ember.Service.extend({
     },
 
     /**
+     * Returns a Contents hash containing map data type fields sorted by
+     * field type (Counters, Flags, Registers, Sets, nested Maps).
+     * The sorting is done to make the editing and display UI code easier.
+     * @see http://docs.basho.com/riak/latest/dev/using/data-types/
+     * @see RiakObjectMap
+     *
      * @method collectMapFields
-     * @param {Object} payload Value of the JSON payload of an HTTP GET
+     * @param payload {Object} Value of the JSON payload of an HTTP GET
      *                   to the map object
-     * @param {DS.Store} store
+     * @param store {DS.Store} Ember Data store, used to instantiate field models
      * @return {Object} A hash of fields indexed by CRDT type and field name.
      */
     collectMapFields(payload, store) {
@@ -85,11 +152,20 @@ export default Ember.Service.extend({
         return contents;
     },
 
-    compositeId(clusterId, bucketTypeId) {
-        return clusterId + '/' + bucketTypeId;
-    },
-
+    /**
+     * Creates and returns a BucketList instance, given the results of a
+     * 'fetch cached Bucket List' call to the Explorer API.
+     * @see ExplorerService.getBucketTypeWithBucketList
+     *
+     * @method createBucketList
+     * @param data {Hash}
+     * @param cluster {Cluster}
+     * @param bucketType {BucketType}
+     * @param store {DS.Store}
+     * @return {BucketList}
+     */
     createBucketList(data, cluster, bucketType, store) {
+        // Turn a list of bucket names into a list of actual bucket instances
         var bucketList = data.buckets.buckets.map(function(bucketName) {
             return store.createRecord('bucket', {
                 name: bucketName,
@@ -108,16 +184,30 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Creates and returns a KeyList instance, given the results of a
+     * 'fetch cached Key List' call to the Explorer API.
+     * @see ExplorerService.getBucketWithKeyList
+     *
+     * @method createKeyList
+     * @param data {Hash}
+     * @param bucket {Bucket}
+     * @param store {DS.Store}
+     * @return {KeyList}
+     */
     createKeyList(data, bucket, store) {
         var explorer = this;
         if(!data) {
+            // No data, return an empty KeyList
             return store.createRecord('key-list', {
                 bucket: bucket,
                 cluster: bucket.get('cluster')
             });
         }
+        // The model name depends on the "object type" - plain Object, CRDT, etc
         var modelName = bucket.get('objectModelName');
 
+        // Cycle through the list of keys and create actual RiakObject instances
         var keyList = data.keys.keys.map(function(key) {
             var obj = store.createRecord(modelName, {
                 key: key,
@@ -141,6 +231,15 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Parses and returns the contents/value of a Riak Object, depending on
+     * whether it's a CRDT or a plain object.
+     * @method createObjectContents
+     * @param {Bucket} bucket
+     * @param {Object} payload
+     * @param {DS.Store} store
+     * @return {Object}
+     */
     createObjectContents(bucket, payload, store) {
         var contents;
         if(bucket.get('props').get('isMap')) {
@@ -151,8 +250,21 @@ export default Ember.Service.extend({
         return contents;
     },
 
-    createObjectFromAjax(key, bucket, rawHeader,
-                payload, store, url) {
+    /**
+     * Creates and returns a RiakObject instance from the parsed results
+     * of an HTTP Fetch Object ajax call.
+     * @see getRiakObject
+     *
+     * @param key {String} Riak object key
+     * @param bucket {Bucket}
+     * @param rawHeader {String} jQuery AJAX calls return headers as a string :(
+     * @param payload {Object}
+     * @param store {DS.Store}
+     * @param url {String} The URL to download the "raw" object payload
+     *          (via an Explorer proxy request direct to Riak)
+     * @return {RiakObject|RiakObjectCounter|RiakObjectMap|RiakObjectSet}
+     */
+    createObjectFromAjax(key, bucket, rawHeader, payload, store, url) {
         var metadata = this.createObjectMetadata(rawHeader, store);
         var modelName = bucket.get('objectModelName');
         var contents = this.createObjectContents(bucket, payload, store);
@@ -169,6 +281,15 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Creates and returns an ObjectMetadata instance by parsing the raw
+     * header string returned by AJAX calls, if available.
+     *
+     * @method createObjectMetadata
+     * @param rawHeader {String}
+     * @param store {DS.Store}
+     * @return {ObjectMetadata}
+     */
     createObjectMetadata(rawHeader, store) {
         if (!rawHeader) {
             return store.createRecord('object-metadata');
@@ -181,11 +302,17 @@ export default Ember.Service.extend({
     /**
      * Composes the JSON action object for the specified operation type for use
      *    with the Riak Data Type HTTP API.
+     * Invoked when the user edits and saves a Data Type object.
+     * @see http://docs.basho.com/riak/latest/dev/using/data-types/
      *
      * @method dataTypeActionFor
-     * @param {RiakObjectCounter|RiakObjectMap|RiakObjectSet} object
-     * @param {String} operationType
+     * @param object {RiakObjectCounter|RiakObjectMap|RiakObjectSet} Data Type object to be edited
+     * @param operationType {String} CRDT operation type
+     *        (increment counter, add an element to set, update map)
      * @param {String|RiakObjectRegister|RiakObjectFlag} item
+     * @return {String} JSON string payload used by Riak's Data Type HTTP API
+     * @example Sample return value, for updating a counter:
+     *     '{"increment": 1}'
      */
     dataTypeActionFor(object, operationType, item) {
         var bucket = object.get('bucket');
@@ -220,6 +347,25 @@ export default Ember.Service.extend({
         return JSON.stringify(operation);
     },
 
+    /**
+     * Perform a limited 'Delete Bucket' command via the Explorer API.
+     * (This is done as a convenience operation for Devs, since Riak doesn't
+     * currently support a whole-bucket delete.)
+     * To be more precise, the Explorer backend iterates through all the keys
+     * in its Key List cache for that bucket, and issues Delete Object commands
+     * for those keys.
+     *
+     * Limitations:
+     * - This is only available in Development Mode
+     * - Explorer can only delete objects whose keys are in its cache.
+     *
+     * This means that the key list cache must already be populated.
+     * However, since the 'Delete Bucket' button is only displayed once a
+     * non-empty Key List cache is retrieved from the server, this is fine.
+     *
+     * @param {Bucket} bucket
+     * @return {Ember.RSVP.Promise} Result of the Delete Bucket AJAX request
+     */
     deleteBucket(bucket) {
         var url = this.apiURL + 'explore/clusters/' + bucket.get('clusterId') +
             '/bucket_types/' + bucket.get('bucketTypeId') +
@@ -243,8 +389,16 @@ export default Ember.Service.extend({
         });
     },
 
-    // Fetch the cache of Deleted keys/buckets for a
-    //  given cluster and bucket type. Initialize objects whenever missing.
+    /**
+     * Fetch the cache of Buckets and Keys deleted via the Explorer UI.
+     * Initialize objects whenever missing.
+     * See the `@property deleted` comments above, for explanation.
+     *
+     * @method deletedCacheFor
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     * @return {Hash}
+     */
     deletedCacheFor(clusterId, bucketTypeId) {
         if(!this.deleted.clusters[clusterId]) {
             this.deleted.clusters[clusterId] = { types: {} };
@@ -255,6 +409,17 @@ export default Ember.Service.extend({
         return this.deleted.clusters[clusterId].types[bucketTypeId];
     },
 
+    /**
+     * Performs a Delete Object operation, via a proxied Riak HTTP API request.
+     * Also records its key in the `ExplorerService.deleted` cache
+     *
+     * @see http://docs.basho.com/riak/latest/ops/advanced/deletion/
+     * @see http://docs.basho.com/riak/latest/dev/references/http/delete-object/
+     *
+     * @method deleteObject
+     * @param object {RiakObject} RiakObject instance or subclasses (Maps, Sets, etc)
+     * @return {Ember.RSVP.Promise} Result of the AJAX request.
+     */
     deleteObject(object) {
         var url = this.getClusterProxyUrl(object.get('clusterId')) + '/types/' +
                 object.get('bucketTypeId') + '/buckets/' +
@@ -282,6 +447,19 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Creates and returns a Bucket instance by fetching the necessary data:
+     * the bucket properties, as well as a Bucket Type instance (which also
+     * fetches a Cluster instance).
+     * @see BucketProps
+     *
+     * @method getBucket
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     * @param {String} bucketId
+     * @param {DS.Store} store
+     * @return {Bucket}
+     */
     getBucket(clusterId, bucketTypeId, bucketId, store) {
         var self = this;
         return self.getBucketType(clusterId, bucketTypeId, store)
@@ -298,6 +476,18 @@ export default Ember.Service.extend({
             });
     },
 
+    /**
+     * Performs a 'Fetch cached Bucket List' API call to Explorer.
+     * If the call encounters a 404 Not Found (meaning, the bucket list cache
+     * is empty), it proactively kicks off a Bucket Cache Refresh operation.
+     * @see ExplorerService.bucketCacheRefresh
+     *
+     * @method getBucketList
+     * @param {Cluster} cluster
+     * @param {BucketType} bucketType
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
+     */
     getBucketList(cluster, bucketType, store) {
         console.log('Refreshing buckets for bucketType: %O', bucketType);
         var clusterId = cluster.get('clusterId');
@@ -339,6 +529,17 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Performs a proxied 'Fetch Bucket Properties' HTTP API call to Riak.
+     * @see http://docs.basho.com/riak/latest/dev/references/http/get-bucket-props/
+     *
+     * @method getBucketProps
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     @ @param {String} bucketId
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<BucketProps>}
+     */
     getBucketProps(clusterId, bucketTypeId, bucketId, store) {
         var propsUrl = this.getClusterProxyUrl(clusterId) + '/types/' +
                 bucketTypeId + '/buckets/' + bucketId + '/props';
@@ -358,6 +559,21 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Fetches (via AJAX), creates and returns a Bucket Type instance.
+     * (As well as required objects, such as the parent Cluster instance).
+     *
+     * Implementation note: Initially, the ability to fetch a single bucket type
+     * record via the Explorer API wasn't available. This method fetches a
+     * Cluster instance with all its bucket types, and selects the needed
+     * individual bucket type.
+     *
+     * @method getBucketType
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<BucketType>}
+     */
     getBucketType(clusterId, bucketTypeId, store) {
         var self = this;
         return self.getCluster(clusterId, store)
@@ -367,6 +583,16 @@ export default Ember.Service.extend({
             });
     },
 
+    /**
+     * Fetches, creates a returns a Bucket Type instance as well as the
+     * BucketList that goes along with it.
+     *
+     * @method getBucketTypeWithBucketList
+     * @param {BucketType} bucketType
+     * @param {Cluster} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<BucketType>}
+     */
     getBucketTypeWithBucketList(bucketType, cluster, store) {
         return this.getBucketList(cluster, bucketType, store)
             .then(function(bucketList) {
@@ -375,6 +601,17 @@ export default Ember.Service.extend({
             });
     },
 
+    /**
+     * Returns all the Bucket Types that belong to the specified cluster.
+     * This method tries to work with the Ember Data store adapter to take
+     * advantage of the identity store and caching.
+     * @see ExplorerResourceAdapter for more details
+     *
+     * @method getBucketTypesForCluster
+     * @param {Cluster} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Array<BucketType>>|Array<BucketType>}
+     */
     getBucketTypesForCluster(cluster, store) {
         if(Ember.isEmpty(cluster.get('bucketTypes'))) {
             // If this page was accessed directly
@@ -391,6 +628,15 @@ export default Ember.Service.extend({
         }
     },
 
+    /**
+     * Initializes a given bucket with its Key List (by fetching it via AJAX),
+     * and returns that bucket instance.
+     *
+     * @method getBucketWithKeyList
+     * @param {Bucket} bucket
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Bucket>}
+     */
     getBucketWithKeyList(bucket, store) {
         return this.getKeyList(bucket, store)
             .then(function(keyList) {
@@ -399,6 +645,15 @@ export default Ember.Service.extend({
             });
     },
 
+    /**
+     * Creates and returns a Cluster object and initializes it with dependent
+     * data (including all its Bucket Types and Search Indexes).
+     *
+     * @method getCluster
+     * @param {String} clusterId
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Cluster>}
+     */
     getCluster(clusterId, store) {
         var self = this;
         return store.findRecord('cluster', clusterId)
@@ -415,10 +670,27 @@ export default Ember.Service.extend({
             });
     },
 
+    /**
+     * Helper method, returns an explorer Cluster proxy URL
+     * (which the Explorer API routes to a random node in the cluster).
+     *
+     * @method getClusterProxyUrl
+     * @param {String} clusterId
+     * @return {String} url
+     */
     getClusterProxyUrl(clusterId) {
         return this.apiURL + 'riak/clusters/'+clusterId;
     },
 
+    /**
+     * Returns a list of Search Indexes that have been created on this cluster.
+     * @see http://docs.basho.com/riak/latest/dev/references/http/search-index-info/
+     *
+     * @method getIndexes
+     * @return {Array<Hash>}
+     * @example
+     *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
+     */
     getIndexes(clusterId) {
         var url = this.getClusterProxyUrl(clusterId) + '/search/index';
 
@@ -446,6 +718,14 @@ export default Ember.Service.extend({
         return request;
     },
 
+    /**
+     * Fetches and creates a cached Key List for a given bucket.
+     *
+     * @method getKeyList
+     * @param {Bucket} bucket
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise} result of the AJAX call
+     */
     getKeyList(bucket, store) {
         var clusterId = bucket.get('clusterId');
         var bucketTypeId = bucket.get('bucketTypeId');
@@ -482,6 +762,12 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Returns the results of a Riak node HTTP ping result.
+     * @method getNodePing
+     * @param {String} nodeId
+     * @return {Ember.RSVP.Promise} result of the AJAX call
+     */
     getNodePing(nodeId) {
         var url = this.apiURL + 'riak/nodes/' + nodeId + '/ping';
 
@@ -506,7 +792,15 @@ export default Ember.Service.extend({
         });
     },
 
-    // Return all nodes for a particular cluster
+    /**
+     * Returns all reachable nodes for a given cluster id
+     *
+     * @method getNodes
+     * @param clusterId {String} Cluster ID (as specified in the explorer config)
+     * @return {Ember.RSVP.Promise<Array<Object>>}
+     * @example Sample response
+     *    {"nodes":[{"id":"riak@127.0.0.1"}],"links":{"self":"/explore/clusters/default/nodes"}}
+     */
     getNodes(clusterId) {
         var url = this.apiURL + 'explore/clusters/'+ clusterId + '/nodes';
 
@@ -534,6 +828,12 @@ export default Ember.Service.extend({
         return request;
     },
 
+    /**
+     * Returns the results of a GET Node Stats HTTP call.
+     * @method getNodeStats
+     * @param {String} nodeId
+     * @return {Ember.RSVP.Promise<Array<Hash>>}
+     */
     getNodeStats(nodeId) {
         var propsUrl = this.apiURL + 'riak/nodes/' + nodeId + '/stats' ;
         var propsResult = Ember.$.ajax( propsUrl, { dataType: "json" } );
@@ -548,6 +848,17 @@ export default Ember.Service.extend({
         );
     },
 
+    /**
+     * Fetches and returns a Riak Object for the specified location
+     * (bucket type, bucket and key).
+     * @see http://docs.basho.com/riak/latest/dev/references/http/fetch-object/
+     *
+     * @method getRiakObject
+     * @param {Bucket} bucket
+     * @param {String} key
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<RiakObject>} RiakObject or its subclasses (CRDTs)
+     */
     getRiakObject(bucket, key, store) {
         var explorer = this;
 
@@ -608,6 +919,21 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Re-populates the Key List cached by the Explorer API.
+     * Currently, this is done via a Streaming List Keys HTTP call to Riak,
+     * and only available in Development Mode.
+     * @todo Implement other methods of populating the key cache
+     *    (for example, a user-supplied text file, or a Search query).
+     *
+     * @see http://docs.basho.com/riak/latest/dev/references/http/list-keys/
+     *
+     * @method keyCacheRefresh
+     * @param {String} clusterId
+     * @param {String} bucketTypeId
+     * @param {String} bucketId
+     * @return {Ember.RSVP.Promise} Result of the AJAX call
+     */
     keyCacheRefresh(clusterId, bucketTypeId, bucketId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
@@ -617,6 +943,12 @@ export default Ember.Service.extend({
         return this.cacheRefresh(url);
     },
 
+    /**
+     * Marks a key as deleted in the client-side ExplorerService.deleted cache.
+     *
+     * @method markDeletedKey
+     * @param {RiakObject} object
+     */
     markDeletedKey(object) {
         var clusterId = object.get('clusterId');
         var bucketTypeId = object.get('bucketTypeId');
@@ -636,12 +968,18 @@ export default Ember.Service.extend({
     },
 
     /**
-    * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
-    * headers according to the format described here:
-    * http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method
-    *
-    * Which we then have to parse. Like savages.
-    */
+     * Parses the raw AJAX headers string and returns it as a usable hash.
+     *
+     * XmlHttpRequest's getAllResponseHeaders() method returns a string of response
+     * headers according to the format described here:
+     * http://www.w3.org/TR/XMLHttpRequest/#the-getallresponseheaders-method
+     *
+     * Which we then have to parse. Like savages.
+     *
+     * @method parseHeaderString
+     * @param {String} headerString
+     * @return {Hash} headers
+     */
     parseHeaderString(headerString) {
         var other_headers = {};
         var indexes = [];
@@ -679,6 +1017,12 @@ export default Ember.Service.extend({
         };
     },
 
+    /**
+     * Updates a RiakObject via an HTTP Store Object request to the cluster.
+     * @method saveObject
+     * @param {RiakObject} object
+     * @return {Ember.RSVP.Promise} Result of the AJAX request.
+     */
     saveObject(object) {
         var url = this.getClusterProxyUrl(object.get('clusterId')) + '/types/' +
                 object.get('bucketTypeId') + '/buckets/' +
@@ -744,6 +1088,13 @@ export default Ember.Service.extend({
         });
     },
 
+    /**
+     * Returns true if a given object was marked as deleted in the client-side
+     * ExplorerService.deleted key cache.
+     * @method wasObjectDeleted
+     * @param {RiakObject} object
+     * @return {Boolean}
+     */
     wasObjectDeleted(object) {
         var clusterId = object.get('clusterId');
         var bucketTypeId = object.get('bucketTypeId');

@@ -2,7 +2,7 @@ import RiakObject from "../model";
 import Ember from 'ember';
 
 /**
- * Representation of the Riak Map Data Type.
+ * Represents a Riak Map Data Type.
  *
  * @class RiakObjectMap
  * @constructor
