@@ -14,6 +14,7 @@ import DS from 'ember-data';
 var Bucket = DS.Model.extend({
      /**
       * Riak cluster in which this bucket lives.
+      *
       * @property cluster
       * @type Cluster
       * @writeOnce
@@ -22,6 +23,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Riak Bucket Type in which this bucket lives.
+     *
      * @property bucketType
      * @type BucketType
      * @writeOnce
@@ -30,6 +32,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Has the keyList been loaded from the server?
+     *
      * @property isKeyListLoaded
      * @type Boolean
      * @default false
@@ -39,6 +42,7 @@ var Bucket = DS.Model.extend({
     /**
      * Contains the results of cached key lists for this bucket,
      * fetched from the API.
+     *
      * @property key-list
      * @type KeyList
      */
@@ -46,6 +50,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Bucket name (unique within a cluster and bucket type)
+     *
      * @property name
      * @type String
      */
@@ -55,6 +60,7 @@ var Bucket = DS.Model.extend({
      * Bucket Properties object. Note: Bucket Types and Buckets share the
      *    same Properties format.
      * When not specified, buckets inherit their properties from the Bucket Type
+     *
      * @property props
      * @type BucketProps
      */
@@ -62,6 +68,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Returns the bucket name (this is an alias/helper function)
+     *
      * @property bucketId
      * @type String
      */
@@ -71,6 +78,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Returns the bucket type's name
+     *
      * @property bucketTypeId
      * @type String
      */
@@ -81,6 +89,7 @@ var Bucket = DS.Model.extend({
     /**
      * Returns the name of the cluster in which this bucket resides.
      * (As specified in the `riak_explorer.conf` file)
+     *
      * @property clusterId
      * @type String
      */
@@ -90,6 +99,7 @@ var Bucket = DS.Model.extend({
 
     /**
      * Has this bucket type been activated?
+     *
      * @property isActive
      * @type Boolean
      */
@@ -100,6 +110,7 @@ var Bucket = DS.Model.extend({
     /**
      * Returns the name of the Search Index associated with this bucket
      * (or its parent bucket type), if applicable.
+     *
      * @property index
      * @type String
      */
@@ -111,18 +122,20 @@ var Bucket = DS.Model.extend({
     /**
      * Returns the Ember.js/Ember Data model name of the objects stored within
      *     this bucket.
+     *
      * @property objectModelName
-     * @type String}
+     * @type String
+     * @readOnly
      * @default 'riak-object'
      */
     objectModelName: function() {
-        if(this.get('props').get('isCounter')) {
+        if(this.get('props').isCounter()) {
             return 'riak-object.counter';
         }
-        if(this.get('props').get('isSet')) {
+        if(this.get('props').isSet()) {
             return 'riak-object.set';
         }
-        if(this.get('props').get('isMap')) {
+        if(this.get('props').isMap()) {
             return 'riak-object.map';
         }
         return 'riak-object';
@@ -131,6 +144,7 @@ var Bucket = DS.Model.extend({
     /**
      * Returns this bucket's properties as an array of key/value tuples.
      * Used for displaying and editing the properties.
+     *
      * @method propsList
      * @return {Array<Hash>}
      */

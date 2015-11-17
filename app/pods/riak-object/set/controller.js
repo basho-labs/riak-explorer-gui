@@ -4,22 +4,22 @@ import RiakObjectController from "../controller";
 var RiakObjectSetController = RiakObjectController.extend({
     actions: {
         /**
-        Adds element from the textbox to the set.
-        @param {RiakSetObject} model
-        @param {String} newItem Element to be added
-        */
-        addElement: function(model, newItem) {
-            this.get('explorer').updateDataType(model, 'addElement', newItem);
-
-            model.addElement(newItem);
+         * Adds an element to the set.
+         * @event addElement
+         * @param {RiakSetObject} set
+         * @param {String} newItem Element to be added
+         */
+        addElement: function(set, newItem) {
+            this.get('explorer').updateDataType(set, 'addElement', newItem);
+            set.addElement(newItem);
         },
 
         /**
-        Polls the server to refresh the model
-        (kicks off a delayed call to +refreshModel+)
-        @param {RiakSetObject} model
-        @param {Integer} delay Delay in milliseconds
-        */
+         * Polls the server to refresh the model
+         * (kicks off a delayed call to +refreshModel+)
+         * @param {RiakSetObject} model
+         * @param {Integer} delay Delay in milliseconds
+         */
         pollForModel: function(model, delay) {
             var self = this;
             Ember.run.later(function() {
@@ -28,9 +28,9 @@ var RiakObjectSetController = RiakObjectController.extend({
         },
 
         /**
-        Reloads the model from the server, updates the controller with it.
-        @param {RiakSetObject} model
-        */
+         * Reloads the model from the server, updates the controller with it.
+         * @param {RiakSetObject} model
+         */
         refreshModel: function(model) {
             var controller = this;
             controller.get('explorer').getRiakObject(model.get('bucket'),
@@ -41,14 +41,14 @@ var RiakObjectSetController = RiakObjectController.extend({
         },
 
         /**
-        Removes specified element from the set.
-        @param {RiakSetObject} model
-        @param {String} item Element to be removed
-        */
-        removeElement: function(model, item) {
-            this.get('explorer').updateDataType(model, 'remove', item);
-
-            model.removeElement(item);
+         * Removes specified element from the set.
+         * @event removeElement
+         * @param set {RiakSetObject}
+         * @param item {String} Element to be removed
+         */
+        removeElement: function(set, item) {
+            this.get('explorer').updateDataType(set, 'removeElement', item);
+            set.removeElement(item);
         }
     }
 });

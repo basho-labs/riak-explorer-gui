@@ -1,17 +1,5 @@
 {{#if obj.markedDeleted}}
     <strike>{{obj.key}}</strike>
 {{else}}
-    {{#if obj.bucket.props.isCRDT}}
-        {{#if obj.bucket.props.isCounter}}
-            {{#link-to 'riak-object.counter' obj}}{{obj.key}}{{/link-to}}
-        {{/if}}
-        {{#if obj.bucket.props.isSet}}
-            {{#link-to 'riak-object.set' obj}}{{obj.key}}{{/link-to}}
-        {{/if}}
-        {{#if obj.bucket.props.isMap}}
-            {{#link-to 'riak-object.map' obj}}{{obj.key}}{{/link-to}}
-        {{/if}}
-    {{else}}
-        {{#link-to 'riak-object' obj}}{{obj.key}}{{/link-to}}
-    {{/if}}
+    {{#link-to obj.bucket.objectModelName obj}}{{obj.key}}{{/link-to}}
 {{/if}}

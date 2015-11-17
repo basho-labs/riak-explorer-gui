@@ -20,6 +20,7 @@ export default Ember.Service.extend({
      * User-configurable URL prefix for the Explorer GUI.
      * (Also the URL prefix for the Explorer API).
      * Currently, the options are: '/' or '/admin/'.
+     *
      * @property apiURL
      * @type String
      * @default '/'
@@ -113,12 +114,18 @@ export default Ember.Service.extend({
      * @see RiakObjectMap
      *
      * @method collectMapFields
+     * @param rootMap {RiakObjectMap} Top-level Map in which these fields will live
+     * @param parentMap {RiakObjectMap|RiakObjectEmbeddedMap} Standalone or
+     *           nested map containing these fields. When a map is nested just
+     *           one level deep, the parentMap is same as rootMap. For fields
+     *           nested several levels deep, the parent map will be an embedded
+     *           map field.
      * @param payload {Object} Value of the JSON payload of an HTTP GET
      *                   to the map object
      * @param store {DS.Store} Ember Data store, used to instantiate field models
      * @return {Object} A hash of fields indexed by CRDT type and field name.
      */
-    collectMapFields(payload, store) {
+    collectMapFields(rootMap, parentMap, payload, store) {
         var contents = {
             counters: {},
             flags: {},
@@ -130,23 +137,58 @@ export default Ember.Service.extend({
 
         for(var fieldName in payload) {
             if(fieldName.endsWith('_counter')) {
-                contents.counters[fieldName] = payload[fieldName];
+                field = store.createRecord('riak-object.map-field', {
+                    fieldType: 'counter',
+                    name: fieldName,
+                    rootMap: rootMap,
+                    parentMap: parentMap,
+                    value: payload[fieldName]
+                });
+                contents.counters[fieldName] = field;
             }
             if(fieldName.endsWith('_flag')) {
-                contents.flags[fieldName] = payload[fieldName];
+                field = store.createRecord('riak-object.map-field', {
+                    fieldType: 'flag',
+                    name: fieldName,
+                    rootMap: rootMap,
+                    parentMap: parentMap,
+                    value: payload[fieldName]
+                });
+                contents.flags[fieldName] = field;
             }
             if(fieldName.endsWith('_register')) {
-                field = store.createRecord('riak-object.register', {
+                field = store.createRecord('riak-object.map-field', {
+                    fieldType: 'register',
                     name: fieldName,
+                    rootMap: rootMap,
+                    parentMap: parentMap,
                     value: payload[fieldName]
                 });
                 contents.registers[fieldName] = field;
             }
             if(fieldName.endsWith('_set')) {
-                contents.sets[fieldName] = payload[fieldName];
+                field = store.createRecord('riak-object.map-field', {
+                    fieldType: 'set',
+                    name: fieldName,
+                    rootMap: rootMap,
+                    parentMap: parentMap,
+                    value: payload[fieldName]
+                });
+                contents.sets[fieldName] = field;
             }
             if(fieldName.endsWith('_map')) {
-                contents.maps[fieldName] = this.collectMapFields(payload[fieldName]);
+                field = store.createRecord('riak-object.embedded-map', {
+                    fieldType: 'map',
+                    name: fieldName,
+                    rootMap: rootMap,
+                    parentMap: parentMap
+                });
+                // This `field` becomes the `parentMap` for the nested fields.
+                // `rootMap` stays the same
+                let mapFields = this.collectMapFields(rootMap, field,
+                                        payload[fieldName], store);
+                field.value = mapFields;
+                contents.maps[fieldName] = field;
             }
         }
         return contents;
@@ -234,16 +276,18 @@ export default Ember.Service.extend({
     /**
      * Parses and returns the contents/value of a Riak Object, depending on
      * whether it's a CRDT or a plain object.
+     *
      * @method createObjectContents
      * @param {Bucket} bucket
+     * @param {RiakObject} newObject
      * @param {Object} payload
      * @param {DS.Store} store
      * @return {Object}
      */
-    createObjectContents(bucket, payload, store) {
+    createObjectContents(bucket, newObject, payload, store) {
         var contents;
-        if(bucket.get('props').get('isMap')) {
-            contents = this.collectMapFields(payload.value, store);
+        if(bucket.get('props').isMap()) {
+            contents = this.collectMapFields(newObject, newObject, payload.value, store);
         } else {
             contents = payload;
         }
@@ -255,6 +299,7 @@ export default Ember.Service.extend({
      * of an HTTP Fetch Object ajax call.
      * @see getRiakObject
      *
+     * @method createObjectFromAjax
      * @param key {String} Riak object key
      * @param bucket {Bucket}
      * @param rawHeader {String} jQuery AJAX calls return headers as a string :(
@@ -265,20 +310,20 @@ export default Ember.Service.extend({
      * @return {RiakObject|RiakObjectCounter|RiakObjectMap|RiakObjectSet}
      */
     createObjectFromAjax(key, bucket, rawHeader, payload, store, url) {
-        var metadata = this.createObjectMetadata(rawHeader, store);
-        var modelName = bucket.get('objectModelName');
-        var contents = this.createObjectContents(bucket, payload, store);
-
-        return store.createRecord(modelName, {
+        let metadata = this.createObjectMetadata(rawHeader, store);
+        let modelName = bucket.get('objectModelName');
+        let newObject = store.createRecord(modelName, {
             key: key,
             bucket: bucket,
             bucketType: bucket.get('bucketType'),
             cluster: bucket.get('cluster'),
             metadata: metadata,
             isLoaded: true,
-            contents: contents,
             rawUrl: url
         });
+        let contents = this.createObjectContents(bucket, newObject, payload, store);
+        newObject.set('contents', contents);
+        return newObject;
     },
 
     /**
@@ -301,54 +346,175 @@ export default Ember.Service.extend({
 
     /**
      * Composes the JSON action object for the specified operation type for use
-     *    with the Riak Data Type HTTP API.
+     * with the Riak Data Type HTTP API.
      * Invoked when the user edits and saves a Data Type object.
      * @see http://docs.basho.com/riak/latest/dev/using/data-types/
      *
      * @method dataTypeActionFor
-     * @param object {RiakObjectCounter|RiakObjectMap|RiakObjectSet} Data Type object to be edited
+     * @param object {RiakObject|RiakObjectMapField|RiakObjectEmbeddedMap}
+     *            Data Type object to be edited
      * @param operationType {String} CRDT operation type
-     *        (increment counter, add an element to set, update map)
-     * @param {String|RiakObjectRegister|RiakObjectFlag} item
+     *            (increment counter, add an element to set, update map)
+     * @param item {String|RiakObjectMapField} Set element or map field
      * @return {String} JSON string payload used by Riak's Data Type HTTP API
      * @example Sample return value, for updating a counter:
      *     '{"increment": 1}'
      */
     dataTypeActionFor(object, operationType, item) {
-        var bucket = object.get('bucket');
-        var operation;
-        if(bucket.get('props').get('isCounter')) {
-            if(operationType === 'increment') {
-                operation = {increment: object.get('incrementBy')};
-            } else {
-                operation = {decrement: object.get('decrementBy')};
-            }
-        } else if(bucket.get('props').get('isSet')) {
-            if(operationType === 'remove') {
-                operation = { remove: item };
-            } else if(operationType === 'addElement') {
-                operation = { add: item };
-            }
-        } else if(bucket.get('props').get('isMap')) {
-            if(operationType === 'removeRegister') {
-                operation = { remove: item.get('name') };
-            } else if(operationType === 'addRegister') {
-                let update = {};
-                update[item.get('name')] = item.get('value');
-                operation = {
-                    update: update
-                };
-            }
+        let bucket = object.get('bucket');
+        let operation;
+        if(bucket.get('props').isCounter()) {
+            operation = this.dataTypeUpdateCounter(object, operationType);
+        } else if(bucket.get('props').isSet()) {
+            operation = this.dataTypeUpdateSet(operationType, item);
+        } else if(bucket.get('props').isMap()) {
+            operation = this.dataTypeUpdateNestedField(object, operationType, item);
         }
         if(!operation) {
-            console.log('Error: unsupported operationType %s', operationType);
+            throw new Ember.Error('Invalid data type or unsupported operation: ' +
+                operationType);
         }
-
         return JSON.stringify(operation);
     },
 
     /**
-     * Perform a limited 'Delete Bucket' command via the Explorer API.
+     * Returns the operation for updating a Counter data type.
+     * (Will be converted to a JSON string payload, upstream.)
+     *
+     * @method dataTypeUpdateCounter
+     * @param object {RiakObjectCounter|RiakObjectMapField}
+     * @param operationType {String} increment or decrement
+     * @return {Object} Update counter operation
+     */
+    dataTypeUpdateCounter(object, operationType) {
+        if(operationType === 'increment') {
+            return { increment: object.get('incrementBy') };
+        } else if(operationType === 'decrement') {
+            return { decrement: object.get('decrementBy') };
+        }
+    },
+
+    /**
+     * Wraps field update operations for potentially nested maps.
+     *
+     * @method dataTypeUpdateMap
+     * @param field {RiakObjectMapField|RiakObjectEmbeddedMap}
+     * @param subOperation {Object} Accumulator object for nested operations
+     * @return {Object} Update map operation (to be converted to JSON and sent)
+     */
+    dataTypeUpdateMap(field, subOperation) {
+        let parentField = field.get('parentMap');
+        if(parentField.get('isTopLevel')) {
+            return subOperation;
+        } else {
+            let operation = { update: {} };
+            operation.update[parentField.get('name')] = subOperation;
+            return this.dataTypeUpdateMap(parentField, operation);
+        }
+    },
+
+    /**
+     * Returns the operation for updating a Set data type.
+     * (Will be converted to a JSON string payload, upstream.)
+     *
+     * @method dataTypeUpdateNestedField
+     * @param object {RiakObjectMap|RiakObjectMapField|RiakObjectEmbeddedMap}
+     * @param operationType {String}
+     * @param item {String|RiakObjectMapField} Set element or map field
+     * @return {Object} Update nested map field operation
+     * @example
+     *   Remove top-level field, object: Map, item: field
+     *   '{ "remove": "<field name to be removed>" }'
+     *   Remove field in a nested map, object: EmbeddedMap, item: field
+     *   '{
+     *      "update": {
+     *          "<lvlOne_map>": {
+     *              "remove": "<field name to be removed>"
+     *          }
+     *      }
+     *    }'
+     *   Remove field two levels deep, object: EmbeddedMap, item: field
+     *   '{
+     *      "update": {
+     *          "<lvlOne_map>": {
+     *              "update": {
+     *                  "<lvlTwo_map>": {
+     *                      "remove": "<field name to be removed>"
+     *                  }
+     *              }
+     *          }
+     *      }
+     *    }'
+     */
+    dataTypeUpdateNestedField(object, operationType, item) {
+        let fieldName = object.get('name');
+        let fieldOperation = {
+            update: {}
+        };
+        switch(operationType) {
+            case 'removeField':
+                // { "remove": "<field name to be removed>" }
+                fieldOperation = { remove: item.get('name') };
+                object = item;  // In this case, the item is the nested field
+                break;
+            case 'addField':
+            case 'editField':
+                // Add a Register, Flag or Counter field, with given value.
+                // (Note: editing a register is the same update op as adding one)
+                // {
+                //     "update": {
+                //         "page_visits_counter": 1
+                //     }
+                // }
+                fieldName = item.get('name');
+                object = item;  // In this case, the item is the nested field
+                fieldOperation.update[fieldName] = item.get('value');
+                break;
+            case 'addElement':
+            case 'removeElement':
+                // {
+                //     "update": {
+                //         "interests_set": {
+                //            "<add|remove>": "interest123"
+                //         }
+                //     }
+                // }
+                fieldOperation.update[fieldName] =
+                    this.dataTypeUpdateSet(operationType, item);
+                break;
+            case 'increment':
+            case 'decrement':
+                fieldOperation.update[fieldName] =
+                    this.dataTypeUpdateCounter(object, operationType);
+                break;
+            default:
+                throw new Ember.Error('Unsupported Update Map operation: ' +
+                    operationType);
+        }
+        // Now wrap the update field operation in appropriate levels of
+        // update map operations
+        return this.dataTypeUpdateMap(object, fieldOperation);
+    },
+
+    /**
+     * Returns the operation for updating a Set data type.
+     * (Will be converted to a JSON string payload, upstream.)
+     *
+     * @method dataTypeUpdateSet
+     * @param operationType {String}
+     * @param element {String}
+     * @return {Object} Update set operation
+     */
+    dataTypeUpdateSet(operationType, element) {
+        if(operationType === 'removeElement') {
+            return { remove: element };
+        } else if(operationType === 'addElement') {
+            return { add: element };
+        }
+    },
+
+    /**
+     * Performs a limited 'Delete Bucket' command via the Explorer API.
      * (This is done as a convenience operation for Devs, since Riak doesn't
      * currently support a whole-bucket delete.)
      * To be more precise, the Explorer backend iterates through all the keys
@@ -363,6 +529,7 @@ export default Ember.Service.extend({
      * However, since the 'Delete Bucket' button is only displayed once a
      * non-empty Key List cache is retrieved from the server, this is fine.
      *
+     * @method deleteBucket
      * @param {Bucket} bucket
      * @return {Ember.RSVP.Promise} Result of the Delete Bucket AJAX request
      */
@@ -764,6 +931,7 @@ export default Ember.Service.extend({
 
     /**
      * Returns the results of a Riak node HTTP ping result.
+     *
      * @method getNodePing
      * @param {String} nodeId
      * @return {Ember.RSVP.Promise} result of the AJAX call
@@ -830,6 +998,7 @@ export default Ember.Service.extend({
 
     /**
      * Returns the results of a GET Node Stats HTTP call.
+     *
      * @method getNodeStats
      * @param {String} nodeId
      * @return {Ember.RSVP.Promise<Array<Hash>>}
@@ -874,7 +1043,7 @@ export default Ember.Service.extend({
             var contents;
             var url = explorer.getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
                 bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId');
-            if(bucket.get('props').get('isCRDT')) {
+            if(bucket.get('props').isCRDT()) {
                 url = url + '/datatypes/' + key;
                 processData = true;  // Parse the payload as JSON
                 ajaxHash.dataType = 'json';
@@ -1019,6 +1188,7 @@ export default Ember.Service.extend({
 
     /**
      * Updates a RiakObject via an HTTP Store Object request to the cluster.
+     *
      * @method saveObject
      * @param {RiakObject} object
      * @return {Ember.RSVP.Promise} Result of the AJAX request.
@@ -1055,9 +1225,9 @@ export default Ember.Service.extend({
      * Performs an update AJAX operation to the Riak Data Type HTTP API endpoint
      *
      * @method updateDataType
-     * @param {RiakObjectCounter|RiakObjectMap|RiakObjectSet} object
+     * @param {RiakObjectCounter|RiakObjectSet|RiakObjectMap|RiakObjectMapField} object
      * @param {String} operationType
-     * @param {String|RiakObjectRegister|RiakObjectFlag} item
+     * @param {String|RiakObjectMapField} item
      */
     updateDataType(object, operationType, item) {
         var bucket = object.get('bucket');
@@ -1091,6 +1261,7 @@ export default Ember.Service.extend({
     /**
      * Returns true if a given object was marked as deleted in the client-side
      * ExplorerService.deleted key cache.
+     *
      * @method wasObjectDeleted
      * @param {RiakObject} object
      * @return {Boolean}

@@ -62,6 +62,7 @@ var BucketType = DS.Model.extend({
 
     /**
      * Returns true if this Bucket Type has been activated.
+     *
      * @property isActive
      * @type Boolean
      */
@@ -71,17 +72,19 @@ var BucketType = DS.Model.extend({
 
     /**
      * Returns true if this Bucket Type has not yet been activated.
+     *
      * @property isInactive
      * @type Boolean
      */
     isInactive: function() {
-        return !this.get('props').get('isActive');
+        return !this.get('isActive');
     }.property('props'),
 
     /**
      * Alias for the record's `id`, which is a composite ID in the form of
      *     `'<clusterId>/<bucketName>'`.
      * @see ExplorerResourceAdapter.normalizeId
+     * 
      * @property name
      * @type String
      * @example
