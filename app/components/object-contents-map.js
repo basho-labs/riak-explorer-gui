@@ -58,7 +58,7 @@ var ObjectContentsMapComponent = Ember.Component.extend({
       },
 
       editField(model, fieldType, field) {
-          alert('Edit Field!');
+          console.log('Editing field in %O, type: %s, field: %O', model, fieldType, field);
       },
 
       /**
