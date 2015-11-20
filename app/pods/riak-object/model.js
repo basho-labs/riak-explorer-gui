@@ -10,6 +10,14 @@ import DS from 'ember-data';
  * @uses BucketType
  * @uses Cluster
  * @uses ObjectMetadata
+ * @param [key] {String}
+ * @param [bucket] {Bucket}
+ * @param [bucketType] {BucketType}
+ * @param [cluster] {Cluster}
+ * @param [metadata] {ObjectMetadata}
+ * @param [isLoaded] {Boolean} Has this been loaded from server. Default: `false`
+ * @param [rawUrl] {String}
+ * @param [contents] {Object} Object value/payload
  */
 var RiakObject = DS.Model.extend({
     /**
@@ -59,8 +67,13 @@ var RiakObject = DS.Model.extend({
      */
     key: DS.attr('string'),
 
-    // This object was marked as deleted by Explorer UI,
-    //  but may show up in key list cache.
+    /**
+     * Was this object marked as deleted by Explorer UI?
+     * Note: Deleted objects may still show up in the API-side key list cache.
+     * @property markedDeleted
+     * @type Boolean
+     * @default false
+     */
     markedDeleted: DS.attr('boolean', {defaultValue: false}),
 
     /**

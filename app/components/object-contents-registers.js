@@ -6,13 +6,8 @@ import Ember from 'ember';
  * @class ObjectContentsRegistersComponent
  * @extends Ember.Component
  * @constructor
- * @uses RiakObjectRegister
- * @uses RiakObjectMap
  */
-export default Ember.Component.extend({
-    explorer: Ember.inject.service('explorer'),
-    store: Ember.inject.service('store'),
-
+var ObjectContentsRegistersComponent = Ember.Component.extend({
     /**
      * @property fieldToAddName
      * @type {String}
@@ -28,45 +23,48 @@ export default Ember.Component.extend({
     actions: {
         /**
          * The user has clicked on the 'Add Register' button.
-         * Creates a `RiakObjectRegister` object and adds it to this map's
-         *    registers list.
-         * @event addRegister
+         * Forward the `addField` action to parent controller:
+         * @see ObjectContentsMapComponent
+         *
+         * @event addField
          * @param model {RiakObjectMap}
          */
-        addRegister(model) {
-            let value = this.get('fieldToAddValue');
-            if(!value) {
-                return;  // Registers must have non-empty values
+        addField(model) {
+            let newName = this.get('fieldToAddName');
+            let newValue = this.get('fieldToAddValue');
+            if(!newName || !newValue) {
+                return;  // Registers must have non-empty names and values
             }
-            let newRegister = this.get('store').createRecord(
-                'riak-object.register', {
-                    name: this.get('fieldToAddName'),
-                    value: value
-                });
-            newRegister.normalizeName();
-            this.get('explorer').updateDataType(model, 'addRegister',
-                newRegister);
-            model.addRegister(newRegister);
+            this.sendAction('addField', model, 'register', newName, newValue);
+
             // Reset the UI fields
             this.set('fieldToAddName', null);
             this.set('fieldToAddValue', null);
         },
 
-        editRegister(model, register) {
-            // Send its action to parent controller
-            this.sendAction('editField', model, register);
+        /**
+         * The user has clicked on the Edit Register button.
+         * Forward the `editRegister` action to parent controller.
+         *
+         * @event editField
+         * @param model {RiakObjectMap} Current map
+         * @param register {RiakObjectMapField} Register to be removed
+         */
+        editField(model, register) {
+            this.sendAction('editField', model, 'register', register);
         },
 
         /**
          * The user has clicked on the Delete Register button.
-         * Removes the specified register from this map.
-         * @event removeRegister
+         * Forward the `removeField` action to parent controller.
+         *
+         * @event removeField
          * @param model {RiakObjectMap} Current map
-         * @param register {RiakObjectRegister} Register to be removed
+         * @param register {RiakObjectMapField} Register to be removed
          */
-        removeRegister(model, register) {
-            this.get('explorer').updateDataType(model, 'removeRegister', register);
-            model.removeRegister(register);
+        removeField(model, register) {
+            this.sendAction('removeField', model, 'register', register);
         }
     }
 });
+export default ObjectContentsRegistersComponent;

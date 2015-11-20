@@ -142,6 +142,7 @@ tr:nth-child(odd) {background: #EEE}
     border-left: 1px solid #ddd;
     border-top: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    margin-bottom: 1.5em;
 }
 .set-contents-list div.set-element-row:nth-child(even) {
     background-color: #eee;
@@ -157,6 +158,10 @@ tr:nth-child(odd) {background: #EEE}
 .field-label {
     text-align: right;
     font-weight: bold;
+}
+
+.map-composite-field-name {
+    padding: 0.5em 0px;
 }
 
 .form-inline .input-increment {

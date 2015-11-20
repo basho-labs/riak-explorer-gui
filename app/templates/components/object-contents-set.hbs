@@ -3,7 +3,7 @@
         <div class="object-contents-header">
             <div class="object-contents-info">
                 Set
-                ({{model.contentsForDisplay.length}} elements)
+                ({{model.contentsForDisplay.length}})
             </div>
             <div class="object-contents-actions">
               {{object-actions model=model isEditing=isEditing
@@ -13,31 +13,9 @@
         <div class="object-contents-body">
           <form class="form-inline">
               {{#if model.contentsForDisplay}}
-              <div class="container set-contents-list">
-                  {{#each model.contentsForDisplay as | element |}}
-                      <div class="row set-element-row">
-                          <div class="col-md-1">
-                            {{button.set-element-remove model=model item=element
-                                removeElement="removeElement"}}
-                          </div>
-                          <div class="col-md-11">
-                              <span class="set-element">{{element}}</span>
-                          </div>
-                      </div>
-                  {{/each}}
-
-                  <div class="row set-element-row">
-                      <div class="col-md-1"></div>
-                      <div class="col-md-11">
-                          {{input value=elementToAdd class="form-control"}}
-                          <button type="button" class="btn btn-sm btn-primary"
-                                  {{action 'addElement' model}}>
-                              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                              Add</button>
-                      </div>
-
-                  </div>
-              </div>
+                  {{object-contents-set-elements model=model
+                      setElements=model.contentsForDisplay
+                      removeElement="removeElement" addElement="addElement"}}
               {{/if}}
           </form>
         </div>
