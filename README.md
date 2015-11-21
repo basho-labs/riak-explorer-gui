@@ -33,9 +33,15 @@ for more details.
 
 ## Running / Development
 
-Unfortunately, for the moment we're unable to have this app work with the built-
-in Ember dev server (the one you get by running `ember server`). Instead, the
-development cycle is as follows:
+To get the Ember dev server to communicate with the riak_explorer api, we have to use a proxy server to catch all api requests
+and alter the port. Assuming riak_explorer is running on port `9000` and the Ember server on port
+`4200`, you can set up some rewrite rules to handle these cases. If using [Charles Proxy](http://www.charlesproxy.com/),
+make sure your network is allowing a proxy server and create two rewrite rules for the location `localhost:4200`
+ - Match `:4200/explore` Replace: `:9000/explore`
+ - Match `:4200/riak` Replace: `:9000/riak`
+
+If you don't want to use a proxy server to intercept and alter requests, you can also build the project and copy it over
+to the riak_explorer `dist` directory:
 
 1. Run `make`. This compiles everything in the Ember
     build pipeline, and copies it into the local `dist/` directory.
