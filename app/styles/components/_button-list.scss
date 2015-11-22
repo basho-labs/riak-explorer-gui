@@ -1,0 +1,18 @@
+.button-list {
+  li {
+    margin-bottom: 10px;
+
+    a {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+
+  &.small {
+    li {
+      a {
+        @extend .btn-xs;
+      }
+    }
+  }
+}
