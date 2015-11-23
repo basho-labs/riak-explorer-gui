@@ -1,4 +1,4 @@
-<div class="container">
+<div class="riak-object">
     <div class="object-contents">
         <div class="object-contents-header">
             <div class="object-contents-info">
@@ -24,4 +24,40 @@
         </div>
     </div>
 </div>
-<br />
+
+{{!-- This version needs to be updated
+<table class="table">
+  <thead>
+  <tr>
+    <th>Value</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  {{#each model.contentsForDisplay as |element|}}
+    <tr>
+      <td>
+        {{element}}
+      </td>
+      <td>
+        {{button.set-element-remove
+        model=model
+        item=element
+        removeElement="removeElement"}}
+      </td>
+    </tr>
+  {{/each}}
+  <tr>
+    <td>
+      {{input value=elementToAdd class="form-control"}}
+    </td>
+    <td>
+      <button type="button" class="btn btn-sm btn-primary" {{action 'addElement' model}}>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Add
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+--}}
