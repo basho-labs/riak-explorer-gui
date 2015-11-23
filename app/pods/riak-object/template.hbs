@@ -12,9 +12,11 @@
 
 {{#dashboard-module}}
   {{#if model.isLoaded}}
-    {{object-metadata metadata=model.metadata isEditing=false}}
-    {{object-contents model=model isEditing=false deleteObject="deleteObject"}}
-    {{#object-version object=model}}{{/object-version}}
+    <div class="riak-object">
+      {{object-metadata metadata=model.metadata isEditing=false}}
+      {{object-contents model=model isEditing=false deleteObject="deleteObject"}}
+      {{#object-version object=model}}{{/object-version}}
+    </div>
   {{else}}
     {{loading-spinner}}
   {{/if}}
