@@ -2,12 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
     queryParams: {
-        node_id: {
+        nodeId: {
             refreshModel: true
         }
     },
 
     model: function(params) {
-        return this.explorer.getNodeStats(params.node_id);
+        return this.explorer.getNodeStats(params.nodeId);
     }
 });

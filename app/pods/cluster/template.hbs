@@ -50,13 +50,13 @@
         {{#each model.nodes as |node|}}
           <tr>
             <td>
-              {{#link-to 'riak_ping' (query-params nodeId=node.id clusterId=model.clusterId)
+              {{#link-to 'riak-ping' (query-params nodeId=node.id clusterId=model.clusterId)
               classNames='btn btn-sm btn-primary' }}
                 Node Ping
               {{/link-to}}
             </td>
             <td>
-              {{#link-to 'node_stats' (query-params nodeId=node.id clusterId=model.clusterId)
+              {{#link-to 'node-stats' (query-params nodeId=node.id clusterId=model.clusterId)
               classNames='btn btn-sm btn-primary' }}
                 Node Stats
               {{/link-to}}
