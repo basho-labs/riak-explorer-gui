@@ -12,7 +12,27 @@
 <div class='bucket-types-container'>
   {{#dashboard-module label='Properties'}}
     {{#if model.props}}
-      {{bucket-properties model=model}}
+      {{#em-tabs class='half-width'}}
+        {{#em-tab-list}}
+          {{#em-tab}}Overview{{/em-tab}}
+          {{#em-tab}}Advanced Properties{{/em-tab}}
+        {{/em-tab-list}}
+
+        {{#em-tab-panel}}
+          {{bucket-properties model=model}}
+        {{/em-tab-panel}}
+
+        {{#em-tab-panel}}
+          <table class="key-value-table">
+            {{#each model.props.propsList as |prop|}}
+              <tr>
+                <td class='key'>{{prop.key}}</td>
+                <td class='value'>{{prop.value}}</td>
+              </tr>
+            {{/each}}
+          </table>
+        {{/em-tab-panel}}
+      {{/em-tabs}}
     {{else}}
       Properties not loaded
     {{/if}}
