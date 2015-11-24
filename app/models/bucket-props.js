@@ -218,7 +218,7 @@ var BucketProps = DS.Model.extend({
                 strategy = 'Convergent, Pairwise Maximum Wins';
                 break;
             case(this.get('isMap')):
-                strategy = 'Convergent, Add/Update Wins Over Remove';;
+                strategy = 'Convergent, Add/Update Wins Over Remove';
                 break;
             case(this.get('isSet')):
                 strategy = 'Convergent, Add Wins Over Remove';

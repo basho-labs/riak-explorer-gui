@@ -286,7 +286,7 @@ export default Ember.Service.extend({
      */
     createObjectContents(bucket, newObject, payload, store) {
         var contents;
-        if(bucket.get('props').isMap()) {
+        if(bucket.get('props').get('isMap')) {
             contents = this.collectMapFields(newObject, newObject, payload.value, store);
         } else {
             contents = payload;
@@ -363,11 +363,11 @@ export default Ember.Service.extend({
     dataTypeActionFor(object, operationType, item) {
         let bucket = object.get('bucket');
         let operation;
-        if(bucket.get('props').isCounter()) {
+        if(bucket.get('props').get('isCounter')) {
             operation = this.dataTypeUpdateCounter(object, operationType);
-        } else if(bucket.get('props').isSet()) {
+        } else if(bucket.get('props').get('isSet')) {
             operation = this.dataTypeUpdateSet(operationType, item);
-        } else if(bucket.get('props').isMap()) {
+        } else if(bucket.get('props').get('isMap')) {
             operation = this.dataTypeUpdateNestedField(object, operationType, item);
         }
         if(!operation) {
@@ -1043,7 +1043,7 @@ export default Ember.Service.extend({
             var contents;
             var url = explorer.getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
                 bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId');
-            if(bucket.get('props').isCRDT()) {
+            if(bucket.get('props').get('isCRDT')) {
                 url = url + '/datatypes/' + key;
                 processData = true;  // Parse the payload as JSON
                 ajaxHash.dataType = 'json';
