@@ -290,7 +290,7 @@ var BucketProps = DS.Model.extend({
      * @return {Boolean}
      */
     quorumRelevant: function() {
-        return !this.get('isSearchIndexed') && !this.get('isCRDT');
+        return !this.get('isStronglyConsistent') && !this.get('isCRDT');
     }.property('props'),
 
     /**

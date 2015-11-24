@@ -21,8 +21,8 @@
     <td class='key'>Quorum:</td>
     <td class='value'>
       N_Val: {{model.props.nVal}}
-      {{#if props.quorumRelevant}}
-        ,
+      {{#if model.props.quorumRelevant}}
+        <br />
         R: {{model.props.quorum.r}}, W: {{model.props.quorum.w}},
         PR: {{model.props.quorum.pr}}, PW: {{model.props.quorum.pw}},
         DW: {{model.props.quorum.dw}}

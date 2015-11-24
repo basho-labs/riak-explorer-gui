@@ -104,6 +104,11 @@ var Bucket = DS.Model.extend({
      * @type Boolean
      */
     isActive: function() {
+        if(this.get('bucketTypeId') === 'default') {
+            // Buckets in the Default type don't have the 'active' attribute
+            // in the props, but are actually active.
+            return true;
+        }
         return this.get('props').get('isActive');
     }.property('props'),
 
