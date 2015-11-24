@@ -79,9 +79,10 @@ var RiakObjectMap = RiakObject.extend({
      * @method contentsForDisplay
      * @return {String}
      */
-    contentsForDisplay: function() {
-        return JSON.stringify(this.get('contents'));
-    }.property('contents'),
+    // TODO: this is throwing "Converting circular structure to JSON" error
+    //contentsForDisplay: function() {
+    //    return JSON.stringify(this.get('contents'));
+    //}.property('contents'),
 
     /**
      * Hashmap of counters (`RiakObjectMapField` instances) for this map,

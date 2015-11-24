@@ -129,16 +129,24 @@ var Bucket = DS.Model.extend({
      * @default 'riak-object'
      */
     objectModelName: function() {
-        if(this.get('props').get('isCounter')) {
-            return 'riak-object.counter';
+        let modelType = null;
+
+        switch(true) {
+            case this.get('props').get('isCounter'):
+                modelType = 'riak-object.counter';
+                break;
+            case this.get('props').get('isSet'):
+                modelType = 'riak-object.set';
+                break;
+            case this.get('props').get('isMap'):
+                modelType = 'riak-object.map';
+                break;
+            default:
+                modelType = 'riak-object';
+                break;
         }
-        if(this.get('props').get('isSet')) {
-            return 'riak-object.set';
-        }
-        if(this.get('props').get('isMap')) {
-            return 'riak-object.map';
-        }
-        return 'riak-object';
+
+        return modelType;
     }.property('props'),
 
     /**
