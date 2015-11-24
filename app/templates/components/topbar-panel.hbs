@@ -1,0 +1,23 @@
+<nav class="topbar">
+  {{#link-to 'application' class="logo" }}
+    <img src="assets/images/sample_logo.png">
+  {{/link-to}}
+
+  <nav class="topbar-nav">
+    <ul class="topbar-nav-group">
+      <li class="topbar-nav-item">
+        {{#link-to 'application'}}
+          <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>
+          Some Item
+        {{/link-to}}
+
+      </li>
+      <li class="topbar-nav-item">
+        {{#link-to 'application'}}
+          <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+          Authz User
+        {{/link-to}}
+      </li>
+    </ul>
+  </nav>
+</nav>

@@ -1,12 +1,25 @@
-{{#object-location object=model}}{{/object-location}}
+<div class='view-header'>
+  {{breadcrumb-component
+  clusterId=model.clusterId
+  bucketTypeId=model.bucketTypeId
+  bucketId=model.bucketId
+  keyId=model.key
+  }}
+  {{view-label
+  pre-label='Riak Object'
+  label=model.key}}
+</div>
 
-<br />
-{{#if model.isLoaded}}
-    {{object-metadata metadata=model.metadata isEditing=false}}
-
-    {{object-contents model=model isEditing=false deleteObject="deleteObject"}}
-
-    {{#object-version object=model}}{{/object-version}}
-{{else}}
+{{#dashboard-module}}
+  {{#if model.isLoaded}}
+    <div class="riak-object">
+      {{object-metadata metadata=model.metadata isEditing=false}}
+      {{object-contents model=model isEditing=false deleteObject="deleteObject"}}
+      {{#object-version object=model}}{{/object-version}}
+    </div>
+  {{else}}
     {{loading-spinner}}
-{{/if}}
+  {{/if}}
+{{/dashboard-module}}
+
+

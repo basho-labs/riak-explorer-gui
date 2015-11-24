@@ -1,75 +1,75 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <div class="cluster-resource-header center-block">
-                <img src="assets/images/riak.png" class="cluster-resource-icon" />
-                <span>
-                    {{model.clusterId}}
-                    {{#if model.developmentMode}}(Dev){{/if}}
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Explore</h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h5>Active Bucket Types</h5>
-            {{#if model.activeBucketTypes}}
-                {{#bucket-types clusterId=model.clusterId
-                    bucketTypes=model.activeBucketTypes}}{{/bucket-types}}
-            {{else}}
-            <div class="container">No bucket types have been activated.</div>
-            {{/if}}
-        </div>
-    </div>
-    {{#if model.inactiveBucketTypes}}
-    <div class="row">
-        <div class="col-md-12">
-            <h5>Inactive Bucket Types</h5>
+<div class='view-header'>
+  {{breadcrumb-component clusterId=model.clusterId}}
+  {{view-label
+  pre-label='Cluster'
+  label=model.clusterId}}
+</div>
 
-                {{#bucket-types clusterId=model.clusterId
-                    bucketTypes=model.inactiveBucketTypes}}{{/bucket-types}}
-        </div>
-    </div>
+<div class='cluster-information-container'>
+  {{#dashboard-module label='Active Bucket Types'}}
+    {{#if model.activeBucketTypes}}
+      {{bucket-types
+      clusterId=model.clusterId
+      bucketTypes=model.activeBucketTypes}}
+    {{else}}
+      <p>No bucket types have been activated</p>
     {{/if}}
-    <div class="row">
-        <div class="col-md-12"><h4>Search</h4></div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            {{#if model.indexes}}
-                <h5>Search Indexes</h5>
-                {{#search-indexes indexes=model.indexes
-                    clusterProxyUrl=model.proxyUrl}}
-                {{/search-indexes}}
-            {{else}}
-                No search indexes found.
-            {{/if}}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Nodes</h4>
-    <table class="table">
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Inactive Bucket Types'}}
+    {{#if model.inactiveBucketTypes}}
+      {{bucket-types
+      clusterId=model.clusterId
+      bucketTypes=model.inactiveBucketTypes}}
+    {{else}}
+      <p>No inactive buckets</p>
+    {{/if}}
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Search Indexes'}}
+    {{#if model.indexes}}
+      {{search-indexes
+      indexes=model.indexes
+      clusterProxyUrl=model.proxyUrl}}
+    {{else}}
+      <p>No search indexes found</p>
+    {{/if}}
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Nodes'}}
+    {{#if model.nodes.length}}
+      <table class="table">
         <thead>
-            <tr>
-                <th>Ping</th>
-                <th>Stats</th>
-                <th>Node</th>
-            </tr>
+        <tr>
+          <th>Ping</th>
+          <th>Stats</th>
+          <th>Node</th>
+        </tr>
         </thead>
         <tbody>
-    {{#each model.nodes as |node|}}
-      {{riak-node node=node}}
-    {{else}}
-      No nodes detected.
-    {{/each}}
+        {{#each model.nodes as |node|}}
+          <tr>
+            <td>
+              {{#link-to 'riak-ping' (query-params nodeId=node.id clusterId=model.clusterId)
+              classNames='btn btn-sm btn-primary' }}
+                Node Ping
+              {{/link-to}}
+            </td>
+            <td>
+              {{#link-to 'node-stats' (query-params nodeId=node.id clusterId=model.clusterId)
+              classNames='btn btn-sm btn-primary' }}
+                Node Stats
+              {{/link-to}}
+            </td>
+            <td>
+              {{node.id}}
+            </td>
+          </tr>
+        {{/each}}
         </tbody>
-    </table>
-        </div>  <!-- <div class="col-md-12"> -->
-    </div>  <!-- <div class="row"> -->
+      </table>
+    {{else}}
+      <p>No nodes detected</p>
+    {{/if}}
+  {{/dashboard-module}}
 </div>

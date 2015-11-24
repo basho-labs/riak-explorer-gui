@@ -1,0 +1,28 @@
+.view-header {
+  background-color: rgba(0,0,0,0.03);
+  border-bottom: 1px solid $grayscale-color-x-light;
+  padding: 20px 40px;
+}
+
+.breadcrumb-container {
+  display: block;
+  margin-bottom: 10px;
+
+  .breadcrumb {
+    margin: 0;
+    padding: 0;
+    background-color: inherit;
+    text-transform: uppercase;
+    font-size: 11px;
+
+    li {
+      color: lighten($grayscale-color-dark, $color-accent-percentage-large);
+      &:last-child {
+        a {
+          cursor: default;
+          color: lighten($grayscale-color-dark, $color-accent-percentage-large);
+        }
+      }
+    }
+  }
+}

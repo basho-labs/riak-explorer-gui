@@ -39,6 +39,7 @@
     "ember-export-application-global": "^1.0.3"
   },
   "dependencies": {
+    "ember-cli-sass": "^5.1.0",
     "ember-idx-tabs": "^0.1.4"
   }
 }

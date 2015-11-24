@@ -1,33 +1,71 @@
-<div class="row">
-    <div class="col-sm-12">
-        <div class="row property-header">
-            <div class="col-sm-10">
-                <strong>{{title}} Properties</strong>
-            </div>
-            <div class="col-sm-2">
-                {{#if model.isActive}}
-                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                <span class="status-ok">Activated</span>
-                {{else}}
-                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                <span class="status-disabled">Inactive</span>
-                {{/if}}
-            </div>
-        </div>
-        <div class="row">
-            {{#em-tabs configName="default"}}
-                {{#em-tab-list}}
-                    {{#em-tab}}Overview{{/em-tab}}
-                    {{#em-tab}}Advanced Properties{{/em-tab}}
-                {{/em-tab-list}}
-                {{#em-tab-panel}}
-                    {{bucket-properties-overview model=model props=model.props}}
-                {{/em-tab-panel}}
-                {{#em-tab-panel}}
-                    {{bucket-properties-list model=model}}
-                {{/em-tab-panel}}
-            {{/em-tabs}}
-        </div>
-
-    </div>
-</div>
+<table class='key-value-table'>
+  <tr>
+    <td class='key'>Bucket Status:</td>
+    <td class='value'>
+      {{#if model.isActive}}
+        <span class="label label-success">Active</span>
+      {{else}}
+        <span class="label label-default">Inactive</span>
+      {{/if}}
+    </td>
+  </tr>
+  <tr>
+    <td class='key'>Object type:</td>
+    <td class='value'>{{model.props.objectType}}</td>
+  </tr>
+  <tr>
+    <td class='key'>Conflict Res. Strategy:</td>
+    <td class='value'>{{model.props.resolutionStrategy}}</td>
+  </tr>
+  <tr>
+    <td class='key'>Quorum:</td>
+    <td class='value'>
+      N_Val: {{model.props.nVal}}
+      {{#if props.quorumRelevant}}
+        ,
+        R: {{model.props.quorum.r}}, W: {{model.props.quorum.w}},
+        PR: {{model.props.quorum.pr}}, PW: {{model.props.quorum.pw}},
+        DW: {{model.props.quorum.dw}}
+        <small>
+          (basic_quorum: {{model.props.quorum.basic_quorum}},
+          notfound_ok: {{model.props.quorum.basic_quorum}})
+        </small>
+      {{/if}}
+    </td>
+  </tr>
+  {{#if model.props.isSearchIndexed}}
+    <tr>
+      <td class='key'>Search Index:</td>
+      <td class='value'>{{model.props.searchIndexName}}</td>
+    </tr>
+    <tr>
+      <td class='key'>Search Schema:</td>
+      <td class='value'>
+        <a href="{{model.props.cluster.clusterProxyUrl}}/search/schema/{{model.props.index.schema}}">
+          {{model.props.index.schema}}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td class='key'>Index N_Val:</td>
+      <td class='value'>{{model.props.index.n_val}}</td>
+    </tr>
+  {{else}}
+    <tr>
+      <td class='key'>Search Index:</td>
+      <td class='value'>Not available (not being indexed)</td>
+    </tr>
+  {{/if}}
+  {{#if model.props.warnings}}
+    <tr>
+      <td class='key'>Warnings:</td>
+      <td class='value'>
+        <ul>
+          {{#each model.props.warnings as |warning|}}
+            <li>{{warning}}</li>
+          {{/each}}
+        </ul>
+      </td>
+    </tr>
+  {{/if}}
+</table>

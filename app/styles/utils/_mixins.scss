@@ -1,0 +1,56 @@
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  border-radius: $radius;
+  background-clip: padding-box;
+}
+
+@mixin border-top-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+  border-top-right-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  border-top-left-radius: $radius;
+  background-clip: padding-box;
+}
+@mixin border-right-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+  border-top-right-radius: $radius;
+  background-clip: padding-box;
+}
+@mixin border-bottom-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+  border-bottom-right-radius: $radius;
+  -webkit-border-bottom-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+  background-clip: padding-box;
+}
+@mixin border-left-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+  border-bottom-left-radius: $radius;
+  -webkit-border-top-left-radius: $radius;
+  border-top-left-radius: $radius;
+  background-clip: padding-box;
+}
+
+@mixin inner-shadow($color) {
+  -webkit-box-shadow: inset 0 1px 1px $color;
+  -moz-box-shadow: inset 0 1px 1px $color;
+  box-shadow: inset 0 1px 1px $color;
+}
+
+@mixin text-shadow($hex) {
+  text-shadow: 0 1px 0 $hex;
+}
+
+@mixin dark-background-font {
+  @include text-shadow(#000);
+  color: lighten($grayscale-color-light, $color-accent-percentage-large);
+}
+
+@mixin light-background-strong-font {
+  @include text-shadow(#FFF);
+  color: lighten($grayscale-color-dark, $color-accent-percentage-large);
+}
