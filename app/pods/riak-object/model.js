@@ -147,10 +147,10 @@ var RiakObject = DS.Model.extend({
      * @return {String|Null}
      */
     contentsForDisplay: function() {
-        var contentType = this.get('metadata').get('contentType');
-        var displayContents;
+        let contentType = this.get('metadata').get('contentType');
+        let displayContents;
         // Determine whether this is browser-displayable contents
-        if(contentType.startsWith('text') ||
+        if(contentType.startsWith('plain/text') ||
                 contentType.startsWith('application/json') ||
                 contentType.startsWith('application/xml') ||
                 contentType.startsWith('multipart/mixed') ) {
