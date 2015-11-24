@@ -9,7 +9,7 @@
 </div>
 
 <div class='bucket-types-container'>
-  {{#dashboard-module label='Properties'}}
+  {{#dashboard-module}}
 
     {{#if model.props}}
       {{#em-tabs class='half-width'}}
@@ -21,18 +21,15 @@
         {{#em-tab-panel}}
           <table class='key-value-table'>
             <tr>
-              <td class='key'>Bucket Status:</td>
+              <td class='key'>Object type:</td>
               <td class='value'>
+                {{model.props.objectType}}
                 {{#if model.isActive}}
                   <span class="label label-success">Active</span>
                 {{else}}
                   <span class="label label-default">Inactive</span>
                 {{/if}}
               </td>
-            </tr>
-            <tr>
-              <td class='key'>Object type:</td>
-              <td class='value'>{{model.props.objectType}}</td>
             </tr>
             <tr>
               <td class='key'>Conflict Res. Strategy:</td>
