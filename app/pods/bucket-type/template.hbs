@@ -113,24 +113,42 @@
     {{#if model.isBucketListLoaded}}
       <table class="key-value-table">
         <tbody>
-        <tr>
-          <td class="key">Buckets count:</td>
-          <td class="value">{{model.bucketList.total}}</td>
-        </tr>
-        <tr>
-          <td class="key">Stored buckets</td>
-          <td class="value">
-            <ul class='button-list small'>
-              {{#each model.bucketList.buckets as |bucket|}}
-                <li>
-                  {{link.link-bucket bucket=bucket}}
-                </li>
-              {{else}}
-                No buckets found
-              {{/each}}
-            </ul>
-          </td>
-        </tr>
+          <tr>
+            <td class="key">Bucket List cache created:</td>
+            <td class="value">{{model.bucketList.created}}</td>
+          </tr>
+          <tr>
+            <td class="key">Bucket List count:</td>
+            <td class="value">{{model.bucketList.total}}</td>
+          </tr>
+          {{#if model.cluster.developmentMode}}
+            <tr>
+              <td class="key">Available actions:</td>
+              <td class="value">
+                <ul class='button-list'>
+                  <li>
+                    {{button.refresh-buckets
+                    action="refreshBuckets"
+                    bucketType=model}}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          {{/if}}
+          <tr>
+            <td class="key">Stored buckets</td>
+            <td class="value">
+              <ul class='button-list small'>
+                {{#each model.bucketList.buckets as |bucket|}}
+                  <li>
+                    {{link.link-bucket bucket=bucket}}
+                  </li>
+                {{else}}
+                  No buckets found
+                {{/each}}
+              </ul>
+            </td>
+          </tr>
         </tbody>
       </table>
     {{else}}
