@@ -54,7 +54,7 @@ var BucketProps = DS.Model.extend({
      */
     dataTypeName: function() {
         var name;
-        if(this.isCRDT()) {
+        if(this.get('isCRDT')) {
             name = this.get('props').datatype;
         }
         if(name) {
@@ -70,14 +70,12 @@ var BucketProps = DS.Model.extend({
      * @method hasCommitHooks
      * @return {Boolean}
      */
-    hasCommitHooks() {
+    hasCommitHooks: function() {
         var hasPrecommit = !Ember.isEmpty(this.get('props').precommit);
         var hasPostcommit = !Ember.isEmpty(this.get('props').postcommit);
-        if(hasPrecommit || hasPostcommit) {
-            return true;
-        }
-        return false;
-    },
+
+        return (hasPrecommit || hasPostcommit);
+    }.property('props'),
 
     /**
      * Have Siblings been enabled for this Bucket or Bucket Type?
@@ -89,9 +87,9 @@ var BucketProps = DS.Model.extend({
      * @method hasSiblings
      * @return {Boolean}
      */
-    hasSiblings() {
+    hasSiblings: function() {
         return this.get('props').allow_mult;
-    },
+    }.property('props'),
 
     /**
      * Has this Bucket Type been activated via `riak-admin bucket-types activate`?
@@ -110,9 +108,9 @@ var BucketProps = DS.Model.extend({
      * @method isCounter
      * @return {Boolean}
      */
-    isCounter() {
+    isCounter: function() {
         return this.get('dataTypeName') === 'Counter';
-    },
+    }.property('dataTypeName'),
 
     /**
      * Does this bucket type store Riak Data Type objects?
@@ -122,9 +120,9 @@ var BucketProps = DS.Model.extend({
      * @method isCRDT
      * @return {Boolean}
      */
-    isCRDT() {
+    isCRDT: function() {
         return this.get('props').datatype;
-    },
+    }.property('props'),
 
     /**
      * Has the 'Last Write Wins' optimization been turned on for this bucket?
@@ -133,9 +131,9 @@ var BucketProps = DS.Model.extend({
      * @method isLWW
      * @return {Boolean}
      */
-    isLWW() {
+    isLWW: function() {
         return this.get('props').last_write_wins;
-    },
+    }.property('props'),
 
     /**
      * Does this bucket store Map data type objects?
@@ -143,20 +141,19 @@ var BucketProps = DS.Model.extend({
      * @method isMap
      * @return {Boolean}
      */
-    isMap() {
+    isMap: function() {
         return this.get('dataTypeName') === 'Map';
-    },
+    }.property('dataTypeName'),
 
     /**
      * Has a Riak Search index been associated with this bucket type?
      *
      * @method isSearchIndexed
-     * @return {Boolean} Technically it returns either a string index name or
-     *     null, but it's being used for Boolean type semantics.
+     * @return {Boolean}
      */
-    isSearchIndexed() {
-        return this.get('searchIndexName');
-    },
+    isSearchIndexed: function() {
+        return !!this.get('props').search_index;
+    }.property('searchIndexName'),
 
     /**
      * Does this bucket store Set data type objects?
@@ -164,9 +161,9 @@ var BucketProps = DS.Model.extend({
      * @method isSet
      * @return {Boolean}
      */
-    isSet() {
+    isSet: function() {
         return this.get('dataTypeName') === 'Set';
-    },
+    }.property('dataTypeName'),
 
     /**
      * Has Strong Consistency been enabled for this bucket type?
@@ -175,9 +172,9 @@ var BucketProps = DS.Model.extend({
      * @method isStronglyConsistent
      * @return {Boolean}
      */
-    isStronglyConsistent() {
+    isStronglyConsistent: function() {
         return this.get('props').consistent;
-    },
+    }.property('props'),
 
     /**
      * Has the 'Write Once' setting been enabled for this bucket type?
@@ -187,9 +184,9 @@ var BucketProps = DS.Model.extend({
      * @method isWriteOnce
      * @return {Boolean}
      */
-    isWriteOnce() {
+    isWriteOnce: function() {
         return this.get('props').write_once;
-    },
+    }.property('props'),
 
     /**
      * Returns the N value (number of object replicas) setting for this bucket type.
@@ -211,31 +208,35 @@ var BucketProps = DS.Model.extend({
      * @return {String}
      */
     resolutionStrategy: function() {
-        if(this.isStronglyConsistent()) {
-            return 'Strongly Consistent';
-        }
-        if(this.isCounter()) {
-            return 'Convergent, Pairwise Maximum Wins';
-        }
-        if(this.isMap()) {
-            return 'Convergent, Add/Update Wins Over Remove';
-        }
-        if(this.isSet()) {
-            return 'Convergent, Add Wins Over Remove';
-        }
-        if(this.hasSiblings()) {
-            return 'Causal Context (Siblings Enabled)';
-        }
-        if(this.isWriteOnce()) {
-            return 'n/a (Write-Once Optimized)';
-        }
-        // Last Write Wins optimization enabled
-        if(this.isLWW()) {
-            return 'Wall Clock (LastWriteWins enabled)';
+        let strategy = null;
+
+        switch(true) {
+            case(this.get('isStronglyConsistent')):
+                strategy = 'Strongly Consistent';
+                break;
+            case(this.get('isCounter')):
+                strategy = 'Convergent, Pairwise Maximum Wins';
+                break;
+            case(this.get('isMap')):
+                strategy = 'Convergent, Add/Update Wins Over Remove';;
+                break;
+            case(this.get('isSet')):
+                strategy = 'Convergent, Add Wins Over Remove';
+                break;
+            case(this.get('hasSiblings')):
+                strategy = 'Causal Context (Siblings Enabled)';
+                break;
+            case(this.get('isWriteOnce')):
+                strategy = 'n/a (Write-Once Optimized)';
+                break;
+            case(this.get('isLWW')):
+                strategy = 'Wall Clock (LastWriteWins enabled)';
+                break;
+            default:
+                strategy = 'Causal Context (Siblings Off, fallback to Wall Clock)';
         }
 
-        // Default, regular riak object, allow_mult = false
-        return 'Causal Context (Siblings Off, fallback to Wall Clock)';
+        return strategy;
     }.property('props'),
 
     /**
@@ -246,15 +247,18 @@ var BucketProps = DS.Model.extend({
      * @return {String}
      */
     objectType: function() {
-        var type = [];
-        if(this.isCRDT()) {
+        let type = [];
+
+        if(this.get('isCRDT')) {
             type.push(this.get('dataTypeName'));
         } else {
             type.push('Default');
         }
-        if(this.isSearchIndexed()) {
+
+        if(this.get('isSearchIndexed')) {
             type.push('Search Indexed');
         }
+
         return type.join(', ');
     }.property('props'),
 
@@ -285,9 +289,9 @@ var BucketProps = DS.Model.extend({
      * @method quorumRelevant
      * @return {Boolean}
      */
-    quorumRelevant() {
-        return !this.isStronglyConsistent() && !this.isCRDT();
-    },
+    quorumRelevant: function() {
+        return !this.get('isSearchIndexed') && !this.get('isCRDT');
+    }.property('props'),
 
     /**
      * Returns the name of the Search Index set on this bucket type or bucket
@@ -308,18 +312,19 @@ var BucketProps = DS.Model.extend({
      */
     warnings: function() {
         var warnings = [];
-        if(this.isStronglyConsistent()) {
+
+        if(this.get('isStronglyConsistent')) {
             if(this.get('nVal') < 5) {
                 warnings.push('Using Strong Consistency, but n_val < 5!');
             }
-            if(this.isSearchIndexed()) {
+            if(this.get('isSearchIndexed')) {
                 warnings.push('Combining Strong Consistency with Search. Use cation!');
             }
-            if(this.hasCommitHooks()) {
+            if(this.get('hasCommitHooks')) {
                 warnings.push('Using commit hooks, but those are ignored for Strongly Consistent data!');
             }
         }
-        if(this.hasSiblings()) {  // Siblings enabled
+        if(this.get('hasSiblings')) {  // Siblings enabled
             if(!this.get('props').dvv_enabled) {
                 warnings.push('Dotted Version Vectors (dvv_enabled) should be enabled when Siblings are enabled.');
             }
