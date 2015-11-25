@@ -58,7 +58,7 @@ var BucketType = DS.Model.extend({
     index: function() {
         return this.get('cluster').get('indexes')
             .findBy('name', this.get('props').get('searchIndexName'));
-    }.property('cluster'),
+    }.property('cluster', 'props'),
 
     /**
      * Returns true if this Bucket Type has been activated.
@@ -84,7 +84,7 @@ var BucketType = DS.Model.extend({
      * Alias for the record's `id`, which is a composite ID in the form of
      *     `'<clusterId>/<bucketName>'`.
      * @see ExplorerResourceAdapter.normalizeId
-     * 
+     *
      * @property name
      * @type String
      * @example
