@@ -11,6 +11,12 @@ export default Ember.Route.extend({
 
     // Load the list of available clusters, for the left nav
     model: function() {
-        return this.store.findAll('cluster');
+        let self = this;
+
+        return this.store.findAll('cluster').then(function(data) {
+            return data;
+        }, function(error) {
+            self.transitionTo('error.service-not-found');
+        });
     }
 });
