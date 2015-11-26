@@ -23,6 +23,16 @@ var BucketController = Ember.Controller.extend({
     },
 
     actions: {
+        retrieveRequestedKeys: function(startIndex) {
+            let service = this.get('explorer');
+            let bucket  = this.get('model');
+            let store   = this.get('store');
+            let start   = startIndex;
+            let rows    = bucket.get('keyList').get('maxKeysPerRequest');
+
+            return service.getBucketWithKeyList(bucket, store, start, rows);
+        },
+
         deleteBucket: function(bucket) {
             bucket.set('isKeyListLoaded', false);
             this.get('explorer').deleteBucket(bucket);

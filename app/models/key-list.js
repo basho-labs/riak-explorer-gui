@@ -26,6 +26,14 @@ var KeyList = CachedList.extend({
     cluster: DS.attr(),
 
     /**
+     * The max amount of records that should be fetched in a given request
+     * @property maxKeysPerRequest
+     * @type Integer
+     * @default 100
+     */
+    maxKeysPerRequest: DS.attr('integer', { defaultValue: 100 }),
+
+    /**
      * List of keys (actually, RiakObject instances) for this page
      * @property keys
      * @type Array<RiakObject>

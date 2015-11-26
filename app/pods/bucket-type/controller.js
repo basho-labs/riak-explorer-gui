@@ -28,6 +28,16 @@ var BucketTypeController = Ember.Controller.extend({
     },
 
     actions: {
+        retrieveRequestedBuckets: function(startIndex) {
+            let service = this.get('explorer');
+            let bucketType = this.get('model');
+            let cluster = bucketType.get('cluster');
+            let store = this.get('store');
+            let start = startIndex;
+            let rows = bucketType.get('bucketList').get('maxBucketsPerRequest');
+
+            return service.getBucketTypeWithBucketList(bucketType, cluster, store, start, rows);
+        },
         refreshBuckets: function(bucketType) {
             var clusterId = bucketType.get('clusterId');
             var bucketTypeId = bucketType.get('bucketTypeId');

@@ -145,15 +145,20 @@
           <tr>
             <td class="key">Stored buckets</td>
             <td class="value">
-              <ul class='button-list small'>
-                {{#each model.bucketList.buckets as |bucket|}}
-                  <li>
-                    {{link.link-bucket bucket=bucket}}
-                  </li>
-                {{else}}
-                  No buckets found
-                {{/each}}
-              </ul>
+              {{#pagination-component
+              chunk-length=model.bucketList.maxBucketsPerRequest
+              total-length=model.bucketList.total
+              section-request='retrieveRequestedBuckets'}}
+                <ul class='button-list small'>
+                  {{#each model.bucketList.buckets as |bucket|}}
+                    <li>
+                      {{link.link-bucket bucket=bucket}}
+                    </li>
+                  {{else}}
+                    No buckets found
+                  {{/each}}
+                </ul>
+              {{/pagination-component}}
             </td>
           </tr>
         </tbody>
