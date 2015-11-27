@@ -12,11 +12,11 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
 
     /**
     This indicates that the
-        store should call `normalizeResponse` instead of `extract` and to expect
-        a JSON-API Document back.
+    store should call `normalizeResponse` instead of `extract` and to expect
+    a JSON-API Document back.
     @property isNewSerializerAPI
     */
-    isNewSerializerAPI: false,
+    isNewSerializerAPI: true,
 
     /**
      `keyForAttribute` can be used to define rules for how to convert an
