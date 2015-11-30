@@ -31,6 +31,16 @@ export default Ember.Service.extend({
     availableIn: ['controllers', 'routes'],
 
     /**
+     * Default chunk size for requests that can potentially have large amounts of records
+     * i.e. buckets and keys
+     *
+     * @property pageSize
+     * @type Integer
+     * @default 500
+     */
+    pageSize: 500,
+
+    /**
      * The 'deleted' cache is a way for the Ember GUI to keep track of which
      * objects have been deleted via user actions.
      *
@@ -222,7 +232,6 @@ export default Ember.Service.extend({
             total: data.buckets.total,
             count: data.buckets.count,
             created: data.buckets.created,
-            maxBucketsPerRequest: data.maxBucketsPerRequest,
             isLoaded: true
         });
     },
@@ -269,7 +278,6 @@ export default Ember.Service.extend({
             cluster: bucket.get('cluster'),
             created: data.keys.created,
             count: data.keys.count,
-            maxKeysPerRequest: data.maxKeysPerRequest,
             keys: keyList,
             total: data.keys.total
         });
@@ -657,7 +665,7 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
      */
-    getBucketList(cluster, bucketType, store, start=1, rows=100) {
+    getBucketList(cluster, bucketType, store, start=1, rows=this.pageSize) {
         let explorer = this;
         let clusterId = cluster.get('clusterId');
         let bucketTypeId = bucketType.get('bucketTypeId');
@@ -669,7 +677,6 @@ export default Ember.Service.extend({
                 dataType: 'json',
                 type: 'GET',
                 success: function(data) {
-                    data.maxBucketsPerRequest = rows; // Pass through what the chunk size should be
                     bucketType.set('isBucketListLoaded', true);
                     resolve(explorer.createBucketList(data, cluster, bucketType, store));
                 },
@@ -894,7 +901,7 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise} result of the AJAX call
      */
-    getKeyList(bucket, store, start=1, rows=100) {
+    getKeyList(bucket, store, start=1, rows=this.pageSize) {
         let clusterId = bucket.get('clusterId');
         let bucketTypeId = bucket.get('bucketTypeId');
         let bucketId = bucket.get('bucketId');
@@ -908,7 +915,6 @@ export default Ember.Service.extend({
                 dataType: 'json',
                 type: 'GET',
                 success: function (data) {
-                    data.maxKeysPerRequest = rows;
                     bucket.set('isKeyListLoaded', true);
                     resolve(explorer.createKeyList(data, bucket, store));
                 },

@@ -74,7 +74,7 @@
           <td class="key">Stored keys:</td>
           <td class="value">
             {{#pagination-component
-            chunk-length=model.keyList.maxKeysPerRequest
+            chunk-length=model.keyList.count
             total-length=model.keyList.total
             section-request='retrieveRequestedKeys'}}
               <ul class='button-list small'>

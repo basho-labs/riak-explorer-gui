@@ -34,7 +34,7 @@ var BucketTypeController = Ember.Controller.extend({
             let cluster = bucketType.get('cluster');
             let store = this.get('store');
             let start = startIndex;
-            let rows = bucketType.get('bucketList').get('maxBucketsPerRequest');
+            let rows = bucketType.get('bucketList').get('count');
 
             return service.getBucketTypeWithBucketList(bucketType, cluster, store, start, rows);
         },

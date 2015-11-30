@@ -28,7 +28,7 @@ var BucketController = Ember.Controller.extend({
             let bucket  = this.get('model');
             let store   = this.get('store');
             let start   = startIndex;
-            let rows    = bucket.get('keyList').get('maxKeysPerRequest');
+            let rows    = bucket.get('keyList').get('count');
 
             return service.getBucketWithKeyList(bucket, store, start, rows);
         },

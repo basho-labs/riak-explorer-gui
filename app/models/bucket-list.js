@@ -37,14 +37,6 @@ var BucketList = CachedList.extend({
     cluster: DS.belongsTo('cluster'),
 
     /**
-     * The max amount of records that should be fetched in a given request
-     * @property maxBucketsPerRequest
-     * @type Integer
-     * @default 100
-     */
-    maxBucketsPerRequest: DS.attr('integer', { defaultValue: 100 }),
-
-    /**
      * @property bucketTypeId
      * @type String
      */

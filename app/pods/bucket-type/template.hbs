@@ -146,7 +146,7 @@
             <td class="key">Stored buckets</td>
             <td class="value">
               {{#pagination-component
-              chunk-length=model.bucketList.maxBucketsPerRequest
+              chunk-length=model.bucketList.count
               total-length=model.bucketList.total
               section-request='retrieveRequestedBuckets'}}
                 <ul class='button-list small'>
