@@ -1,0 +1,15 @@
+<div class="pagination-content">
+  {{yield}}
+</div>
+
+{{#if shouldShowPaginationLinks}}
+  <ul class="pagination-links">
+    <li class="pagination-link text-link" disabled={{if shouldPrevBeDisabled 'disabled'}} {{action 'prevLinkClick'}}>Prev</li>
+
+    {{#each numberLinks as |link|}}
+      <li class="pagination-link number-link" {{action 'numberLinkClick' link}}>{{link}}</li>
+    {{/each}}
+
+    <li class="pagination-link text-link" disabled={{if shouldNextBeDisabled 'disabled'}} {{action 'nextLinkClick'}}>Next</li>
+  </ul>
+{{/if}}

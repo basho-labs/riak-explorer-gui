@@ -38,6 +38,6 @@ var CachedList = DS.Model.extend({
      * @type Number
      * @default 0
      */
-    total: DS.attr('total', {defaultValue: 0})
+    total: DS.attr('number', {defaultValue: 0})
 });
 export default CachedList;

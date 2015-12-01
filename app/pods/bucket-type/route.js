@@ -7,11 +7,11 @@ export default Ember.Route.extend({
         var explorer = this.explorer;
         var store = this.store;
 
-        return this.explorer.getBucketType(clusterId, bucketTypeId, store)
-            .then(function(bucketType) {
-                return explorer.getBucketTypeWithBucketList(bucketType,
-                    bucketType.get('cluster'), store);
-            });
+        return this.explorer
+          .getBucketType(clusterId, bucketTypeId, store)
+          .then(function(bucketType) {
+              return explorer.getBucketTypeWithBucketList(bucketType, bucketType.get('cluster'), store);
+          });
     },
 
     setupController: function(controller, model) {

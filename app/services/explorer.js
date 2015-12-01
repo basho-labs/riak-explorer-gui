@@ -31,6 +31,16 @@ export default Ember.Service.extend({
     availableIn: ['controllers', 'routes'],
 
     /**
+     * Default chunk size for requests that can potentially have large amounts of records
+     * i.e. buckets and keys
+     *
+     * @property pageSize
+     * @type Integer
+     * @default 500
+     */
+    pageSize: 500,
+
+    /**
      * The 'deleted' cache is a way for the Ember GUI to keep track of which
      * objects have been deleted via user actions.
      *
@@ -655,44 +665,41 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
      */
-    getBucketList(cluster, bucketType, store) {
-        console.log('Refreshing buckets for bucketType: %O', bucketType);
-        var clusterId = cluster.get('clusterId');
-        var bucketTypeId = bucketType.get('bucketTypeId');
-        var url = this.apiURL + 'explore/clusters/' + clusterId +
-            '/bucket_types/' + bucketTypeId + '/buckets' ;
-        var explorer = this;
+    getBucketList(cluster, bucketType, store, start=1, rows=this.pageSize) {
+        let explorer = this;
+        let clusterId = cluster.get('clusterId');
+        let bucketTypeId = bucketType.get('bucketTypeId');
+        let url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets?start=${start}&rows=${rows}`;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
-            var ajaxHash = {
+            var xhrConfig = {
                 url: url,
                 dataType: 'json',
-                type: 'GET'
-            };
-            ajaxHash.success = function(data) { // Success, bucket list returned
-                console.log("Found bucket list");
-                bucketType.set('isBucketListLoaded', true);
-                resolve(explorer.createBucketList(data, cluster, bucketType, store));
-            };
-            ajaxHash.error = function(jqXHR, textStatus) {
-                // Fail (likely a 404, cache not yet created)
-                if(jqXHR.status === 404) {
-                    // Kick off a Cache Refresh, and repeat the getBucketList request
-                    console.log("kicking off cache refresh...");
-                    explorer.bucketCacheRefresh(clusterId, bucketTypeId);
-                    // Return an empty (Loading..) list. Controller will poll to
-                    // refresh it, later
-                    var emptyList = store.createRecord('bucket-list', {
-                        cluster: cluster,
-                        bucketType: bucketType
-                    });
-                    Ember.run(null, resolve, emptyList);
-                } else {
-                    Ember.run(null, reject, textStatus);
+                type: 'GET',
+                success: function(data) {
+                    bucketType.set('isBucketListLoaded', true);
+                    resolve(explorer.createBucketList(data, cluster, bucketType, store));
+                },
+                error: function(jqXHR, textStatus) {
+                    // Fail (likely a 404, cache not yet created)
+                    if(jqXHR.status === 404) {
+                        // Kick off a Cache Refresh, and repeat the getBucketList request
+                        console.log("kicking off cache refresh...");
+                        explorer.bucketCacheRefresh(clusterId, bucketTypeId);
+                        // Return an empty (Loading..) list. Controller will poll to
+                        // refresh it, later
+                        var emptyList = store.createRecord('bucket-list', {
+                            cluster: cluster,
+                            bucketType: bucketType
+                        });
+                        Ember.run(null, resolve, emptyList);
+                    } else {
+                        Ember.run(null, reject, textStatus);
+                    }
                 }
             };
 
-            Ember.$.ajax(ajaxHash);
+            Ember.$.ajax(xhrConfig);
         });
     },
 
@@ -760,12 +767,13 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise<BucketType>}
      */
-    getBucketTypeWithBucketList(bucketType, cluster, store) {
-        return this.getBucketList(cluster, bucketType, store)
-            .then(function(bucketList) {
-                bucketType.set('bucketList', bucketList);
-                return bucketType;
-            });
+    getBucketTypeWithBucketList(bucketType, cluster, store, start, row) {
+        return this
+          .getBucketList(cluster, bucketType, store, start, row)
+          .then(function(bucketList) {
+              bucketType.set('bucketList', bucketList);
+              return bucketType;
+          });
     },
 
     /**
@@ -804,8 +812,8 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise<Bucket>}
      */
-    getBucketWithKeyList(bucket, store) {
-        return this.getKeyList(bucket, store)
+    getBucketWithKeyList(bucket, store, start, rows) {
+        return this.getKeyList(bucket, store, start, rows)
             .then(function(keyList) {
                 bucket.set('keyList', keyList);
                 return bucket;
@@ -893,39 +901,37 @@ export default Ember.Service.extend({
      * @param {DS.Store} store
      * @return {Ember.RSVP.Promise} result of the AJAX call
      */
-    getKeyList(bucket, store) {
-        var clusterId = bucket.get('clusterId');
-        var bucketTypeId = bucket.get('bucketTypeId');
-        var bucketId = bucket.get('bucketId');
-        var explorer = this;
+    getKeyList(bucket, store, start=1, rows=this.pageSize) {
+        let clusterId = bucket.get('clusterId');
+        let bucketTypeId = bucket.get('bucketTypeId');
+        let bucketId = bucket.get('bucketId');
+        let explorer = this;
 
-        var url = this.apiURL + 'explore/clusters/' + clusterId +
-            '/bucket_types/' + bucketTypeId + '/buckets/' +
-            bucketId + '/keys' ;
-            // console.log('Retrieving key list, url: %s', url);
+        let url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets/${bucketId}/keys?start=${start}&rows=${rows}`;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
-            var ajaxHash = {
+            let xhrConfig = {
                 url: url,
                 dataType: 'json',
-                type: 'GET'
-            };
-            ajaxHash.success = function(data) { // Success, key list returned
-                bucket.set('isKeyListLoaded', true);
-                resolve(explorer.createKeyList(data, bucket, store));
-            };
-            ajaxHash.error = function(jqXHR, textStatus) {
-                if(jqXHR.status === 404) {
-                    // Empty cache (need to kick off a refresh)
-                    explorer.keyCacheRefresh(clusterId, bucketTypeId, bucketId);
-                    // Results in returning an empty (Loading..) key list
-                    Ember.run(null, resolve, null);
-                } else {
-                    // Some other error
-                    Ember.run(null, reject, textStatus);
+                type: 'GET',
+                success: function (data) {
+                    bucket.set('isKeyListLoaded', true);
+                    resolve(explorer.createKeyList(data, bucket, store));
+                },
+                error: function (jqXHR, textStatus) {
+                    if (jqXHR.status === 404) {
+                        // Empty cache (need to kick off a refresh)
+                        explorer.keyCacheRefresh(clusterId, bucketTypeId, bucketId);
+                        // Results in returning an empty (Loading..) key list
+                        Ember.run(null, resolve, null);
+                    } else {
+                        // Some other error
+                        Ember.run(null, reject, textStatus);
+                    }
                 }
             };
-            Ember.$.ajax(ajaxHash);
+
+            Ember.$.ajax(xhrConfig);
         });
     },
 
