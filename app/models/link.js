@@ -9,6 +9,6 @@ import DS from 'ember-data';
  * @constructor
  */
 export default DS.Model.extend({
-    self: DS.attr(),
-    related: DS.attr()
+    related: DS.attr(),
+    self: DS.attr()
 });

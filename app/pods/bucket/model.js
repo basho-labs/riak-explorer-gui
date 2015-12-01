@@ -12,15 +12,6 @@ import DS from 'ember-data';
  * @uses KeyList
  */
 var Bucket = DS.Model.extend({
-     /**
-      * Riak cluster in which this bucket lives.
-      *
-      * @property cluster
-      * @type Cluster
-      * @writeOnce
-      */
-    cluster: DS.belongsTo('cluster'),
-
     /**
      * Riak Bucket Type in which this bucket lives.
      *
@@ -30,14 +21,14 @@ var Bucket = DS.Model.extend({
      */
     bucketType: DS.belongsTo('bucket-type'),
 
-    /**
-     * Has the keyList been loaded from the server?
-     *
-     * @property isKeyListLoaded
-     * @type Boolean
-     * @default false
-     */
-    isKeyListLoaded: DS.attr('boolean', { defaultValue: false }),
+     /**
+      * Riak cluster in which this bucket lives.
+      *
+      * @property cluster
+      * @type Cluster
+      * @writeOnce
+      */
+    cluster: DS.belongsTo('cluster'),
 
     /**
      * Contains the results of cached key lists for this bucket,
@@ -49,14 +40,6 @@ var Bucket = DS.Model.extend({
     keyList: DS.belongsTo('key-list'),
 
     /**
-     * Bucket name (unique within a cluster and bucket type)
-     *
-     * @property name
-     * @type String
-     */
-    name: DS.attr('string'),
-
-    /**
      * Bucket Properties object. Note: Bucket Types and Buckets share the
      *    same Properties format.
      * When not specified, buckets inherit their properties from the Bucket Type
@@ -65,6 +48,23 @@ var Bucket = DS.Model.extend({
      * @type BucketProps
      */
     props: DS.belongsTo('bucket-props'),
+
+    /**
+     * Has the keyList been loaded from the server?
+     *
+     * @property isKeyListLoaded
+     * @type Boolean
+     * @default false
+     */
+    isKeyListLoaded: DS.attr('boolean', { defaultValue: false }),
+
+    /**
+     * Bucket name (unique within a cluster and bucket type)
+     *
+     * @property name
+     * @type String
+     */
+    name: DS.attr('string'),
 
     /**
      * Returns the bucket name (this is an alias/helper function)
@@ -98,6 +98,18 @@ var Bucket = DS.Model.extend({
     }.property('cluster'),
 
     /**
+     * Returns the name of the Search Index associated with this bucket
+     * (or its parent bucket type), if applicable.
+     *
+     * @property index
+     * @type String
+     */
+    index: function() {
+        return this.get('cluster').get('indexes')
+          .findBy('name', this.get('props').get('searchIndexName'));
+    }.property('cluster'),
+
+    /**
      * Has this bucket type been activated?
      *
      * @property isActive
@@ -111,18 +123,6 @@ var Bucket = DS.Model.extend({
         }
         return this.get('props').get('isActive');
     }.property('props'),
-
-    /**
-     * Returns the name of the Search Index associated with this bucket
-     * (or its parent bucket type), if applicable.
-     *
-     * @property index
-     * @type String
-     */
-    index: function() {
-        return this.get('cluster').get('indexes')
-            .findBy('name', this.get('props').get('searchIndexName'));
-    }.property('cluster'),
 
     /**
      * Returns the Ember.js/Ember Data model name of the objects stored within

@@ -30,20 +30,6 @@ var BucketProps = DS.Model.extend({
     props: DS.attr(),
 
     /**
-     * Returns a flat list of properties, used for display on a View Properties
-     *     page.
-     *
-     * @method propsList
-     * @return {Array<Hash>} List of key/value pairs
-     */
-    propsList: function() {
-        if(!this.get('props')) {
-            return [];
-        }
-        return objectToArray(this.get('props'));
-    }.property('props'),
-
-    /**
      * Returns a capitalized name of the Riak Data Type stored in this bucket
      *    or bucket type (if this is a CRDT type bucket).
      * @see http://docs.basho.com/riak/latest/dev/using/data-types/
@@ -200,6 +186,68 @@ var BucketProps = DS.Model.extend({
         return this.get('props').n_val;
     }.property('props'),
 
+
+    objectType: function() {
+        let type = [];
+
+        if(this.get('isCRDT')) {
+            type.push(this.get('dataTypeName'));
+        } else {
+            type.push('Default');
+        }
+
+        if(this.get('isSearchIndexed')) {
+            type.push('Search Indexed');
+        }
+
+        return type.join(', ');
+    }.property('props'),
+
+    /**
+     * Returns a flat list of properties, used for display on a View Properties
+     *     page.
+     *
+     * @method propsList
+     * @return {Array<Hash>} List of key/value pairs
+     */
+    propsList: function() {
+        if(!this.get('props')) {
+            return [];
+        }
+        return objectToArray(this.get('props'));
+    }.property('props'),
+
+    /**
+     * Returns a hash containing quorum-related settings.
+     * @see http://docs.basho.com/riak/latest/dev/advanced/replication-properties/
+     *
+     * @method quorum
+     * @return {Hash}
+     */
+    quorum: function() {
+        return {
+            r: this.get('props').r,    // Read quorum
+            w: this.get('props').r,    // Write Quorum
+            pr: this.get('props').pr,  // Primary Read
+            pw: this.get('props').pw,  // Primary Write
+            dw: this.get('props').dw,  // Durable Write
+            basic_quorum: this.get('props').basic_quorum,
+            notfound_ok: this.get('props').notfound_ok
+        };
+    }.property('props'),
+
+    /**
+     * Returns true if this is an Eventually Consistent object type
+     *    (versus Strongly Consistent type or a CRDT), and therefore the notion
+     *    of 'Quorum' applies.
+     *
+     * @method quorumRelevant
+     * @return {Boolean}
+     */
+    quorumRelevant: function() {
+        return !this.get('isStronglyConsistent') && !this.get('isCRDT');
+    }.property('props'),
+
     /**
      * Returns a human-readable description of the conflict resolution strategy
      *   for this bucket type or bucket.
@@ -237,60 +285,6 @@ var BucketProps = DS.Model.extend({
         }
 
         return strategy;
-    }.property('props'),
-
-    /**
-     * Returns a human-readable description of what type of objects are stored
-     *    in this bucket type (default, search indexed, CRDTs, etc)
-     *
-     * @method objectType
-     * @return {String}
-     */
-    objectType: function() {
-        let type = [];
-
-        if(this.get('isCRDT')) {
-            type.push(this.get('dataTypeName'));
-        } else {
-            type.push('Default');
-        }
-
-        if(this.get('isSearchIndexed')) {
-            type.push('Search Indexed');
-        }
-
-        return type.join(', ');
-    }.property('props'),
-
-    /**
-     * Returns a hash containing quorum-related settings.
-     * @see http://docs.basho.com/riak/latest/dev/advanced/replication-properties/
-     *
-     * @method quorum
-     * @return {Hash}
-     */
-    quorum: function() {
-        return {
-            r: this.get('props').r,    // Read quorum
-            w: this.get('props').r,    // Write Quorum
-            pr: this.get('props').pr,  // Primary Read
-            pw: this.get('props').pw,  // Primary Write
-            dw: this.get('props').dw,  // Durable Write
-            basic_quorum: this.get('props').basic_quorum,
-            notfound_ok: this.get('props').notfound_ok
-        };
-    }.property('props'),
-
-    /**
-     * Returns true if this is an Eventually Consistent object type
-     *    (versus Strongly Consistent type or a CRDT), and therefore the notion
-     *    of 'Quorum' applies.
-     *
-     * @method quorumRelevant
-     * @return {Boolean}
-     */
-    quorumRelevant: function() {
-        return !this.get('isStronglyConsistent') && !this.get('isCRDT');
     }.property('props'),
 
     /**

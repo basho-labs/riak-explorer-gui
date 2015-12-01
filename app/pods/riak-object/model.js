@@ -45,6 +45,13 @@ var RiakObject = DS.Model.extend({
     cluster: DS.belongsTo('cluster'),
 
     /**
+     * Riak object headers/metadata.
+     * @property metadata
+     * @type ObjectMetadata
+     */
+    metadata: DS.belongsTo('object-metadata'),
+
+    /**
      * The value/contents of the object.
      * @property contents
      * @type Object
@@ -75,13 +82,6 @@ var RiakObject = DS.Model.extend({
      * @default false
      */
     markedDeleted: DS.attr('boolean', {defaultValue: false}),
-
-    /**
-     * Riak object headers/metadata.
-     * @property metadata
-     * @type ObjectMetadata
-     */
-    metadata: DS.belongsTo('object-metadata'),
 
     /**
      * The URL to fetch the raw contents of the object directly from server.

@@ -78,4 +78,5 @@ var RiakObjectSet = RiakObject.extend({
         }
     }
 });
+
 export default RiakObjectSet;

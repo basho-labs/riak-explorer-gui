@@ -11,4 +11,5 @@ var SearchIndex = DS.Model.extend({
     // Name of the schema the index is using
     schema: DS.attr('string')
 });
+
 export default SearchIndex;

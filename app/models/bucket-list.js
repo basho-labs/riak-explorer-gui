@@ -12,16 +12,7 @@ import CachedList from "./cached-list";
  * @uses Bucket
  * @uses Cluster
  */
-
 var BucketList = CachedList.extend({
-    /**
-     * List of Bucket model instances (loaded from the server)
-     * @property buckets
-     * @type Array<Bucket>
-     * @default []
-     */
-    buckets: DS.attr(null, {defaultValue: []}),
-
     /**
      * The bucket type that owns this bucket list.
      * @property bucketType
@@ -35,6 +26,14 @@ var BucketList = CachedList.extend({
      * @type Cluster
      */
     cluster: DS.belongsTo('cluster'),
+
+    /**
+     * List of Bucket model instances (loaded from the server)
+     * @property buckets
+     * @type Array<Bucket>
+     * @default []
+     */
+    buckets: DS.attr(null, {defaultValue: []}),
 
     /**
      * @property bucketTypeId
@@ -52,4 +51,5 @@ var BucketList = CachedList.extend({
         return this.get('cluster').get('clusterId');
     }.property('cluster')
 });
+
 export default BucketList;
