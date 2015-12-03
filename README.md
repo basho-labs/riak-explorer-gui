@@ -95,6 +95,18 @@ identity map, caching, etc) are:
     inject these manually. Look at `ExplorerResourceAdapter.normalizeId`,
     `injectParentIds` and `normalizeProps` to get an idea of what's involved.
 
+### Generating Documentation
+
+This project uses [YUIDoc](http://yui.github.io/yuidoc/) to annotate comments
+in the source code, and [ember-cli-yuidoc](https://github.com/cibernox/ember-cli-yuidoc)
+to auto-generate documentation from it. Run:
+
+```
+ember ember-cli-yuidoc
+```
+
+And the docs will be generated in the `docs/` directory.
+
 ### Running Tests
 
 (Default Ember doc copy)
