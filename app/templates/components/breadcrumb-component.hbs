@@ -1,0 +1,20 @@
+<div class='breadcrumb-container'>
+  <ol class="breadcrumb">
+    <li>{{link-to 'overview' 'index'}}</li>
+    {{#if clusterId}}
+      <li>{{link-to clusterId 'cluster' clusterId}}</li>
+    {{/if}}
+    {{#if bucketTypeId}}
+      <li>{{link-to bucketTypeId 'bucket-type' clusterId bucketTypeId}}</li>
+    {{/if}}
+    {{#if bucketId}}
+      <li>{{link-to bucketId 'bucket' clusterId bucketTypeId bucketId}}</li>
+    {{/if}}
+    {{#if keyId}}
+      <li>{{link-to keyId 'riak-object' clusterId bucketTypeId bucketId keyId}}</li>
+    {{/if}}
+    {{#if pageTitle}}
+      <li>{{pageTitle}}</li>
+    {{/if}}
+  </ol>
+</div>

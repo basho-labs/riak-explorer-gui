@@ -1,7 +1,8 @@
 import DS from 'ember-data';
 
 /**
- * Represents a Riak Object.
+ * Represents a plain (non Data Type) Riak Object.
+ *
  * @class RiakObject
  * @extends DS.Model
  * @constructor
@@ -9,6 +10,14 @@ import DS from 'ember-data';
  * @uses BucketType
  * @uses Cluster
  * @uses ObjectMetadata
+ * @param [key] {String}
+ * @param [bucket] {Bucket}
+ * @param [bucketType] {BucketType}
+ * @param [cluster] {Cluster}
+ * @param [metadata] {ObjectMetadata}
+ * @param [isLoaded] {Boolean} Has this been loaded from server. Default: `false`
+ * @param [rawUrl] {String}
+ * @param [contents] {Object} Object value/payload
  */
 var RiakObject = DS.Model.extend({
     /**
@@ -58,8 +67,13 @@ var RiakObject = DS.Model.extend({
      */
     key: DS.attr('string'),
 
-    // This object was marked as deleted by Explorer UI,
-    //  but may show up in key list cache.
+    /**
+     * Was this object marked as deleted by Explorer UI?
+     * Note: Deleted objects may still show up in the API-side key list cache.
+     * @property markedDeleted
+     * @type Boolean
+     * @default false
+     */
     markedDeleted: DS.attr('boolean', {defaultValue: false}),
 
     /**
@@ -117,6 +131,8 @@ var RiakObject = DS.Model.extend({
     }.property(),
 
     /**
+     * Returns the name of the cluster in which this bucket type resides.
+     * (As specified in the `riak_explorer.conf` file)
      * @property clusterId
      * @type String
      */
@@ -131,10 +147,10 @@ var RiakObject = DS.Model.extend({
      * @return {String|Null}
      */
     contentsForDisplay: function() {
-        var contentType = this.get('metadata').get('contentType');
-        var displayContents;
+        let contentType = this.get('metadata').get('contentType');
+        let displayContents;
         // Determine whether this is browser-displayable contents
-        if(contentType.startsWith('text') ||
+        if(contentType.startsWith('plain/text') ||
                 contentType.startsWith('application/json') ||
                 contentType.startsWith('application/xml') ||
                 contentType.startsWith('multipart/mixed') ) {

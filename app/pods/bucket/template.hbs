@@ -1,58 +1,98 @@
-<div class="crumb-trail">
-
-    {{link.link-cluster cluster=model.cluster}}
-    /
-    <div style="display: inline-block;">
-    {{link.bucket-type bucketType=model.bucketType}}
-    </div>
-    /
-    <div class="cluster-resource-header center-block">
-        <span class="glyphicon glyphicon-folder-close cluster-resource-icon"
-            aria-hidden="true"></span>
-        <span>{{model.bucketId}}</span>
-    </div>
+<div class='view-header'>
+  {{breadcrumb-component
+  clusterId=model.clusterId
+  bucketTypeId=model.bucketTypeId
+  bucketId=model.bucketId
+  }}
+  {{view-label
+  pre-label='Bucket'
+  label=model.bucketId}}
 </div>
 
-<div class="container bucket-properties center-block">
-{{#if model.props}}
-    {{bucket-properties model=model title='Bucket'}}
-{{else}}
-    Properties not loaded.
-{{/if}}
+<div class='bucket-types-container'>
+  {{#dashboard-module}}
+    {{#if model.props}}
+      {{#em-tabs class='half-width'}}
+        {{#em-tab-list}}
+          {{#em-tab}}Overview{{/em-tab}}
+          {{#em-tab}}Advanced Properties{{/em-tab}}
+        {{/em-tab-list}}
+
+        {{#em-tab-panel}}
+          {{bucket-properties model=model}}
+        {{/em-tab-panel}}
+
+        {{#em-tab-panel}}
+          <table class="key-value-table">
+            {{#each model.props.propsList as |prop|}}
+              <tr>
+                <td class='key'>{{prop.key}}</td>
+                <td class='value'>{{prop.value}}</td>
+              </tr>
+            {{/each}}
+          </table>
+        {{/em-tab-panel}}
+      {{/em-tabs}}
+    {{else}}
+      Properties not loaded
+    {{/if}}
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Keys'}}
+    {{#if model.isKeyListLoaded}}
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Key cache created:</td>
+          <td class="value">{{model.keyList.created}}</td>
+        </tr>
+        <tr>
+          <td class="key">Key count:</td>
+          <td class="value">{{model.keyList.count}}</td>
+        </tr>
+        <tr>
+          <td class="key">Available actions:</td>
+          <td class="value">
+            <ul class='button-list'>
+              {{#if model.cluster.developmentMode}}
+                <li>
+                  {{button.refresh-keys action="refreshKeys" bucket=model}}
+                </li>
+              {{/if}}
+              {{#if model.keyList.showDeleteKeys}}
+                <li>
+                  <button type="button" class="btn btn-xs btn-danger" {{action 'deleteBucket' model}}>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    Delete All Keys
+                  </button>
+                </li>
+              {{/if}}
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="key">Stored keys:</td>
+          <td class="value">
+            {{#pagination-component
+            chunk-length=model.keyList.count
+            total-length=model.keyList.total
+            section-request='retrieveRequestedKeys'}}
+              <ul class='button-list small'>
+                {{#each model.keyList.keys as |obj|}}
+                  <li>
+                    {{link.link-object obj=obj}}
+                  </li>
+                {{else}}
+                  No keys found
+                {{/each}}
+              </ul>
+            {{/pagination-component}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    {{else}}
+      {{loading-spinner}}
+    {{/if}}
+  {{/dashboard-module}}
 </div>
-
-<h4>Key List</h4>
-
-{{#if model.isKeyListLoaded}}
-    <div class="container" style="margin-top: 2em;">
-        <div class="row">
-            <div>
-            Cache created: {{model.keyList.created}}
-            {{#if model.cluster.developmentMode}}
-                {{button.refresh-keys action="refreshKeys" bucket=model}}
-            {{/if}}
-            </div>
-        </div>
-    </div>
-
-    <div class="container" style="margin-top: 2em;">
-        Displaying
-        <strong>{{model.keyList.count}}</strong>
-        keys out of
-        <strong>{{model.keyList.total}}</strong>
-        total.
-        {{#if model.keyList.showDeleteKeys}}
-            <button type="button" class="btn btn-xs btn-danger"
-                    {{action 'deleteBucket' model}}>
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                Delete Known Objects in Bucket</button>
-        {{/if}}
-
-    </div>
-
-    <div class="container" style="padding-top: 2em;">
-        {{#riak-keys deleteObject="deleteObject" keys=model.keyList.keys}}{{/riak-keys}}
-    </div>
-{{else}}
-    {{loading-spinner}}
-{{/if}}

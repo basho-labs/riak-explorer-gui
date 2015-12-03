@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
+var ObjectContentsComponent = Ember.Component.extend({
 actions: {
     deleteObject: function(object) {
         // Send action to riak-object controller
@@ -13,3 +13,4 @@ actions: {
     }
 }
 });
+export default ObjectContentsComponent;

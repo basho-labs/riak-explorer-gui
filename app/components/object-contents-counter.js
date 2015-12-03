@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
+var ObjectContentsCounterComponent = Ember.Component.extend({
   actions: {
       decrementCounter: function(object) {
           // Send action to parent controller
@@ -18,3 +18,4 @@ export default Ember.Component.extend({
       }
   }
 });
+export default ObjectContentsCounterComponent;

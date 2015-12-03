@@ -1,28 +1,53 @@
-<h2 class="page-header" id="title">{{pageTitle}}</h2>
+<div class='view-header'>
+  {{breadcrumb-component pageTitle='explorer api'}}
+  {{view-label label='Riak Explorer API'}}
+</div>
 
-<h3>Service Information</h3>
+{{#dashboard-module label='Service Information'}}
+  <table class='key-value-table'>
+    <tr>
+      <td class='key'>Name:</td>
+      <td class='value'>{{model.service}}</td>
+    </tr>
+    <tr>
+      <td class='key'>Ping:</td>
+      <td class='value'>
+        {{#if model.pingResult.ping}}
+          {{model.pingResult.ping.message}}
+          <span class="label label-success">service available</span>
+        {{else}}
+          <span class="label label-default">service unavailable</span>
+        {{/if}}
+      </td>
+    </tr>
+    <tr>
+      <td class='key'>Development Mode:</td>
+      <td class='value'>
+        {{#if model.propsResult.props.development_mode}}
+          Enabled
+        {{else}}
+          Disabled
+        {{/if}}
+      </td>
+    </tr>
+  </table>
+{{/dashboard-module}}
 
-<strong>Name:</strong> {{model.service}}<br />
-<strong>Ping:</strong>
-{{#if model.pingResult.ping}}Available ({{model.pingResult.ping.message}})
-{{else}}Unavailable{{/if}}<br />
-<strong>Development Mode:</strong> {{model.propsResult.props.development_mode}}<br />
-
-<h3>Routes</h3>
-
-<table class="table">
+{{#dashboard-module label='Routes'}}
+  <table class="table table-hover">
     <thead>
-        <tr>
-            <th>Path</th>
-            <th>Resources</th>
-        </tr>
+    <tr>
+      <th>Path</th>
+      <th>Resources</th>
+    </tr>
     </thead>
     <tbody>
-{{#each model.routes as |route|}}
-        <tr>
-            <td>{{route.links.self}}</td>
-            <td>[{{route.resources}}]</td>
-        </tr>
-{{/each}}
+    {{#each model.routes as |route|}}
+      <tr>
+        <td>{{route.links.self}}</td>
+        <td>[{{route.resources}}]</td>
+      </tr>
+    {{/each}}
     </tbody>
-</table>
+  </table>
+{{/dashboard-module}}

@@ -3,13 +3,17 @@ import RiakObject from "../model";
 /**
  * Represents a Riak Set data type. Can be used standalone, or as a field
  *    inside of a Map (`RiakObjectMap`).
+ *
  * @class RiakObjectSet
  * @extends RiakObject
  * @constructor
+ * @see RiakObjectMap
+ * @see RiakObjectEmbeddedMap
  */
 var RiakObjectSet = RiakObject.extend({
     /**
      * Adds a given element to the set's contents.
+     *
      * @method addElement
      * @param {String} item Element to be added
      */
@@ -17,13 +21,17 @@ var RiakObjectSet = RiakObject.extend({
         if(!item) {
             return;
         }
-        var set = this.get('contents').value;
-        set.push(item);
-        this.set('contents', {value: set});
+        let set = this.get('contents').value;
+        let index = set.indexOf(item);
+        if (index > -1) {
+            set.push(item);
+            this.set('contents', {value: set});
+        }
     },
 
     /**
      * Can this object type be edited directly, in a text box?
+     *
      * @property canBeEdited
      * @readOnly
      * @default false
@@ -35,17 +43,19 @@ var RiakObjectSet = RiakObject.extend({
 
     /**
      * Can this object be viewed/downloaded directly from the browser?
+     *
      * @property canBeViewedRaw
      * @readOnly
      * @default false
      * @type {Boolean}
      */
     canBeViewedRaw: function() {
-        return false;
+        return true;
     }.property(),
 
     /**
      * The JSON string representation of the Set contents.
+     *
      * @method contentsForDisplay
      * @return {String}
      */
@@ -55,6 +65,7 @@ var RiakObjectSet = RiakObject.extend({
 
     /**
      * Removes a given element from the set's contents.
+     *
      * @method removeElement
      * @param {String} item Element to be removed
      */
@@ -63,8 +74,8 @@ var RiakObjectSet = RiakObject.extend({
         var index = set.indexOf(item);
         if (index > -1) {
             set.splice(index, 1);  // Remove item
+            this.set('contents', {value: set});
         }
-        this.set('contents', {value: set});
     }
 });
 export default RiakObjectSet;

@@ -1,21 +1,40 @@
-<div class="container">
+<div class="riak-object">
     <div class="object-contents">
         <div class="object-contents-header">
-            <div class="object-contents-info">
-                Map
-            </div>
             <div class="object-contents-actions">
                 {{object-actions model=model deleteObject="deleteObject"}}
             </div>
         </div>
         <div class="object-contents-body">
             <form class="form-inline">
-                {{object-contents-registers model=model}}
+                {{object-contents-registers model=model
+                    addField="addField"
+                    editField="editField"
+                    removeField="removeField"}}
             </form>
 
-          {{#if model.contentsForDisplay}}
-          <code>{{model.contentsForDisplay}}</code>
-          {{/if}}
+            <form class="form-inline">
+                {{object-contents-flags model=model
+                    removeField="removeField"}}
+            </form>
+
+            <form class="form-inline">
+                {{object-contents-counters-embedded model=model
+                    removeField="removeField"}}
+            </form>
+
+            <form class="form-inline">
+                {{object-contents-sets-embedded model=model
+                    addElement="addElement"
+                    removeElement="removeElement"}}
+            </form>
+
+            <form class="form-inline">
+                {{object-contents-maps-embedded model=model
+                    removeField="removeField" addField="addField" editField="editField"
+                    addElement="addElement" removeElement="removeElement"
+                  }}
+            </form>
         </div>
         <div class="object-contents-footer">
             <strong>Page loaded:</strong> {{model.metadata.dateLoaded}}

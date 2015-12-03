@@ -1,0 +1,19 @@
+.pagination-component-container {
+  .pagination-links {
+    .pagination-link {
+      @extend .btn;
+      @extend .btn-xs;
+      @extend .btn-default;
+
+      &.selected {
+        @extend .btn-primary;
+      }
+    }
+
+    .text-link {
+      &.invisible {
+        visibility: hidden;
+      }
+    }
+  }
+}

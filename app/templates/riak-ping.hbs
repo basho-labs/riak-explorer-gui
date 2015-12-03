@@ -1,11 +1,23 @@
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-2"><strong>Node id:</strong></div>
-        <div class="col-md-10">{{node_id}}</div>
-    </div>
-    <div class="row">
-        <div class="col-md-2"><strong>Riak Ping:</strong></div>
-        <div class="col-md-10">{{model.message}}</div>
-    </div>
+<div class='view-header'>
+  {{breadcrumb-component
+  clusterId=clusterId
+  pageTitle=nodeId}}
+  {{view-label
+  pre-label='Node Ping'
+  label=nodeId}}
 </div>
+
+{{#dashboard-module}}
+  <table class='key-value-table'>
+    <tbody>
+    <tr>
+      <td class='key'>Node id:</td>
+      <td class='value'>{{nodeId}}</td>
+    </tr>
+    <tr>
+      <td class='key'>Riak Ping:</td>
+      <td class='value'>{{model.message}}</td>
+    </tr>
+    </tbody>
+  </table>
+{{/dashboard-module}}

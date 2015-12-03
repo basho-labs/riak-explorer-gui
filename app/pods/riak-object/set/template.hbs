@@ -1,9 +1,20 @@
-{{#object-location object=model}}{{/object-location}}
+<div class='view-header'>
+  {{breadcrumb-component
+  clusterId=model.clusterId
+  bucketTypeId=model.bucketTypeId
+  bucketId=model.bucketId
+  keyId=model.key
+  }}
+  {{view-label
+  pre-label='Set Object'
+  label=model.key}}
+</div>
 
-<br />
-{{#if model.isLoaded}}
+{{#dashboard-module label='Set data'}}
+  {{#if model.isLoaded}}
     {{object-contents-set model=model deleteObject="deleteObject"
-        removeElement="removeElement" addElement="addElement"}}
-{{else}}
+    removeElement="removeElement" addElement="addElement"}}
+  {{else}}
     {{loading-spinner}}
-{{/if}}
+  {{/if}}
+{{/dashboard-module}}

@@ -1,18 +1,21 @@
-<h3>Riak Node Stats ({{model.node}})</h3>
+<div class='view-header'>
+  {{breadcrumb-component
+  clusterId=clusterId
+  pageTitle=model.node}}
+  {{view-label
+  pre-label='Node Stats'
+  label=model.node}}
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Property</th>
-            <th>Value</th>
-        </tr>
-    </thead>
+{{#dashboard-module}}
+  <table class="key-value-table">
     <tbody>
-{{#each model.stats as |stat|}}
-        <tr>
-            <td>{{stat.key}}</td>
-            <td>{{stat.value}}</td>
-        </tr>
-{{/each}}
+    {{#each model.stats as |stat|}}
+      <tr>
+        <td class='key'>{{stat.key}}</td>
+        <td class='value'>{{stat.value}}</td>
+      </tr>
+    {{/each}}
     </tbody>
-</table>
+  </table>
+{{/dashboard-module}}

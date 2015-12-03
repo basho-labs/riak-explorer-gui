@@ -1,0 +1,47 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('/assets/fonts/bootstrap/glyphicons-halflings-regular.eot');
+  src: url('/assets/fonts/bootstrap/glyphicons-halflings-regular.svg');
+  src: url('/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf');
+  src: url('/assets/fonts/bootstrap/glyphicons-halflings-regular.woff');
+  src: url('/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2');
+}
+
+.glyphicon {
+  margin-right: 2px;
+  top: 2px;
+}
+
+.btn-primary {
+  background-color: $branding-color-2;
+  border-color: $branding-color-2;
+
+  &:hover, &:active, &:focus, &:active:focus {
+    background-color: darken($branding-color-2, 5%);
+    border-color: darken($branding-color-2, 5%);
+  }
+}
+
+.table {
+  border-color: $grayscale-color-x-light;
+  display: inline-block;
+  margin: 0px;
+
+  thead {
+    tr {
+      th {
+        padding: 10px 15px;
+        border-bottom: 1px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        padding: 10px 15px;
+        vertical-align: middle;
+      }
+    }
+  }
+}

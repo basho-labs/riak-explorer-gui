@@ -1,0 +1,13 @@
+.results-panel {
+  position: absolute;
+  top: $topbar-panel-height;
+  left: $sidebar-panel-width;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+
+  .results-panel-inner {
+    position: relative;
+    display: block;
+  }
+}
