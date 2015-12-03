@@ -683,6 +683,7 @@ export default Ember.Service.extend({
                 error: function(jqXHR, textStatus) {
                     // Fail (likely a 404, cache not yet created)
                     if(jqXHR.status === 404) {
+                        bucketType.set('isBucketListLoaded', false);
                         // Kick off a Cache Refresh, and repeat the getBucketList request
                         console.log("kicking off cache refresh...");
                         explorer.bucketCacheRefresh(clusterId, bucketTypeId);
@@ -920,6 +921,7 @@ export default Ember.Service.extend({
                 },
                 error: function (jqXHR, textStatus) {
                     if (jqXHR.status === 404) {
+                        bucket.set('isKeyListLoaded', false);
                         // Empty cache (need to kick off a refresh)
                         explorer.keyCacheRefresh(clusterId, bucketTypeId, bucketId);
                         // Results in returning an empty (Loading..) key list
