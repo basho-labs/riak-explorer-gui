@@ -11,6 +11,22 @@ import RiakObject from "../model";
  */
 var RiakObjectCounter = RiakObject.extend({
     /**
+     * The amount to decrement the counter by.
+     * @property decrementBy
+     * @type {Number}
+     * @private
+     */
+    decrementBy: DS.attr('integer', {defaultValue: 1}),
+
+    /**
+     * The amount to increment the counter by.
+     * @property incrementBy
+     * @type {Number}
+     * @private
+     */
+    incrementBy: DS.attr('integer', {defaultValue: 1}),
+
+    /**
      * Can this object type be edited directly, in a text box?
      * @property canBeEdited
      * @readOnly
@@ -49,6 +65,7 @@ var RiakObjectCounter = RiakObject.extend({
      */
     decrement: function(amount) {
         var newValue = this.get('contents').value - amount;
+
         this.set('contents', {value: newValue});
     },
 
@@ -60,23 +77,9 @@ var RiakObjectCounter = RiakObject.extend({
      */
     increment: function(amount) {
         var newValue = this.get('contents').value + amount;
+
         this.set('contents', {value: newValue});
-    },
-
-    /**
-     * The amount to decrement the counter by.
-     * @property decrementBy
-     * @type {Number}
-     * @private
-     */
-    decrementBy: DS.attr('integer', {defaultValue: 1}),
-
-    /**
-     * The amount to increment the counter by.
-     * @property incrementBy
-     * @type {Number}
-     * @private
-     */
-    incrementBy: DS.attr('integer', {defaultValue: 1})
+    }
 });
+
 export default RiakObjectCounter;

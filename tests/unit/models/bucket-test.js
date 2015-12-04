@@ -1,8 +1,8 @@
 import { moduleForModel, test } from 'ember-qunit';
 import Ember from 'ember';
 
-moduleForModel('bucket-type', 'Unit | Model | bucket type', {
-  needs: ['model:cluster', 'model:bucketList', 'model:bucketProps']
+moduleForModel('bucket', 'Unit | Model | bucket', {
+  needs: ['model:cluster', 'model:keyList', 'model:bucketType', 'model:bucketProps']
 });
 
 test('it exists', function(assert) {
@@ -22,11 +22,20 @@ test('cluster relationship', function(assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('bucket lists relationship', function(assert) {
+test('key list relationship', function(assert) {
   let klass = this.subject({}).constructor;
-  let relationship = Ember.get(klass, 'relationshipsByName').get('bucketList');
+  let relationship = Ember.get(klass, 'relationshipsByName').get('keyList');
 
-  assert.equal(relationship.key, 'bucketList');
+  assert.equal(relationship.key, 'keyList');
+
+  assert.equal(relationship.kind, 'belongsTo');
+});
+
+test('bucket type relationship', function(assert) {
+  let klass = this.subject({}).constructor;
+  let relationship = Ember.get(klass, 'relationshipsByName').get('bucketType');
+
+  assert.equal(relationship.key, 'bucketType');
 
   assert.equal(relationship.kind, 'belongsTo');
 });
@@ -36,5 +45,6 @@ test('bucket properties relationship', function(assert) {
   let relationship = Ember.get(klass, 'relationshipsByName').get('props');
 
   assert.equal(relationship.key, 'props');
+
   assert.equal(relationship.kind, 'belongsTo');
 });

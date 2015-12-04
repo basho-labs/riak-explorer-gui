@@ -11,42 +11,11 @@ import config from '../../config/environment';
 */
 var Cluster = DS.Model.extend({
     /**
-     * Returns a list of currently activated bucket types.
-     *
-     * @method activeBucketTypes
-     * @return {Array<BucketType>}
-     */
-    activeBucketTypes: function() {
-        return this.get('bucketTypes').filterBy('isActive');
-    }.property('bucketTypes'),
-
-    /**
      * Bucket types created on the cluster
      * @property bucketTypes
      * @type Array<BucketType>
      */
     bucketTypes: DS.hasMany('bucket-type'),
-
-    /**
-     * Returns the name of the cluster
-     * (As specified in the `riak_explorer.conf` file)
-     * Note: Currently unrelated to the source/datacenter name used by MDC Repl
-     * @property clusterId
-     * @type String
-     */
-    clusterId: function() {
-        return this.get('id');
-    }.property('id'),
-
-    /**
-     * Riak node through which Explorer connects to this riak cluster,
-     * in Erlang node id format.
-     * @type String
-     * @default null
-     * @example
-     *    'riak@127.0.0.1'
-     */
-    riakNode: DS.attr('string', {defaultValue: null}),
 
     /**
      * Is this cluster in Dev Mode? Set in the Explorer config file.
@@ -56,16 +25,6 @@ var Cluster = DS.Model.extend({
      * @default false
      */
     developmentMode: DS.attr('boolean', {defaultValue: false}),
-
-    /**
-     * Returns a list of un-activated bucket types.
-     *
-     * @method inactiveBucketTypes
-     * @return {Array<BucketType>}
-     */
-    inactiveBucketTypes: function() {
-        return this.get('bucketTypes').filterBy('isInactive');
-    }.property('bucketTypes'),
 
     /**
      * List of Search Indexes that have been created on this cluster.
@@ -85,6 +44,47 @@ var Cluster = DS.Model.extend({
      *    [{"id":"riak@127.0.0.1"}]
      */
     nodes: DS.attr(),
+
+    /**
+     * Riak node through which Explorer connects to this riak cluster,
+     * in Erlang node id format.
+     * @type String
+     * @default null
+     * @example
+     *    'riak@127.0.0.1'
+     */
+    riakNode: DS.attr('string', {defaultValue: null}),
+
+    /**
+     * Returns a list of currently activated bucket types.
+     *
+     * @method activeBucketTypes
+     * @return {Array<BucketType>}
+     */
+    activeBucketTypes: function() {
+        return this.get('bucketTypes').filterBy('isActive');
+    }.property('bucketTypes'),
+
+    /**
+     * Returns the name of the cluster
+     * (As specified in the `riak_explorer.conf` file)
+     * Note: Currently unrelated to the source/datacenter name used by MDC Repl
+     * @property clusterId
+     * @type String
+     */
+    clusterId: function() {
+        return this.get('id');
+    }.property('id'),
+
+    /**
+     * Returns a list of un-activated bucket types.
+     *
+     * @method inactiveBucketTypes
+     * @return {Array<BucketType>}
+     */
+    inactiveBucketTypes: function() {
+        return this.get('bucketTypes').filterBy('isInactive');
+    }.property('bucketTypes'),
 
     /**
      * Returns true if this cluster is in production mode (development_mode=off)

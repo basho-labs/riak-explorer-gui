@@ -20,6 +20,61 @@ import DS from 'ember-data';
  */
 var RiakObjectMapField = DS.Model.extend({
     /**
+     * Field type (one of: `register`, `flag`, `map`, `counter`, `set`)
+     *
+     * @property fieldType
+     * @type String
+     * @readOnly
+     */
+    fieldType: DS.attr('string'),
+
+    /**
+     * Name of the map field (has to end in `_<field type>`).
+     *
+     * @property name
+     * @type String
+     * @readOnly
+     */
+    name: DS.attr('string'),
+
+    /**
+     * Parent map (embedded or top-level) in which this field resides.
+     *
+     * @property parent
+     * @type (RiakObjectMap|RiakObjectMapField)
+     */
+    parent: DS.attr(),
+
+    /**
+     * The actual map containing these fields (this may be a Standalone top-level
+     * map, or a nested map field. When a map is nested just one level deep, the
+     * parentMap is same as rootMap. For fields nested several levels deep, the
+     * parent map will be an embedded map field.
+     *
+     * @property parentMap
+     * @type (RiakObjectMap|RiakObjectEmbeddedMap)
+     */
+    parentMap: DS.attr(),
+
+    /**
+     * Top-level standalone map in which this field lives.
+     *
+     * @property rootMap
+     * @type RiakObjectMap
+     */
+    rootMap: DS.attr(),
+
+    /**
+     * Value/contents of the map field.
+     * String values for Registers, boolean values for Flags,
+     * arrays for Sets, numbers for Counters, and Object for Maps.
+     *
+     * @property value
+     * @type (String|Boolean|Array|Object)
+     */
+    value: DS.attr(),
+
+    /**
      * Adds an element to this nested Set field and notifies parent map
      * that contents have changed.
      *
@@ -52,15 +107,6 @@ var RiakObjectMapField = DS.Model.extend({
         return this.get('rootMap').get('bucket');
     }.property('rootMap'),
 
-    /**
-     * Field type (one of: `register`, `flag`, `map`, `counter`, `set`)
-     *
-     * @property fieldType
-     * @type String
-     * @readOnly
-     */
-    fieldType: DS.attr('string'),
-
     fullName: function fullName() {
         if(this.get('parentMap').get('isTopLevel')) {
             return this.get('name');
@@ -80,15 +126,6 @@ var RiakObjectMapField = DS.Model.extend({
     }.property('rootMap'),
 
     /**
-     * Name of the map field (has to end in `_<field type>`).
-     *
-     * @property name
-     * @type String
-     * @readOnly
-     */
-    name: DS.attr('string'),
-
-    /**
      * Ensures that a user-provided field name ends in `_<field type>`
      * (as is required by the HTTP API)
      *
@@ -101,14 +138,6 @@ var RiakObjectMapField = DS.Model.extend({
             this.set('name', name + suffix);
         }
     },
-
-    /**
-     * Parent map (embedded or top-level) in which this field resides.
-     *
-     * @property parent
-     * @type (RiakObjectMap|RiakObjectMapField)
-     */
-    parent: DS.attr(),
 
     /**
      * Removes a given element from the nested Set field's contents and notifies
@@ -127,37 +156,9 @@ var RiakObjectMapField = DS.Model.extend({
         this.get('rootMap').notifyNestedFieldChange();
     },
 
-    /**
-     * The actual map containing these fields (this may be a Standalone top-level
-     * map, or a nested map field. When a map is nested just one level deep, the
-     * parentMap is same as rootMap. For fields nested several levels deep, the
-     * parent map will be an embedded map field.
-     *
-     * @property parentMap
-     * @type (RiakObjectMap|RiakObjectEmbeddedMap)
-     */
-    parentMap: DS.attr(),
-
-    /**
-     * Top-level standalone map in which this field lives.
-     *
-     * @property rootMap
-     * @type RiakObjectMap
-     */
-    rootMap: DS.attr(),
-
-    /**
-     * Value/contents of the map field.
-     * String values for Registers, boolean values for Flags,
-     * arrays for Sets, numbers for Counters, and Object for Maps.
-     *
-     * @property value
-     * @type (String|Boolean|Array|Object)
-     */
-    value: DS.attr(),
-
     valueForDisplay: function valueForDisplay() {
         return JSON.stringify(this.get('value'));
     }.property('value')
 });
+
 export default RiakObjectMapField;

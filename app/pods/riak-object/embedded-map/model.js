@@ -41,24 +41,6 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     },
 
     /**
-     * Hashmap of counters (`RiakObjectMapField` instances) for this map,
-     * keyed by field name.
-     *
-     * @property counters
-     * @type {Object}
-     */
-    counters: Ember.computed('value', {
-        get() {
-            return this.get('value').counters;
-        },
-        set(key, val) {
-            var contents = this.get('value');
-            contents.counters = val;
-            this.set('value', contents);
-        }
-    }),
-
-    /**
      * Returns a list of Counters for this map, sorted by field name.
      *
      * @method countersList
@@ -67,6 +49,10 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     countersList: function countersList() {
         return this.fieldList('counters');
     }.property('counters'),
+
+    isTopLevel: function isTopLevel() {
+        return false;
+    }.property(),
 
     /**
      * Returns a list of a given field type for this map, sorted by field name.
@@ -86,24 +72,6 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     },
 
     /**
-     * Hashmap of flags (`RiakObjectMapField` instances) for this map,
-     * keyed by field name.
-     *
-     * @property flags
-     * @type {Object}
-     */
-    flags: Ember.computed('value', {
-        get() {
-            return this.get('value').flags;
-        },
-        set(key, val) {
-            var contents = this.get('value');
-            contents.flags = val;
-            this.set('value', contents);
-        }
-    }),
-
-    /**
      * Returns a list of Flags for this map, sorted by field name.
      *
      * @method flagsList
@@ -112,28 +80,6 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     flagsList: function flagsList() {
         return this.fieldList('flags');
     }.property('flags'),
-
-    isTopLevel: function isTopLevel() {
-        return false;
-    }.property(),
-
-    /**
-     * Hashmap of embedded Maps (`RiakObjectEmbeddedMap` instances) in this map,
-     * keyed by field name.
-     *
-     * @property maps
-     * @type {Object}
-     */
-    maps: Ember.computed('value', {
-        get() {
-            return this.get('value').maps;
-        },
-        set(key, val) {
-            var contents = this.get('value');
-            contents.maps = val;
-            this.set('value', contents);
-        }
-    }),
 
     /**
      * Returns a list of embedded Maps in this map, sorted by field name.
@@ -144,6 +90,16 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     mapsList: function mapsList() {
         return this.fieldList('maps');
     }.property('maps'),
+
+    /**
+     * Returns a list of Registers for this map, sorted by field name.
+     *
+     * @method registersList
+     * @return {Array<RiakObjectMapField>}
+     */
+    registersList: function registersList() {
+        return this.fieldList('registers');
+    }.property('registers'),
 
     /**
      * Adds a field to the appropriate field collection for this nested map field.
@@ -165,6 +121,70 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     },
 
     /**
+     * Returns a list of Sets for this map, sorted by field name.
+     *
+     * @method setsList
+     * @return {Array<RiakObjectMapField>}
+     */
+    setsList: function setsList() {
+        return this.fieldList('sets');
+    }.property('sets'),
+
+    /**
+     * Hashmap of counters (`RiakObjectMapField` instances) for this map,
+     * keyed by field name.
+     *
+     * @property counters
+     * @type {Object}
+     */
+    counters: Ember.computed('value', {
+        get() {
+            return this.get('value').counters;
+        },
+        set(key, val) {
+            var contents = this.get('value');
+            contents.counters = val;
+            this.set('value', contents);
+        }
+    }),
+
+    /**
+     * Hashmap of flags (`RiakObjectMapField` instances) for this map,
+     * keyed by field name.
+     *
+     * @property flags
+     * @type {Object}
+     */
+    flags: Ember.computed('value', {
+        get() {
+            return this.get('value').flags;
+        },
+        set(key, val) {
+            var contents = this.get('value');
+            contents.flags = val;
+            this.set('value', contents);
+        }
+    }),
+
+    /**
+     * Hashmap of embedded Maps (`RiakObjectEmbeddedMap` instances) in this map,
+     * keyed by field name.
+     *
+     * @property maps
+     * @type {Object}
+     */
+    maps: Ember.computed('value', {
+        get() {
+            return this.get('value').maps;
+        },
+        set(key, val) {
+            var contents = this.get('value');
+            contents.maps = val;
+            this.set('value', contents);
+        }
+    }),
+
+    /**
      * Hashmap of registers (`RiakObjectMapField` instances) for this map,
      * keyed by field name.
      *
@@ -183,16 +203,6 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
     }),
 
     /**
-     * Returns a list of Registers for this map, sorted by field name.
-     *
-     * @method registersList
-     * @return {Array<RiakObjectMapField>}
-     */
-    registersList: function registersList() {
-        return this.fieldList('registers');
-    }.property('registers'),
-
-    /**
      * Hashmap of sets (`RiakObjectMapField` instances) for this map,
      * keyed by field name.
      *
@@ -208,16 +218,7 @@ var RiakObjectEmbeddedMap = RiakObjectMapField.extend({
             contents.sets = val;
             this.set('value', contents);
         }
-    }),
-
-    /**
-     * Returns a list of Sets for this map, sorted by field name.
-     *
-     * @method setsList
-     * @return {Array<RiakObjectMapField>}
-     */
-    setsList: function setsList() {
-        return this.fieldList('sets');
-    }.property('sets')
+    })
 });
+
 export default RiakObjectEmbeddedMap;

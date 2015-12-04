@@ -1,6 +1,6 @@
-import { moduleForModel, test, pending } from 'ember-qunit';
+import { moduleForModel, test, pending  } from 'ember-qunit';
 
-moduleForModel('object-metadata', 'Unit | Model | object metadata', {
+moduleForModel('key-list', 'Unit | Model | key list', {
   // Specify the other units that are required for this test.
   needs: []
 });
@@ -12,4 +12,4 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('headersForUpdate', function() {});
+pending('showDeleteKeys', function() {});

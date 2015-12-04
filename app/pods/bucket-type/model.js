@@ -12,14 +12,6 @@ import DS from 'ember-data';
  */
 var BucketType = DS.Model.extend({
     /**
-     * Riak cluster in which this bucket type lives.
-     * @property cluster
-     * @type Cluster
-     * @writeOnce
-     */
-    cluster: DS.belongsTo('cluster'),
-
-    /**
      * Contains the results of cached bucket lists for this bucket type,
      * fetched from the API.
      * @property bucket-list
@@ -28,12 +20,37 @@ var BucketType = DS.Model.extend({
     bucketList: DS.belongsTo('bucket-list'),
 
     /**
+     * Riak cluster in which this bucket type lives.
+     * @property cluster
+     * @type Cluster
+     * @writeOnce
+     */
+    cluster: DS.belongsTo('cluster'),
+
+    /**
+     * Bucket Type Properties object.
+     * Note: Bucket Types and Buckets share the same Properties format.
+     * When not specified, buckets inherit their properties from the Bucket Type
+     * @property props
+     * @type BucketProps
+     */
+    props: DS.belongsTo('bucket-props'),
+
+    /**
      * Has the bucketList been loaded from the server?
      * @property isBucketListLoaded
      * @type Boolean
      * @default false
      */
     isBucketListLoaded: DS.attr('boolean', { defaultValue: false }),
+
+    /**
+     * Bucket Type name (unique per cluster),
+     *    as appears on `riak-admin bucket-type list`
+     * @property originalId
+     * @type String
+     */
+    originalId: DS.attr('string'),
 
     bucketTypeId: function() {
         return this.get('originalId');
@@ -92,24 +109,7 @@ var BucketType = DS.Model.extend({
      */
     name: function() {
         return this.get('id');
-    }.property('id'),
-
-    /**
-     * Bucket Type name (unique per cluster),
-     *    as appears on `riak-admin bucket-type list`
-     * @property originalId
-     * @type String
-     */
-    originalId: DS.attr('string'),
-
-    /**
-     * Bucket Type Properties object.
-     * Note: Bucket Types and Buckets share the same Properties format.
-     * When not specified, buckets inherit their properties from the Bucket Type
-     * @property props
-     * @type BucketProps
-     */
-    props: DS.belongsTo('bucket-props')
+    }.property('id')
 });
 
 export default BucketType;

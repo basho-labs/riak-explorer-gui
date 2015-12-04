@@ -77,4 +77,5 @@ var KeyList = CachedList.extend({
             this.get('hasKeys');
     }.property('cluster', 'count')
 });
+
 export default KeyList;
