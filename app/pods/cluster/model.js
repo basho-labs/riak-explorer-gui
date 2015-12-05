@@ -18,6 +18,13 @@ var Cluster = DS.Model.extend({
     bucketTypes: DS.hasMany('bucket-type'),
 
     /**
+     * Riak nodes assigned to the cluster
+     * @property riakNodes
+     * @type Array<BucketType>
+     */
+    riakNodes: DS.hasMany('riak-node', { async: true }),
+
+    /**
      * Is this cluster in Dev Mode? Set in the Explorer config file.
      * Dev mode allows expensive operations like list keys, delete bucket, etc.
      * @property developmentMode
@@ -35,25 +42,6 @@ var Cluster = DS.Model.extend({
      *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
      */
     indexes: DS.attr(),
-
-    /**
-     * List of Riak nodes belonging to the cluster
-     * @property nodes
-     * @type Array<Hash>
-     * @example
-     *    [{"id":"riak@127.0.0.1"}]
-     */
-    nodes: DS.attr(),
-
-    /**
-     * Riak node through which Explorer connects to this riak cluster,
-     * in Erlang node id format.
-     * @type String
-     * @default null
-     * @example
-     *    'riak@127.0.0.1'
-     */
-    riakNode: DS.attr('string', {defaultValue: null}),
 
     /**
      * Returns a list of currently activated bucket types.

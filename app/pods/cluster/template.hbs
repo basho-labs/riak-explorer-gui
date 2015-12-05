@@ -1,8 +1,8 @@
 <div class='view-header'>
-  {{breadcrumb-component clusterId=model.clusterId}}
+  {{breadcrumb-component clusterId=model.id}}
   {{view-label
   pre-label='Cluster'
-  label=model.clusterId}}
+  label=model.id}}
 </div>
 
 <div class='cluster-information-container'>
@@ -37,39 +37,25 @@
   {{/dashboard-module}}
 
   {{#dashboard-module label='Nodes'}}
-    {{#if model.nodes.length}}
-      <table class="table">
-        <thead>
-        <tr>
-          <th>Ping</th>
-          <th>Stats</th>
-          <th>Node</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#each model.nodes as |node|}}
-          <tr>
-            <td>
-              {{#link-to 'riak-ping' (query-params nodeId=node.id clusterId=model.clusterId)
-              classNames='btn btn-sm btn-primary' }}
-                Node Ping
-              {{/link-to}}
-            </td>
-            <td>
-              {{#link-to 'node-stats' (query-params nodeId=node.id clusterId=model.clusterId)
-              classNames='btn btn-sm btn-primary' }}
-                Node Stats
-              {{/link-to}}
-            </td>
-            <td>
-              {{node.id}}
-            </td>
-          </tr>
-        {{/each}}
-        </tbody>
-      </table>
+    {{#if model.riakNodes}}
+      <ul class="button-list">
+          {{#each model.riakNodes as |node|}}
+              <li>
+                  <a href="node-stats?nodeId={{node.id}}&clusterId={{model.id}}"
+                     class={{unless node.available "danger"}}>
+                      {{node.id}}
+                      <span
+                          class="glyphicon {{if node.available "glyphicon-ok-circle" "glyphicon-ban-circle"}}"
+                          aria-hidden="true">
+                      </span>
+                  </a>
+              </li>
+          {{/each}}
+      </ul>
     {{else}}
       <p>No nodes detected</p>
     {{/if}}
   {{/dashboard-module}}
 </div>
+
+

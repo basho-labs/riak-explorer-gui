@@ -54,21 +54,17 @@ var ExplorerResourceAdapter = DS.RESTAdapter.extend({
     @return {Promise} promise
     */
     findRecord: function(store, type, id, snapshot) {
-        var url = this.buildURL(type.modelName, id, snapshot, 'findRecord');
+        let url = this.buildURL(type.modelName, id, snapshot, 'findRecord');
         //   if (this.sortQueryParams) {
         //     query = this.sortQueryParams(query);
         //   }
 
-          return this.ajax(url, 'GET');
+        return this.ajax(url, 'GET');
     },
 
     injectParentIds: function(payload, query) {
-        if(query.clusterId) {
-            payload.cluster_id = query.clusterId;
-        }
-        if(query.bucketTypeId) {
-            payload.bucket_type_id = query.bucketTypeId;
-        }
+        if(query.clusterId) { payload.cluster_id = query.clusterId; }
+        if(query.bucketTypeId) { payload.bucket_type_id = query.bucketTypeId; }
     },
 
     /**
@@ -77,25 +73,19 @@ var ExplorerResourceAdapter = DS.RESTAdapter.extend({
     (Most Riak cluster resources do not have globally unique IDs.
     For example, bucket types are only unique within a cluster.)
     */
-    normalizeId: function(record, type, query, idKey) {
-        var prefix = [];
-        if(query.clusterId) {
-            prefix.push(query.clusterId);
-        }
-        if(query.bucketTypeId && type.modelName !== 'bucket-type') {
-            prefix.push(query.bucketTypeId);
-        }
-        if(!idKey) {
-            idKey = 'id';
-        }
-        var originalId = record[idKey];
-        record.original_id = originalId;
-        prefix.push(originalId);
-        var compositeId = prefix.join('/');
-        record['id'] = compositeId;
-        if(record.props) {
-            record.props['id'] = compositeId;
-        }
+    normalizeId: function(record, type, query, idKey='id') {
+        let fragments   = [];
+        let compositeId = null;
+
+        if(query.clusterId) { fragments.push(query.clusterId); }
+        if(query.bucketTypeId && type.modelName !== 'bucket-type') { fragments.push(query.bucketTypeId); }
+
+        fragments.push(record[idKey]);
+        record.original_id = record[idKey];
+        compositeId = fragments.join('/');
+        record.id = compositeId;
+
+        if(record.props) { record.props.id = record.id; }
     },
 
     /**
@@ -107,6 +97,7 @@ var ExplorerResourceAdapter = DS.RESTAdapter.extend({
                 id: record.props.id,
                 props: record.props
             };
+
             delete record.props.props.id;
         }
     },
@@ -126,21 +117,21 @@ var ExplorerResourceAdapter = DS.RESTAdapter.extend({
     @return {Promise} promise
     */
     query: function(store, type, query) {
-        var url = this.buildURL(type.modelName, null, null, 'query', query);
-        var adapter = this;
-        var root;
-        var promise = this.ajax(url, 'GET').then(function(payload) {
-            root = adapter.pathForType(type.modelName);
-            // console.log('1) model name: %O, query payload: %O, root: %O', type.modelName, payload, root);
-            for(let i=0; i < payload[root].length; i++) {
-                var record = payload[root][i];
+        let adapter = this;
+        let url = this.buildURL(type.modelName, null, null, 'query', query);
+
+        let promise = this.ajax(url, 'GET').then(function(payload) {
+            let root = adapter.pathForType(type.modelName);
+
+            payload[root].forEach(function(record) {
                 adapter.normalizeId(record, type, query);
                 adapter.injectParentIds(record, query);
                 adapter.normalizeProps(record, type.modelName);
-                // console.log("payload after normalize: %O", payload);
-            }
+            });
+
             return payload;
         });
+
         return promise;
     },
 
@@ -155,36 +146,38 @@ var ExplorerResourceAdapter = DS.RESTAdapter.extend({
     @return {Promise} promise
     */
     queryRecord: function(store, type, query) {
-        var url = this.buildURL(type.modelName, null, null, 'query', query);
-        var adapter = this;
-        var root = Ember.String.underscore(type.modelName);
-        var promise = this.ajax(url, 'GET').then(function(payload) {
-            // console.log('model name: %O, query payload: %O, root: %O', type.modelName, payload, root);
+        let adapter = this;
+        let url = this.buildURL(type.modelName, null, null, 'query', query);
+        let root = Ember.String.underscore(type.modelName);
+
+        let promise = this.ajax(url, 'GET').then(function(payload) {
             adapter.normalizeId(payload[root], type, query);
             adapter.injectParentIds(payload[root], query);
             adapter.normalizeProps(payload[root], type.modelName);
-            // console.log("payload after normalize: %O", payload);
+
             return payload;
         });
+
         return promise;
     },
 
 
     urlForQuery: function(query, modelName) {
+        let urlFragments = [];
+
         if(modelName.indexOf('.') > -1) {
             // Deal with nested model names, like 'cluster.bucket_types'
             modelName = modelName.split('.').pop();
         }
-        var url = [];
+
         // For the moment, assume we're only dealing with cluster-based resources
-        url.push(this._buildURL('cluster', query.clusterId));
+        urlFragments.push(this._buildURL('cluster', query.clusterId));
+        urlFragments.push(this.pathForType('bucket-type'));
 
-        url.push(this.pathForType('bucket-type'));
-        if(query.bucketTypeId) {
-            url.push(query.bucketTypeId);
-        }
+        if(query.bucketTypeId) { urlFragments.push(query.bucketTypeId); }
 
-        return url.join('/');
+        return urlFragments.join('/');
     }
 });
+
 export default ExplorerResourceAdapter;
