@@ -28,6 +28,7 @@ export default Ember.Service.extend({
     apiURL: config.baseURL,
 
     name: 'explorer',
+
     availableIn: ['controllers', 'routes'],
 
     /**
@@ -81,8 +82,8 @@ export default Ember.Service.extend({
     bucketCacheRefresh(clusterId, bucketTypeId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
-        var url = this.apiURL + 'explore/clusters/' + clusterId + '/bucket_types/' + bucketTypeId +
-            '/refresh_buckets/source/riak_kv';
+        var url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/refresh_buckets/source/riak_kv`;
+
         return this.cacheRefresh(url);
     },
 
@@ -381,8 +382,7 @@ export default Ember.Service.extend({
             operation = this.dataTypeUpdateNestedField(object, operationType, item);
         }
         if(!operation) {
-            throw new Ember.Error('Invalid data type or unsupported operation: ' +
-                operationType);
+            throw new Ember.Error(`Invalid data type or unsupported operation: ${operationType}`);
         }
         return JSON.stringify(operation);
     },
@@ -498,8 +498,7 @@ export default Ember.Service.extend({
                     this.dataTypeUpdateCounter(object, operationType);
                 break;
             default:
-                throw new Ember.Error('Unsupported Update Map operation: ' +
-                    operationType);
+                throw new Ember.Error(`Unsupported Update Map operation: ${operationType}`);
         }
         // Now wrap the update field operation in appropriate levels of
         // update map operations
@@ -544,9 +543,11 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise} Result of the Delete Bucket AJAX request
      */
     deleteBucket(bucket) {
-        var url = this.apiURL + 'explore/clusters/' + bucket.get('clusterId') +
-            '/bucket_types/' + bucket.get('bucketTypeId') +
-            '/buckets/' + bucket.get('bucketId');
+        var cluster    = bucket.get('clusterId');
+        var bucketType = bucket.get('bucketTypeId');
+        var bucketId   = bucket.get('bucketId');
+
+        var url = `${this.apiURL}explore/clusters/${cluster}/bucket_types/${bucketType}/buckets/${bucketId}`;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
             Ember.$.ajax({
@@ -598,9 +599,13 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise} Result of the AJAX request.
      */
     deleteObject(object) {
-        var url = this.getClusterProxyUrl(object.get('clusterId')) + '/types/' +
-                object.get('bucketTypeId') + '/buckets/' +
-                object.get('bucketId') + '/keys/' + object.get('key');
+        var cluster    = object.get('clusterId');
+        var bucketType = object.get('bucketTypeId');
+        var bucket     = object.get('bucketId');
+        var key        = object.get('key');
+        var clusterUrl = this.getClusterProxyUrl(cluster);
+
+        var url = `${clusterUrl}/types/${bucketType}/buckets/${bucket}/keys/${key}`;
 
         object.set('markedDeleted', true);
 
@@ -666,10 +671,11 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
      */
     getBucketList(cluster, bucketType, store, start=1, rows=this.pageSize) {
-        let explorer = this;
-        let clusterId = cluster.get('clusterId');
-        let bucketTypeId = bucketType.get('bucketTypeId');
-        let url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets?start=${start}&rows=${rows}`;
+        var explorer     = this;
+        var clusterId    = cluster.get('clusterId');
+        var bucketTypeId = bucketType.get('bucketTypeId');
+
+        var url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets?start=${start}&rows=${rows}`;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
             var xhrConfig = {
@@ -716,8 +722,9 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise<BucketProps>}
      */
     getBucketProps(clusterId, bucketTypeId, bucketId, store) {
-        var propsUrl = this.getClusterProxyUrl(clusterId) + '/types/' +
-                bucketTypeId + '/buckets/' + bucketId + '/props';
+        var clusterUrl = this.getClusterProxyUrl(clusterId);
+        var propsUrl   = `${clusterUrl}/types/${bucketTypeId}/buckets/${bucketId}/props`;
+
         return new Ember.RSVP.Promise(function(resolve, reject) {
             var ajaxHash = {
                 url: propsUrl,
@@ -855,7 +862,7 @@ export default Ember.Service.extend({
      * @return {String} url
      */
     getClusterProxyUrl(clusterId) {
-        return this.apiURL + 'riak/clusters/'+clusterId;
+        return `${this.apiURL}riak/clusters/${clusterId}`;
     },
 
     /**
@@ -868,30 +875,27 @@ export default Ember.Service.extend({
      *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
      */
     getIndexes(clusterId) {
-        var url = this.getClusterProxyUrl(clusterId) + '/search/index';
+        var url = `${this.getClusterProxyUrl(clusterId)}/search/index`;
 
-        var request = new Ember.RSVP.Promise(function(resolve, reject) {
-            Ember.$.ajax({
-                type: "GET",
-                url: url
-            }).then(
-                // Success
-                function(data) {
-                    resolve(data);
-                },
-                // Error
-                function(jqXHR, textStatus) {
-                    if(jqXHR.status === 404) {
-                        // No indexes found, simply return an empty list
-                        resolve([]);
-                    } else {
-                        // Some other error
-                        reject(textStatus);
-                    }
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            let request = Ember.$.ajax({
+                url: url,
+                type: 'GET'
+            });
+
+            request.done(function(data) {
+                resolve(data);
+            });
+
+            request.fail(function(data) {
+                // If not found, return empty list
+                if (data.status === 404) {
+                    resolve([]);
+                } else {
+                    reject(data);
                 }
-            );
+            });
         });
-        return request;
     },
 
     /**
@@ -903,12 +907,12 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise} result of the AJAX call
      */
     getKeyList(bucket, store, start=1, rows=this.pageSize) {
-        let clusterId = bucket.get('clusterId');
-        let bucketTypeId = bucket.get('bucketTypeId');
-        let bucketId = bucket.get('bucketId');
-        let explorer = this;
+        var clusterId    = bucket.get('clusterId');
+        var bucketTypeId = bucket.get('bucketTypeId');
+        var bucketId     = bucket.get('bucketId');
+        var explorer     = this;
 
-        let url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets/${bucketId}/keys?start=${start}&rows=${rows}`;
+        var url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets/${bucketId}/keys?start=${start}&rows=${rows}`;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
             let xhrConfig = {
@@ -945,26 +949,21 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise} result of the AJAX call
      */
     getNodePing(nodeId) {
-        var url = this.apiURL + 'riak/nodes/' + nodeId + '/ping';
+        let url = `${this.apiURL}riak/nodes/${nodeId}/ping`;
 
-        var result = Ember.$.ajax({ url: url });  // returns a Promise obj
-        return result.then(
-            // Success
-            function(data) {
-                return {
-                    message: 'Available (' + data + ')'
-                };
-            },
-            // Error
-            function(error) {
-                return {
-                    message: 'Unavailable. Error encountered: ' + error.message
-                };
-            }
-        ).fail(function(error) {
-            return {
-                message: 'Unavailable. Error encountered: ' + error.message
-            };
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            let request = Ember.$.ajax({
+                url: url,
+                type: 'GET'
+            });
+
+            request.done(function(data) {
+                resolve(data);
+            });
+
+            request.fail(function(data) {
+                reject(data);
+            });
         });
     },
 
@@ -978,30 +977,22 @@ export default Ember.Service.extend({
      *    {"nodes":[{"id":"riak@127.0.0.1"}],"links":{"self":"/explore/clusters/default/nodes"}}
      */
     getNodes(clusterId) {
-        var url = this.apiURL + 'explore/clusters/'+ clusterId + '/nodes';
+        let url = `${this.apiURL}explore/clusters/${clusterId}/nodes`;
 
-        var request = new Ember.RSVP.Promise(function(resolve, reject) {
-            Ember.$.ajax({
-                type: "GET",
-                url: url
-            }).then(
-                // Success
-                function(data) {
-                    resolve(data.nodes);
-                },
-                // Error
-                function(jqXHR, textStatus) {
-                    if(jqXHR.status === 404) {
-                        // No nodes found, simply return an empty list
-                        resolve([]);
-                    } else {
-                        // Some other error
-                        reject(textStatus);
-                    }
-                }
-            );
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            let request = Ember.$.ajax({
+                url: url,
+                type: 'GET'
+            });
+
+            request.done(function(data) {
+                resolve(data);
+            });
+
+            request.fail(function(data) {
+                reject(data);
+            });
         });
-        return request;
     },
 
     /**
@@ -1012,8 +1003,9 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise<Array<Hash>>}
      */
     getNodeStats(nodeId) {
-        var propsUrl = this.apiURL + 'riak/nodes/' + nodeId + '/stats' ;
+        var propsUrl = `${this.apiURL}riak/nodes/${nodeId}/stats`;
         var propsResult = Ember.$.ajax( propsUrl, { dataType: "json" } );
+
         return propsResult.then(
             function(data) {
                 var statsArray = objectToArray(data);
@@ -1040,19 +1032,21 @@ export default Ember.Service.extend({
         var explorer = this;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
+            var processData;
+            var headerString;
+            var contents;
             var ajaxHash = {
                 type: "GET",
                 cache: false,
                 headers: { 'Accept': '*/*, multipart/mixed' }
             };
+            var clusterUrl = explorer.getClusterProxyUrl(bucket.get('clusterId'));
+            var bucketType = bucket.get('bucketTypeId');
+            var bucketId   = bucket.get('bucketId');
+            var url =  `${clusterUrl}/types/${bucketType}/buckets/${bucketId}`;
 
-            var processData;
-            var headerString;
-            var contents;
-            var url = explorer.getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
-                bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId');
             if(bucket.get('props').get('isCRDT')) {
-                url = url + '/datatypes/' + key;
+                url = `${url}/datatypes/${key}`;
                 processData = true;  // Parse the payload as JSON
                 ajaxHash.dataType = 'json';
                 ajaxHash.success = function(data, textStatus, jqXHR) {
@@ -1063,7 +1057,7 @@ export default Ember.Service.extend({
                 };
             } else {
                 // Regular Riak object
-                url = url + '/keys/' + key;
+                url = `${url}/keys/${key}`;
                 processData = false;
                 ajaxHash.success = function(data, textStatus, jqXHR) {
                     headerString = jqXHR.getAllResponseHeaders();
@@ -1114,9 +1108,7 @@ export default Ember.Service.extend({
     keyCacheRefresh(clusterId, bucketTypeId, bucketId) {
         // For the moment, 'riak_kv' is the only implemented source of
         // cache refresh
-        var url = this.apiURL + 'explore/clusters/' + clusterId +
-            '/bucket_types/' + bucketTypeId +
-            '/buckets/' + bucketId + '/refresh_keys/source/riak_kv';
+        var url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets/${bucketId}/refresh_keys/source/riak_kv`;
         return this.cacheRefresh(url);
     },
 
@@ -1202,9 +1194,12 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise} Result of the AJAX request.
      */
     saveObject(object) {
-        var url = this.getClusterProxyUrl(object.get('clusterId')) + '/types/' +
-                object.get('bucketTypeId') + '/buckets/' +
-                object.get('bucketId') + '/keys/' + object.get('key');
+        var clusterUrl = this.getClusterProxyUrl(object.get('clusterId'));
+        var bucketType = object.get('bucketTypeId');
+        var bucketId = object.get('bucketId');
+        var key = object.get('key');
+
+        var url = `${clusterUrl}/types/${bucketType}/buckets/${bucketId}/keys/${key}`;
 
         var request = new Ember.RSVP.Promise(function(resolve, reject) {
             Ember.$.ajax({
@@ -1239,9 +1234,12 @@ export default Ember.Service.extend({
      */
     updateDataType(object, operationType, item) {
         var bucket = object.get('bucket');
-        var url = this.getClusterProxyUrl(bucket.get('clusterId')) + '/types/' +
-            bucket.get('bucketTypeId') + '/buckets/' + bucket.get('bucketId') +
-            '/datatypes/' + object.get('key');
+        var clusterUrl = this.getClusterProxyUrl(bucket.get('clusterId'));
+        var bucketType = bucket.get('bucketTypeId');
+        var bucketId = bucket.get('bucketId');
+        var key = object.get('key');
+
+        var url =  `${clusterUrl}/types/${bucketType}/buckets/${bucketId}/datatypes/${key}`;
         var self = this;
 
         return new Ember.RSVP.Promise(function(resolve, reject) {
