@@ -2,7 +2,7 @@ import DS from 'ember-data';
 
 var SearchIndex = DS.Model.extend({
     cluster: DS.belongsTo('cluster'),
-    
+
     name: DS.attr('string'),
 
     // Index's n_val

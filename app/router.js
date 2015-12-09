@@ -29,4 +29,5 @@ export default Router.map(function() {
     this.route('object-not-found');
     this.route('service-not-found');
   });
+  this.route('search-index');
 });
