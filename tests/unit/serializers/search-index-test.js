@@ -1,8 +1,8 @@
 import { moduleForModel, test } from 'ember-qunit';
 
-moduleForModel('cluster', 'Unit | Serializer | cluster', {
+moduleForModel('search-index', 'Unit | Serializer | search index', {
   // Specify the other units that are required for this test.
-  needs: ['serializer:cluster', 'model:bucketType', 'model:riakNode', 'model:searchIndex']
+  needs: ['serializer:search-index']
 });
 
 // Replace this with your real tests.

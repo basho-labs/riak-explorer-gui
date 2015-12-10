@@ -24,9 +24,15 @@ export default Ember.Route.extend({
     afterModel: function (model, transition) {
         return Ember.RSVP.allSettled([
             this.setBuckets(model),
-            this.setIndexes(model),
+            this.getIndexes(model),
             this.pingNodes(model)
         ]);
+    },
+
+    getIndexes: function (cluster) {
+        let clusterId = cluster.get('id');
+
+        return  this.store.query('search-index', { clusterId: clusterId });
     },
 
     pingNodes: function(cluster) {
@@ -51,15 +57,6 @@ export default Ember.Route.extend({
 
         return this.store.query('bucket-type', {clusterId: clusterId}).then(function(bucket) {
             cluster.set('bucketTypes', bucket);
-        });
-    },
-
-    // TODO: Eventually move this over to be handled by Ember Data
-    setIndexes: function (cluster) {
-        let clusterId = cluster.get('id');
-
-        return this.explorer.getIndexes(clusterId).then(function(indexes) {
-            cluster.set('indexes', indexes);
         });
     }
 });

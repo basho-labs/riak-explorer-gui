@@ -58,9 +58,9 @@
     {{/dashboard-module}}
 
     {{#dashboard-module label='Search Indexes'}}
-        {{#if model.indexes}}
+        {{#if model.searchIndexes}}
             {{search-indexes
-            indexes=model.indexes
+            indexes=model.searchIndexes
             clusterProxyUrl=model.proxyUrl}}
         {{else}}
             <p>No search indexes found</p>

@@ -6,7 +6,7 @@ var SearchIndex = DS.Model.extend({
     name: DS.attr('string'),
 
     // Index's n_val
-    nVal: DS.attr('integer', {defaultValue: 3}),
+    nVal: DS.attr('number', {defaultValue: 3}),
 
     // Name of the schema the index is using
     schema: DS.attr('string')
