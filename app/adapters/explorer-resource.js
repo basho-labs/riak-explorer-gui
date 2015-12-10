@@ -1,11 +1,9 @@
-import DS from 'ember-data';
-import Ember from "ember";
-import config from '../config/environment';
+import ApplicationAdapter from './application';
+import Ember from 'ember';
 
 // Models fetching Riak resources from Explorer's own API
-var ExplorerResourceAdapter = DS.RESTAdapter.extend({
-    namespace: config.baseURL + 'explore',
 
+var ExplorerResourceAdapter = ApplicationAdapter.extend({
     /**
       Builds a URL for a given type and optional ID.
 

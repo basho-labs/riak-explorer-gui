@@ -1,4 +1,8 @@
-import ExplorerResourceAdapter from './explorer-resource';
+import DS from 'ember-data';
+import Ember from "ember";
 
-export default ExplorerResourceAdapter.extend({
+var ApplicationAdapter = DS.RESTAdapter.extend({
+    namespace:  'explore'
 });
+
+export default ApplicationAdapter;
