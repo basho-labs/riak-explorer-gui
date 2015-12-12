@@ -839,17 +839,19 @@ export default Ember.Service.extend({
      */
     getCluster(clusterId, store) {
         var self = this;
+
         return store.findRecord('cluster', clusterId)
             .then(function(cluster) {
-                // Ensure that bucket types are loaded
-                self.getBucketTypesForCluster(cluster, store);
-                return cluster;
+                return Ember.RSVP.allSettled([
+                    cluster,
+                    self.getBucketTypesForCluster(cluster, store),
+                    self.getIndexesForCluster(cluster, store)
+                ]);
             })
-            .then(function(cluster) {
-                return self.getIndexes(clusterId).then(function(indexes) {
-                    cluster.set('indexes', indexes);
-                    return cluster;
-                });
+            .then(function(PromiseArray) {
+                let cluster = PromiseArray[0].value;
+
+                return cluster;
             });
     },
 
@@ -874,28 +876,20 @@ export default Ember.Service.extend({
      * @example
      *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
      */
-    getIndexes(clusterId) {
-        var url = `${this.getClusterProxyUrl(clusterId)}/search/index`;
+    getIndexesForCluster(cluster, store) {
+        if(Ember.isEmpty(cluster.get('searchIndexes'))) {
+            // If this page was accessed directly
+            //  (via a bookmark and not from a link), bucket types are likely
+            //  to be not loaded yet. Load them.
+            return store.query('search-index', {clusterId: cluster.get('clusterId')})
+                .then(function(indexes) {
+                    cluster.set('searchIndexes', indexes);
 
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            let request = Ember.$.ajax({
-                url: url,
-                type: 'GET'
-            });
-
-            request.done(function(data) {
-                resolve(data);
-            });
-
-            request.fail(function(data) {
-                // If not found, return empty list
-                if (data.status === 404) {
-                    resolve([]);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+                    return indexes;
+                });
+        } else {
+            return cluster.get('searchIndexes');
+        }
     },
 
     /**
