@@ -845,7 +845,8 @@ export default Ember.Service.extend({
                 return Ember.RSVP.allSettled([
                     cluster,
                     self.getBucketTypesForCluster(cluster, store),
-                    self.getIndexesForCluster(cluster, store)
+                    self.getIndexesForCluster(cluster, store),
+                    self.getNodesForCluster(cluster, store)
                 ]);
             })
             .then(function(PromiseArray) {
@@ -871,10 +872,10 @@ export default Ember.Service.extend({
      * Returns a list of Search Indexes that have been created on this cluster.
      * @see http://docs.basho.com/riak/latest/dev/references/http/search-index-info/
      *
-     * @method getIndexes
-     * @return {Array<Hash>}
-     * @example
-     *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
+     * @method getIndexesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Array<SearchIndex>>|Array<SearchIndex>}
      */
     getIndexesForCluster(cluster, store) {
         if(Ember.isEmpty(cluster.get('searchIndexes'))) {
@@ -964,29 +965,22 @@ export default Ember.Service.extend({
     /**
      * Returns all reachable nodes for a given cluster id
      *
-     * @method getNodes
-     * @param clusterId {String} Cluster ID (as specified in the explorer config)
-     * @return {Ember.RSVP.Promise<Array<Object>>}
-     * @example Sample response
-     *    {"nodes":[{"id":"riak@127.0.0.1"}],"links":{"self":"/explore/clusters/default/nodes"}}
+     * @method getNodesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Array<RiakNode>>|Array<RiakNode>}
      */
-    getNodes(clusterId) {
-        let url = `${this.apiURL}explore/clusters/${clusterId}/nodes`;
+    getNodesForCluster(cluster, store) {
+        if(Ember.isEmpty(cluster.get('riakNodes'))) {
+            return store.query('riak-node', { clusterId: cluster.get('id') })
+                .then(function(nodes) {
+                    cluster.set('riakNodes', nodes);
 
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            let request = Ember.$.ajax({
-                url: url,
-                type: 'GET'
-            });
-
-            request.done(function(data) {
-                resolve(data);
-            });
-
-            request.fail(function(data) {
-                reject(data);
-            });
-        });
+                    return nodes;
+                });
+        } else {
+            return cluster.get('riakNodes');
+        }
     },
 
     /**

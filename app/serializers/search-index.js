@@ -7,10 +7,5 @@ export default ApplicationSerializer.extend({
         };
 
         return this._super(store, primaryModelClass, newPayload, id, requestType);
-    },
-
-    normalize(modelClass, resourceHash, prop) {
-        console.log(resourceHash);
-        return this._super(modelClass, resourceHash, prop);
     }
 });

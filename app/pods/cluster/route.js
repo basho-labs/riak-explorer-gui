@@ -28,15 +28,13 @@ export default Ember.Route.extend({
     pingNodes: function(cluster) {
         let self = this;
 
-        return cluster.get('riakNodes').then(function(riakNodes) {
-            riakNodes.forEach(function (node) {
-                let nodeId = node.get('id');
+        cluster.get('riakNodes').forEach(function(node) {
+            let nodeId = node.get('id');
 
-                self.explorer.getNodePing(nodeId).then(function onSuccess(data) {
-                    node.set('available', true);
-                }, function onFail(data) {
-                    node.set('available', false);
-                });
+            self.explorer.getNodePing(nodeId).then(function onSuccess(data) {
+                node.set('available', true);
+            }, function onFail(data) {
+                node.set('available', false);
             });
         });
     }
