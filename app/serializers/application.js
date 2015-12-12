@@ -30,5 +30,15 @@ export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
     keyForAttribute: function(attr , method) {
         // Riak and Explorer json uses snake case, like 'development_mode'
         return Ember.String.underscore(attr);
+    },
+
+    normalizeResponse: function(store, primaryModelClass, payload, id, requestType) {
+        let sortBy = Ember.Enumerable.sortBy;
+
+        if (payload.clusters) {
+            payload.clusters = payload.clusters.sortBy('id');
+        }
+
+        return this._super(store, primaryModelClass, payload, id, requestType);
     }
 });
