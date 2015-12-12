@@ -1175,6 +1175,29 @@ export default Ember.Service.extend({
     },
 
     /**
+     * Pings all nodes in a given cluster and sets the nodes status
+     *
+     * @method getNodesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     */
+    pingNodesInCluster(cluster, store) {
+        let self = this;
+
+        this.getNodesForCluster(cluster, store).then(function(nodes) {
+            nodes.forEach(function(node) {
+                let nodeId = node.get('id');
+
+                self.getNodePing(nodeId).then(function onSuccess(data) {
+                    node.set('available', true);
+                }, function onFail(data) {
+                    node.set('available', false);
+                });
+            });
+        });
+    },
+
+    /**
      * Updates a RiakObject via an HTTP Store Object request to the cluster.
      *
      * @method saveObject

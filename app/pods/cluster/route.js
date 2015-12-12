@@ -22,20 +22,6 @@ export default Ember.Route.extend({
     },
 
     afterModel: function (model, transition) {
-        return this.pingNodes(model);
-    },
-
-    pingNodes: function(cluster) {
-        let self = this;
-
-        cluster.get('riakNodes').forEach(function(node) {
-            let nodeId = node.get('id');
-
-            self.explorer.getNodePing(nodeId).then(function onSuccess(data) {
-                node.set('available', true);
-            }, function onFail(data) {
-                node.set('available', false);
-            });
-        });
+        return this.explorer.pingNodesInCluster(model, this.store);
     }
 });
