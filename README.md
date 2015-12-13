@@ -109,10 +109,14 @@ And the docs will be generated in the `docs/` directory.
 
 ### Running Tests
 
-(Default Ember doc copy)
+Testing requires that [phantomjs](http://phantomjs.org/) is installed on your local machine.
 
+To run the test suite:
 * `ember test`
+
+To run the test suite with watcher and ability to view tests in browser:
 * `ember test --server`
+* In the browser visit: [http://localhost:7357/](http://localhost:7357/)
 
 ### Building
 
