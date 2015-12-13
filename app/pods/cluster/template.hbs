@@ -1,61 +1,92 @@
 <div class='view-header'>
-  {{breadcrumb-component clusterId=model.id}}
-  {{view-label
-  pre-label='Cluster'
-  label=model.id}}
+    {{breadcrumb-component clusterId=model.id}}
+    {{view-label
+    pre-label='Cluster'
+    label=model.id}}
 </div>
 
 <div class='cluster-information-container'>
-  {{#dashboard-module label='Active Bucket Types'}}
-    {{#if model.activeBucketTypes}}
-      {{bucket-types
-      clusterId=model.clusterId
-      bucketTypes=model.activeBucketTypes}}
-    {{else}}
-      <p>No bucket types have been activated</p>
-    {{/if}}
-  {{/dashboard-module}}
+    {{#dashboard-module label='Cluster Properties'}}
+        <table class="key-value-table">
+            <tbody>
+            <tr>
+                <td class="key">Development Mode</td>
+                <td class="value">
+                    {{#if model.developmentMode}}
+                        On
+                    {{else}}
+                        Off
+                    {{/if}}
+                </td>
+            </tr>
+            <tr>
+                <td class="key">Edition Type</td>
+                <td class="value">
+                    {{#if model.isEnterpriseEdition}}
+                        Enterprise
+                    {{else}}
+                        {{#if model.isOpenSourceEdition}}
+                                Open Source
+                        {{else}}
+                            {{model.riakType}}
+                        {{/if}}
+                    {{/if}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {{/dashboard-module}}
 
-  {{#dashboard-module label='Inactive Bucket Types'}}
-    {{#if model.inactiveBucketTypes}}
-      {{bucket-types
-      clusterId=model.clusterId
-      bucketTypes=model.inactiveBucketTypes}}
-    {{else}}
-      <p>No inactive buckets</p>
-    {{/if}}
-  {{/dashboard-module}}
+    {{#dashboard-module label='Active Bucket Types'}}
+        {{#if model.activeBucketTypes}}
+            {{bucket-types
+            clusterId=model.clusterId
+            bucketTypes=model.activeBucketTypes}}
+        {{else}}
+            <p>No bucket types have been activated</p>
+        {{/if}}
+    {{/dashboard-module}}
 
-  {{#dashboard-module label='Search Indexes'}}
-    {{#if model.indexes}}
-      {{search-indexes
-      indexes=model.indexes
-      clusterProxyUrl=model.proxyUrl}}
-    {{else}}
-      <p>No search indexes found</p>
-    {{/if}}
-  {{/dashboard-module}}
+    {{#dashboard-module label='Inactive Bucket Types'}}
+        {{#if model.inactiveBucketTypes}}
+            {{bucket-types
+            clusterId=model.clusterId
+            bucketTypes=model.inactiveBucketTypes}}
+        {{else}}
+            <p>No inactive buckets</p>
+        {{/if}}
+    {{/dashboard-module}}
 
-  {{#dashboard-module label='Nodes'}}
-    {{#if model.riakNodes}}
-      <ul class="button-list">
-          {{#each model.riakNodes as |node|}}
-              <li>
-                  <a href="node-stats?nodeId={{node.id}}&clusterId={{model.id}}"
-                     class={{unless node.available "danger"}}>
-                      {{node.id}}
-                      <span
-                          class="glyphicon {{if node.available "glyphicon-ok-circle" "glyphicon-ban-circle"}}"
-                          aria-hidden="true">
+    {{#dashboard-module label='Search Indexes'}}
+        {{#if model.indexes}}
+            {{search-indexes
+            indexes=model.indexes
+            clusterProxyUrl=model.proxyUrl}}
+        {{else}}
+            <p>No search indexes found</p>
+        {{/if}}
+    {{/dashboard-module}}
+
+    {{#dashboard-module label='Nodes'}}
+        {{#if model.riakNodes}}
+            <ul class="button-list">
+                {{#each model.riakNodes as |node|}}
+                    <li>
+                        <a href="node-stats?nodeId={{node.id}}&clusterId={{model.id}}"
+                           class={{unless node.available "danger"}}>
+                            {{node.id}}
+                            <span
+                                class="glyphicon {{if node.available "glyphicon-ok-circle" "glyphicon-ban-circle"}}"
+                                aria-hidden="true">
                       </span>
-                  </a>
-              </li>
-          {{/each}}
-      </ul>
-    {{else}}
-      <p>No nodes detected</p>
-    {{/if}}
-  {{/dashboard-module}}
+                        </a>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>No nodes detected</p>
+        {{/if}}
+    {{/dashboard-module}}
 </div>
 
 
