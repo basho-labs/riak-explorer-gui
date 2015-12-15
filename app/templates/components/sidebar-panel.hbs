@@ -6,7 +6,7 @@
     </li>
     {{#each clusters as |cluster|}}
       <li class='sidebar-group-item'>
-        {{#link-to 'cluster' cluster}}
+        {{#link-to 'cluster' cluster.id}}
           {{cluster.id}}
           {{#if cluster.developmentMode}}
             <span class='dev-mode'>Dev mode</span>

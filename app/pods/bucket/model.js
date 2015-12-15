@@ -105,7 +105,7 @@ var Bucket = DS.Model.extend({
      * @type String
      */
     index: function() {
-        return this.get('cluster').get('indexes')
+        return this.get('cluster').get('searchIndexes')
           .findBy('name', this.get('props').get('searchIndexName'));
     }.property('cluster'),
 
