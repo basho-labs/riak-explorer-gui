@@ -2,7 +2,7 @@ import { moduleForModel, test, pending } from 'ember-qunit';
 import Ember from 'ember';
 
 moduleForModel('cluster', 'Unit | Model | cluster', {
-  needs: ['model:bucketType', 'model:riakNode']
+  needs: ['model:bucketType', 'model:riakNode', 'model:searchIndex']
 });
 
 test('it exists', function(assert) {
@@ -26,6 +26,14 @@ test('riakNodes relationship', function(assert) {
   let relationship = Ember.get(klass, 'relationshipsByName').get('riakNodes');
 
   assert.equal(relationship.key, 'riakNodes');
+  assert.equal(relationship.kind, 'hasMany');
+});
+
+test('searchIndexes relationship', function(assert) {
+  let klass = this.subject({}).constructor;
+  let relationship = Ember.get(klass, 'relationshipsByName').get('searchIndexes');
+
+  assert.equal(relationship.key, 'searchIndexes');
   assert.equal(relationship.kind, 'hasMany');
 });
 

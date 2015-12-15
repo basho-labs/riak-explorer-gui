@@ -7,7 +7,7 @@ var Router = Ember.Router.extend({
 
 export default Router.map(function() {
   this.route('explorer_api');
-  this.route('cluster', { path: '/cluster/:cluster_id' });
+  this.route('cluster', { path: '/cluster/:clusterId' });
   this.route('bucket-type',
       { path: '/cluster/:clusterId/bucket_type/:bucketTypeId' });
   this.route('bucket',
@@ -29,4 +29,5 @@ export default Router.map(function() {
     this.route('object-not-found');
     this.route('service-not-found');
   });
+  this.route('search-index', { path: '/cluster/:clusterId/index/:searchIndexId' });
 });

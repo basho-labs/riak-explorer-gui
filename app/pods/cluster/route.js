@@ -18,48 +18,10 @@ export default Ember.Route.extend({
     },
 
     model: function (params) {
-        return this.store.findRecord('cluster', params.cluster_id);
+        return this.explorer.getCluster(params.clusterId, this.store);
     },
 
     afterModel: function (model, transition) {
-        return Ember.RSVP.allSettled([
-            this.setBuckets(model),
-            this.setIndexes(model),
-            this.pingNodes(model)
-        ]);
-    },
-
-    pingNodes: function(cluster) {
-        let self = this;
-
-        return cluster.get('riakNodes').then(function(riakNodes) {
-            riakNodes.forEach(function (node) {
-                let nodeId = node.get('id');
-
-                self.explorer.getNodePing(nodeId).then(function onSuccess(data) {
-                    node.set('available', true);
-                }, function onFail(data) {
-                    node.set('available', false);
-                });
-            });
-        });
-    },
-
-    // TODO: Eventually move this over to be handled by Ember Data
-    setBuckets: function (cluster) {
-        let clusterId = cluster.get('id');
-
-        return this.store.query('bucket-type', {clusterId: clusterId}).then(function(bucket) {
-            cluster.set('bucketTypes', bucket);
-        });
-    },
-
-    // TODO: Eventually move this over to be handled by Ember Data
-    setIndexes: function (cluster) {
-        let clusterId = cluster.get('id');
-
-        return this.explorer.getIndexes(clusterId).then(function(indexes) {
-            cluster.set('indexes', indexes);
-        });
+        return this.explorer.pingNodesInCluster(model, this.store);
     }
 });

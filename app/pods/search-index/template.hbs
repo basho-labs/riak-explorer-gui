@@ -1,0 +1,46 @@
+<div class='view-header'>
+    {{breadcrumb-component
+    clusterId=model.cluster.id
+    pageTitle=model.name
+    }}
+    {{view-label
+    pre-label='Search Index'
+    label=model.name}}
+</div>
+
+{{#dashboard-module label='Index Details'}}
+    <table class="key-value-table">
+        <tbody>
+        <tr>
+            <td class="key">Name</td>
+            <td class="value">{{model.name}}</td>
+        </tr>
+        <tr>
+            <td class="key">N Value</td>
+            <td class="value">{{model.nVal}}</td>
+        </tr>
+        <tr>
+            <td class="key">Schema</td>
+            <td class="value">
+                <a href={{model.schemaUrl}}>{{model.schema}}</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="key">Bucket Types Using Index</td>
+            <td class="value">
+                {{#if model.bucketTypesUsing}}
+                    <ul class="button-list">
+                        {{#each model.bucketTypesUsing as |bucketType|}}
+                            <li>
+                                {{link.bucket-type bucketType=bucketType btnBlock=true}}
+                            </li>
+                        {{/each}}
+                    </ul>
+                {{else}}
+                    None
+                {{/if}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{{/dashboard-module}}

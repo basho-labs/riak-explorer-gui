@@ -839,17 +839,20 @@ export default Ember.Service.extend({
      */
     getCluster(clusterId, store) {
         var self = this;
+
         return store.findRecord('cluster', clusterId)
             .then(function(cluster) {
-                // Ensure that bucket types are loaded
-                self.getBucketTypesForCluster(cluster, store);
-                return cluster;
+                return Ember.RSVP.allSettled([
+                    cluster,
+                    self.getBucketTypesForCluster(cluster, store),
+                    self.getIndexesForCluster(cluster, store),
+                    self.getNodesForCluster(cluster, store)
+                ]);
             })
-            .then(function(cluster) {
-                return self.getIndexes(clusterId).then(function(indexes) {
-                    cluster.set('indexes', indexes);
-                    return cluster;
-                });
+            .then(function(PromiseArray) {
+                let cluster = PromiseArray[0].value;
+
+                return cluster;
             });
     },
 
@@ -869,33 +872,25 @@ export default Ember.Service.extend({
      * Returns a list of Search Indexes that have been created on this cluster.
      * @see http://docs.basho.com/riak/latest/dev/references/http/search-index-info/
      *
-     * @method getIndexes
-     * @return {Array<Hash>}
-     * @example
-     *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
+     * @method getIndexesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Array<SearchIndex>>|Array<SearchIndex>}
      */
-    getIndexes(clusterId) {
-        var url = `${this.getClusterProxyUrl(clusterId)}/search/index`;
+    getIndexesForCluster(cluster, store) {
+        if(Ember.isEmpty(cluster.get('searchIndexes'))) {
+            // If this page was accessed directly
+            //  (via a bookmark and not from a link), bucket types are likely
+            //  to be not loaded yet. Load them.
+            return store.query('search-index', {clusterId: cluster.get('clusterId')})
+                .then(function(indexes) {
+                    cluster.set('searchIndexes', indexes);
 
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            let request = Ember.$.ajax({
-                url: url,
-                type: 'GET'
-            });
-
-            request.done(function(data) {
-                resolve(data);
-            });
-
-            request.fail(function(data) {
-                // If not found, return empty list
-                if (data.status === 404) {
-                    resolve([]);
-                } else {
-                    reject(data);
-                }
-            });
-        });
+                    return indexes;
+                });
+        } else {
+            return cluster.get('searchIndexes');
+        }
     },
 
     /**
@@ -970,29 +965,22 @@ export default Ember.Service.extend({
     /**
      * Returns all reachable nodes for a given cluster id
      *
-     * @method getNodes
-     * @param clusterId {String} Cluster ID (as specified in the explorer config)
-     * @return {Ember.RSVP.Promise<Array<Object>>}
-     * @example Sample response
-     *    {"nodes":[{"id":"riak@127.0.0.1"}],"links":{"self":"/explore/clusters/default/nodes"}}
+     * @method getNodesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     * @return {Ember.RSVP.Promise<Array<RiakNode>>|Array<RiakNode>}
      */
-    getNodes(clusterId) {
-        let url = `${this.apiURL}explore/clusters/${clusterId}/nodes`;
+    getNodesForCluster(cluster, store) {
+        if(Ember.isEmpty(cluster.get('riakNodes'))) {
+            return store.query('riak-node', { clusterId: cluster.get('id') })
+                .then(function(nodes) {
+                    cluster.set('riakNodes', nodes);
 
-        return new Ember.RSVP.Promise(function(resolve, reject) {
-            let request = Ember.$.ajax({
-                url: url,
-                type: 'GET'
-            });
-
-            request.done(function(data) {
-                resolve(data);
-            });
-
-            request.fail(function(data) {
-                reject(data);
-            });
-        });
+                    return nodes;
+                });
+        } else {
+            return cluster.get('riakNodes');
+        }
     },
 
     /**
@@ -1184,6 +1172,29 @@ export default Ember.Service.extend({
             indexes: indexes,
             custom: custom
         };
+    },
+
+    /**
+     * Pings all nodes in a given cluster and sets the nodes status
+     *
+     * @method getNodesForCluster
+     * @param {DS.Model} cluster
+     * @param {DS.Store} store
+     */
+    pingNodesInCluster(cluster, store) {
+        let self = this;
+
+        this.getNodesForCluster(cluster, store).then(function(nodes) {
+            nodes.forEach(function(node) {
+                let nodeId = node.get('id');
+
+                self.getNodePing(nodeId).then(function onSuccess(data) {
+                    node.set('available', true);
+                }, function onFail(data) {
+                    node.set('available', false);
+                });
+            });
+        });
     },
 
     /**

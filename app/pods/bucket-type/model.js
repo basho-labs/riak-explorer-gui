@@ -67,13 +67,13 @@ var BucketType = DS.Model.extend({
     }.property('cluster'),
 
     /**
-     * Returns the name of the Search Index associated with this bucket type,
+     * Returns the Search Index associated with this bucket type,
      *     if applicable.
      * @property index
      * @type String
      */
     index: function() {
-        return this.get('cluster').get('indexes')
+        return this.get('cluster').get('searchIndexes')
             .findBy('name', this.get('props').get('searchIndexName'));
     }.property('cluster', 'props'),
 

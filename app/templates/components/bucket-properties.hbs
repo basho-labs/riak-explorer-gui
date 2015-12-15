@@ -1,19 +1,19 @@
 <table class='key-value-table'>
-  <tr>
+    <tr>
     <td class='key'>Bucket Name:</td>
     <td class='value'>
       {{model.name}}
     </td>
   </tr>
-  <tr>
+    <tr>
     <td class='key'>Object type:</td>
     <td class='value'>{{model.props.objectType}}</td>
   </tr>
-  <tr>
+    <tr>
     <td class='key'>Conflict Res. Strategy:</td>
     <td class='value'>{{model.props.resolutionStrategy}}</td>
   </tr>
-  <tr>
+    <tr>
     <td class='key'>Quorum:</td>
     <td class='value'>
       N_Val: {{model.props.nVal}}
@@ -29,40 +29,14 @@
       {{/if}}
     </td>
   </tr>
-  {{#if model.props.isSearchIndexed}}
-    <tr>
-      <td class='key'>Search Index:</td>
-      <td class='value'>{{model.props.searchIndexName}}</td>
-    </tr>
     {{#if model.index}}
-      <tr>
-        <td class='key'>Search Schema:</td>
-        <td class='value'>
-          <a href="{{model.cluster.proxyUrl}}/search/schema/{{model.index.schema}}">
-            {{model.index.schema}}
-          </a>
-        </td>
-      </tr>
-      <tr>
-        <td class='key'>Index N_Val:</td>
-        <td class='value'>{{model.index.n_val}}</td>
-      </tr>
+        {{#link-to 'search-index' model.index.cluster.clusterId model.index.name}}
+            {{model.index.name}}
+        {{/link-to}}
     {{else}}
-      <tr>
-          <td class='key'></td>
-          <td class='value'>
-            <em>Warning: Index with id <code>{{model.props.searchIndexName}}</code>
-              has not been created on this cluster!</em>
-          </td>
-      </tr>
+        Not available (not being indexed)
     {{/if}}
-  {{else}}
-    <tr>
-      <td class='key'>Search Index:</td>
-      <td class='value'>Not available (not being indexed)</td>
-    </tr>
-  {{/if}}
-  {{#if model.props.warnings}}
+    {{#if model.props.warnings}}
     <tr>
       <td class='key'>Warnings:</td>
       <td class='value'>

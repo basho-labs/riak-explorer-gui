@@ -24,6 +24,14 @@ var Cluster = DS.Model.extend({
      */
     riakNodes: DS.hasMany('riak-node', { async: true }),
 
+
+    /**
+     * Search indexes created on the cluster
+     * @property searchIndexes
+     * @type Array<BucketType>
+     */
+    searchIndexes: DS.hasMany('search-index', { async: true }),
+
     /**
      * Is this cluster in Dev Mode? Set in the Explorer config file.
      * Dev mode allows expensive operations like list keys, delete bucket, etc.
@@ -32,16 +40,6 @@ var Cluster = DS.Model.extend({
      * @default false
      */
     developmentMode: DS.attr('boolean', {defaultValue: false}),
-
-    /**
-     * List of Search Indexes that have been created on this cluster.
-     * @see http://docs.basho.com/riak/latest/dev/using/search/
-     * @property indexes
-     * @type Array<Hash>
-     * @example
-     *    [{"name":"customers","n_val":3,"schema":"_yz_default"}]
-     */
-    indexes: DS.attr(),
 
     /**
      * The Riak Type: either Open Source (oss) or Enterprise Edition (ee)

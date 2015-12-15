@@ -1,7 +1,7 @@
 <table class="table">
 <thead>
     <tr>
-        <th>Index Name</th>
+        <th>Index</th>
         <th>Schema</th>
         <th>n_val</th>
     </tr>
@@ -9,11 +9,9 @@
 <tbody>
 {{#each indexes as |index|}}
     <tr>
-        <td>{{index.name}}</td>
-        <td>
-            <a href="{{clusterProxyUrl}}/search/schema/{{index.schema}}">{{index.schema}}</a>
-        </td>
-        <td>{{index.n_val}}</td>
+        <td>{{link.link-index searchIndex=index}}</td>
+        <td><a href={{index.schemaUrl}}>{{index.schema}}</a></td>
+        <td>{{index.nVal}}</td>
     </tr>
 {{else}}
     No indexes found.
