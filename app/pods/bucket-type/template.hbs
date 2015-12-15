@@ -104,7 +104,7 @@
               <td class="value">{{model.bucketList.created}}</td>
             </tr>
             <tr>
-              <td class="key">Bucket List count:</td>
+              <td class="key">Total buckets in cached list:</td>
               <td class="value">{{model.bucketList.total}}</td>
             </tr>
             {{#if model.cluster.developmentMode}}
@@ -122,7 +122,7 @@
               </tr>
             {{/if}}
             <tr>
-              <td class="key">Stored buckets</td>
+              <td class="key">Cached Bucket List</td>
               <td class="value">
                 {{#pagination-component
                 chunk-length=model.bucketList.count
