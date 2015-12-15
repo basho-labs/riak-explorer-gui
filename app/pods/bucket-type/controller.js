@@ -3,7 +3,15 @@ import Ember from 'ember';
 var BucketTypeController = Ember.Controller.extend({
     explorer: Ember.inject.service('explorer'),
 
-    // delay in milliseconds
+    /**
+     * Kicks off a model refresh after the specified delay.
+     * Initially called by +BucketTypeRoute.setupController+.
+     *
+     * @method pollForModel
+     * @param bucketType {BucketType}
+     * @param delay {Number} Milliseconds to wait before refreshing the model
+     *                       (to see if the bucket list has loaded)
+     */
     pollForModel: function(bucketType, delay) {
         var self = this;
         Ember.run.later(function() {
@@ -12,16 +20,27 @@ var BucketTypeController = Ember.Controller.extend({
         }, delay);
     },
 
+    /**
+     * Reloads the model (bucket type, its properties and bucket list)
+     * from the server.
+     * If the bucket list is not ready, try again after a delay.
+     *
+     * @method refreshModel
+     * @param bucketType {BucketType}
+     */
     refreshModel: function(bucketType) {
         var self = this;
         // console.log("Refreshing model %O", bucketType);
-        self.get('explorer').getBucketList(bucketType.get('cluster'),
+        var cluster = bucketType.get('cluster');
+        self.get('explorer').getBucketList(cluster,
             bucketType, self.store)
             .then(function(updatedBucketList) {
                 // console.log('loaded bucket list: %O', updatedBucketList);
                 var model = self.get('model');
                 model.set('bucketList', updatedBucketList);
-                if(!model.get('isBucketListLoaded')) {
+                if(!model.get('isBucketListLoaded') &&
+                      updatedBucketList.get('cachePresent')) {
+                    // Only continue polling in development mode
                     self.pollForModel(model, 3000);
                 }
             });
@@ -38,6 +57,7 @@ var BucketTypeController = Ember.Controller.extend({
 
             return service.getBucketTypeWithBucketList(bucketType, cluster, store, start, rows);
         },
+
         refreshBuckets: function(bucketType) {
             var clusterId = bucketType.get('clusterId');
             var bucketTypeId = bucketType.get('bucketTypeId');

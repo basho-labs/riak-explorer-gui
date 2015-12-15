@@ -40,59 +40,65 @@
 
   {{#dashboard-module label='Keys'}}
     {{#if model.isKeyListLoaded}}
-      <table class="key-value-table">
-        <tbody>
-        <tr>
-          <td class="key">Key cache created:</td>
-          <td class="value">{{model.keyList.created}}</td>
-        </tr>
-        <tr>
-          <td class="key">Key count:</td>
-          <td class="value">{{model.keyList.count}}</td>
-        </tr>
-        <tr>
-          <td class="key">Available actions:</td>
-          <td class="value">
-            <ul class='button-list'>
-              {{#if model.cluster.developmentMode}}
-                <li>
-                  {{button.refresh-keys action="refreshKeys" bucket=model}}
-                </li>
-              {{/if}}
-              {{#if model.keyList.showDeleteKeys}}
-                <li>
-                  <button type="button" class="btn btn-xs btn-danger" {{action 'deleteBucket' model}}>
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    Delete All Keys
-                  </button>
-                </li>
-              {{/if}}
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td class="key">Stored keys:</td>
-          <td class="value">
-            {{#pagination-component
-            chunk-length=model.keyList.count
-            total-length=model.keyList.total
-            section-request='retrieveRequestedKeys'}}
-              <ul class='button-list small'>
-                {{#each model.keyList.keys as |obj|}}
+      {{#if model.keyList.cachePresent}}
+        <table class="key-value-table">
+          <tbody>
+          <tr>
+            <td class="key">Key cache created:</td>
+            <td class="value">{{model.keyList.created}}</td>
+          </tr>
+          <tr>
+            <td class="key">Key count:</td>
+            <td class="value">{{model.keyList.count}}</td>
+          </tr>
+          <tr>
+            <td class="key">Available actions:</td>
+            <td class="value">
+              <ul class='button-list'>
+                {{#if model.cluster.developmentMode}}
                   <li>
-                    {{link.link-object obj=obj}}
+                    {{button.refresh-keys action="refreshKeys" bucket=model}}
                   </li>
-                {{else}}
-                  No keys found
-                {{/each}}
+                {{/if}}
+                {{#if model.keyList.showDeleteKeys}}
+                  <li>
+                    <button type="button" class="btn btn-xs btn-danger" {{action 'deleteBucket' model}}>
+                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                      Delete All Keys
+                    </button>
+                  </li>
+                {{/if}}
               </ul>
-            {{/pagination-component}}
-          </td>
-        </tr>
-        </tbody>
-      </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="key">Cached Key List:</td>
+            <td class="value">
+              {{#pagination-component
+              chunk-length=model.keyList.count
+              total-length=model.keyList.total
+              section-request='retrieveRequestedKeys'}}
+                <ul class='button-list small'>
+                  {{#each model.keyList.keys as |obj|}}
+                    <li>
+                      {{link.link-object obj=obj}}
+                    </li>
+                  {{else}}
+                    No keys found
+                  {{/each}}
+                </ul>
+              {{/pagination-component}}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      {{else}}
+        <p>Cached list not available.
+          This cluster is in Production mode, and so no cache refresh is
+          possible.</p>
+      {{/if}}
     {{else}}
-      {{loading-spinner}}
+      {{loading-spinner statusMessage=model.keyList.statusMessage}}
     {{/if}}
   {{/dashboard-module}}
 </div>

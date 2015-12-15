@@ -12,8 +12,19 @@ export default Ember.Route.extend({
           });
     },
 
+    /**
+     * @method setupController
+     * @param controller {BucketController}
+     * @param model {Bucket}
+     */
     setupController: function(controller, model) {
         this._super(controller, model);
+        if(!model.get('keyList')) {
+            // Init to empty key list
+            let keys = null;
+            let emptyList = this.explorer.createKeyList(keys, model, this.store);
+            model.set('keyList', emptyList);
+        }
         // When user follows a bucket link from the Bucket Type view,
         //   the props are not yet initialized. Also, the model()
         //   function, above, is not called. Handle this case.

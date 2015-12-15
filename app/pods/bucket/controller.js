@@ -3,7 +3,15 @@ import Ember from 'ember';
 var BucketController = Ember.Controller.extend({
     explorer: Ember.inject.service('explorer'),
 
-    // delay in milliseconds
+    /**
+     * Kicks off a model refresh after the specified delay.
+     * Initially called by +BucketRoute.setupController+.
+     *
+     * @method pollForModel
+     * @param bucket {Bucket}
+     * @param delay {Number} Milliseconds to wait before refreshing the model
+     *                       (to see if the key list has loaded)
+     */
     pollForModel: function(bucket, delay) {
         var self = this;
         Ember.run.later(function() {
@@ -11,12 +19,23 @@ var BucketController = Ember.Controller.extend({
         }, delay);
     },
 
+    /**
+     * Reloads the model (a bucket, its properties and key list) from the server.
+     * If the key list is not ready, try again after a delay.
+     *
+     * @method refreshModel
+     * @param bucket {Bucket}
+     */
     refreshModel: function(bucket) {
         var self = this;
+        var cluster = bucket.get('cluster');
         self.get('explorer').getKeyList(bucket, self.store)
             .then(function(updatedKeyList) {
+                // The key list could be either loaded or empty at this point
                 bucket.set('keyList', updatedKeyList);
-                if(!bucket.get('isKeyListLoaded')) {
+                // If the key list is empty/not-loaded, poll for it again
+                if(!bucket.get('isKeyListLoaded') &&
+                      updatedKeyList.get('cachePresent')) {
                     self.pollForModel(bucket, 3000);
                 }
             });
