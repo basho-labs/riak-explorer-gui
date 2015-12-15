@@ -44,6 +44,13 @@ var Cluster = DS.Model.extend({
     indexes: DS.attr(),
 
     /**
+     * The Riak Type: either Open Source (oss) or Enterprise Edition (ee)
+     * @property riakType
+     * @type String
+     */
+    riakType: DS.attr('string', { defaultValue: 'oss' }),
+
+    /**
      * Returns a list of currently activated bucket types.
      *
      * @method activeBucketTypes
@@ -73,6 +80,26 @@ var Cluster = DS.Model.extend({
     inactiveBucketTypes: function() {
         return this.get('bucketTypes').filterBy('isInactive');
     }.property('bucketTypes'),
+
+    /**
+     * Boolean test on if the riakType is the open source edition
+     *
+     * @method isOpenSourceEdition
+     * @return Boolean
+     */
+    isOpenSourceEdition: function() {
+      return this.get('riakType') === 'oss';
+    }.property('riakType'),
+
+    /**
+     * Boolean test on if the riakType is the enterprise edition
+     *
+     * @method isEnterpriseEdition
+     * @return Boolean
+     */
+    isEnterpriseEdition: function() {
+        return this.get('riakType') === 'ee';
+    }.property('riakType'),
 
     /**
      * Returns true if this cluster is in production mode (development_mode=off)
