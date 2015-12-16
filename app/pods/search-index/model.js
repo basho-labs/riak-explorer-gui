@@ -2,13 +2,22 @@ import DS from 'ember-data';
 
 var SearchIndex = DS.Model.extend({
     /**
-     * Riak cluster in the search index wascreated on
+     * Riak cluster the search index was created on
      *
      * @property cluster
      * @type {DS.Model} Cluster
      * @writeOnce
      */
-    cluster: DS.belongsTo('cluster'),
+    cluster: DS.belongsTo('cluster', { async: true }),
+
+    /**
+     * Schema the search index is using
+     *
+     * @property schema
+     * @type {DS.Model} Search Schema
+     * @writeOnce
+     */
+    schema: DS.belongsTo('search-schema', { async: true }),
 
     /**
      * Returns the search index name/id
@@ -25,11 +34,12 @@ var SearchIndex = DS.Model.extend({
     nVal: DS.attr('number', {defaultValue: 3}),
 
     /**
-     * Name of the schema the index is using
-     * @property schema
-     * @type String
+     * Holds the value of the schema name that index is using.
+     *  Temporary hack until basho-labs/riak_explorer#89 is completed
+     * @property nVal
+     * @type Integer
      */
-    schema: DS.attr('string'),
+    schemaRef: DS.attr('string'),
 
     /**
      * Ember.Array of bucket types on the current cluster using the index
@@ -40,19 +50,7 @@ var SearchIndex = DS.Model.extend({
         let bucketTypes = this.get('cluster').get('bucketTypes');
 
         return bucketTypes.filterBy('index.name', this.get('name'));
-    }.property('cluster.bucketTypes'),
-
-    /**
-     * Returns a formatted schema url
-     * @property schemaUrl
-     * @type String
-     */
-    schemaUrl: function() {
-        let proxyURL = this.get('cluster').get('proxyUrl');
-        let schema = this.get('schema');
-
-        return `${proxyURL}/search/schema/${schema}`;
-    }.property('schema', 'cluster.proxyUrl')
+    }.property('cluster.bucketTypes')
 });
 
 export default SearchIndex;

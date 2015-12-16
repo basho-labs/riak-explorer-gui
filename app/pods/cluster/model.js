@@ -33,6 +33,13 @@ var Cluster = DS.Model.extend({
     searchIndexes: DS.hasMany('search-index', { async: true }),
 
     /**
+     * Search schemas created on the cluster
+     * @property searchSchemas
+     * @type Array<BucketType>
+     */
+    searchSchemas: DS.hasMany('search-schema', { async: true }),
+
+    /**
      * Is this cluster in Dev Mode? Set in the Explorer config file.
      * Dev mode allows expensive operations like list keys, delete bucket, etc.
      * @property developmentMode

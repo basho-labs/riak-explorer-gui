@@ -1,0 +1,22 @@
+.schema-actions {
+  text-align: right;
+  margin-bottom: 10px;
+
+  .schema-action {
+    @extend .btn;
+    @extend .btn-sm;
+    margin-left: 10px;
+  }
+
+  .edit {
+    @extend .btn-primary;
+  }
+
+  .cancel {
+    @extend .btn-danger;
+  }
+
+  .update {
+    @extend .btn-primary;
+  }
+}

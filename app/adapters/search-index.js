@@ -10,7 +10,6 @@ var SearchIndexAdapter = DS.RESTAdapter.extend({
         let url = this.buildURL(type.modelName, null, null, 'query', query);
 
         let promise = this.ajax(url, 'GET').then(function(indexes) {
-
             indexes.forEach(function(index) {
                 index.id = `${query.clusterId}/${index.name}`;
             });
@@ -23,3 +22,4 @@ var SearchIndexAdapter = DS.RESTAdapter.extend({
 });
 
 export default SearchIndexAdapter;
+
