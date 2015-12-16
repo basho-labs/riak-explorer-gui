@@ -12,6 +12,11 @@ export default Ember.Route.extend({
           });
     },
 
+    /**
+     * @method setupController
+     * @param controller {BucketController}
+     * @param model {Bucket}
+     */
     setupController: function(controller, model) {
         this._super(controller, model);
         // When user follows a bucket link from the Bucket Type view,

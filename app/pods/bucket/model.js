@@ -13,6 +13,20 @@ import DS from 'ember-data';
  */
 var Bucket = DS.Model.extend({
     /**
+     * Initializes a new Bucket instance by setting up an empty
+     * KeyList.
+     * @method init
+     */
+    init() {
+        this._super();
+        let emptyList = this.store.createRecord('key-list', {
+            cluster: this.get('cluster'),
+            keys: []
+        });
+        this.set('keyList', emptyList);
+    },
+
+    /**
      * Riak Bucket Type in which this bucket lives.
      *
      * @property bucketType

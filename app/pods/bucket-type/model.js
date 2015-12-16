@@ -12,6 +12,20 @@ import DS from 'ember-data';
  */
 var BucketType = DS.Model.extend({
     /**
+     * Initializes a new BucketType instance by setting up an empty
+     * BucketList.
+     * @method init
+     */
+    init() {
+        this._super();
+        let emptyList = this.store.createRecord('bucket-list', {
+            cluster: this.get('cluster'),
+            buckets: []
+        });
+        this.set('bucketList', emptyList);
+    },
+
+    /**
      * Contains the results of cached bucket lists for this bucket type,
      * fetched from the API.
      * @property bucket-list

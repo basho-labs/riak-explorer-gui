@@ -218,6 +218,14 @@ export default Ember.Service.extend({
      * @return {BucketList}
      */
     createBucketList(data, cluster, bucketType, store) {
+        if(!data) {
+            // No data, create an empty Bucket list
+            return store.createRecord('bucket-list', {
+                cluster: cluster,
+                bucketType: bucketType,
+                buckets: []
+            });
+        }
         // Turn a list of bucket names into a list of actual bucket instances
         var bucketList = data.buckets.buckets.map(function(bucketName) {
             return store.createRecord('bucket', {
@@ -254,7 +262,8 @@ export default Ember.Service.extend({
             // No data, return an empty KeyList
             return store.createRecord('key-list', {
                 bucket: bucket,
-                cluster: bucket.get('cluster')
+                cluster: bucket.get('cluster'),
+                keys: []
             });
         }
         // The model name depends on the "object type" - plain Object, CRDT, etc
@@ -689,16 +698,21 @@ export default Ember.Service.extend({
                 error: function(jqXHR, textStatus) {
                     // Fail (likely a 404, cache not yet created)
                     if(jqXHR.status === 404) {
-                        bucketType.set('isBucketListLoaded', false);
-                        // Kick off a Cache Refresh, and repeat the getBucketList request
-                        console.log("kicking off cache refresh...");
-                        explorer.bucketCacheRefresh(clusterId, bucketTypeId);
                         // Return an empty (Loading..) list. Controller will poll to
                         // refresh it, later
-                        var emptyList = store.createRecord('bucket-list', {
-                            cluster: cluster,
-                            bucketType: bucketType
-                        });
+                        let data = null;
+                        let emptyList = explorer.createBucketList(data, cluster,
+                                bucketType, store);
+                        if(cluster.get('developmentMode')) {
+                            bucketType.set('isBucketListLoaded', false);
+                            emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
+                            // Kick off a Cache Refresh
+                            explorer.bucketCacheRefresh(clusterId, bucketTypeId);
+                        } else {
+                            bucketType.set('isBucketListLoaded', true);
+                            // In Production mode, no cache refresh will happen
+                            emptyList.set('cachePresent', false);
+                        }
                         Ember.run(null, resolve, emptyList);
                     } else {
                         Ember.run(null, reject, textStatus);
@@ -903,6 +917,7 @@ export default Ember.Service.extend({
      */
     getKeyList(bucket, store, start=1, rows=this.pageSize) {
         var clusterId    = bucket.get('clusterId');
+        var cluster      = bucket.get('cluster');
         var bucketTypeId = bucket.get('bucketTypeId');
         var bucketId     = bucket.get('bucketId');
         var explorer     = this;
@@ -920,11 +935,20 @@ export default Ember.Service.extend({
                 },
                 error: function (jqXHR, textStatus) {
                     if (jqXHR.status === 404) {
-                        bucket.set('isKeyListLoaded', false);
-                        // Empty cache (need to kick off a refresh)
-                        explorer.keyCacheRefresh(clusterId, bucketTypeId, bucketId);
+                        let data = null;
+                        let emptyList = explorer.createKeyList(data, bucket, store);
+                        if(cluster.get('developmentMode')) {
+                            bucket.set('isKeyListLoaded', false);
+                            emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list keys call...');
+                            // Empty cache (need to kick off a refresh)
+                            // (only in development mode)
+                            explorer.keyCacheRefresh(clusterId, bucketTypeId, bucketId);
+                        } else {
+                            bucket.set('isKeyListLoaded', true);
+                            emptyList.set('cachePresent', false);
+                        }
                         // Results in returning an empty (Loading..) key list
-                        Ember.run(null, resolve, null);
+                        Ember.run(null, resolve, emptyList);
                     } else {
                         // Some other error
                         Ember.run(null, reject, textStatus);

@@ -16,7 +16,6 @@ export default Ember.Route.extend({
 
     setupController: function(controller, model) {
         this._super(controller, model);
-
         if(!model.get('isBucketListLoaded')) {
             controller.pollForModel(model, 3000);
         }
