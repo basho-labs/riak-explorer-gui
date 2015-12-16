@@ -16,13 +16,6 @@ export default Ember.Route.extend({
 
     setupController: function(controller, model) {
         this._super(controller, model);
-        if(!model.get('bucketList')) {
-            // Init to empty bucket list
-            let buckets = null;
-            let emptyList = this.explorer.createBucketList(buckets, model.get('cluster'),
-                model.get('bucketType'), this.store);
-            model.set('bucketList', emptyList);
-        }
         if(!model.get('isBucketListLoaded')) {
             controller.pollForModel(model, 3000);
         }
