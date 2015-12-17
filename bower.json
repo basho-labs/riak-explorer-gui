@@ -12,6 +12,7 @@
     "jquery": "^1.11.1",
     "loader.js": "ember-cli/loader.js#3.2.0",
     "bootstrap-sass": "~3.3.5",
-    "qunit": "~1.17.1"
+    "qunit": "~1.17.1",
+    "highlightjs": "~9.0.0"
   }
 }
