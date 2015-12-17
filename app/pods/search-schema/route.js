@@ -3,13 +3,20 @@ import $ from 'jquery';
 
 export default Ember.Route.extend({
     model(params) {
+        let self = this;
+
         return this.explorer.getCluster(params.clusterId, this.store)
             .then(function(cluster){
-                return cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
+                let schema = cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
+
+                if (!schema) {
+                    schema = self.explorer.createSchema(params.searchSchemaId, cluster, self.store);
+                }
+
+                return schema;
             });
     },
 
-    // TODO: Move to init???
     afterModel(model, transition) {
         return Ember.$.ajax({
             type: 'GET',

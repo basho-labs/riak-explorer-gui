@@ -21,8 +21,11 @@
         {{/link-to}}
     </div>
 
-    {{content-editable
-    value=model.content
-    type="html"
-    tagName="pre"}}
+    <pre class="editable">
+        <code>
+            {{content-editable
+            value=model.content
+            type="html"}}
+        </code>
+    </pre>
 {{/dashboard-module}}

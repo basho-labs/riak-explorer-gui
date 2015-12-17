@@ -19,4 +19,12 @@
   .update {
     @extend .btn-primary;
   }
+
+  .create {
+    @extend .btn-primary;
+  }
+
+  .raw {
+    @extend .btn-primary;
+  }
 }

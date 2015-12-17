@@ -57,7 +57,12 @@
         {{/if}}
     {{/dashboard-module}}
 
-    {{#dashboard-module label='Search Indexes'}}
+    {{#dashboard-module label='Search Overview'}}
+        {{#link-to 'search-schema.create' model.id class='btn btn-small btn-primary'}}
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            Create new search schema
+        {{/link-to}}
+
         {{#if model.searchIndexes}}
             {{search-indexes indexes=model.searchIndexes}}
         {{else}}
