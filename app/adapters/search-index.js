@@ -1,9 +1,10 @@
 import DS from 'ember-data';
 import Ember from "ember";
+import config from '../config/environment';
 
 var SearchIndexAdapter = DS.RESTAdapter.extend({
     buildURL(modelName, id, snapshot, requestType, query) {
-        return `/riak/clusters/${query.clusterId}/search/index`;
+        return `${config.baseURL}riak/clusters/${query.clusterId}/search/index`;
     },
 
     query(store, type, query) {
