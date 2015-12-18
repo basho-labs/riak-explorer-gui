@@ -2,7 +2,7 @@ import { moduleForModel, test } from 'ember-qunit';
 
 moduleForModel('search-index', 'Unit | Serializer | search index', {
   // Specify the other units that are required for this test.
-  needs: ['serializer:search-index']
+  needs: ['serializer:search-index', 'model:search-schema']
 });
 
 // Replace this with your real tests.

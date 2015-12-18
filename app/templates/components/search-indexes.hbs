@@ -10,7 +10,11 @@
 {{#each indexes as |index|}}
     <tr>
         <td>{{link.link-index searchIndex=index}}</td>
-        <td><a href={{index.schemaUrl}}>{{index.schema}}</a></td>
+        <td>
+            {{#link-to 'search-schema' index.cluster.id index.schema.name class='btn btn-small btn-primary'}}
+                {{index.schema.name}}
+            {{/link-to}}
+        </td>
         <td>{{index.nVal}}</td>
     </tr>
 {{else}}

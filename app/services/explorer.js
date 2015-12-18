@@ -88,15 +88,15 @@ export default Ember.Service.extend({
     },
 
     /**
-    * Refreshes a key list cache or bucket list cache on the Explorer API side.
-    * Usually invoked when the user presses the 'Refresh List' button on the UI.
-    * @see bucketCacheRefresh
-    * @see keyCacheRefresh
-    *
-    * @method cacheRefresh
-    * @param {String} url
-    * @return Ember.RSVP.Promise
-    */
+     * Refreshes a key list cache or bucket list cache on the Explorer API side.
+     * Usually invoked when the user presses the 'Refresh List' button on the UI.
+     * @see bucketCacheRefresh
+     * @see keyCacheRefresh
+     *
+     * @method cacheRefresh
+     * @param {String} url
+     * @return Ember.RSVP.Promise
+     */
     cacheRefresh(url) {
         return new Ember.RSVP.Promise(function(resolve, reject) {
             Ember.$.ajax({
@@ -197,7 +197,7 @@ export default Ember.Service.extend({
                 // This `field` becomes the `parentMap` for the nested fields.
                 // `rootMap` stays the same
                 let mapFields = this.collectMapFields(rootMap, field,
-                                        payload[fieldName], store);
+                    payload[fieldName], store);
                 field.value = mapFields;
                 contents.maps[fieldName] = field;
             }
@@ -291,6 +291,30 @@ export default Ember.Service.extend({
             keys: keyList,
             total: data.keys.total
         });
+    },
+
+    /**
+     * Creates a Schema instance if it does not exist,
+     *  and the returns instance.
+     *
+     * @method createSchema
+     * @param name {String}
+     * @param cluster {Cluster}
+     * @param store {DS.Store}
+     * @return {Schema}
+     */
+    createSchema(name, cluster, store) {
+        let schema = cluster.get('searchSchemas').findBy('name', name);
+
+        if (!schema) {
+            schema = store.createRecord('search-schema', {
+                id: `${cluster.get('id')}/${name}`,
+                cluster: cluster,
+                name: name
+            });
+        }
+
+        return schema;
     },
 
     /**
@@ -791,11 +815,11 @@ export default Ember.Service.extend({
      */
     getBucketTypeWithBucketList(bucketType, cluster, store, start, row) {
         return this
-          .getBucketList(cluster, bucketType, store, start, row)
-          .then(function(bucketList) {
-              bucketType.set('bucketList', bucketList);
-              return bucketType;
-          });
+            .getBucketList(cluster, bucketType, store, start, row)
+            .then(function(bucketList) {
+                bucketType.set('bucketList', bucketList);
+                return bucketType;
+            });
     },
 
     /**
@@ -815,7 +839,7 @@ export default Ember.Service.extend({
             //  (via a bookmark and not from a link), bucket types are likely
             //  to be not loaded yet. Load them.
             return store.query('bucket-type',
-                    {clusterId: cluster.get('clusterId')})
+                {clusterId: cluster.get('clusterId')})
                 .then(function(bucketTypes) {
                     cluster.set('bucketTypes', bucketTypes);
                     return bucketTypes;
@@ -865,6 +889,14 @@ export default Ember.Service.extend({
             })
             .then(function(PromiseArray) {
                 let cluster = PromiseArray[0].value;
+
+                // Create search-schemas from index references
+                //  and set the schema/index association
+                cluster.get('searchIndexes').forEach(function(index) {
+                   let schema = self.createSchema(index.get('schemaRef'), cluster, store);
+
+                   index.set('schema', schema);
+                });
 
                 return cluster;
             });
@@ -1175,20 +1207,20 @@ export default Ember.Service.extend({
             // if the header value has the string ": " in it.
             var index = headerLine.indexOf(': ');
             if (index > 0) {
-              var key = headerLine.substring(0, index).toLowerCase();
-              var val = headerLine.substring(index + 2);
-              var header = {
-                  key: key,
-                  value: val
-              };
+                var key = headerLine.substring(0, index).toLowerCase();
+                var val = headerLine.substring(index + 2);
+                var header = {
+                    key: key,
+                    value: val
+                };
 
-              if(key.startsWith('x-riak-meta')) {
-                  custom.push(header);
-              } else if(key.startsWith('x-riak-index')) {
-                  indexes.push(header);
-              } else {
-                  other_headers[key] = val;
-              }
+                if(key.startsWith('x-riak-meta')) {
+                    custom.push(header);
+                } else if(key.startsWith('x-riak-index')) {
+                    indexes.push(header);
+                } else {
+                    other_headers[key] = val;
+                }
             }
         }
         return {
