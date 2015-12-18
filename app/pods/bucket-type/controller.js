@@ -52,10 +52,8 @@ var BucketTypeController = Ember.Controller.extend({
             let bucketType = this.get('model');
             let cluster = bucketType.get('cluster');
             let store = this.get('store');
-            let start = startIndex;
-            let rows = bucketType.get('bucketList').get('count');
 
-            return service.getBucketTypeWithBucketList(bucketType, cluster, store, start, rows);
+            return service.getBucketTypeWithBucketList(bucketType, cluster, store, startIndex);
         },
 
         refreshBuckets: function(bucketType) {

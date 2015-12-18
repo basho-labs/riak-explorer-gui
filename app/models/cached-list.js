@@ -45,6 +45,20 @@ var CachedList = DS.Model.extend({
     isLoaded: DS.attr('boolean', {defaultValue: false}),
 
     /**
+     * The index of the first item in the current page, in relation to the entire list
+     * @property firstItemIndex
+     * @type Integer
+     */
+    firstItemIndex: DS.attr('number', {defaultValue: 1}),
+
+    /**
+     * The number of items per page
+     * @property pageSize
+     * @type Integer
+     */
+    pageSize: DS.attr('number', {defaultValue: 0}),
+
+    /**
      * Status message to display to the user. Relevant for long-running
      * server operations such as loading large lists or refreshing cached lists.
      * Sample messages:
@@ -62,7 +76,27 @@ var CachedList = DS.Model.extend({
      * @type Number
      * @default 0
      */
-    total: DS.attr('number', {defaultValue: 0})
+    total: DS.attr('number', {defaultValue: 0}),
+
+    /**
+     * The index of the last item in the current page, in relation to the entire list
+     *
+     * @method lastItemIndex
+     * @returns Integer
+     */
+    lastItemIndex: function() {
+        return this.get('firstItemIndex') + this.get('count') - 1;
+    }.property('firstItemIndex', 'count'),
+
+    /**
+     * Whether or not the current page has more than 1 item in it
+     *
+     * @method lastItemIndex
+     * @returns Boolean
+     */
+    multipleListItems: function() {
+        return this.get('count') > 1;
+    }.property('count')
 });
 
 export default CachedList;

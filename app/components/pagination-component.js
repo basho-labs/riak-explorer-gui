@@ -54,6 +54,15 @@ export default Ember.Component.extend({
   numberLinks: [],
 
   /**
+   * Stores the total length of the items on which are being paginated
+   *
+   * @property totalSize
+   * @type Integer
+   * @default 0
+   */
+  totalSize: 0,
+
+  /**
    * All actions that the pagination component handles. Upon receiving an action, it updates the state of the component
    * and sends the event "up" for higher level work that it is not aware of.
    *
@@ -66,26 +75,28 @@ export default Ember.Component.extend({
       let requestedRange = this.calculateRequestedRange(chunk);
 
       this.set('currentChunk', chunk);
-      this.sendAction('section-request', requestedRange.low);
+      this.sendAction('sectionRequest', requestedRange.low);
     },
 
     prevLinkClick: function() {
-      if (!this.get('shouldPrevBeHidden')) {
+      if (!this.get('shouldPrevBeDisabled')) {
         let currentChunk = this.get('currentChunk');
         let newChunk = currentChunk - 1;
+        let requestedRange = this.calculateRequestedRange(newChunk);
 
         this.set('currentChunk', newChunk);
-        this.sendAction('section-request', newChunk);
+        this.sendAction('sectionRequest', requestedRange.low);
       }
     },
 
     nextLinkClick: function() {
-      if (!this.get('shouldNextBeHidden')) {
+      if (!this.get('shouldNextBeDisabled')) {
         let currentChunk = this.get('currentChunk');
         let newChunk = currentChunk + 1;
+        let requestedRange = this.calculateRequestedRange(newChunk);
 
         this.set('currentChunk', newChunk);
-        this.sendAction('section-request', newChunk);
+        this.sendAction('sectionRequest', requestedRange.low);
       }
     }
   },
@@ -122,7 +133,7 @@ export default Ember.Component.extend({
    * @return {Object} Contains low and high properties. i.e. { low: 31, high: 40 }
    */
   calculateRequestedRange: function(chunk) {
-    let chunkSize = this.get('chunk-length');
+    let chunkSize = this.get('chunkSize');
 
     return {
       low:  (chunk * chunkSize - chunkSize) + 1,
@@ -138,7 +149,7 @@ export default Ember.Component.extend({
    * @return {Integer}
    */
   calculateNumberLinksCount: function() {
-    let linkCount = Math.ceil(this.get('total-length')/this.get('chunk-length'));
+    let linkCount = Math.ceil(this.get('totalSize')/this.get('chunkSize'));
 
     return this.set('numberLinksCount', linkCount);
   },
