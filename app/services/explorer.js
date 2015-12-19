@@ -933,7 +933,7 @@ export default Ember.Service.extend({
             // If this page was accessed directly
             //  (via a bookmark and not from a link), bucket types are likely
             //  to be not loaded yet. Load them.
-            return store.query('search-index', {clusterId: cluster.get('clusterId')})
+            return store.query('search-index', {clusterId: cluster.get('id')})
                 .then(function(indexes) {
                     cluster.set('searchIndexes', indexes);
 
@@ -997,6 +997,33 @@ export default Ember.Service.extend({
         });
     },
 
+    getNodeConfig(node) {
+        let url = `${this.apiURL}explore/nodes/${node.get('id')}/config`;
+
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            let request = Ember.$.ajax({
+                url: url,
+                type: 'GET'
+            });
+
+            request.done(function(data) {
+                if (data.config.advanced_config) {
+                    node.set('advancedConfig', data.config.advanced_config);
+                }
+
+                if (data.config.config) {
+                    node.set('config', data.config.config);
+                }
+
+                resolve(data);
+            });
+
+            request.fail(function(data) {
+                reject(data);
+            });
+        });
+    },
+
     /**
      * Returns the results of a Riak node HTTP ping result.
      *
@@ -1032,38 +1059,44 @@ export default Ember.Service.extend({
      * @return {Ember.RSVP.Promise<Array<RiakNode>>|Array<RiakNode>}
      */
     getNodesForCluster(cluster, store) {
-        if(Ember.isEmpty(cluster.get('riakNodes'))) {
-            return store.query('riak-node', { clusterId: cluster.get('id') })
+        if(Ember.isEmpty(cluster.get('nodes'))) {
+            return store.query('node', { clusterId: cluster.get('id') })
                 .then(function(nodes) {
-                    cluster.set('riakNodes', nodes);
+                    cluster.set('nodes', nodes);
 
                     return nodes;
                 });
         } else {
-            return cluster.get('riakNodes');
+            return cluster.get('nodes');
         }
     },
 
     /**
-     * Returns the results of a GET Node Stats HTTP call.
+     * Gets and sets the node stats property. Returns the node model object.
      *
      * @method getNodeStats
-     * @param {String} nodeId
-     * @return {Ember.RSVP.Promise<Array<Hash>>}
+     * @param {DS.Model} Node
+     * @return {Ember.RSVP.Promise<Node>}
      */
-    getNodeStats(nodeId) {
-        var propsUrl = `${this.apiURL}riak/nodes/${nodeId}/stats`;
-        var propsResult = Ember.$.ajax( propsUrl, { dataType: "json" } );
+    getNodeStats(node) {
+        let url = `${this.apiURL}riak/nodes/${node.get('id')}/stats`;
 
-        return propsResult.then(
-            function(data) {
-                var statsArray = objectToArray(data);
-                return {
-                    node: nodeId,
-                    stats: statsArray
-                };
-            }
-        );
+        return new Ember.RSVP.Promise(function(resolve, reject) {
+            let request = Ember.$.ajax({
+                url: url,
+                type: 'GET'
+            });
+
+            request.done(function(data) {
+                node.set('stats', data);
+
+                resolve(node);
+            });
+
+            request.fail(function(data) {
+                reject(data);
+            });
+        });
     },
 
     /**

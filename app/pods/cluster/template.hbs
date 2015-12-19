@@ -71,18 +71,21 @@
     {{/dashboard-module}}
 
     {{#dashboard-module label='Nodes'}}
-        {{#if model.riakNodes}}
+        {{#if model.nodes}}
             <ul class="button-list">
-                {{#each model.riakNodes as |node|}}
+                {{#each model.nodes as |node|}}
                     <li>
-                        <a href="node-stats?nodeId={{node.id}}&clusterId={{model.id}}"
-                           class={{unless node.available "danger"}}>
-                            {{node.id}}
-                            <span
-                                class="glyphicon {{if node.available "glyphicon-ok-circle" "glyphicon-ban-circle"}}"
-                                aria-hidden="true">
-                      </span>
-                        </a>
+                        {{#if node.available}}
+                            {{#link-to 'node' model.id node.id }}
+                                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                                {{node.id}}
+                            {{/link-to}}
+                        {{else}}
+                            {{#link-to 'node' model.id node.id class='danger'}}
+                                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                {{node.id}}
+                            {{/link-to}}
+                        {{/if}}
                     </li>
                 {{/each}}
             </ul>

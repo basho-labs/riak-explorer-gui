@@ -9,6 +9,7 @@
       cursor: pointer;
       font-weight: bold;
       color: $branding-color-1;
+      border: none;
 
       &[active=true] {
         cursor: default;

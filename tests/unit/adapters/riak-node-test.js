@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
-moduleFor('adapter:riak-node', 'Unit | Adapter | riak node', {
+moduleFor('adapter:node', 'Unit | Adapter | node', {
   // Specify the other units that are required for this test.
   // needs: ['serializer:foo']
 });

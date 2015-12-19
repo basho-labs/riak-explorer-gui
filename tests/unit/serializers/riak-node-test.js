@@ -1,8 +1,8 @@
 import { moduleForModel, test } from 'ember-qunit';
 
-moduleForModel('riak-node', 'Unit | Serializer | riak node', {
+moduleForModel('node', 'Unit | Serializer | node', {
   // Specify the other units that are required for this test.
-  needs: ['serializer:riak-node']
+  needs: ['serializer:node']
 });
 
 // Replace this with your real tests.
