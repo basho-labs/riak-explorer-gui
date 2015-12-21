@@ -120,10 +120,10 @@
             <tr>
               <td class="key">Cached Bucket List</td>
               <td class="value">
-                {{#if model.keyList.multipleListItems}}
-                    <p>Displaying buckets {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out of {{model.keyList.total}}</p>
+                {{#if model.bucketList.multipleListItems}}
+                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out of {{model.bucketList.total}}</p>
                 {{else}}
-                    <p>Displaying bucket {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
+                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
                 {{/if}}
 
                 {{#pagination-component

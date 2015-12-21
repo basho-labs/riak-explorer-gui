@@ -164,6 +164,9 @@ export default Ember.Component.extend({
     this.calculateNumberLinksCount();
 
     if (this.get('shouldShowPaginationLinks')) {
+      // reset numberLinks array
+      this.set('numberLinks', []);
+
       // We want the loop to be 1 indexed, not 0
       for(var i=1; i < this.get('numberLinksCount')+1; i++) {
         this.numberLinks.push(i);
