@@ -13,8 +13,9 @@ function objectToString(obj) {
     return propsStr + "}";
 }
 
-export default function objectToArray(obj) {
+export default function objectToArray(obj, alphaSorted=true) {
     var propsArray = [];
+
     for(var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             if (Object.prototype.toString.call( obj[prop] ) === '[object Object]') {
@@ -27,5 +28,19 @@ export default function objectToArray(obj) {
             }
         }
     }
+
+    if (alphaSorted) {
+        propsArray.sort(function(a, b) {
+            if (a.key < b.key) {
+                return -1;
+            } else if (a.key > b.key) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+
     return propsArray;
 }

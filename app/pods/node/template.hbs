@@ -1,0 +1,56 @@
+<div class='view-header'>
+    {{breadcrumb-component
+    clusterId=model.cluster.id
+    pageTitle=model.id}}
+    {{view-label
+    pre-label='Node Detail'
+    label=model.id}}
+</div>
+
+{{#dashboard-module}}
+    {{#em-tabs class='half-width'}}
+        {{#em-tab-list}}
+            {{#em-tab}}Statistics{{/em-tab}}
+            {{#em-tab}}Configuration{{/em-tab}}
+        {{/em-tab-list}}
+
+        {{#em-tab-panel}}
+            <table class="key-value-table">
+                <tbody>
+                {{#each model.statsList as |stat|}}
+                    <tr>
+                        <td class='key'>{{stat.key}}</td>
+                        <td class='value'>{{stat.value}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        {{/em-tab-panel}}
+
+        {{#em-tab-panel}}
+            {{#if model.advancedConfig}}
+                <h4>Advanced</h4>
+                <ul class="code-list">
+                    {{#each model.advancedConfig as |advancedItem|}}
+                        <li><code>{{advancedItem}}</code></li>
+                    {{/each}}
+                </ul>
+
+                <h4>General</h4>
+            {{/if}}
+
+            <table class="key-value-table">
+                <tbody>
+                {{#each model.configList as |config|}}
+                    <tr>
+                        <td class='key'>{{config.key}}</td>
+                        <td class='value'>{{config.value}}</td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        {{/em-tab-panel}}
+    {{/em-tabs}}
+
+
+{{/dashboard-module}}

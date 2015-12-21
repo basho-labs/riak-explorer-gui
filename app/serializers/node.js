@@ -2,14 +2,6 @@ import ApplicationSerializer from './application';
 import Ember from 'ember';
 
 export default ApplicationSerializer.extend({
-    modelNameFromPayloadKey: function(payloadKey) {
-        if (payloadKey === 'nodes') {
-            payloadKey = 'riak-nodes';
-        }
-
-        return this._super(payloadKey);
-    },
-
     normalizeResponse: function(store, primaryModelClass, payload, id, requestType) {
         let sortBy = Ember.Enumerable.sortBy;
 

@@ -19,11 +19,10 @@ var Cluster = DS.Model.extend({
 
     /**
      * Riak nodes assigned to the cluster
-     * @property riakNodes
+     * @property nodes
      * @type Array<BucketType>
      */
-    riakNodes: DS.hasMany('riak-node', { async: true }),
-
+    nodes: DS.hasMany('node', { async: true }),
 
     /**
      * Search indexes created on the cluster
