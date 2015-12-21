@@ -103,10 +103,6 @@
               <td class="key">Bucket List cache created:</td>
               <td class="value">{{model.bucketList.created}}</td>
             </tr>
-            <tr>
-              <td class="key">Total buckets in cached list:</td>
-              <td class="value">{{model.bucketList.total}}</td>
-            </tr>
             {{#if model.cluster.developmentMode}}
               <tr>
                 <td class="key">Available actions:</td>
@@ -124,10 +120,16 @@
             <tr>
               <td class="key">Cached Bucket List</td>
               <td class="value">
+                {{#if model.bucketList.multipleListItems}}
+                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out of {{model.bucketList.total}}</p>
+                {{else}}
+                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
+                {{/if}}
+
                 {{#pagination-component
-                chunk-length=model.bucketList.count
-                total-length=model.bucketList.total
-                section-request='retrieveRequestedBuckets'}}
+                chunkSize=model.bucketList.pageSize
+                totalSize=model.bucketList.total
+                sectionRequest='retrieveRequestedBuckets'}}
                   <ul class='button-list small'>
                     {{#each model.bucketList.buckets as |bucket|}}
                       <li>

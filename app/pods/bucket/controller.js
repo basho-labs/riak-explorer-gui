@@ -46,10 +46,8 @@ var BucketController = Ember.Controller.extend({
             let service = this.get('explorer');
             let bucket  = this.get('model');
             let store   = this.get('store');
-            let start   = startIndex;
-            let rows    = bucket.get('keyList').get('count');
 
-            return service.getBucketWithKeyList(bucket, store, start, rows);
+            return service.getBucketWithKeyList(bucket, store, startIndex);
         },
 
         deleteBucket: function(bucket) {

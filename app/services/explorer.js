@@ -217,7 +217,7 @@ export default Ember.Service.extend({
      * @param store {DS.Store}
      * @return {BucketList}
      */
-    createBucketList(data, cluster, bucketType, store) {
+    createBucketList(data, cluster, bucketType, store, startItemIndex) {
         if(!data) {
             // No data, create an empty Bucket list
             return store.createRecord('bucket-list', {
@@ -241,7 +241,9 @@ export default Ember.Service.extend({
             total: data.buckets.total,
             count: data.buckets.count,
             created: data.buckets.created,
-            isLoaded: true
+            isLoaded: true,
+            firstItemIndex: startItemIndex,
+            pageSize: this.pageSize
         });
     },
 
@@ -256,7 +258,7 @@ export default Ember.Service.extend({
      * @param store {DS.Store}
      * @return {KeyList}
      */
-    createKeyList(data, bucket, store) {
+    createKeyList(data, bucket, store, startItemIndex) {
         var explorer = this;
         if(!data) {
             // No data, return an empty KeyList
@@ -283,13 +285,16 @@ export default Ember.Service.extend({
             }
             return obj;
         });
+
         return store.createRecord('key-list', {
             bucket: bucket,
             cluster: bucket.get('cluster'),
             created: data.keys.created,
             count: data.keys.count,
             keys: keyList,
-            total: data.keys.total
+            total: data.keys.total,
+            firstItemIndex: startItemIndex,
+            pageSize: this.pageSize
         });
     },
 
@@ -717,7 +722,7 @@ export default Ember.Service.extend({
                 type: 'GET',
                 success: function(data) {
                     bucketType.set('isBucketListLoaded', true);
-                    resolve(explorer.createBucketList(data, cluster, bucketType, store));
+                    resolve(explorer.createBucketList(data, cluster, bucketType, store, start));
                 },
                 error: function(jqXHR, textStatus) {
                     // Fail (likely a 404, cache not yet created)
@@ -963,7 +968,7 @@ export default Ember.Service.extend({
                 type: 'GET',
                 success: function (data) {
                     bucket.set('isKeyListLoaded', true);
-                    resolve(explorer.createKeyList(data, bucket, store));
+                    resolve(explorer.createKeyList(data, bucket, store, start));
                 },
                 error: function (jqXHR, textStatus) {
                     if (jqXHR.status === 404) {

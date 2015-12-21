@@ -48,10 +48,6 @@
             <td class="value">{{model.keyList.created}}</td>
           </tr>
           <tr>
-            <td class="key">Total keys in cached list:</td>
-            <td class="value">{{model.keyList.count}}</td>
-          </tr>
-          <tr>
             <td class="key">Available actions:</td>
             <td class="value">
               <ul class='button-list'>
@@ -74,10 +70,16 @@
           <tr>
             <td class="key">Cached Key List:</td>
             <td class="value">
+              {{#if model.keyList.multipleListItems}}
+                  <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out of {{model.keyList.total}}</p>
+              {{else}}
+                  <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
+              {{/if}}
+
               {{#pagination-component
-              chunk-length=model.keyList.count
-              total-length=model.keyList.total
-              section-request='retrieveRequestedKeys'}}
+              chunkSize=model.keyList.pageSize
+              totalSize=model.keyList.total
+              sectionRequest='retrieveRequestedKeys'}}
                 <ul class='button-list small'>
                   {{#each model.keyList.keys as |obj|}}
                     <li>
