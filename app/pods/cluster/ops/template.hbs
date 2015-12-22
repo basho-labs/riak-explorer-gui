@@ -1,0 +1,36 @@
+<div class='view-header'>
+  {{breadcrumb-component
+  subSection='ops'
+  clusterId=model.id}}
+  {{view-label
+  pre-label='Cluster Ops'
+  label=model.id}}
+</div>
+
+<div class='cluster-information-container'>
+  {{#dashboard-module label='Nodes'}}
+    {{#if model.nodes}}
+      <ul class="button-list">
+        {{#each model.nodes as |node|}}
+          <li>
+            {{#if node.available}}
+              {{#link-to 'node' model.id node.id }}
+                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                {{node.id}}
+              {{/link-to}}
+            {{else}}
+              {{#link-to 'node' model.id node.id class='danger'}}
+                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                {{node.id}}
+              {{/link-to}}
+            {{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p>No nodes detected</p>
+    {{/if}}
+  {{/dashboard-module}}
+</div>
+
+

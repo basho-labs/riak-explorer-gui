@@ -48,11 +48,18 @@ var Cluster = DS.Model.extend({
   developmentMode: DS.attr('boolean', {defaultValue: false}),
 
   /**
-   * The Riak Type: either Open Source (oss) or Enterprise Edition (ee)
+   * The Riak Type: either Open Source (oss), Enterprise Edition (ee), or "unavailable"
    * @property riakType
    * @type String
    */
   riakType: DS.attr('string', {defaultValue: 'oss'}),
+
+  /**
+   * Riak Version
+   * @property riakVersion
+   * @type String
+   */
+  riakVersion: DS.attr('string'),
 
   /**
    * Returns a list of currently activated bucket types.
@@ -68,12 +75,32 @@ var Cluster = DS.Model.extend({
    * Returns the name of the cluster
    * (As specified in the `riak_explorer.conf` file)
    * Note: Currently unrelated to the source/datacenter name used by MDC Repl
-   * @property clusterId
+   * @method clusterId
    * @type String
    */
   clusterId: function() {
     return this.get('id');
   }.property('id'),
+
+  /**
+   * Boolean check to see if the cluster has a Riak version number associated with it
+   *
+   * @method hasVersion
+   * @returns Boolean
+   */
+  hasVersion: function() {
+    return (this.get('riakVersion') && this.get('riakVersion') !== "unavailable");
+  }.property('riakVersion'),
+
+  /**
+   * Boolean check to see if the cluster has a Riak type associated with it
+   *
+   * @method hasType
+   * @returns Boolean
+   */
+  hasType: function() {
+    return (this.get('riakType') && this.get('riakType') !== "unavailable");
+  }.property('riakType'),
 
   /**
    * Returns a list of un-activated bucket types.

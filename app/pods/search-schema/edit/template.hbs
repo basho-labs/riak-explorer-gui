@@ -1,7 +1,9 @@
 <div class='view-header'>
   {{breadcrumb-component
+  subSection='query'
   clusterId=model.cluster.id
-  pageTitle=model.name
+  schemaName=model.name
+  schemaEdit=true
   }}
   {{view-label
   pre-label='Search Schema'

@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import SideBarSelect from '../../mixins/sidebar-select';
 
-var RiakObjectRoute = Ember.Route.extend({
+var RiakObjectRoute = Ember.Route.extend(SideBarSelect, {
   actions: {
     error: function(error, transition) {
       if (error && error.status === 404) {
@@ -23,6 +24,10 @@ var RiakObjectRoute = Ember.Route.extend({
       });
   },
 
+  afterModel: function(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
+  },
+
   setupController: function(controller, model) {
     this._super(controller, model);
     if (!model.get('isLoaded')) {
@@ -34,4 +39,5 @@ var RiakObjectRoute = Ember.Route.extend({
     }
   }
 });
+
 export default RiakObjectRoute;

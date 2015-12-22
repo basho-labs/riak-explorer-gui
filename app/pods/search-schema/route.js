@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import $ from 'jquery';
+import SideBarSelect from '../../mixins/sidebar-select';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(SideBarSelect, {
   model(params) {
     let self = this;
 
@@ -18,6 +18,8 @@ export default Ember.Route.extend({
   },
 
   afterModel(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
+
     return Ember.$.ajax({
       type: 'GET',
       url: model.get('url'),

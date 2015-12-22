@@ -1,5 +1,56 @@
-{{topbar-panel}}
-{{#wrapper-panel}}
-  {{sidebar-panel clusters=model}}
-  {{results-panel}}
-{{/wrapper-panel}}
+{{render 'topbar'}}
+<div class="wrapper-panel">
+  <div class="row">
+    <div class="sidebar-panel">
+      {{#power-select
+      class='cluster-selector'
+      searchEnabled=false
+      selected=currentCluster
+      placeholder='Select Cluster'
+      options=model
+      onchange=(action 'clusterSelected')
+      as |cluster|}}
+        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+        {{cluster.id}}
+      {{/power-select}}
+
+      {{#if currentCluster}}
+        <div class="current-cluster">
+          <header>
+            <span class="title">Cluster: {{currentCluster.id}}</span>
+            <ul class="meta list-inline">
+              {{#if currentCluster.hasVersion}}
+                <li>{{currentCluster.riakVersion}}</li>
+              {{/if}}
+              {{#if currentCluster.hasType}}
+                <li>{{currentCluster.riakType}}</li>
+              {{/if}}
+              {{#if currentCluster.developmentMode}}
+                <li class='dev-mode'>Dev mode</li>
+              {{/if}}
+            </ul>
+          </header>
+          <nav class="cluster-section-links">
+            {{#link-to 'cluster.data' currentCluster.id class='data'}}
+              <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
+              Data
+            {{/link-to}}
+            {{#link-to 'cluster.ops' currentCluster.id class='ops'}}
+              <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+              Ops
+            {{/link-to}}
+            {{#link-to 'cluster.query' currentCluster.id class='query'}}
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              Query
+            {{/link-to}}
+          </nav>
+        </div>
+      {{/if}}
+    </div>
+    <div class="results-panel">
+      <div class="results-panel-inner">
+        {{outlet}}
+      </div>
+    </div>
+  </div>
+</div>
