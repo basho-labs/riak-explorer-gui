@@ -12,175 +12,175 @@ import DS from 'ember-data';
  * @uses KeyList
  */
 var Bucket = DS.Model.extend({
-    /**
-     * Initializes a new Bucket instance by setting up an empty
-     * KeyList.
-     * @method init
-     */
-    init() {
-        this._super();
-        let emptyList = this.store.createRecord('key-list', {
-            cluster: this.get('cluster'),
-            keys: []
-        });
-        this.set('keyList', emptyList);
-    },
+  /**
+   * Initializes a new Bucket instance by setting up an empty
+   * KeyList.
+   * @method init
+   */
+  init() {
+    this._super();
+    let emptyList = this.store.createRecord('key-list', {
+      cluster: this.get('cluster'),
+      keys: []
+    });
+    this.set('keyList', emptyList);
+  },
 
-    /**
-     * Riak Bucket Type in which this bucket lives.
-     *
-     * @property bucketType
-     * @type BucketType
-     * @writeOnce
-     */
-    bucketType: DS.belongsTo('bucket-type'),
+  /**
+   * Riak Bucket Type in which this bucket lives.
+   *
+   * @property bucketType
+   * @type BucketType
+   * @writeOnce
+   */
+  bucketType: DS.belongsTo('bucket-type'),
 
-     /**
-      * Riak cluster in which this bucket lives.
-      *
-      * @property cluster
-      * @type Cluster
-      * @writeOnce
-      */
-    cluster: DS.belongsTo('cluster'),
+  /**
+   * Riak cluster in which this bucket lives.
+   *
+   * @property cluster
+   * @type Cluster
+   * @writeOnce
+   */
+  cluster: DS.belongsTo('cluster'),
 
-    /**
-     * Contains the results of cached key lists for this bucket,
-     * fetched from the API.
-     *
-     * @property key-list
-     * @type KeyList
-     */
-    keyList: DS.belongsTo('key-list'),
+  /**
+   * Contains the results of cached key lists for this bucket,
+   * fetched from the API.
+   *
+   * @property key-list
+   * @type KeyList
+   */
+  keyList: DS.belongsTo('key-list'),
 
-    /**
-     * Bucket Properties object. Note: Bucket Types and Buckets share the
-     *    same Properties format.
-     * When not specified, buckets inherit their properties from the Bucket Type
-     *
-     * @property props
-     * @type BucketProps
-     */
-    props: DS.belongsTo('bucket-props'),
+  /**
+   * Bucket Properties object. Note: Bucket Types and Buckets share the
+   *    same Properties format.
+   * When not specified, buckets inherit their properties from the Bucket Type
+   *
+   * @property props
+   * @type BucketProps
+   */
+  props: DS.belongsTo('bucket-props'),
 
-    /**
-     * Has the keyList been loaded from the server?
-     *
-     * @property isKeyListLoaded
-     * @type Boolean
-     * @default false
-     */
-    isKeyListLoaded: DS.attr('boolean', { defaultValue: false }),
+  /**
+   * Has the keyList been loaded from the server?
+   *
+   * @property isKeyListLoaded
+   * @type Boolean
+   * @default false
+   */
+  isKeyListLoaded: DS.attr('boolean', {defaultValue: false}),
 
-    /**
-     * Bucket name (unique within a cluster and bucket type)
-     *
-     * @property name
-     * @type String
-     */
-    name: DS.attr('string'),
+  /**
+   * Bucket name (unique within a cluster and bucket type)
+   *
+   * @property name
+   * @type String
+   */
+  name: DS.attr('string'),
 
-    /**
-     * Returns the bucket name (this is an alias/helper function)
-     *
-     * @property bucketId
-     * @type String
-     */
-    bucketId: function() {
-        return this.get('name');
-    }.property('name'),
+  /**
+   * Returns the bucket name (this is an alias/helper function)
+   *
+   * @property bucketId
+   * @type String
+   */
+  bucketId: function() {
+    return this.get('name');
+  }.property('name'),
 
-    /**
-     * Returns the bucket type's name
-     *
-     * @property bucketTypeId
-     * @type String
-     */
-    bucketTypeId: function() {
-        return this.get('bucketType').get('bucketTypeId');
-    }.property('cluster'),
+  /**
+   * Returns the bucket type's name
+   *
+   * @property bucketTypeId
+   * @type String
+   */
+  bucketTypeId: function() {
+    return this.get('bucketType').get('bucketTypeId');
+  }.property('cluster'),
 
-    /**
-     * Returns the name of the cluster in which this bucket resides.
-     * (As specified in the `riak_explorer.conf` file)
-     *
-     * @property clusterId
-     * @type String
-     */
-    clusterId: function() {
-        return this.get('cluster').get('clusterId');
-    }.property('cluster'),
+  /**
+   * Returns the name of the cluster in which this bucket resides.
+   * (As specified in the `riak_explorer.conf` file)
+   *
+   * @property clusterId
+   * @type String
+   */
+  clusterId: function() {
+    return this.get('cluster').get('clusterId');
+  }.property('cluster'),
 
-    /**
-     * Returns the name of the Search Index associated with this bucket
-     * (or its parent bucket type), if applicable.
-     *
-     * @property index
-     * @type String
-     */
-    index: function() {
-        return this.get('cluster').get('searchIndexes')
-          .findBy('name', this.get('props').get('searchIndexName'));
-    }.property('cluster'),
+  /**
+   * Returns the name of the Search Index associated with this bucket
+   * (or its parent bucket type), if applicable.
+   *
+   * @property index
+   * @type String
+   */
+  index: function() {
+    return this.get('cluster').get('searchIndexes')
+      .findBy('name', this.get('props').get('searchIndexName'));
+  }.property('cluster'),
 
-    /**
-     * Has this bucket type been activated?
-     *
-     * @property isActive
-     * @type Boolean
-     */
-    isActive: function() {
-        if(this.get('bucketTypeId') === 'default') {
-            // Buckets in the Default type don't have the 'active' attribute
-            // in the props, but are actually active.
-            return true;
-        }
-        return this.get('props').get('isActive');
-    }.property('props'),
+  /**
+   * Has this bucket type been activated?
+   *
+   * @property isActive
+   * @type Boolean
+   */
+  isActive: function() {
+    if (this.get('bucketTypeId') === 'default') {
+      // Buckets in the Default type don't have the 'active' attribute
+      // in the props, but are actually active.
+      return true;
+    }
+    return this.get('props').get('isActive');
+  }.property('props'),
 
-    /**
-     * Returns the Ember.js/Ember Data model name of the objects stored within
-     *     this bucket.
-     *
-     * @property objectModelName
-     * @type String
-     * @readOnly
-     * @default 'riak-object'
-     */
-    objectModelName: function() {
-        let modelType = null;
+  /**
+   * Returns the Ember.js/Ember Data model name of the objects stored within
+   *     this bucket.
+   *
+   * @property objectModelName
+   * @type String
+   * @readOnly
+   * @default 'riak-object'
+   */
+  objectModelName: function() {
+    let modelType = null;
 
-        switch(true) {
-            case this.get('props').get('isCounter'):
-                modelType = 'riak-object.counter';
-                break;
-            case this.get('props').get('isSet'):
-                modelType = 'riak-object.set';
-                break;
-            case this.get('props').get('isMap'):
-                modelType = 'riak-object.map';
-                break;
-            default:
-                modelType = 'riak-object';
-                break;
-        }
+    switch (true) {
+      case this.get('props').get('isCounter'):
+        modelType = 'riak-object.counter';
+        break;
+      case this.get('props').get('isSet'):
+        modelType = 'riak-object.set';
+        break;
+      case this.get('props').get('isMap'):
+        modelType = 'riak-object.map';
+        break;
+      default:
+        modelType = 'riak-object';
+        break;
+    }
 
-        return modelType;
-    }.property('props'),
+    return modelType;
+  }.property('props'),
 
-    /**
-     * Returns this bucket's properties as an array of key/value tuples.
-     * Used for displaying and editing the properties.
-     *
-     * @method propsList
-     * @return {Array<Hash>}
-     */
-    propsList: function() {
-        if(!this.get('props')) {
-            return [];
-        }
-        return this.get('props').get('propsList');
-    }.property('props')
+  /**
+   * Returns this bucket's properties as an array of key/value tuples.
+   * Used for displaying and editing the properties.
+   *
+   * @method propsList
+   * @return {Array<Hash>}
+   */
+  propsList: function() {
+    if (!this.get('props')) {
+      return [];
+    }
+    return this.get('props').get('propsList');
+  }.property('props')
 });
 
 export default Bucket;

@@ -13,8 +13,8 @@
 
 {{#dashboard-module}}
   {{#if model.isLoaded}}
-      {{object-contents-map model=model deleteObject="deleteObject"}}
+    {{object-contents-map model=model deleteObject="deleteObject"}}
   {{else}}
-      {{loading-spinner}}
+    {{loading-spinner}}
   {{/if}}
 {{/dashboard-module}}

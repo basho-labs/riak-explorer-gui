@@ -12,6 +12,8 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('Decreasing the counter value', function() {});
+pending('Decreasing the counter value', function() {
+});
 
-pending('Increasing the counter value', function() {});
+pending('Increasing the counter value', function() {
+});

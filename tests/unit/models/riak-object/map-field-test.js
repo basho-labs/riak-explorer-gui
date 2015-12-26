@@ -12,12 +12,17 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('adding a new element', function() {});
+pending('adding a new element', function() {
+});
 
-pending('getting the full name', function() {});
+pending('getting the full name', function() {
+});
 
-pending('normalizing the name', function() {});
+pending('normalizing the name', function() {
+});
 
-pending('removeElement', function() {});
+pending('removeElement', function() {
+});
 
-pending('value for display', function() {});
+pending('value for display', function() {
+});

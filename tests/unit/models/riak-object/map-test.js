@@ -12,22 +12,32 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('adding a field', function() {});
+pending('adding a field', function() {
+});
 
-pending('removing a field', function() {});
+pending('removing a field', function() {
+});
 
-pending('contents for display', function() {});
+pending('contents for display', function() {
+});
 
-pending('getting fields list', function() {});
+pending('getting fields list', function() {
+});
 
-pending('getting flags list', function() {});
+pending('getting flags list', function() {
+});
 
-pending('counters', function() {});
+pending('counters', function() {
+});
 
-pending('sets', function() {});
+pending('sets', function() {
+});
 
-pending('registers', function() {});
+pending('registers', function() {
+});
 
-pending('maps', function() {});
+pending('maps', function() {
+});
 
-pending('flags', function() {});
+pending('flags', function() {
+});

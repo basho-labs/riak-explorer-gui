@@ -13,7 +13,7 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-test('cluster relationship', function (assert) {
+test('cluster relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('cluster');
 
@@ -22,7 +22,7 @@ test('cluster relationship', function (assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('schema relationship', function (assert) {
+test('schema relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('schema');
 

@@ -12,4 +12,5 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('headersForUpdate', function() {});
+pending('headersForUpdate', function() {
+});

@@ -1,19 +1,19 @@
 <table class="table">
-<tbody>
-{{#each keys as |obj|}}
+  <tbody>
+  {{#each keys as |obj|}}
     <tr>
-        <td>
+      <td>
         <div class="container">
-            <div class="row">
-                <div>
-                    {{link.link-object obj=obj}}
-                </div>
+          <div class="row">
+            <div>
+              {{link.link-object obj=obj}}
             </div>
+          </div>
         </div>
-        </td>
+      </td>
     </tr>
-{{else}}
+  {{else}}
     No keys found.
-{{/each}}
-</tbody>
+  {{/each}}
+  </tbody>
 </table>

@@ -12,12 +12,17 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('counter values', function() {});
+pending('counter values', function() {
+});
 
-pending('flags values', function() {});
+pending('flags values', function() {
+});
 
-pending('maps values', function() {});
+pending('maps values', function() {
+});
 
-pending('register values', function() {});
+pending('register values', function() {
+});
 
-pending('sets values', function() {});
+pending('sets values', function() {
+});
