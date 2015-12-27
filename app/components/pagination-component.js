@@ -136,7 +136,7 @@ export default Ember.Component.extend({
     let chunkSize = this.get('chunkSize');
 
     return {
-      low:  (chunk * chunkSize - chunkSize) + 1,
+      low: (chunk * chunkSize - chunkSize) + 1,
       high: (chunk * chunkSize)
     };
   },
@@ -149,7 +149,7 @@ export default Ember.Component.extend({
    * @return {Integer}
    */
   calculateNumberLinksCount: function() {
-    let linkCount = Math.ceil(this.get('totalSize')/this.get('chunkSize'));
+    let linkCount = Math.ceil(this.get('totalSize') / this.get('chunkSize'));
 
     return this.set('numberLinksCount', linkCount);
   },
@@ -168,7 +168,7 @@ export default Ember.Component.extend({
       this.set('numberLinks', []);
 
       // We want the loop to be 1 indexed, not 0
-      for(var i=1; i < this.get('numberLinksCount')+1; i++) {
+      for (var i = 1; i < this.get('numberLinksCount') + 1; i++) {
         this.numberLinks.push(i);
       }
     }

@@ -71,9 +71,10 @@
             <td class="key">Cached Key List:</td>
             <td class="value">
               {{#if model.keyList.multipleListItems}}
-                  <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out of {{model.keyList.total}}</p>
+                <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out
+                  of {{model.keyList.total}}</p>
               {{else}}
-                  <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
+                <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
               {{/if}}
 
               {{#pagination-component

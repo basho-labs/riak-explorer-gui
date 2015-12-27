@@ -1,8 +1,8 @@
 export function initialize(container, app) {
-    app.inject('route', 'explorer', 'service:explorer');
+  app.inject('route', 'explorer', 'service:explorer');
 }
 
 export default {
-    name: 'explorer',
-    initialize: initialize
+  name: 'explorer',
+  initialize: initialize
 };

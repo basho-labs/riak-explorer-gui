@@ -1,18 +1,15 @@
 // Vendor
 @import "../../vendor/bootstrap-sass/stylesheets/bootstrap";
-
 // Utils
 @import "utils/variables";
 @import "utils/mixins";
 @import "utils/bootstrap-overrides";
 @import "utils/base";
-
 // Layout
 @import "layout/topbar-panel";
 @import "layout/wrapper-panel";
 @import "layout/sidebar-panel";
 @import "layout/results-panel";
-
 // Generic Components
 @import "components/riak-object-styling";
 @import "components/dashboard-module";
@@ -28,7 +25,6 @@
 @import "components/code-highlter";
 @import "components/content-editable";
 @import "components/code-list";
-
 // View specific styling
 @import "views/object-counter-container";
 @import "views/loading-container";

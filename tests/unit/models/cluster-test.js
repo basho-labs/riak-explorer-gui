@@ -45,8 +45,11 @@ test('searchSchemas relationship', function(assert) {
   assert.equal(relationship.kind, 'hasMany');
 });
 
-pending('getting active bucket types', function() {});
+pending('getting active bucket types', function() {
+});
 
-pending('getting inactive bucket types', function() {});
+pending('getting inactive bucket types', function() {
+});
 
-pending('determining production mode', function() {});
+pending('determining production mode', function() {
+});

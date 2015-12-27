@@ -39,11 +39,11 @@
               <td class='value'>
                 N_Val: {{model.props.nVal}}
                 {{#if model.props.quorumRelevant}}
-                  <br />
+                  <br/>
                   R: {{model.props.quorum.r}}, W: {{model.props.quorum.w}},
                   PR: {{model.props.quorum.pr}}, PW: {{model.props.quorum.pw}},
                   DW: {{model.props.quorum.dw}}
-                    <br />
+                  <br/>
                   <small>
                     (basic_quorum: {{model.props.quorum.basic_quorum}},
                     notfound_ok: {{model.props.quorum.basic_quorum}})
@@ -52,16 +52,16 @@
               </td>
             </tr>
             <tr>
-                <td class='key'>Search Index:</td>
-                <td class='value'>
-                    {{#if model.index}}
-                        {{#link-to 'search-index' model.index.cluster.clusterId model.index.name}}
-                            {{model.index.name}}
-                        {{/link-to}}
-                    {{else}}
-                        n/a (not being indexed)
-                    {{/if}}
-                </td>
+              <td class='key'>Search Index:</td>
+              <td class='value'>
+                {{#if model.index}}
+                  {{#link-to 'search-index' model.index.cluster.clusterId model.index.name}}
+                    {{model.index.name}}
+                  {{/link-to}}
+                {{else}}
+                  n/a (not being indexed)
+                {{/if}}
+              </td>
             </tr>
             {{#if model.props.warnings}}
               <tr>
@@ -99,49 +99,50 @@
       {{#if model.bucketList.cachePresent}}
         <table class="key-value-table">
           <tbody>
+          <tr>
+            <td class="key">Bucket List cache created:</td>
+            <td class="value">{{model.bucketList.created}}</td>
+          </tr>
+          {{#if model.cluster.developmentMode}}
             <tr>
-              <td class="key">Bucket List cache created:</td>
-              <td class="value">{{model.bucketList.created}}</td>
-            </tr>
-            {{#if model.cluster.developmentMode}}
-              <tr>
-                <td class="key">Available actions:</td>
-                <td class="value">
-                  <ul class='button-list'>
-                    <li>
-                      {{button.refresh-buckets
-                      action="refreshBuckets"
-                      bucketType=model}}
-                    </li>
-                  </ul>
-                </td>
-              </tr>
-            {{/if}}
-            <tr>
-              <td class="key">Cached Bucket List</td>
+              <td class="key">Available actions:</td>
               <td class="value">
-                {{#if model.bucketList.multipleListItems}}
-                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out of {{model.bucketList.total}}</p>
-                {{else}}
-                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
-                {{/if}}
-
-                {{#pagination-component
-                chunkSize=model.bucketList.pageSize
-                totalSize=model.bucketList.total
-                sectionRequest='retrieveRequestedBuckets'}}
-                  <ul class='button-list small'>
-                    {{#each model.bucketList.buckets as |bucket|}}
-                      <li>
-                        {{link.link-bucket bucket=bucket}}
-                      </li>
-                    {{else}}
-                      No buckets found
-                    {{/each}}
-                  </ul>
-                {{/pagination-component}}
+                <ul class='button-list'>
+                  <li>
+                    {{button.refresh-buckets
+                    action="refreshBuckets"
+                    bucketType=model}}
+                  </li>
+                </ul>
               </td>
             </tr>
+          {{/if}}
+          <tr>
+            <td class="key">Cached Bucket List</td>
+            <td class="value">
+              {{#if model.bucketList.multipleListItems}}
+                <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
+                  of {{model.bucketList.total}}</p>
+              {{else}}
+                <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
+              {{/if}}
+
+              {{#pagination-component
+              chunkSize=model.bucketList.pageSize
+              totalSize=model.bucketList.total
+              sectionRequest='retrieveRequestedBuckets'}}
+                <ul class='button-list small'>
+                  {{#each model.bucketList.buckets as |bucket|}}
+                    <li>
+                      {{link.link-bucket bucket=bucket}}
+                    </li>
+                  {{else}}
+                    No buckets found
+                  {{/each}}
+                </ul>
+              {{/pagination-component}}
+            </td>
+          </tr>
           </tbody>
         </table>
       {{else}}

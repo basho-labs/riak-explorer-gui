@@ -12,14 +12,20 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('propsList', function() {});
+pending('propsList', function() {
+});
 
-pending('dataTypeName ', function() {});
+pending('dataTypeName ', function() {
+});
 
-pending('resolutionStrategy ', function() {});
+pending('resolutionStrategy ', function() {
+});
 
-pending('objectType ', function() {});
+pending('objectType ', function() {
+});
 
-pending('quorumRelevant ', function() {});
+pending('quorumRelevant ', function() {
+});
 
-pending('warnings ', function() {});
+pending('warnings ', function() {
+});

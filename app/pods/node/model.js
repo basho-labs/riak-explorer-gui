@@ -7,7 +7,7 @@ export default DS.Model.extend({
    * @property cluster
    * @type DS.Model
    */
-  cluster: DS.belongsTo('cluster', { async: true }),
+  cluster: DS.belongsTo('cluster', {async: true}),
 
   /**
    * Whether or not the node is available when pinged.
@@ -15,7 +15,7 @@ export default DS.Model.extend({
    * @property available
    * @type Boolean
    */
-  available: DS.attr('boolean', { default: false }),
+  available: DS.attr('boolean', {default: false}),
 
   /**
    * All the nodes advanced configuration. Stored as an Array of strings.
@@ -52,7 +52,7 @@ export default DS.Model.extend({
   configList: function() {
     let configList = [];
 
-    if(this.get('config')) {
+    if (this.get('config')) {
       configList = objectToArray(this.get('config'));
     }
 
@@ -69,7 +69,7 @@ export default DS.Model.extend({
   statsList: function() {
     let statsList = [];
 
-    if(this.get('stats')) {
+    if (this.get('stats')) {
       statsList = objectToArray(this.get('stats'));
     }
 

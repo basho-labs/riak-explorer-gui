@@ -1,55 +1,55 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-    model(params) {
-        return this.explorer.getCluster(params.clusterId, this.store)
-            .then(function(cluster){
-                return cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
-            });
-    },
+  model(params) {
+    return this.explorer.getCluster(params.clusterId, this.store)
+      .then(function(cluster) {
+        return cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
+      });
+  },
 
-    afterModel(model, transition) {
-        if (!model.get('content')) {
-            return Ember.$.ajax({
-                type: 'GET',
-                url: model.get('url'),
-                dataType: 'xml'
-            }).then(function(data) {
-                let xmlString = (new XMLSerializer()).serializeToString(data);
-                model.set('content', xmlString);
-            });
-        }
-    },
-
-    actions: {
-        updateSchema: function(schema) {
-            let xmlString = schema.get('content');
-            let self = this;
-            let xmlDoc = null;
-            let clusterId = schema.get('cluster').get('id');
-            let schemaId = schema.get('name');
-
-            try {
-                xmlDoc = Ember.$.parseXML(xmlString);
-            } catch(error) {
-                // TODO: Put in proper error messaging
-                alert('Invalid XML. Please check and make sure schema is valid xml.');
-                return;
-            }
-
-            return Ember.$.ajax({
-                type: 'PUT',
-                url: schema.get('url'),
-                contentType: 'application/xml',
-                processData: false,
-                data: xmlDoc
-            }).then(function(data) {
-                self.transitionTo('search-schema', clusterId, schemaId);
-            }, function(error) {
-                // TODO: Put in proper error messaging
-                alert('Something went wrong, schema was not saved.');
-                self.transitionTo('search-schema', clusterId, schemaId);
-            });
-        }
+  afterModel(model, transition) {
+    if (!model.get('content')) {
+      return Ember.$.ajax({
+        type: 'GET',
+        url: model.get('url'),
+        dataType: 'xml'
+      }).then(function(data) {
+        let xmlString = (new XMLSerializer()).serializeToString(data);
+        model.set('content', xmlString);
+      });
     }
+  },
+
+  actions: {
+    updateSchema: function(schema) {
+      let xmlString = schema.get('content');
+      let self = this;
+      let xmlDoc = null;
+      let clusterId = schema.get('cluster').get('id');
+      let schemaId = schema.get('name');
+
+      try {
+        xmlDoc = Ember.$.parseXML(xmlString);
+      } catch (error) {
+        // TODO: Put in proper error messaging
+        alert('Invalid XML. Please check and make sure schema is valid xml.');
+        return;
+      }
+
+      return Ember.$.ajax({
+        type: 'PUT',
+        url: schema.get('url'),
+        contentType: 'application/xml',
+        processData: false,
+        data: xmlDoc
+      }).then(function(data) {
+        self.transitionTo('search-schema', clusterId, schemaId);
+      }, function(error) {
+        // TODO: Put in proper error messaging
+        alert('Something went wrong, schema was not saved.');
+        self.transitionTo('search-schema', clusterId, schemaId);
+      });
+    }
+  }
 });

@@ -13,7 +13,7 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-test('cluster relationship', function (assert) {
+test('cluster relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('cluster');
 
@@ -22,7 +22,7 @@ test('cluster relationship', function (assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('bucket types relationship', function (assert) {
+test('bucket types relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('bucketType');
 
@@ -31,7 +31,7 @@ test('bucket types relationship', function (assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('bucket relationship', function (assert) {
+test('bucket relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('bucket');
 
@@ -40,7 +40,7 @@ test('bucket relationship', function (assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('metadata relationship', function (assert) {
+test('metadata relationship', function(assert) {
   let klass = this.subject({}).constructor;
   let relationship = Ember.get(klass, 'relationshipsByName').get('metadata');
 
@@ -49,5 +49,6 @@ test('metadata relationship', function (assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-pending('contents for display', function () {});
+pending('contents for display', function() {
+});
 

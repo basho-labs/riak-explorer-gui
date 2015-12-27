@@ -12,6 +12,8 @@ test('it exists', function(assert) {
   assert.ok(!!store);
 });
 
-pending('adding an element', function() {});
+pending('adding an element', function() {
+});
 
-pending('removing an element', function() {});
+pending('removing an element', function() {
+});
