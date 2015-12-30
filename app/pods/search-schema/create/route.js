@@ -5,6 +5,10 @@ export default Ember.Route.extend({
     return this.explorer.getCluster(params.clusterId, this.store);
   },
 
+  afterModel(model, transition) {
+    this.controllerFor('application').set('currentCluster', model);
+  },
+
   actions: {
     createSchema: function(clusterId, schemaName, schemaContent) {
       let self = this;

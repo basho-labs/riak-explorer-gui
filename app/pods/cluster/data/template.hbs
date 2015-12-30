@@ -1,0 +1,63 @@
+<div class='view-header'>
+  {{breadcrumb-component
+  subSection='data'
+  clusterId=model.id}}
+  {{view-label
+  pre-label='Cluster Data'
+  label=model.id}}
+</div>
+
+<div class='cluster-information-container'>
+  {{#dashboard-module label='Cluster Properties'}}
+    <table class="key-value-table">
+      <tbody>
+      <tr>
+        <td class="key">Development Mode</td>
+        <td class="value">
+          {{#if model.developmentMode}}
+            On
+          {{else}}
+            Off
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td class="key">Edition Type</td>
+        <td class="value">
+          {{#if model.isEnterpriseEdition}}
+            Enterprise
+          {{else}}
+            {{#if model.isOpenSourceEdition}}
+              Open Source
+            {{else}}
+              {{model.riakType}}
+            {{/if}}
+          {{/if}}
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Active Bucket Types'}}
+    {{#if model.activeBucketTypes}}
+      {{bucket-types
+      clusterId=model.clusterId
+      bucketTypes=model.activeBucketTypes}}
+    {{else}}
+      <p>No bucket types have been activated</p>
+    {{/if}}
+  {{/dashboard-module}}
+
+  {{#dashboard-module label='Inactive Bucket Types'}}
+    {{#if model.inactiveBucketTypes}}
+      {{bucket-types
+      clusterId=model.clusterId
+      bucketTypes=model.inactiveBucketTypes}}
+    {{else}}
+      <p>No inactive buckets</p>
+    {{/if}}
+  {{/dashboard-module}}
+</div>
+
+

@@ -1,53 +1,80 @@
 .sidebar-panel {
-  @include dark-background-font;
   position: absolute;
   top: $topbar-panel-height;
   left: 0;
   bottom: 0;
   width: $sidebar-panel-width;
-  background-color: lighten($grayscale-color-dark, 5%);
+  background-color: lighten($grayscale-color-dark, 10%);
   border-right: 1px solid darken($grayscale-color-dark, $color-accent-percentage-small);
+  overflow: auto;
 
-  .sidebar-group {
-    .sidebar-group-heading {
-      font-weight: 700;
-      background-color: lighten($grayscale-color-dark, 2%);
-      color: $grayscale-color-light;
-      padding: 20px;
-      text-transform: uppercase;
-      display: block;
-      border-bottom: 1px solid $grayscale-color-x-dark;
-      border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
+  .cluster-selector {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid $grayscale-color-x-dark;
+    border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
+    background-color: lighten($grayscale-color-dark, 2%);
+
+    .ember-power-select-trigger {
+      &:focus {
+        outline: none;
+      }
     }
 
-    .sidebar-group-item {
-      color: $grayscale-color-white;
-      border-bottom: 1px solid $grayscale-color-x-dark;
+    .ember-power-select-status-icon {
+      margin-right: 5px;
+    }
+  }
 
-      .dev-mode {
-        font-size: 9px;
-        color: $branding-color-1;
-        text-transform: uppercase;
+  .current-cluster {
+    header {
+      @include dark-background-font;
+      border-bottom: 1px solid $grayscale-color-x-dark;
+      border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
+      background-color: lighten($grayscale-color-dark, 2%);
+      padding: 10px;
+
+      .title {
+        font-size: 18px;
+        display: block;
       }
 
-      a {
-        @include dark-background-font;
-        color: $grayscale-color-white;
-        border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
-        display: block;
-        padding: 20px;
-        padding-left: 30px;
+      .meta {
+        text-transform: uppercase;
+        font-size: 9px;
 
-        &:hover {
-          @include dark-background-font;
-          background-color: $grayscale-color-dark;
-          border-top: 1px solid $grayscale-color-dark;
+        li {
+          &:after {
+            content: ", ";
+          }
+
+          &:last-child {
+            &:after {
+              content: "";
+            }
+          }
         }
 
-        &.selected {
-          cursor: default;
-          border-top: 1px solid darken($grayscale-color-dark, $color-accent-percentage-large);
-          background-color: darken($grayscale-color-dark, $color-accent-percentage-large);
+        .dev-mode {
+          color: $branding-color-1;
+        }
+      }
+    }
+
+    .cluster-section-links {
+      a {
+        @include dark-background-font;
+        display: block;
+        border-bottom: 1px solid $grayscale-color-x-dark;
+        border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
+        background-color: lighten($grayscale-color-dark, 5%);
+        padding: 10px 10px 10px 25px;
+        font-size: 16px;
+        text-transform: uppercase;
+
+        &:hover {
+          background-color: $grayscale-color-dark;
         }
       }
     }

@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import SideBarSelect from '../../mixins/sidebar-select';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(SideBarSelect, {
   actions: {
     error: function(errors, transition) {
       let error = errors.errors[0];
@@ -22,6 +23,7 @@ export default Ember.Route.extend({
   },
 
   afterModel: function(model, transition) {
-    return this.explorer.pingNodesInCluster(model, this.store);
+    this.setSidebarCluster(model);
+    this.explorer.pingNodesInCluster(model, this.store);
   }
 });

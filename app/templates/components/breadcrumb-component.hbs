@@ -1,10 +1,9 @@
-<div class='breadcrumb-container'>
-  <ol class="breadcrumb">
-    <li>{{link-to 'overview' 'index'}}</li>
-    {{#if clusterId}}
-      <li>{{link-to clusterId 'cluster' clusterId}}</li>
-    {{/if}}
+<ol class="breadcrumb">
+  {{!--<li>{{link-to 'overview' 'index'}}</li>--}}
+
+  {{#if isClusterData}}
     {{#if bucketTypeId}}
+      <li>{{link-to 'data' 'cluster.data' clusterId}}</li>
       <li>{{link-to bucketTypeId 'bucket-type' clusterId bucketTypeId}}</li>
     {{/if}}
     {{#if bucketId}}
@@ -13,8 +12,30 @@
     {{#if keyId}}
       <li>{{link-to keyId 'riak-object' clusterId bucketTypeId bucketId keyId}}</li>
     {{/if}}
-    {{#if pageTitle}}
-      <li>{{pageTitle}}</li>
+  {{/if}}
+
+  {{#if isClusterOps}}
+    {{#if nodeId}}
+      <li>{{link-to 'ops' 'cluster.ops' clusterId}}</li>
+      <li>{{link-to nodeId 'node' clusterId nodeId}}</li>
     {{/if}}
-  </ol>
-</div>
+  {{/if}}
+
+  {{#if isClusterQuery}}
+    {{#if schemaName}}
+      <li>{{link-to 'query' 'cluster.query' clusterId}}</li>
+      <li>{{link-to schemaName 'search-schema' clusterId schemaName}}</li>
+      {{#if schemaEdit}}
+        <li>{{link-to 'schema edit' 'search-schema.edit' clusterId schemaName}}</li>
+      {{/if}}
+    {{/if}}
+    {{#if schemaCreate}}
+      <li>{{link-to 'query overview' 'cluster.query' clusterId}}</li>
+      <li>{{link-to 'schema create' 'search-schema.create' clusterId}}</li>
+    {{/if}}
+    {{#if indexName}}
+      <li>{{link-to 'query overview' 'cluster.query' clusterId}}</li>
+      <li>{{link-to indexName 'search-index' clusterId indexName}}</li>
+    {{/if}}
+  {{/if}}
+</ol>

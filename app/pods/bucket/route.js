@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import SideBarSelect from '../../mixins/sidebar-select';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(SideBarSelect, {
   model: function(params) {
     let explorer = this.explorer;
     let store = this.store;
@@ -10,6 +11,10 @@ export default Ember.Route.extend({
       .then(function(bucket) {
         return explorer.getBucketWithKeyList(bucket, store);
       });
+  },
+
+  afterModel: function(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
   },
 
   /**
