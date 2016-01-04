@@ -19,6 +19,9 @@
       <li>{{link-to 'ops' 'cluster.ops' clusterId}}</li>
       <li>{{link-to nodeId 'node' clusterId nodeId}}</li>
     {{/if}}
+    {{#if logId}}
+      <li>{{link-to logId 'log-file' clusterId nodeId logId}}</li>
+    {{/if}}
   {{/if}}
 
   {{#if isClusterQuery}}

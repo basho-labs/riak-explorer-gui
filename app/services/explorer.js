@@ -997,6 +997,144 @@ export default Ember.Service.extend({
     });
   },
 
+  /**
+   * Fetches a given log file and its dependencies
+   *
+   * @method getLogFile
+   * @param clusterId
+   * @param nodeId
+   * @param logId
+   * @param {DS.Store} store
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
+  getLogFile(clusterId, nodeId, logId, store) {
+    let self = this;
+
+    return this.getNode(clusterId, nodeId, store)
+      .then(function(node) {
+        return node.get('logFiles').findBy('fileId', logId);
+      })
+      .then(function(logFile) {
+        return Ember.RSVP.allSettled([
+          logFile,
+          self.getLogFileContents(logFile),
+          self.getLogFileLength(logFile)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let logFile = PromiseArray[0].value;
+
+        return logFile;
+      });
+  },
+
+  /**
+   * Fetches a given log files contents
+   *
+   * @method getLogFileContents
+   * @param log
+   * @return {Ember.$.Promise} result of the AJAX call
+   */
+  getLogFileContents(log, rows = this.pageSize) {
+    let clusterId = log.get('node').get('cluster').get('id');
+    let nodeId    = log.get('node').get('id');
+    let logId     = log.get('fileId');
+    let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/log/files/${logId}?rows=${rows}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+          Accept : "plain/text;"
+        }
+      });
+
+      request.done(function(data) {
+        log.set('content', data);
+        log.set('pageSize', rows);
+
+        resolve(log);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  /**
+   * Fetches and sets the amount of lines in a given log file
+   *
+   * @method getLogFileLength
+   * @param log
+   * @return {Ember.$.Promise} result of the AJAX call
+   */
+  getLogFileLength(log) {
+    let clusterId = log.get('node').get('cluster').get('id');
+    let nodeId    = log.get('node').get('id');
+    let logId     = log.get('fileId');
+    let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/log/files/${logId}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json'
+      });
+
+      request.done(function(data) {
+        let totalLines = data[logId].total_lines;
+
+        log.set('totalLines', totalLines);
+
+        resolve(log);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  /**
+   * Fetches a given node and all its basic dependencies: stats, configuration, and log files
+   *
+   * @method getNode
+   * @param clusterId
+   * @param nodeId
+   * @param {DS.Store} store
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
+  getNode(clusterId, nodeId, store) {
+    let self = this;
+
+    return this.getCluster(clusterId, store)
+      .then(function(cluster) {
+        return cluster.get('nodes').findBy('id', nodeId);
+      })
+      .then(function(node) {
+        return Ember.RSVP.allSettled([
+          node,
+          self.getNodeStats(node),
+          self.getNodeConfig(node),
+          self.getNodeLogFiles(node, store)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let node = PromiseArray[0].value;
+
+        return node;
+      });
+  },
+
+  /**
+   * Fetches a given nodes basic configuration stats
+   *
+   * @method getNodeConfig
+   * @param {Node} node
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
   getNodeConfig(node) {
     let url = `${this.apiURL}explore/nodes/${node.get('id')}/config`;
 
@@ -1022,6 +1160,27 @@ export default Ember.Service.extend({
         reject(data);
       });
     });
+  },
+
+  /**
+   * Fetches and creates a log file for a given node.
+   *
+   * @method getNodeLogFiles
+   * @param {Node} node
+   * @param {DS.Store} store
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
+  getNodeLogFiles(node, store) {
+    if (Ember.isEmpty(node.get('logFiles'))) {
+      return store.query('log-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
+        .then(function(logFiles) {
+          node.set('logFiles', logFiles);
+
+          return logFiles;
+        });
+    } else {
+      return node.get('logFiles');
+    }
   },
 
   /**

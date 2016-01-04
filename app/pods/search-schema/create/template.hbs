@@ -9,17 +9,19 @@
 </div>
 
 {{#dashboard-module}}
-  <div class="schema-actions">
-        <span class="create schema-action" {{action 'createSchema' model.clusterId schemaName schemaContent}}>
-            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-            Create Schema
-        </span>
+  <header class="module-header">
+    <div class="action-buttons">
+      <span class="create action-button" {{action 'createSchema' model.clusterId schemaName schemaContent}}>
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        Create Schema
+      </span>
 
-    {{#link-to 'cluster.query' model.clusterId class='cancel schema-action' }}
-      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-      Cancel
-    {{/link-to}}
-  </div>
+      {{#link-to 'cluster.query' model.clusterId class='cancel action-button' }}
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        Cancel
+      {{/link-to}}
+    </div>
+  </header>
 
   <form>
     <div class="form-group">

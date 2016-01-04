@@ -13,6 +13,7 @@
     {{#em-tab-list}}
       {{#em-tab}}Statistics{{/em-tab}}
       {{#em-tab}}Configuration{{/em-tab}}
+      {{#em-tab}}Log Files{{/em-tab}}
     {{/em-tab-list}}
 
     {{#em-tab-panel}}
@@ -51,7 +52,19 @@
         </tbody>
       </table>
     {{/em-tab-panel}}
+
+    {{#em-tab-panel}}
+      {{#if model.logFiles}}
+        <ul class="button-list">
+          {{#each model.logFiles as |logFile|}}
+            <li>
+              {{link-to logFile.fileId 'log-file' model.cluster.id model.id logFile.fileId}}
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        No Log Files for this node
+      {{/if}}
+    {{/em-tab-panel}}
   {{/em-tabs}}
-
-
 {{/dashboard-module}}

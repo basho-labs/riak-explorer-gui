@@ -25,6 +25,7 @@ Router.map(function() {
 
   // Cluster-Ops Routes
   this.route('node', {path: '/cluster/:clusterId/ops/nodes/:nodeId/'});
+  this.route('log-file', {path: '/cluster/:clusterId/ops/nodes/:nodeId/logs/:logId'});
 
   // Cluster-Query Routes
   this.route('search-index', {path: '/cluster/:clusterId/query/index/:searchIndexId'});
