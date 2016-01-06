@@ -29,7 +29,8 @@ var BucketController = Ember.Controller.extend({
   refreshModel: function(bucket) {
     var self = this;
     var cluster = bucket.get('cluster');
-    self.get('explorer').getKeyList(bucket, self.store)
+
+    self.get('explorer').getKeyList(bucket)
       .then(function(updatedKeyList) {
         // The key list could be either loaded or empty at this point
         bucket.set('keyList', updatedKeyList);
@@ -45,16 +46,17 @@ var BucketController = Ember.Controller.extend({
     retrieveRequestedKeys: function(startIndex) {
       let service = this.get('explorer');
       let bucket = this.get('model');
-      let store = this.get('store');
 
-      return service.getBucketWithKeyList(bucket, store, startIndex);
+      return service.getBucketWithKeyList(bucket, startIndex);
     },
 
     deleteBucket: function(bucket) {
       bucket.set('isKeyListLoaded', false);
       this.get('explorer').deleteBucket(bucket);
+
       // Reload the model after the delete, triggers a cache refresh
       this.pollForModel(bucket, 5000);
+
       // Reload the second time
       this.pollForModel(bucket, 10000);
     },

@@ -14,6 +14,7 @@ var BucketTypeController = Ember.Controller.extend({
    */
   pollForModel: function(bucketType, delay) {
     var self = this;
+
     Ember.run.later(function() {
       // console.log('controller: scheduling to refreshModel');
       self.refreshModel(bucketType);
@@ -30,16 +31,20 @@ var BucketTypeController = Ember.Controller.extend({
    */
   refreshModel: function(bucketType) {
     var self = this;
+
     // console.log("Refreshing model %O", bucketType);
     var cluster = bucketType.get('cluster');
-    self.get('explorer').getBucketList(cluster,
-      bucketType, self.store)
+
+    self.get('explorer').getBucketList(cluster, bucketType)
       .then(function(updatedBucketList) {
         // console.log('loaded bucket list: %O', updatedBucketList);
         var model = self.get('model');
+
         model.set('bucketList', updatedBucketList);
+
         if (!model.get('isBucketListLoaded') &&
           updatedBucketList.get('cachePresent')) {
+
           // Only continue polling in development mode
           self.pollForModel(model, 3000);
         }
@@ -51,9 +56,8 @@ var BucketTypeController = Ember.Controller.extend({
       let service = this.get('explorer');
       let bucketType = this.get('model');
       let cluster = bucketType.get('cluster');
-      let store = this.get('store');
 
-      return service.getBucketTypeWithBucketList(bucketType, cluster, store, startIndex);
+      return service.getBucketTypeWithBucketList(bucketType, cluster, startIndex);
     },
 
     refreshBuckets: function(bucketType) {

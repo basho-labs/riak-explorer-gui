@@ -133,10 +133,9 @@ export default Ember.Service.extend({
    *           map field.
    * @param payload {Object} Value of the JSON payload of an HTTP GET
    *                   to the map object
-   * @param store {DS.Store} Ember Data store, used to instantiate field models
    * @return {Object} A hash of fields indexed by CRDT type and field name.
    */
-  collectMapFields(rootMap, parentMap, payload, store) {
+  collectMapFields(rootMap, parentMap, payload) {
     var contents = {
       counters: {},
       flags: {},
@@ -145,10 +144,11 @@ export default Ember.Service.extend({
       maps: {}
     };
     var field;
+    let self = this;
 
     for (var fieldName in payload) {
       if (fieldName.endsWith('_counter')) {
-        field = store.createRecord('riak-object.map-field', {
+        field = self.store.createRecord('riak-object.map-field', {
           fieldType: 'counter',
           name: fieldName,
           rootMap: rootMap,
@@ -158,7 +158,7 @@ export default Ember.Service.extend({
         contents.counters[fieldName] = field;
       }
       if (fieldName.endsWith('_flag')) {
-        field = store.createRecord('riak-object.map-field', {
+        field = self.store.createRecord('riak-object.map-field', {
           fieldType: 'flag',
           name: fieldName,
           rootMap: rootMap,
@@ -168,7 +168,7 @@ export default Ember.Service.extend({
         contents.flags[fieldName] = field;
       }
       if (fieldName.endsWith('_register')) {
-        field = store.createRecord('riak-object.map-field', {
+        field = self.store.createRecord('riak-object.map-field', {
           fieldType: 'register',
           name: fieldName,
           rootMap: rootMap,
@@ -178,7 +178,7 @@ export default Ember.Service.extend({
         contents.registers[fieldName] = field;
       }
       if (fieldName.endsWith('_set')) {
-        field = store.createRecord('riak-object.map-field', {
+        field = self.store.createRecord('riak-object.map-field', {
           fieldType: 'set',
           name: fieldName,
           rootMap: rootMap,
@@ -188,7 +188,7 @@ export default Ember.Service.extend({
         contents.sets[fieldName] = field;
       }
       if (fieldName.endsWith('_map')) {
-        field = store.createRecord('riak-object.embedded-map', {
+        field = self.store.createRecord('riak-object.embedded-map', {
           fieldType: 'map',
           name: fieldName,
           rootMap: rootMap,
@@ -196,8 +196,7 @@ export default Ember.Service.extend({
         });
         // This `field` becomes the `parentMap` for the nested fields.
         // `rootMap` stays the same
-        let mapFields = this.collectMapFields(rootMap, field,
-          payload[fieldName], store);
+        let mapFields = self.collectMapFields(rootMap, field, payload[fieldName]);
         field.value = mapFields;
         contents.maps[fieldName] = field;
       }
@@ -214,13 +213,14 @@ export default Ember.Service.extend({
    * @param data {Hash}
    * @param cluster {Cluster}
    * @param bucketType {BucketType}
-   * @param store {DS.Store}
    * @return {BucketList}
    */
-  createBucketList(data, cluster, bucketType, store, startItemIndex) {
+  createBucketList(data, cluster, bucketType, startItemIndex) {
+    let self = this;
+
     if (!data) {
       // No data, create an empty Bucket list
-      return store.createRecord('bucket-list', {
+      return this.store.createRecord('bucket-list', {
         cluster: cluster,
         bucketType: bucketType,
         buckets: []
@@ -228,13 +228,14 @@ export default Ember.Service.extend({
     }
     // Turn a list of bucket names into a list of actual bucket instances
     var bucketList = data.buckets.buckets.map(function(bucketName) {
-      return store.createRecord('bucket', {
+      return self.store.createRecord('bucket', {
         name: bucketName,
         cluster: cluster,
         bucketType: bucketType
       });
     });
-    return store.createRecord('bucket-list', {
+
+    return this.store.createRecord('bucket-list', {
       cluster: cluster,
       bucketType: bucketType,
       buckets: bucketList,
@@ -255,14 +256,14 @@ export default Ember.Service.extend({
    * @method createKeyList
    * @param data {Hash}
    * @param bucket {Bucket}
-   * @param store {DS.Store}
    * @return {KeyList}
    */
-  createKeyList(data, bucket, store, startItemIndex) {
-    var explorer = this;
+  createKeyList(data, bucket, startItemIndex) {
+    var self = this;
+
     if (!data) {
       // No data, return an empty KeyList
-      return store.createRecord('key-list', {
+      return this.store.createRecord('key-list', {
         bucket: bucket,
         cluster: bucket.get('cluster'),
         keys: []
@@ -273,20 +274,22 @@ export default Ember.Service.extend({
 
     // Cycle through the list of keys and create actual RiakObject instances
     var keyList = data.keys.keys.map(function(key) {
-      var obj = store.createRecord(modelName, {
+      var obj = self.store.createRecord(modelName, {
         key: key,
         bucket: bucket,
         bucketType: bucket.get('bucketType'),
         cluster: bucket.get('cluster'),
         isLoaded: false
       });
-      if (explorer.wasObjectDeleted(obj)) {
+
+      if (self.wasObjectDeleted(obj)) {
         obj.set('markedDeleted', true);
       }
+
       return obj;
     });
 
-    return store.createRecord('key-list', {
+    return this.store.createRecord('key-list', {
       bucket: bucket,
       cluster: bucket.get('cluster'),
       created: data.keys.created,
@@ -305,14 +308,13 @@ export default Ember.Service.extend({
    * @method createSchema
    * @param name {String}
    * @param cluster {Cluster}
-   * @param store {DS.Store}
    * @return {Schema}
    */
-  createSchema(name, cluster, store) {
+  createSchema(name, cluster) {
     let schema = cluster.get('searchSchemas').findBy('name', name);
 
     if (!schema) {
-      schema = store.createRecord('search-schema', {
+      schema = this.store.createRecord('search-schema', {
         id: `${cluster.get('id')}/${name}`,
         cluster: cluster,
         name: name
@@ -330,13 +332,12 @@ export default Ember.Service.extend({
    * @param {Bucket} bucket
    * @param {RiakObject} newObject
    * @param {Object} payload
-   * @param {DS.Store} store
    * @return {Object}
    */
-  createObjectContents(bucket, newObject, payload, store) {
+  createObjectContents(bucket, newObject, payload) {
     var contents;
     if (bucket.get('props').get('isMap')) {
-      contents = this.collectMapFields(newObject, newObject, payload.value, store);
+      contents = this.collectMapFields(newObject, newObject, payload.value);
     } else {
       contents = payload;
     }
@@ -353,15 +354,14 @@ export default Ember.Service.extend({
    * @param bucket {Bucket}
    * @param rawHeader {String} jQuery AJAX calls return headers as a string :(
    * @param payload {Object}
-   * @param store {DS.Store}
    * @param url {String} The URL to download the "raw" object payload
    *          (via an Explorer proxy request direct to Riak)
    * @return {RiakObject|RiakObjectCounter|RiakObjectMap|RiakObjectSet}
    */
-  createObjectFromAjax(key, bucket, rawHeader, payload, store, url) {
-    let metadata = this.createObjectMetadata(rawHeader, store);
+  createObjectFromAjax(key, bucket, rawHeader, payload, url) {
+    let metadata = this.createObjectMetadata(rawHeader);
     let modelName = bucket.get('objectModelName');
-    let newObject = store.createRecord(modelName, {
+    let newObject = this.store.createRecord(modelName, {
       key: key,
       bucket: bucket,
       bucketType: bucket.get('bucketType'),
@@ -370,8 +370,10 @@ export default Ember.Service.extend({
       isLoaded: true,
       rawUrl: url
     });
-    let contents = this.createObjectContents(bucket, newObject, payload, store);
+    let contents = this.createObjectContents(bucket, newObject, payload);
+
     newObject.set('contents', contents);
+
     return newObject;
   },
 
@@ -381,14 +383,14 @@ export default Ember.Service.extend({
    *
    * @method createObjectMetadata
    * @param rawHeader {String}
-   * @param store {DS.Store}
    * @return {ObjectMetadata}
    */
-  createObjectMetadata(rawHeader, store) {
+  createObjectMetadata(rawHeader) {
     if (!rawHeader) {
-      return store.createRecord('object-metadata');
+      return this.store.createRecord('object-metadata');
     }
-    return store.createRecord('object-metadata', {
+
+    return this.store.createRecord('object-metadata', {
       headers: this.parseHeaderString(rawHeader)
     });
   },
@@ -677,16 +679,16 @@ export default Ember.Service.extend({
    * @param {String} clusterId
    * @param {String} bucketTypeId
    * @param {String} bucketId
-   * @param {DS.Store} store
    * @return {Bucket}
    */
-  getBucket(clusterId, bucketTypeId, bucketId, store) {
-    var self = this;
-    return self.getBucketType(clusterId, bucketTypeId, store)
+  getBucket(clusterId, bucketTypeId, bucketId) {
+    let self = this;
+
+    return self.getBucketType(clusterId, bucketTypeId)
       .then(function(bucketType) {
-        return self.getBucketProps(clusterId, bucketTypeId, bucketId, store)
+        return self.getBucketProps(clusterId, bucketTypeId, bucketId)
           .then(function(bucketProps) {
-            return store.createRecord('bucket', {
+            return self.store.createRecord('bucket', {
               name: bucketId,
               bucketType: bucketType,
               cluster: bucketType.get('cluster'),
@@ -705,10 +707,9 @@ export default Ember.Service.extend({
    * @method getBucketList
    * @param {Cluster} cluster
    * @param {BucketType} bucketType
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
    */
-  getBucketList(cluster, bucketType, store, start = 1, rows = this.pageSize) {
+  getBucketList(cluster, bucketType, start = 1, rows = this.pageSize) {
     var explorer = this;
     var clusterId = cluster.get('clusterId');
     var bucketTypeId = bucketType.get('bucketTypeId');
@@ -722,7 +723,7 @@ export default Ember.Service.extend({
         type: 'GET',
         success: function(data) {
           bucketType.set('isBucketListLoaded', true);
-          resolve(explorer.createBucketList(data, cluster, bucketType, store, start));
+          resolve(explorer.createBucketList(data, cluster, bucketType, start));
         },
         error: function(jqXHR, textStatus) {
           // Fail (likely a 404, cache not yet created)
@@ -730,8 +731,7 @@ export default Ember.Service.extend({
             // Return an empty (Loading..) list. Controller will poll to
             // refresh it, later
             let data = null;
-            let emptyList = explorer.createBucketList(data, cluster,
-              bucketType, store);
+            let emptyList = explorer.createBucketList(data, cluster, bucketType);
             if (cluster.get('developmentMode')) {
               bucketType.set('isBucketListLoaded', false);
               emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
@@ -761,10 +761,10 @@ export default Ember.Service.extend({
    * @param {String} clusterId
    * @param {String} bucketTypeId
    @ @param {String} bucketId
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<BucketProps>}
    */
-  getBucketProps(clusterId, bucketTypeId, bucketId, store) {
+  getBucketProps(clusterId, bucketTypeId, bucketId) {
+    let self = this;
     var clusterUrl = this.getClusterProxyUrl(clusterId);
     var propsUrl = `${clusterUrl}/types/${bucketTypeId}/buckets/${bucketId}/props`;
 
@@ -774,12 +774,15 @@ export default Ember.Service.extend({
         dataType: 'json',
         type: 'GET'
       };
+
       ajaxHash.success = function(data) {
-        resolve(store.createRecord('bucket-props', data));
+        resolve(self.store.createRecord('bucket-props', data));
       };
+
       ajaxHash.error = function(jqXHR) {
         Ember.run(null, reject, jqXHR);
       };
+
       Ember.$.ajax(ajaxHash);
     });
   },
@@ -796,12 +799,11 @@ export default Ember.Service.extend({
    * @method getBucketType
    * @param {String} clusterId
    * @param {String} bucketTypeId
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<BucketType>}
    */
-  getBucketType(clusterId, bucketTypeId, store) {
+  getBucketType(clusterId, bucketTypeId) {
     var self = this;
-    return self.getCluster(clusterId, store)
+    return self.getCluster(clusterId)
       .then(function(cluster) {
         return cluster.get('bucketTypes')
           .findBy('originalId', bucketTypeId);
@@ -815,12 +817,11 @@ export default Ember.Service.extend({
    * @method getBucketTypeWithBucketList
    * @param {BucketType} bucketType
    * @param {Cluster} cluster
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<BucketType>}
    */
-  getBucketTypeWithBucketList(bucketType, cluster, store, start, row) {
+  getBucketTypeWithBucketList(bucketType, cluster, start, row) {
     return this
-      .getBucketList(cluster, bucketType, store, start, row)
+      .getBucketList(cluster, bucketType, start, row)
       .then(function(bucketList) {
         bucketType.set('bucketList', bucketList);
         return bucketType;
@@ -835,15 +836,14 @@ export default Ember.Service.extend({
    *
    * @method getBucketTypesForCluster
    * @param {Cluster} cluster
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<Array<BucketType>>|Array<BucketType>}
    */
-  getBucketTypesForCluster(cluster, store) {
+  getBucketTypesForCluster(cluster) {
     if (Ember.isEmpty(cluster.get('bucketTypes'))) {
       // If this page was accessed directly
       //  (via a bookmark and not from a link), bucket types are likely
       //  to be not loaded yet. Load them.
-      return store.query('bucket-type',
+      return this.store.query('bucket-type',
         {clusterId: cluster.get('clusterId')})
         .then(function(bucketTypes) {
           cluster.set('bucketTypes', bucketTypes);
@@ -860,11 +860,10 @@ export default Ember.Service.extend({
    *
    * @method getBucketWithKeyList
    * @param {Bucket} bucket
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<Bucket>}
    */
-  getBucketWithKeyList(bucket, store, start, rows) {
-    return this.getKeyList(bucket, store, start, rows)
+  getBucketWithKeyList(bucket, start, rows) {
+    return this.getKeyList(bucket, start, rows)
       .then(function(keyList) {
         bucket.set('keyList', keyList);
         return bucket;
@@ -877,19 +876,18 @@ export default Ember.Service.extend({
    *
    * @method getCluster
    * @param {String} clusterId
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<Cluster>}
    */
-  getCluster(clusterId, store) {
+  getCluster(clusterId) {
     var self = this;
 
-    return store.findRecord('cluster', clusterId)
+    return this.store.findRecord('cluster', clusterId)
       .then(function(cluster) {
         return Ember.RSVP.allSettled([
           cluster,
-          self.getBucketTypesForCluster(cluster, store),
-          self.getIndexesForCluster(cluster, store),
-          self.getNodesForCluster(cluster, store)
+          self.getBucketTypesForCluster(cluster),
+          self.getIndexesForCluster(cluster),
+          self.getNodesForCluster(cluster)
         ]);
       })
       .then(function(PromiseArray) {
@@ -898,7 +896,7 @@ export default Ember.Service.extend({
         // Create search-schemas from index references
         //  and set the schema/index association
         cluster.get('searchIndexes').forEach(function(index) {
-          let schema = self.createSchema(index.get('schemaRef'), cluster, store);
+          let schema = self.createSchema(index.get('schemaRef'), cluster);
 
           index.set('schema', schema);
         });
@@ -925,15 +923,14 @@ export default Ember.Service.extend({
    *
    * @method getIndexesForCluster
    * @param {DS.Model} cluster
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<Array<SearchIndex>>|Array<SearchIndex>}
    */
-  getIndexesForCluster(cluster, store) {
+  getIndexesForCluster(cluster) {
     if (Ember.isEmpty(cluster.get('searchIndexes'))) {
       // If this page was accessed directly
       //  (via a bookmark and not from a link), bucket types are likely
       //  to be not loaded yet. Load them.
-      return store.query('search-index', {clusterId: cluster.get('id')})
+      return this.store.query('search-index', {clusterId: cluster.get('id')})
         .then(function(indexes) {
           cluster.set('searchIndexes', indexes);
 
@@ -949,10 +946,9 @@ export default Ember.Service.extend({
    *
    * @method getKeyList
    * @param {Bucket} bucket
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  getKeyList(bucket, store, start = 1, rows = this.pageSize) {
+  getKeyList(bucket, start = 1, rows = this.pageSize) {
     var clusterId = bucket.get('clusterId');
     var cluster = bucket.get('cluster');
     var bucketTypeId = bucket.get('bucketTypeId');
@@ -968,12 +964,12 @@ export default Ember.Service.extend({
         type: 'GET',
         success: function(data) {
           bucket.set('isKeyListLoaded', true);
-          resolve(explorer.createKeyList(data, bucket, store, start));
+          resolve(explorer.createKeyList(data, bucket, start));
         },
         error: function(jqXHR, textStatus) {
           if (jqXHR.status === 404) {
             let data = null;
-            let emptyList = explorer.createKeyList(data, bucket, store);
+            let emptyList = explorer.createKeyList(data, bucket);
             if (cluster.get('developmentMode')) {
               bucket.set('isKeyListLoaded', false);
               emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list keys call...');
@@ -1004,13 +1000,12 @@ export default Ember.Service.extend({
    * @param clusterId
    * @param nodeId
    * @param logId
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  getLogFile(clusterId, nodeId, logId, store) {
+  getLogFile(clusterId, nodeId, logId) {
     let self = this;
 
-    return this.getNode(clusterId, nodeId, store)
+    return this.getNode(clusterId, nodeId)
       .then(function(node) {
         return node.get('logFiles').findBy('fileId', logId);
       })
@@ -1103,13 +1098,12 @@ export default Ember.Service.extend({
    * @method getNode
    * @param clusterId
    * @param nodeId
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  getNode(clusterId, nodeId, store) {
+  getNode(clusterId, nodeId) {
     let self = this;
 
-    return this.getCluster(clusterId, store)
+    return this.getCluster(clusterId)
       .then(function(cluster) {
         return cluster.get('nodes').findBy('id', nodeId);
       })
@@ -1118,7 +1112,7 @@ export default Ember.Service.extend({
           node,
           self.getNodeStats(node),
           self.getNodeConfig(node),
-          self.getNodeLogFiles(node, store)
+          self.getNodeLogFiles(node)
         ]);
       })
       .then(function(PromiseArray) {
@@ -1167,12 +1161,11 @@ export default Ember.Service.extend({
    *
    * @method getNodeLogFiles
    * @param {Node} node
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  getNodeLogFiles(node, store) {
+  getNodeLogFiles(node) {
     if (Ember.isEmpty(node.get('logFiles'))) {
-      return store.query('log-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
+      return this.store.query('log-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
         .then(function(logFiles) {
           node.set('logFiles', logFiles);
 
@@ -1214,12 +1207,11 @@ export default Ember.Service.extend({
    *
    * @method getNodesForCluster
    * @param {DS.Model} cluster
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<Array<RiakNode>>|Array<RiakNode>}
    */
-  getNodesForCluster(cluster, store) {
+  getNodesForCluster(cluster) {
     if (Ember.isEmpty(cluster.get('nodes'))) {
-      return store.query('node', {clusterId: cluster.get('id')})
+      return this.store.query('node', {clusterId: cluster.get('id')})
         .then(function(nodes) {
           cluster.set('nodes', nodes);
 
@@ -1266,10 +1258,9 @@ export default Ember.Service.extend({
    * @method getRiakObject
    * @param {Bucket} bucket
    * @param {String} key
-   * @param {DS.Store} store
    * @return {Ember.RSVP.Promise<RiakObject>} RiakObject or its subclasses (CRDTs)
    */
-  getRiakObject(bucket, key, store) {
+  getRiakObject(bucket, key) {
     var explorer = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -1294,7 +1285,7 @@ export default Ember.Service.extend({
           headerString = jqXHR.getAllResponseHeaders();
           contents = data;  // Parsed json
           resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-            contents, store, url));
+            contents, url));
         };
       } else {
         // Regular Riak object
@@ -1304,7 +1295,7 @@ export default Ember.Service.extend({
           headerString = jqXHR.getAllResponseHeaders();
           contents = jqXHR.responseText;  // Unparsed payload
           resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-            contents, store, url));
+            contents, url));
         };
       }
       ajaxHash.processData = processData;
@@ -1316,13 +1307,13 @@ export default Ember.Service.extend({
           // parse errors when they're invalid. Suppress this.
           headerString = jqXHR.getAllResponseHeaders();
           resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-            jqXHR.responseText, store, url));
+            jqXHR.responseText, url));
         }
         if (jqXHR.status === 300) {
           // Handle 300 Multiple Choices case for siblings
           headerString = jqXHR.getAllResponseHeaders();
           resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-            jqXHR.responseText, store, url));
+            jqXHR.responseText, url));
         } else {
           reject(jqXHR);
         }
@@ -1432,12 +1423,11 @@ export default Ember.Service.extend({
    *
    * @method getNodesForCluster
    * @param {DS.Model} cluster
-   * @param {DS.Store} store
    */
-  pingNodesInCluster(cluster, store) {
+  pingNodesInCluster(cluster) {
     let self = this;
 
-    this.getNodesForCluster(cluster, store).then(function(nodes) {
+    this.getNodesForCluster(cluster).then(function(nodes) {
       nodes.forEach(function(node) {
         let nodeId = node.get('id');
 

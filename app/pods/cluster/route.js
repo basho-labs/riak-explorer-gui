@@ -19,11 +19,11 @@ export default Ember.Route.extend(SideBarSelect, {
   },
 
   model: function(params) {
-    return this.explorer.getCluster(params.clusterId, this.store);
+    return this.explorer.getCluster(params.clusterId);
   },
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model);
-    this.explorer.pingNodesInCluster(model, this.store);
+    this.explorer.pingNodesInCluster(model);
   }
 });

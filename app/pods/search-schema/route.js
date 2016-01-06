@@ -5,12 +5,12 @@ export default Ember.Route.extend(SideBarSelect, {
   model(params) {
     let self = this;
 
-    return this.explorer.getCluster(params.clusterId, this.store)
+    return this.explorer.getCluster(params.clusterId)
       .then(function(cluster) {
         let schema = cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
 
         if (!schema) {
-          schema = self.explorer.createSchema(params.searchSchemaId, cluster, self.store);
+          schema = self.explorer.createSchema(params.searchSchemaId, cluster);
         }
 
         return schema;

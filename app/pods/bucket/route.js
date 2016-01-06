@@ -4,12 +4,11 @@ import SideBarSelect from '../../mixins/sidebar-select';
 export default Ember.Route.extend(SideBarSelect, {
   model: function(params) {
     let explorer = this.explorer;
-    let store = this.store;
 
     return explorer
-      .getBucket(params.clusterId, params.bucketTypeId, params.bucketId, store)
+      .getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
       .then(function(bucket) {
-        return explorer.getBucketWithKeyList(bucket, store);
+        return explorer.getBucketWithKeyList(bucket);
       });
   },
 
@@ -29,7 +28,7 @@ export default Ember.Route.extend(SideBarSelect, {
     //   function, above, is not called. Handle this case.
     if (Ember.isEmpty(model.get('props'))) {
       this.explorer
-        .getBucketProps(model.get('clusterId'), model.get('bucketTypeId'), model.get('bucketId'), this.store)
+        .getBucketProps(model.get('clusterId'), model.get('bucketTypeId'), model.get('bucketId'))
         .then(function(bucketProps) {
           model.set('props', bucketProps);
         });
