@@ -3,7 +3,7 @@ import SideBarSelect from '../../../mixins/sidebar-select';
 
 export default Ember.Route.extend(SideBarSelect, {
   model(params) {
-    return this.explorer.getCluster(params.clusterId, this.store)
+    return this.explorer.getCluster(params.clusterId)
       .then(function(cluster) {
         return cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
       });

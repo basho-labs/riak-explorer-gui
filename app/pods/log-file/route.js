@@ -4,7 +4,7 @@ import SideBarSelect from '../../mixins/sidebar-select';
 export default Ember.Route.extend(SideBarSelect, {
 
   model: function(params) {
-    return this.explorer.getLogFile(params.clusterId, params.nodeId, params.logId, this.store);
+    return this.explorer.getLogFile(params.clusterId, params.nodeId, params.logId);
   },
 
   afterModel: function(model, transition) {

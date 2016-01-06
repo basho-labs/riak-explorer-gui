@@ -4,12 +4,10 @@ import SideBarSelect from '../../../mixins/sidebar-select';
 var RiakObjectEditRoute = Ember.Route.extend(SideBarSelect, {
   model: function(params) {
     var explorer = this.explorer;
-    var store = this.store;
 
-    return explorer.getBucket(params.clusterId,
-      params.bucketTypeId, params.bucketId, store)
+    return explorer.getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
       .then(function(bucket) {
-        return explorer.getRiakObject(bucket, params.key, store);
+        return explorer.getRiakObject(bucket, params.key);
       });
   },
 

@@ -31,4 +31,5 @@ var RiakObjectCounterController = RiakObjectController.extend({
     }
   }
 });
+
 export default RiakObjectCounterController;

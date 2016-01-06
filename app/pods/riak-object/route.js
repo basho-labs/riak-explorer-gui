@@ -16,11 +16,10 @@ var RiakObjectRoute = Ember.Route.extend(SideBarSelect, {
 
   model: function(params) {
     var explorer = this.explorer;
-    var store = this.store;
-    return explorer.getBucket(params.clusterId,
-      params.bucketTypeId, params.bucketId, store)
+
+    return explorer.getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
       .then(function(bucket) {
-        return explorer.getRiakObject(bucket, params.key, store);
+        return explorer.getRiakObject(bucket, params.key);
       });
   },
 
@@ -30,9 +29,9 @@ var RiakObjectRoute = Ember.Route.extend(SideBarSelect, {
 
   setupController: function(controller, model) {
     this._super(controller, model);
+
     if (!model.get('isLoaded')) {
-      this.explorer.getRiakObject(model.get('bucket'),
-        model.get('key'), this.store)
+      this.explorer.getRiakObject(model.get('bucket'), model.get('key'))
         .then(function(object) {
           controller.set('model', object);
         });

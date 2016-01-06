@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Route.extend({
   model(params) {
-    return this.explorer.getCluster(params.clusterId, this.store);
+    return this.explorer.getCluster(params.clusterId);
   },
 
   afterModel(model, transition) {
