@@ -1,11 +1,11 @@
-.schema-actions {
+.action-buttons {
   text-align: right;
-  margin-bottom: 10px;
+  float: right;
 
-  .schema-action {
+  .action-button {
     @extend .btn;
     @extend .btn-sm;
-    margin-left: 10px;
+    margin-left: 5px;
   }
 
   .edit {
@@ -25,6 +25,10 @@
   }
 
   .raw {
+    @extend .btn-primary;
+  }
+
+  .refresh {
     @extend .btn-primary;
   }
 }

@@ -31,8 +31,6 @@ test('bucket type relationship', function(assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-pending('bucket type id', function() {
-});
+pending('bucket type id', function() {});
 
-pending('cluster id', function() {
-});
+pending('cluster id', function() {});

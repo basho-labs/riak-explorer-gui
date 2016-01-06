@@ -10,6 +10,13 @@ export default DS.Model.extend({
   cluster: DS.belongsTo('cluster', {async: true}),
 
   /**
+   * The nodes various log files
+   * @property logFiles
+   * @type DS.Model
+   */
+  logFiles: DS.hasMany('log-file', {async: true}),
+
+  /**
    * Whether or not the node is available when pinged.
    *
    * @property available

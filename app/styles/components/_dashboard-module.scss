@@ -1,9 +1,18 @@
 .dashboard-module {
   margin: 20px 20px 40px 40px;
 
+  .module-header {
+    @extend .clearfix;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
   .module-label {
     font-size: 20px;
-    font-weight: 500;
     margin-bottom: 10px;
+  }
+
+  .mini-label {
+    font-size: 10px;
   }
 }
