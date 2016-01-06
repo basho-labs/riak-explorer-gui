@@ -22,6 +22,9 @@
     {{#if logId}}
       <li>{{link-to logId 'log-file' clusterId nodeId logId}}</li>
     {{/if}}
+    {{#if configId}}
+      <li>{{link-to configId 'config-file' clusterId nodeId configId}}</li>
+    {{/if}}
   {{/if}}
 
   {{#if isClusterQuery}}

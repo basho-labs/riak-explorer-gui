@@ -1,0 +1,20 @@
+<div class='view-header'>
+  {{breadcrumb-component
+  subSection='ops'
+  clusterId=model.node.cluster.id
+  nodeId=model.node.id
+  configId=model.fileId}}
+  {{view-label
+  pre-label='Config Detail'
+  label=model.fileId}}
+</div>
+
+{{#dashboard-module}}
+  <header class="module-header">
+    File output
+  </header>
+
+  {{#code-highlighter language-type='js'}}
+    {{model.content}}
+  {{/code-highlighter}}
+{{/dashboard-module}}

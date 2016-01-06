@@ -14,6 +14,7 @@
       {{#em-tab}}Statistics{{/em-tab}}
       {{#em-tab}}Configuration{{/em-tab}}
       {{#em-tab}}Log Files{{/em-tab}}
+      {{#em-tab}}Config Files{{/em-tab}}
     {{/em-tab-list}}
 
     {{#em-tab-panel}}
@@ -63,8 +64,23 @@
           {{/each}}
         </ul>
       {{else}}
-        No Log Files for this node
+        No log files for this node
       {{/if}}
     {{/em-tab-panel}}
+
+    {{#em-tab-panel}}
+      {{#if model.configFiles}}
+        <ul class="button-list">
+          {{#each model.configFiles as |configFile|}}
+            <li>
+              {{link-to configFile.fileId 'config-file' model.cluster.id model.id configFile.fileId}}
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        No config files for this node
+      {{/if}}
+    {{/em-tab-panel}}
+
   {{/em-tabs}}
 {{/dashboard-module}}

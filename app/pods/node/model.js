@@ -10,6 +10,13 @@ export default DS.Model.extend({
   cluster: DS.belongsTo('cluster', {async: true}),
 
   /**
+   * The nodes various configuration files
+   * @property configFiles
+   * @type DS.Model
+   */
+  configFiles: DS.hasMany('config-file', {async: true}),
+
+  /**
    * The nodes various log files
    * @property logFiles
    * @type DS.Model

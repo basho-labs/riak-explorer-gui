@@ -1,15 +1,15 @@
 import { moduleForModel, test } from 'ember-qunit';
 
-moduleForModel('node', 'Unit | Serializer | node', {
+moduleForModel('config-file', 'Unit | Serializer | config file', {
   // Specify the other units that are required for this test.
-  needs: ['serializer:node', 'model:log-file', 'model:cluster', 'model:config-file']
+  needs: ['serializer:config-file', 'model:node']
 });
 
 // Replace this with your real tests.
 test('it serializes records', function(assert) {
-  var record = this.subject();
+  let record = this.subject();
 
-  var serializedRecord = record.serialize();
+  let serializedRecord = record.serialize();
 
   assert.ok(serializedRecord);
 });
