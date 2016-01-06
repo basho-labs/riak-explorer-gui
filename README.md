@@ -1,5 +1,7 @@
 # Riak Explorer GUI
 
+[![Join the chat at https://gitter.im/basho-labs/riak-explorer-gui](https://badges.gitter.im/basho-labs/riak-explorer-gui.svg)](https://gitter.im/basho-labs/riak-explorer-gui?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is the GUI component of the [Riak Explorer](https://github.com/basho-labs/riak_explorer)
 project.
 
