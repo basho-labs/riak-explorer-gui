@@ -871,6 +871,69 @@ export default Ember.Service.extend({
   },
 
   /**
+   * Fetches a given config file and its dependencies
+   *
+   * @method getConfigFile
+   * @param clusterId
+   * @param nodeId
+   * @param configId
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
+  getConfigFile(clusterId, nodeId, configId) {
+    let self = this;
+
+    return this.getNode(clusterId, nodeId)
+      .then(function(node) {
+        return node.get('configFiles').findBy('fileId', configId);
+      })
+      .then(function(configFile) {
+        return Ember.RSVP.allSettled([
+          configFile,
+          self.getConfigFileContents(configFile)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let configFile = PromiseArray[0].value;
+
+        return configFile;
+      });
+  },
+
+  /**
+   * Fetches a given config files contents
+   *
+   * @method getConfigFileContents
+   * @param config
+   * @return {Ember.$.Promise} result of the AJAX call
+   */
+  getConfigFileContents(config) {
+    let clusterId = config.get('node').get('cluster').get('id');
+    let nodeId    = config.get('node').get('id');
+    let configId  = config.get('fileId');
+    let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/config/files/${configId}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+          Accept : "plain/text;"
+        }
+      });
+
+      request.done(function(data) {
+        config.set('content', data);
+
+        resolve(config);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  /**
    * Creates and returns a Cluster object and initializes it with dependent
    * data (including all its Bucket Types and Search Indexes).
    *
@@ -1112,7 +1175,8 @@ export default Ember.Service.extend({
           node,
           self.getNodeStats(node),
           self.getNodeConfig(node),
-          self.getNodeLogFiles(node)
+          self.getNodeLogFiles(node),
+          self.getNodeConfigFiles(node)
         ]);
       })
       .then(function(PromiseArray) {
@@ -1157,7 +1221,27 @@ export default Ember.Service.extend({
   },
 
   /**
-   * Fetches and creates a log file for a given node.
+   * Fetches and creates a set of config file for a given node.
+   *
+   * @method getNodeConfigFiles
+   * @param {Node} node
+   * @return {Ember.RSVP.Promise} result of the AJAX call
+   */
+  getNodeConfigFiles(node) {
+    if (Ember.isEmpty(node.get('configFiles'))) {
+      return this.store.query('config-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
+        .then(function(configFiles) {
+          node.set('configFiles', configFiles);
+
+          return configFiles;
+        });
+    } else {
+      return node.get('configFiles');
+    }
+  },
+
+  /**
+   * Fetches and creates a set of log file for a given node.
    *
    * @method getNodeLogFiles
    * @param {Node} node
