@@ -2,12 +2,16 @@ import { moduleForModel, test } from 'ember-qunit';
 import Ember from 'ember';
 
 moduleForModel('node', 'Unit | Model | node', {
-  needs: ['model:cluster', 'model:log-file', 'model:config-file']
+  needs: [
+    'model:cluster',
+    'model:log-file',
+    'model:config-file'
+  ]
 });
 
 test('it exists', function(assert) {
-  var model = this.subject();
-  var store = this.store();
+  let model = this.subject();
+  let store = this.store();
 
   assert.ok(!!model);
   assert.ok(!!store);
@@ -37,3 +41,17 @@ test('config files relationship', function(assert) {
   assert.equal(relationship.kind, 'hasMany');
 });
 
+test('isHealthy', function(assert) {
+  let model = this.subject();
+
+  Ember.run(function() {
+    model.set('available', true).set('status', 'valid');
+    assert.equal(model.get('isHealthy'), true);
+
+    model.set('available', false).set('status', 'valid');
+    assert.equal(model.get('isHealthy'), false);
+
+    model.set('available', true).set('status', 'invalid');
+    assert.equal(model.get('isHealthy'), false);
+  });
+});

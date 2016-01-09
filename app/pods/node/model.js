@@ -57,6 +57,14 @@ export default DS.Model.extend({
   stats: DS.attr(),
 
   /**
+   * Whether or not the node's ring file is "valid" or "invalid".
+   *
+   * @property status
+   * @type String
+   */
+  status: DS.attr('string', {defaultValue: 'invalid'}),
+
+  /**
    * All of the nodes configuration settings, stored as an array of key-value objects.
    *  ex. [{key: 'anti_entropy', value: 'active'}, {key: 'anti_entropy.bloomfilter', value: 'on'}...]
    *
@@ -72,6 +80,17 @@ export default DS.Model.extend({
 
     return configList;
   }.property('config'),
+
+  /**
+   * Node health is determined by whether or not the node is available and if it's
+   *  status is valid
+   *
+   * @method isHealthy
+   * @return Boolean
+   */
+  isHealthy: function() {
+    return !!(this.get('available') && this.get('status') === 'valid');
+  }.property('available', 'status'),
 
   /**
    * All of the nodes statistics, stored as an array of key-value objects.

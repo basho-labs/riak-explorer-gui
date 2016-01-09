@@ -17,7 +17,7 @@
       {{#if currentCluster}}
         <div class="current-cluster">
           <header>
-            <span class="title">Cluster: {{currentCluster.id}}</span>
+            <div class="title">Cluster: {{currentCluster.id}}</div>
             <ul class="meta list-inline">
               {{#if currentCluster.hasVersion}}
                 <li>{{currentCluster.riakVersion}}</li>
@@ -29,6 +29,7 @@
                 <li class='dev-mode'>Dev mode</li>
               {{/if}}
             </ul>
+            <span class="cluster-status-circle {{currentCluster.status}}"></span>
           </header>
           <nav class="cluster-section-links">
             {{#link-to 'cluster.data' currentCluster.id class='data'}}

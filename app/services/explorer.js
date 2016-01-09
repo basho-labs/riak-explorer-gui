@@ -205,6 +205,19 @@ export default Ember.Service.extend({
   },
 
   /**
+   * Checks availability and validity of nodes in a given cluster.
+   *
+   * @method checkNodesInCluster
+   * @param {DS.Model} Cluster
+   */
+  checkNodesInCluster(cluster) {
+    // Ping each node in cluster
+    this.pingNodesInCluster(cluster);
+    // Get status of each node in cluster
+    this.getNodesStatus(cluster);
+  },
+
+  /**
    * Creates and returns a BucketList instance, given the results of a
    * 'fetch cached Bucket List' call to the Explorer API.
    * @see ExplorerService.getBucketTypeWithBucketList
@@ -964,6 +977,12 @@ export default Ember.Service.extend({
           index.set('schema', schema);
         });
 
+        // Check on node health of the cluster
+        self.checkNodesInCluster(cluster);
+
+        // Continue to check on node health
+        self.pollNodesInCluster(cluster);
+
         return cluster;
       });
   },
@@ -1287,6 +1306,39 @@ export default Ember.Service.extend({
   },
 
   /**
+   * Gets and sets the "status" property of each node in a cluster. Status is detrmined by whether or not
+   *  the node's ring file is valid.
+   *
+   * @method getNodesStatus
+   * @param {DS.Model} cluster
+   */
+  getNodesStatus(cluster) {
+    let url = `${this.apiURL}control/clusters/${cluster.get('id')}/status`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        cluster.get('nodes').forEach(function(node) {
+          let nodeId = node.get('id');
+          let nodeStatus = data.status.nodes.findBy('id', nodeId).status;
+
+          node.set('status', nodeStatus);
+        });
+
+        resolve(cluster);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  /**
    * Returns all reachable nodes for a given cluster id
    *
    * @method getNodesForCluster
@@ -1522,6 +1574,21 @@ export default Ember.Service.extend({
         });
       });
     });
+  },
+
+  /**
+   * Checks node health in a given cluster, every 10 seconds
+   *
+   * @method pollNodesInCluster
+   * @param {DS.Model} Cluster
+   */
+  pollNodesInCluster(cluster) {
+    let self = this;
+
+    Ember.run.later(this, function() {
+      self.checkNodesInCluster(cluster);
+      self.pollNodesInCluster(cluster);
+    }, 10000);
   },
 
   /**

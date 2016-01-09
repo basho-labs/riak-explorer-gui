@@ -34,10 +34,13 @@
       border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
       background-color: lighten($grayscale-color-dark, 2%);
       padding: 10px;
+      position: relative;
 
       .title {
         font-size: 18px;
         display: block;
+        margin-right: 20px;
+        word-break: break-all;
       }
 
       .meta {
@@ -58,6 +61,32 @@
 
         .dev-mode {
           color: $branding-color-1;
+        }
+      }
+
+      .cluster-status-circle {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        margin-top: -8px;
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .75);
+        -moz-box-shadow:    0px 0px 10px 0px rgba(0, 0, 0, .75);
+        box-shadow:         0px 0px 10px 0px rgba(0, 0, 0, .75);
+
+        &.ok {
+          background: darken(#5cb85c, 10);
+        }
+
+        &.warning {
+          background: darken(#f0ad4e, 10);
+        }
+
+        &.down {
+          background: darken(#d9534f, 10);
         }
       }
     }
