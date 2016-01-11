@@ -150,7 +150,42 @@ var Cluster = DS.Model.extend({
    */
   proxyUrl: function() {
     return config.baseURL + 'riak/clusters/' + this.get('id');
-  }.property('id')
+  }.property('id'),
+
+  /**
+   * Calculates cluster status based on node health. If all child nodes are valid and
+   *  available, status is "ok". If some child nodes are unavailable or invalid, status is
+   *  "warning". If all child nodes are unavailable or invalid, status is "down".
+   *
+   * @method status
+   * @return {String} Status
+   */
+  status: function() {
+    let nodes = this.get('nodes');
+    let totalNodes = nodes.get('length');
+    let totalHealthyNodes = 0;
+    let totalUnhealthyNodes = 0;
+    let status = null;
+
+    // Calculate how many nodes are healthy/unhealthy
+    nodes.forEach(function(node) {
+      if (node.get('isHealthy')) {
+        totalHealthyNodes++;
+      } else {
+        totalUnhealthyNodes++;
+      }
+    });
+
+    if (totalUnhealthyNodes === totalNodes || totalNodes < 1) {
+      status = 'down';
+    } else if (totalHealthyNodes === totalNodes) {
+      status = 'ok';
+    } else {
+      status = 'warning';
+    }
+
+    return status;
+  }.property('nodes.@each.isHealthy')
 });
 
 export default Cluster;

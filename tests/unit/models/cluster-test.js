@@ -2,7 +2,14 @@ import { moduleForModel, test, pending } from 'ember-qunit';
 import Ember from 'ember';
 
 moduleForModel('cluster', 'Unit | Model | cluster', {
-  needs: ['model:bucketType', 'model:node', 'model:searchIndex', 'model:searchSchema']
+  needs: [
+    'model:bucketType',
+    'model:node',
+    'model:searchIndex',
+    'model:searchSchema',
+    'model:config-file',
+    'model:log-file'
+  ]
 });
 
 test('it exists', function(assert) {
@@ -52,4 +59,34 @@ pending('getting inactive bucket types', function() {
 });
 
 pending('determining production mode', function() {
+});
+
+test('status', function(assert) {
+  let model = this.subject();
+  let store = this.store();
+
+  Ember.run(function() {
+    // No nodes should return down
+    assert.equal(model.get('status'), 'down');
+
+    // Create some mock nodes
+    let node1 = store.createRecord('node', { id: 'node1', cluster: model });
+    let node2 = store.createRecord('node', { id: 'node2', cluster: model });
+    let node3 = store.createRecord('node', { id: 'node3', cluster: model });
+
+    node1.set('available', true).set('status', 'valid');
+    node2.set('available', true).set('status', 'valid');
+    node3.set('available', true).set('status', 'valid');
+    assert.equal(model.get('status'), 'ok');
+
+    node1.set('available', false).set('status', 'valid');
+    node2.set('available', false).set('status', 'invalid');
+    node3.set('available', false).set('status', 'valid');
+    assert.equal(model.get('status'), 'down');
+
+    node1.set('available', true).set('status', 'valid');
+    node2.set('available', false).set('status', 'invalid');
+    node3.set('available', false).set('status', 'valid');
+    assert.equal(model.get('status'), 'warning');
+  });
 });

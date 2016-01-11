@@ -24,6 +24,5 @@ export default Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model);
-    this.explorer.pingNodesInCluster(model);
   }
 });
