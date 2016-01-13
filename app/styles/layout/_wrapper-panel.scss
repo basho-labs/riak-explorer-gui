@@ -1,3 +1,6 @@
 .wrapper-panel {
-  margin-top: $topbar-panel-height;
+  @include flex(1);
+  @include flexbox;
+  @include flex-direction(row);
+  min-width: 0;
 }
