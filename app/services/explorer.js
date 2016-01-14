@@ -1585,9 +1585,14 @@ export default Ember.Service.extend({
   pollNodesInCluster(cluster) {
     let self = this;
 
+    // This check makes sure that only one cluster can be polled at any given time
+    if (!this._clusterRef || cluster.get('id') !== this._clusterRef.get('id')) {
+      this._clusterRef = cluster;
+    }
+
     Ember.run.later(this, function() {
-      self.checkNodesInCluster(cluster);
-      self.pollNodesInCluster(cluster);
+      self.checkNodesInCluster(this._clusterRef);
+      self.pollNodesInCluster(this._clusterRef);
     }, 10000);
   },
 
