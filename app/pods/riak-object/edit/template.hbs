@@ -1,16 +1,6 @@
-<div class='view-header'>
-  {{breadcrumb-component
-  subSection='data'
-  clusterId=model.clusterId
-  bucketTypeId=model.bucketTypeId
-  bucketId=model.bucketId
-  keyId=model.key
-  }}
-  {{view-label
-  pre-label='Riak Object'
-  label=model.key}}
-</div>
-
+{{!--{{view-label--}}
+{{!--pre-label='Riak Object'--}}
+{{!--label=model.key}}--}}
 {{#dashboard-module}}
   {{#if model.isLoaded}}
     <div class="riak-object">

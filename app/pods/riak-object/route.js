@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../mixins/sidebar-select';
+import WrapperState from '../../mixins/wrapper-state';
 
-var RiakObjectRoute = Ember.Route.extend(SideBarSelect, {
+var RiakObjectRoute = Ember.Route.extend(WrapperState, {
   actions: {
     error: function(error, transition) {
       if (error && error.status === 404) {
@@ -25,6 +25,12 @@ var RiakObjectRoute = Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      bucketType: model.get('bucketType'),
+      bucket: model.get('bucket'),
+      riakObject: model
+    });
   },
 
   setupController: function(controller, model) {

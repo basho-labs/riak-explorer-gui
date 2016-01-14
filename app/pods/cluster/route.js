@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../mixins/sidebar-select';
+import WrapperState from '../../mixins/wrapper-state';
 
-export default Ember.Route.extend(SideBarSelect, {
+export default Ember.Route.extend(WrapperState, {
   actions: {
     error: function(errors, transition) {
       let error = errors.errors[0];
@@ -24,5 +24,6 @@ export default Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model);
+    this.setBreadCrumbs(null);
   }
 });

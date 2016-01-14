@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../mixins/sidebar-select';
+import WrapperState from '../../mixins/wrapper-state';
 
-export default Ember.Route.extend(SideBarSelect, {
+export default Ember.Route.extend(WrapperState, {
   model: function(params) {
     var clusterId = params.clusterId;
     var bucketTypeId = params.bucketTypeId;
@@ -16,6 +16,10 @@ export default Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      bucketType: model
+    });
   },
 
   setupController: function(controller, model) {

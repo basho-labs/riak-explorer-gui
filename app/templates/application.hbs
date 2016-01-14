@@ -50,6 +50,16 @@
     </div>
     <div class="results-panel">
       <div class="results-panel-inner">
+        <div class='view-header'>
+          {{#if showBreadCrumbs}}
+            {{breadcrumb-component
+            clusterSubSection=clusterSubSection
+            data=breadCrumbMap}}
+          {{/if}}
+          {{!--{{view-label--}}
+          {{!--pre-label='Bucket-Type'--}}
+          {{!--label=model.bucketTypeId}}--}}
+        </div>
         {{outlet}}
       </div>
     </div>

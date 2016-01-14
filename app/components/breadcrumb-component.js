@@ -3,17 +3,19 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   classNames: ['breadcrumb-container'],
 
-  subSection: null,
+  clusterSubSection: null,
+
+  data: null,
 
   isClusterData: function(){
-    return this.get('subSection') === 'data';
-  }.property('subSection'),
+    return this.get('clusterSubSection') === 'data';
+  }.property('clusterSubSection'),
 
   isClusterOps: function(){
-    return this.get('subSection') === 'ops';
-  }.property('ops'),
+    return this.get('clusterSubSection') === 'ops';
+  }.property('clusterSubSection'),
 
   isClusterQuery: function(){
-    return this.get('subSection') === 'query';
-  }.property('subSection')
+    return this.get('clusterSubSection') === 'query';
+  }.property('clusterSubSection')
 });

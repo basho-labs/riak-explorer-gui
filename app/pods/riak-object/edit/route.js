@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../../mixins/sidebar-select';
+import WrapperState from '../../../mixins/wrapper-state';
 
-var RiakObjectEditRoute = Ember.Route.extend(SideBarSelect, {
+var RiakObjectEditRoute = Ember.Route.extend(WrapperState, {
   model: function(params) {
     var explorer = this.explorer;
 
@@ -13,6 +13,12 @@ var RiakObjectEditRoute = Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      bucketType: model.get('bucketType'),
+      bucket: model.get('bucket'),
+      riakObject: model
+    });
   }
 });
 
