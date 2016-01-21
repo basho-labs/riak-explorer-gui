@@ -41,12 +41,6 @@ Router.map(function() {
     this.route('object-not-found');
     this.route('service-not-found');
   });
-
-  this.route('search-index', {path: '/cluster/:clusterId/index/:searchIndexId'});
-
-  this.route('search-schema', {path: '/cluster/:clusterId/schema/:searchSchemaId'});
-  this.route('search-schema.edit', {path: '/cluster/:clusterId/schema/:searchSchemaId/edit'});
-  this.route('search-schema.create', {path: '/cluster/:clusterId/schema/create'});
 });
 
 export default Router;

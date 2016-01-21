@@ -1,47 +1,68 @@
 <ol class="breadcrumb">
-  {{!--<li>{{link-to 'overview' 'index'}}</li>--}}
-
   {{#if isClusterData}}
-    {{#if bucketTypeId}}
-      <li>{{link-to 'data' 'cluster.data' clusterId}}</li>
-      <li>{{link-to bucketTypeId 'bucket-type' clusterId bucketTypeId}}</li>
+    {{#if data.cluster}}
+      <li>{{link-to 'data' 'cluster.data' data.cluster.id}}</li>
     {{/if}}
-    {{#if bucketId}}
-      <li>{{link-to bucketId 'bucket' clusterId bucketTypeId bucketId}}</li>
+
+    {{#if data.bucketType}}
+      <li>
+        {{link-to data.bucketType.bucketTypeId 'bucket-type'
+        data.cluster.id
+        data.bucketType.bucketTypeId}}
+      </li>
     {{/if}}
-    {{#if keyId}}
-      <li>{{link-to keyId 'riak-object' clusterId bucketTypeId bucketId keyId}}</li>
+
+    {{#if data.bucket}}
+      <li>
+        {{link-to data.bucket.bucketId 'bucket'
+        data.cluster.id
+        data.bucketType.bucketTypeId
+        data.bucket.bucketId}}
+      </li>
+    {{/if}}
+
+    {{#if data.riakObject}}
+      <li>{{data.riakObject.key}}</li>
     {{/if}}
   {{/if}}
 
   {{#if isClusterOps}}
-    {{#if nodeId}}
-      <li>{{link-to 'ops' 'cluster.ops' clusterId}}</li>
-      <li>{{link-to nodeId 'node' clusterId nodeId}}</li>
+    {{#if data.cluster}}
+      <li>{{link-to 'ops' 'cluster.ops' data.cluster.id}}</li>
     {{/if}}
-    {{#if logId}}
-      <li>{{link-to logId 'log-file' clusterId nodeId logId}}</li>
+
+    {{#if data.node}}
+      <li>
+        {{link-to data.node.id 'node'
+        data.cluster.id
+        data.node.id}}
+      </li>
     {{/if}}
-    {{#if configId}}
-      <li>{{link-to configId 'config-file' clusterId nodeId configId}}</li>
+
+    {{#if data.logFile}}
+      <li>{{data.logFile.fileId}}</li>
+    {{/if}}
+
+    {{#if data.configFile}}
+      <li>{{data.configFile.fileId}}</li>
     {{/if}}
   {{/if}}
 
   {{#if isClusterQuery}}
-    {{#if schemaName}}
-      <li>{{link-to 'query' 'cluster.query' clusterId}}</li>
-      <li>{{link-to schemaName 'search-schema' clusterId schemaName}}</li>
-      {{#if schemaEdit}}
-        <li>{{link-to 'schema edit' 'search-schema.edit' clusterId schemaName}}</li>
-      {{/if}}
+    {{#if data.cluster}}
+      <li>{{link-to 'query' 'cluster.query' data.cluster.id}}</li>
     {{/if}}
-    {{#if schemaCreate}}
-      <li>{{link-to 'query overview' 'cluster.query' clusterId}}</li>
-      <li>{{link-to 'schema create' 'search-schema.create' clusterId}}</li>
+
+    {{#if data.searchSchema}}
+      <li>{{data.searchSchema.name}}</li>
     {{/if}}
-    {{#if indexName}}
-      <li>{{link-to 'query overview' 'cluster.query' clusterId}}</li>
-      <li>{{link-to indexName 'search-index' clusterId indexName}}</li>
+
+    {{#if data.searchIndex}}
+      <li>{{data.searchIndex.name}}</li>
+    {{/if}}
+
+    {{#if data.schemaCreate}}
+      <li>create schema</li>
     {{/if}}
   {{/if}}
 </ol>

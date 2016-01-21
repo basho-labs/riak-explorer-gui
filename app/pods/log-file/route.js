@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../mixins/sidebar-select';
+import WrapperState from '../../mixins/wrapper-state';
 
-export default Ember.Route.extend(SideBarSelect, {
+export default Ember.Route.extend(WrapperState, {
 
   model: function(params) {
     return this.explorer.getLogFile(params.clusterId, params.nodeId, params.logId);
@@ -9,6 +9,15 @@ export default Ember.Route.extend(SideBarSelect, {
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model.get('node').get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('node').get('cluster'),
+      node: model.get('node'),
+      logFile: model
+    });
+    this.setViewLabel({
+      preLabel: 'Log Detail',
+      label: model.get('fileId')
+    });
   },
 
   actions: {
@@ -27,3 +36,5 @@ export default Ember.Route.extend(SideBarSelect, {
     }
   }
 });
+
+

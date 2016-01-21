@@ -1,7 +1,7 @@
 import Ember from 'ember';
-import SideBarSelect from '../../mixins/sidebar-select';
+import WrapperState from '../../mixins/wrapper-state';
 
-export default Ember.Route.extend(SideBarSelect, {
+export default Ember.Route.extend(WrapperState, {
   model(params) {
     let self = this;
 
@@ -19,6 +19,14 @@ export default Ember.Route.extend(SideBarSelect, {
 
   afterModel(model, transition) {
     this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      searchSchema: model
+    });
+    this.setViewLabel({
+      preLabel: 'Search Schema',
+      label: model.get('name')
+    });
 
     return Ember.$.ajax({
       type: 'GET',

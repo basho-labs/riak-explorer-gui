@@ -1,12 +1,20 @@
 import Ember from 'ember';
+import WrapperState from '../../../mixins/wrapper-state';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(WrapperState, {
   model(params) {
     return this.explorer.getCluster(params.clusterId);
   },
 
   afterModel(model, transition) {
-    this.controllerFor('application').set('currentCluster', model);
+    this.setSidebarCluster(model);
+    this.setBreadCrumbs({
+      cluster: model,
+      schemaCreate: true
+    });
+    this.setViewLabel({
+      preLabel: 'Create Schema'
+    });
   },
 
   actions: {
