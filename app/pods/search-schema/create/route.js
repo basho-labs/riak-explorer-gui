@@ -12,6 +12,9 @@ export default Ember.Route.extend(WrapperState, {
       cluster: model,
       schemaCreate: true
     });
+    this.setViewLabel({
+      preLabel: 'Create Schema'
+    });
   },
 
   actions: {

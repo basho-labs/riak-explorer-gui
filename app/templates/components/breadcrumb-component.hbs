@@ -1,6 +1,8 @@
 <ol class="breadcrumb">
   {{#if isClusterData}}
-    <li>{{link-to 'data' 'cluster.data' data.cluster.id}}</li>
+    {{#if data.cluster}}
+      <li>{{link-to 'data' 'cluster.data' data.cluster.id}}</li>
+    {{/if}}
 
     {{#if data.bucketType}}
       <li>
@@ -25,7 +27,9 @@
   {{/if}}
 
   {{#if isClusterOps}}
-    <li>{{link-to 'ops' 'cluster.ops' data.cluster.id}}</li>
+    {{#if data.cluster}}
+      <li>{{link-to 'ops' 'cluster.ops' data.cluster.id}}</li>
+    {{/if}}
 
     {{#if data.node}}
       <li>
@@ -45,7 +49,9 @@
   {{/if}}
 
   {{#if isClusterQuery}}
-    <li>{{link-to 'query' 'cluster.query' data.cluster.id}}</li>
+    {{#if data.cluster}}
+      <li>{{link-to 'query' 'cluster.query' data.cluster.id}}</li>
+    {{/if}}
 
     {{#if data.searchSchema}}
       <li>{{data.searchSchema.name}}</li>

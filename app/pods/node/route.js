@@ -12,5 +12,9 @@ export default Ember.Route.extend(WrapperState, {
       cluster: model.get('cluster'),
       node: model
     });
+    this.setViewLabel({
+      preLabel: 'Node Detail',
+      label: model.get('id')
+    });
   }
 });

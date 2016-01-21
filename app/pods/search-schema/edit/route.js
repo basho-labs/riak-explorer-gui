@@ -15,6 +15,10 @@ export default Ember.Route.extend(WrapperState, {
       cluster: model.get('cluster'),
       searchSchema: model
     });
+    this.setViewLabel({
+      preLabel: 'Search Schema',
+      label: model.get('name')
+    });
 
     if (!model.get('content')) {
       return Ember.$.ajax({

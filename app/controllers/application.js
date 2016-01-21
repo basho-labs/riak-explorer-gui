@@ -9,12 +9,33 @@ export default Ember.Controller.extend({
     }
   },
 
+
+  /**
+   * Current Cluster selected. Used to track sidebar state. Null if no sidebar.
+   *
+   * @property currentCluster
+   */
   currentCluster: null,
 
+  /**
+   * Which subsection of the cluster the UI is currently in. Options are "data", "ops", or "query"
+   *
+   * @property clusterSubSection
+   */
   clusterSubSection: null,
 
+  /**
+   * Object that hold the current breadcrumb information
+   *
+   * @property breadCrumbMap
+   */
   breadCrumbMap: {},
 
+  /**
+   * Object that holds the current view-label information
+   *
+   * @property viewLabelMap
+   */
   viewLabelMap: {},
 
   /**
@@ -25,6 +46,7 @@ export default Ember.Controller.extend({
    */
   setClusterSubSection: function() {
     switch(this.get('currentPath')) {
+      case 'cluster.data':
       case 'bucket-type':
       case 'bucket':
       case 'riak-object':
@@ -34,11 +56,13 @@ export default Ember.Controller.extend({
       case 'riak-object.map':
         this.set('clusterSubSection', 'data');
         break;
+      case 'cluster.ops':
       case 'node':
       case 'log-file':
       case 'config-file':
         this.set('clusterSubSection', 'ops');
         break;
+      case 'cluster.query':
       case 'search-index':
       case 'search-schema':
       case 'search-schema.edit':
@@ -51,6 +75,12 @@ export default Ember.Controller.extend({
     }
   }.observes('currentPath'),
 
+  /**
+   * Determines if the UI should show the view-header
+   *
+   * @method showViewHeader
+   * @returns Boolean
+   */
   showViewHeader: function() {
     return !!(Object.keys(this.get('breadCrumbMap')).length || Object.keys(this.get('viewLabelMap')).length);
   }.property('breadCrumbMap', 'viewLabelMap'),

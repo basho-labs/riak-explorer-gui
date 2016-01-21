@@ -14,5 +14,9 @@ export default Ember.Route.extend(WrapperState, {
       node: model.get('node'),
       configFile: model
     });
+    this.setViewLabel({
+      preLabel: 'Config Detail',
+      label: model.get('fileId')
+    });
   }
 });
