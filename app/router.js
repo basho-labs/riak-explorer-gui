@@ -38,6 +38,9 @@ Router.map(function() {
     this.route('object-not-found');
     this.route('service-not-found');
   });
+
+  // Misc. Routes
+  this.route('help');
 });
 
 export default Router;
