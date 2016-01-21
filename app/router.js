@@ -6,9 +6,6 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  // Root Route
-  this.route('explorer_api');
-
   // Cluster Routes
   this.route('cluster.ops', {path: '/cluster/:clusterId/ops'});
   this.route('cluster.data', {path: '/cluster/:clusterId/data'});
