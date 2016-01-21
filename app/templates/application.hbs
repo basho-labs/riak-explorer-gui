@@ -1,6 +1,6 @@
-{{render 'topbar'}}
-<div class="wrapper-panel">
-  <div class="row">
+<div class="app-panel">
+  {{render 'topbar'}}
+  <div class="wrapper-panel">
     <div class="sidebar-panel">
       {{#power-select
       class='cluster-selector'
@@ -49,18 +49,19 @@
       {{/if}}
     </div>
     <div class="results-panel">
-      <div class="results-panel-inner">
-        {{#if showViewHeader}}
-          <div class='view-header'>
-            {{breadcrumb-component
-            clusterSubSection=clusterSubSection
-            data=breadCrumbMap}}
+      {{#if showViewHeader}}
+        <div class='view-header'>
+          {{breadcrumb-component
+          clusterSubSection=clusterSubSection
+          data=breadCrumbMap}}
 
-            {{view-label
-            pre-label=viewLabelMap.preLabel
-            label=viewLabelMap.label}}
-          </div>
-        {{/if}}
+          {{view-label
+          pre-label=viewLabelMap.preLabel
+          label=viewLabelMap.label}}
+        </div>
+      {{/if}}
+
+      <div class="view-body">
         {{outlet}}
       </div>
     </div>

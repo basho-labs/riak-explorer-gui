@@ -1,12 +1,9 @@
 .sidebar-panel {
-  position: absolute;
-  top: $topbar-panel-height;
-  left: 0;
-  bottom: 0;
+  @include flex(none);
   width: $sidebar-panel-width;
   background-color: lighten($grayscale-color-dark, 10%);
   border-right: 1px solid darken($grayscale-color-dark, $color-accent-percentage-small);
-  overflow: auto;
+  overflow-y: auto;
 
   .cluster-selector {
     width: 100%;
