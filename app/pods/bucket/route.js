@@ -19,6 +19,10 @@ export default Ember.Route.extend(WrapperState, {
       bucketType: model.get('bucketType'),
       bucket: model
     });
+    this.setViewLabel({
+      preLabel: 'Bucket',
+      label: model.get('bucketId')
+    });
   },
 
   /**

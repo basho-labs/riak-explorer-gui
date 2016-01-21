@@ -25,5 +25,6 @@ export default Ember.Route.extend(WrapperState, {
   afterModel: function(model, transition) {
     this.setSidebarCluster(model);
     this.setBreadCrumbs(null);
+    this.setViewLabel(null);
   }
 });

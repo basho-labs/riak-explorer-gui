@@ -13,5 +13,10 @@ export default Ember.Mixin.create({
   setBreadCrumbs(breadCrumbMap) {
     if (!breadCrumbMap) { breadCrumbMap = {}; }
     this.controllerFor('application').set('breadCrumbMap', breadCrumbMap);
+  },
+
+  setViewLabel(viewLabelMap) {
+    if (!viewLabelMap) { viewLabelMap = {}; }
+    this.controllerFor('application').set('viewLabelMap', viewLabelMap);
   }
 });

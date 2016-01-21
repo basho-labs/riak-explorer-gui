@@ -14,6 +14,10 @@ export default Ember.Route.extend(WrapperState, {
       node: model.get('node'),
       logFile: model
     });
+    this.setViewLabel({
+      preLabel: 'Log Detail',
+      label: model.get('fileId')
+    });
   },
 
   actions: {
@@ -32,3 +36,5 @@ export default Ember.Route.extend(WrapperState, {
     }
   }
 });
+
+

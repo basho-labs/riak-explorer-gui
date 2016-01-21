@@ -19,6 +19,10 @@ var RiakObjectEditRoute = Ember.Route.extend(WrapperState, {
       bucket: model.get('bucket'),
       riakObject: model
     });
+    this.setViewLabel({
+      preLabel: 'Riak Object',
+      label: model.get('key')
+    });
   }
 });
 

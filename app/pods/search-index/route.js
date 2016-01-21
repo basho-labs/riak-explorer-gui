@@ -15,5 +15,9 @@ export default Ember.Route.extend(WrapperState, {
       cluster: model.get('cluster'),
       searchIndex: model
     });
+    this.setViewLabel({
+      preLabel: 'Search Index',
+      label: model.get('name')
+    });
   }
 });

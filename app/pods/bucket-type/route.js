@@ -15,10 +15,15 @@ export default Ember.Route.extend(WrapperState, {
   },
 
   afterModel: function(model, transition) {
+
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
       bucketType: model
+    });
+    this.setViewLabel({
+      preLabel: 'Bucket-Type',
+      label: model.get('bucketTypeId')
     });
   },
 

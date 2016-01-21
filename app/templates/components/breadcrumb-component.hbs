@@ -36,21 +36,11 @@
     {{/if}}
 
     {{#if data.logFile}}
-      <li>
-        {{link-to data.logFile.fileId 'log-file'
-        data.cluster.id
-        data.node.id
-        data.logFile.id}}
-      </li>
+      <li>{{data.logFile.fileId}}</li>
     {{/if}}
 
     {{#if data.configFile}}
-      <li>
-        {{link-to data.configFile.fileId 'config-file'
-        data.cluster.id
-        data.node.id
-        data.configFile.id}}
-      </li>
+      <li>{{data.configFile.fileId}}</li>
     {{/if}}
   {{/if}}
 
@@ -58,19 +48,11 @@
     <li>{{link-to 'query' 'cluster.query' data.cluster.id}}</li>
 
     {{#if data.searchSchema}}
-      <li>
-        {{link-to data.searchSchema.name 'search-schema'
-        data.cluster.id
-        data.searchSchema.name}}
-      </li>
+      <li>{{data.searchSchema.name}}</li>
     {{/if}}
 
     {{#if data.searchIndex}}
-      <li>
-        {{link-to data.searchIndex.name 'search-index'
-        data.cluster.id
-        data.searchIndex.name}}
-      </li>
+      <li>{{data.searchIndex.name}}</li>
     {{/if}}
 
     {{#if data.schemaCreate}}
