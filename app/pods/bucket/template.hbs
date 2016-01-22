@@ -1,17 +1,17 @@
 <div class='bucket-types-container'>
   {{#dashboard-module}}
     {{#if model.props}}
-      {{#em-tabs class='half-width'}}
-        {{#em-tab-list}}
-          {{#em-tab}}Overview{{/em-tab}}
-          {{#em-tab}}Advanced Properties{{/em-tab}}
-        {{/em-tab-list}}
+      {{#ivy-tabs class='half-width'}}
+        {{#ivy-tab-list}}
+          {{#ivy-tab}}Overview{{/ivy-tab}}
+          {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
+        {{/ivy-tab-list}}
 
-        {{#em-tab-panel}}
+        {{#ivy-tab-panel}}
           {{bucket-properties model=model}}
-        {{/em-tab-panel}}
+        {{/ivy-tab-panel}}
 
-        {{#em-tab-panel}}
+        {{#ivy-tab-panel}}
           <table class="key-value-table">
             {{#each model.props.propsList as |prop|}}
               <tr>
@@ -20,8 +20,8 @@
               </tr>
             {{/each}}
           </table>
-        {{/em-tab-panel}}
-      {{/em-tabs}}
+        {{/ivy-tab-panel}}
+      {{/ivy-tabs}}
     {{else}}
       Properties not loaded
     {{/if}}

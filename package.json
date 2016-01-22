@@ -41,8 +41,8 @@
   "dependencies": {
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
-    "ember-idx-tabs": "^0.1.4",
     "ember-power-select": "0.7.2",
-    "highlightjs": "^8.7.0"
+    "highlightjs": "^8.7.0",
+    "ivy-tabs": "ivyapp/ivy-tabs"
   }
 }
