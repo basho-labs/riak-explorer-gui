@@ -1,4 +1,6 @@
-{{#dashboard-module label='Counter info' class='object-counter-container'}}
+{{#dashboard-module
+class='object-counter-container half'
+label='Object Details'}}
   {{#if model.isLoaded}}
     {{object-contents-counter
     model=model deleteObject="deleteObject"

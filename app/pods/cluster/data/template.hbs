@@ -1,5 +1,7 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module label='Cluster Properties'}}
+  {{#dashboard-module
+  class='two-thirds'
+  label='Cluster Properties'}}
     <table class="key-value-table">
       <tbody>
       <tr>
@@ -34,7 +36,9 @@
     </table>
   {{/dashboard-module}}
 
-  {{#dashboard-module label='Active Bucket Types'}}
+  {{#dashboard-module
+  class='two-thirds'
+  label='Active Bucket Types'}}
     {{#if model.activeBucketTypes}}
       {{bucket-types
       clusterId=model.clusterId
@@ -44,7 +48,9 @@
     {{/if}}
   {{/dashboard-module}}
 
-  {{#dashboard-module label='Inactive Bucket Types'}}
+  {{#dashboard-module
+  class='two-thirds'
+  label='Inactive Bucket Types'}}
     {{#if model.inactiveBucketTypes}}
       {{bucket-types
       clusterId=model.clusterId

@@ -1,5 +1,7 @@
 <div class='bucket-types-container'>
-  {{#dashboard-module}}
+  {{#dashboard-module
+  class='half'
+  label='Bucket-Type Properties'}}
     {{#if model.props}}
       {{#ivy-tabs class='half-width'}}
         {{#ivy-tab-list}}
@@ -84,7 +86,9 @@
     {{/if}}
   {{/dashboard-module}}
 
-  {{#dashboard-module label='Buckets'}}
+  {{#dashboard-module
+  class='half'
+  label='Buckets'}}
     {{#if model.isBucketListLoaded}}
       {{#if model.bucketList.cachePresent}}
         <table class="key-value-table">

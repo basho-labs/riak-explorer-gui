@@ -1,15 +1,29 @@
 .dashboard-module {
-  margin: 20px 20px 40px 40px;
+  margin: 20px 20px 30px 40px;
+  background: #FFF;
+  border: 1px solid $grayscale-color-x-light;
+  border-top: 3px solid $grayscale-color-x-light;
 
-  .module-header {
-    @extend .clearfix;
-    margin-bottom: 10px;
-    font-size: 20px;
+  &.half {
+    width: 50%;
   }
 
-  .module-label {
-    font-size: 20px;
+  &.two-thirds {
+    width: 66.6%;
+  }
+
+  .module-header {
     margin-bottom: 10px;
+    padding: 10px 20px;
+    border-bottom: 1px solid $grayscale-color-x-light;
+
+    .module-label {
+      font-size: 18px;
+    }
+  }
+
+  .module-content {
+    padding: 10px 20px;
   }
 
   .mini-label {

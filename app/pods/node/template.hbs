@@ -1,13 +1,14 @@
-{{#dashboard-module}}
-  {{#ivy-tabs class='half-width'}}
-    {{#ivy-tab-list}}
-      {{#ivy-tab}}Statistics{{/ivy-tab}}
-      {{#ivy-tab}}Configuration{{/ivy-tab}}
-      {{#ivy-tab}}Log Files{{/ivy-tab}}
-      {{#ivy-tab}}Config Files{{/ivy-tab}}
-    {{/ivy-tab-list}}
+{{#dashboard-module
+class='two-thirds'}}
+  {{#em-tabs}}
+    {{#em-tab-list}}
+      {{#em-tab}}Statistics{{/em-tab}}
+      {{#em-tab}}Configuration{{/em-tab}}
+      {{#em-tab}}Log Files{{/em-tab}}
+      {{#em-tab}}Config Files{{/em-tab}}
+    {{/em-tab-list}}
 
-    {{#ivy-tab-panel}}
+    {{#em-tab-panel}}
       <table class="key-value-table">
         <tbody>
         {{#each model.statsList as |stat|}}
@@ -18,9 +19,9 @@
         {{/each}}
         </tbody>
       </table>
-    {{/ivy-tab-panel}}
+    {{/em-tab-panel}}
 
-    {{#ivy-tab-panel}}
+    {{#em-tab-panel}}
       {{#if model.advancedConfig}}
         <h4>Advanced</h4>
         <ul class="code-list">
@@ -42,9 +43,9 @@
         {{/each}}
         </tbody>
       </table>
-    {{/ivy-tab-panel}}
+    {{/em-tab-panel}}
 
-    {{#ivy-tab-panel}}
+    {{#em-tab-panel}}
       {{#if model.logFiles}}
         <ul class="button-list">
           {{#each model.logFiles as |logFile|}}
@@ -56,9 +57,9 @@
       {{else}}
         No log files for this node
       {{/if}}
-    {{/ivy-tab-panel}}
+    {{/em-tab-panel}}
 
-    {{#ivy-tab-panel}}
+    {{#em-tab-panel}}
       {{#if model.configFiles}}
         <ul class="button-list">
           {{#each model.configFiles as |configFile|}}
@@ -70,7 +71,7 @@
       {{else}}
         No config files for this node
       {{/if}}
-    {{/ivy-tab-panel}}
+    {{/em-tab-panel}}
 
-  {{/ivy-tabs}}
+  {{/em-tabs}}
 {{/dashboard-module}}

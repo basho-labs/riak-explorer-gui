@@ -1,4 +1,5 @@
-{{#dashboard-module}}
+{{#dashboard-module
+label='Object Details'}}
   {{#if model.isLoaded}}
     {{object-contents-map model=model deleteObject="deleteObject"}}
   {{else}}

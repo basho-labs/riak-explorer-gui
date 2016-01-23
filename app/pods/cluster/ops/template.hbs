@@ -1,5 +1,7 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module label='Nodes'}}
+  {{#dashboard-module
+  class='half'
+  label='Nodes'}}
     {{#if model.nodes}}
       <ul class="button-list">
         {{#each model.nodes as |node|}}
