@@ -1,9 +1,11 @@
-{{#dashboard-module
-label='Object Details'}}
-  {{#if model.isLoaded}}
-    {{object-contents-set model=model deleteObject="deleteObject"
-    removeElement="removeElement" addElement="addElement"}}
-  {{else}}
-    {{loading-spinner}}
-  {{/if}}
+{{#dashboard-module}}
+  {{dashboard-module-header label='Object Details'}}
+  {{#dashboard-module-body}}
+    {{#if model.isLoaded}}
+      {{object-contents-set model=model deleteObject="deleteObject"
+      removeElement="removeElement" addElement="addElement"}}
+    {{else}}
+      {{loading-spinner}}
+    {{/if}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

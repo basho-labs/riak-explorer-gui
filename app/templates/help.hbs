@@ -1,64 +1,70 @@
-{{#dashboard-module}}
-  <div class="alert alert-info" role="alert">
-    <h4>Feedback or suggestions welcome!</h4>
+{{#dashboard-module class='no-border two-thirds'}}
+  {{#dashboard-module-body}}
+    <div class="alert alert-info" role="alert">
+      <h4>Feedback or suggestions welcome!</h4>
+      <p>
+        If you have any questions or pain points using Riak Explorer,
+        please open up an <a href="https://github.com/basho-labs/riak_explorer/issues" target="_blank">issue on Github</a>.
+      </p>
+    </div>
+  {{/dashboard-module-body}}
+{{/dashboard-module}}
+
+{{#dashboard-module class='two-thirds'}}
+  {{dashboard-module-header label='Riak Resources'}}
+  {{#dashboard-module-body}}
     <p>
-      If you have any questions or pain points using Riak Explorer,
-      please open up an <a href="https://github.com/basho-labs/riak_explorer/issues" target="_blank">issue on Github</a>.
+      Riak Docs:
+      <a
+        href="http://docs.basho.com/"
+        target="_blank">
+        docs.basho.com
+      </a>
     </p>
-  </div>
+    <p>
+      Riak mailing list:
+      <a
+        href="http://lists.basho.com/mailman/listinfo/riak-users_lists.basho.com"
+        target="_blank">
+        lists.basho.com/mailman/listinfo/riak-users_lists.basho.com
+      </a>
+    </p>
+    <p>
+      Riak IRC on Freenode:
+      <a
+        href="http://irc.lc/freenode/riak"
+        target="_blank">
+        irc.lc/freenode/riak
+      </a>
+    </p>
+  {{/dashboard-module-body}}
 {{/dashboard-module}}
 
-{{#dashboard-module label='Riak Resources'}}
-  <p>
-    Riak Docs:
-    <a
-      href="http://docs.basho.com/"
-      target="_blank">
-      docs.basho.com
-    </a>
-  </p>
-
-  <p>
-    Riak mailing list:
-    <a
-      href="http://lists.basho.com/mailman/listinfo/riak-users_lists.basho.com"
-      target="_blank">
-      lists.basho.com/mailman/listinfo/riak-users_lists.basho.com
-    </a>
-  </p>
-
-  <p>
-    Riak IRC on Freenode:
-    <a
-      href="http://irc.lc/freenode/riak"
-      target="_blank">
-      irc.lc/freenode/riak
-    </a>
-  </p>
+{{#dashboard-module class='two-thirds'}}
+  {{dashboard-module-header label='Riak Explorer Resources'}}
+  {{#dashboard-module-body}}
+    <p>
+      Github repository:
+      <a
+        href="https://github.com/basho-labs/riak_explorer"
+        target="_blank">
+        github.com/basho-labs/riak_explorer
+      </a>
+    </p>
+    <p>
+      Riak Explorer API:
+      <a
+        href="http://basho-labs.github.io/riak_explorer/docs/api.html"
+        target="_blank">
+        basho-labs.github.io/riak_explorer/docs/api.html
+      </a>
+    </p>
+  {{/dashboard-module-body}}
 {{/dashboard-module}}
 
-{{#dashboard-module label='Riak Explorer Resources'}}
-  <p>
-    Github repository:
-    <a
-      href="https://github.com/basho-labs/riak_explorer"
-      target="_blank">
-      github.com/basho-labs/riak_explorer
-    </a>
-  </p>
-
-  <p>
-    Riak Explorer API:
-    <a
-      href="http://basho-labs.github.io/riak_explorer/docs/api.html"
-      target="_blank">
-      basho-labs.github.io/riak_explorer/docs/api.html
-    </a>
-  </p>
-{{/dashboard-module}}
-
-
-  {{#dashboard-module label='Setting up a cluster in Riak Explorer'}}
+{{#dashboard-module class='two-thirds'}}
+  {{dashboard-module-header label='Setting up a cluster in Riak Explorer'}}
+  {{#dashboard-module-body}}
     <ol>
       <li>
         <a href="http://docs.basho.com/riak/latest/downloads/" target="_blank">Download</a>
@@ -78,6 +84,5 @@
         Restart the Riak Explorer application and explore!
       </li>
     </ol>
-  {{/dashboard-module}}
-
-
+  {{/dashboard-module-body}}
+{{/dashboard-module}}

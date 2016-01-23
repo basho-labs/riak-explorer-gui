@@ -12,6 +12,15 @@
     width: 66.6%;
   }
 
+  &.no-border {
+    border: none;
+    background: none;
+
+    .module-body {
+      padding: 0;
+    }
+  }
+
   .module-header {
     margin-bottom: 10px;
     padding: 10px 20px;
@@ -22,7 +31,7 @@
     }
   }
 
-  .module-content {
+  .module-body {
     padding: 10px 20px;
   }
 

@@ -1,12 +1,13 @@
-{{#dashboard-module
-class='object-counter-container half'
-label='Object Details'}}
-  {{#if model.isLoaded}}
-    {{object-contents-counter
-    model=model deleteObject="deleteObject"
-    incrementCounter="incrementCounter"
-    decrementCounter="decrementCounter"}}
-  {{else}}
-    {{loading-spinner}}
-  {{/if}}
+{{#dashboard-module class='object-counter-container half'}}
+  {{dashboard-module-header label='Object Details'}}
+  {{#dashboard-module-body}}
+    {{#if model.isLoaded}}
+      {{object-contents-counter
+      model=model deleteObject="deleteObject"
+      incrementCounter="incrementCounter"
+      decrementCounter="decrementCounter"}}
+    {{else}}
+      {{loading-spinner}}
+    {{/if}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

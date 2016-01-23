@@ -1,26 +1,26 @@
 {{#dashboard-module}}
-  {{!--TODO: Reimplement--}}
-  {{!--<header class="module-header">--}}
-    {{!--{{#if model.moreLinesThanPageSize}}--}}
-      {{!--File output from--}}
-      {{!--<code>tail -n {{model.pageSize}}</code>--}}
-      {{!--<span class="mini-label">({{model.totalLines}} total lines)</span>--}}
-    {{!--{{else}}--}}
-      {{!--File output--}}
-      {{!--<span class="mini-label">({{model.totalLines}} total lines)</span>--}}
-    {{!--{{/if}}--}}
-
-    {{!--<div class="action-buttons">--}}
-      {{!--<span class="refresh action-button" {{action 'refreshLogFile' model}}>--}}
-        {{!--<span class={{if isRefreshing 'glyphicon glyphicon-refresh glyphicon-spin' 'glyphicon glyphicon-refresh'}} aria-hidden="true"></span>--}}
-        {{!--Refresh {{model.fileId}}--}}
-      {{!--</span>--}}
-    {{!--</div>--}}
-  {{!--</header>--}}
-
-  {{#code-highlighter language-type='js'}}
-    {{model.content}}
-  {{/code-highlighter}}
+  {{#dashboard-module-header}}
+    <span class="module-label">
+      {{#if model.moreLinesThanPageSize}}
+        File output from
+      <code>tail -n {{model.pageSize}}</code>
+      <span class="mini-label">({{model.totalLines}} total lines)</span>
+      {{else}}
+        File output
+      <span class="mini-label">({{model.totalLines}} total lines)</span>
+      {{/if}}
+    </span>
+    {{!--TODO: Come back and redo this--}}
+    <div class="action-buttons">
+      <span class="refresh action-button" {{action 'refreshLogFile' model}}>
+        <span class={{if isRefreshing 'glyphicon glyphicon-refresh glyphicon-spin' 'glyphicon glyphicon-refresh'}} aria-hidden="true"></span>
+        Refresh {{model.fileId}}
+      </span>
+    </div>
+  {{/dashboard-module-header}}
+  {{#dashboard-module-body}}
+    {{#code-highlighter language-type='js'}}
+      {{model.content}}
+    {{/code-highlighter}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}
-
-

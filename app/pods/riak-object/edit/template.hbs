@@ -1,13 +1,15 @@
-{{#dashboard-module
-label='Object Details'}}
-  {{#if model.isLoaded}}
-    <div class="riak-object">
-      {{object-metadata metadata=model.metadata isEditing=true}}
-      {{object-contents model=model isEditing=true saveObject="saveObject"}}
-    </div>
-  {{else}}
-    {{loading-spinner}}
-  {{/if}}
+{{#dashboard-module}}
+  {{dashboard-module-header label='Object Details'}}
+  {{#dashboard-module-body}}
+    {{#if model.isLoaded}}
+      <div class="riak-object">
+        {{object-metadata metadata=model.metadata isEditing=true}}
+        {{object-contents model=model isEditing=true saveObject="saveObject"}}
+      </div>
+    {{else}}
+      {{loading-spinner}}
+    {{/if}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}
 
 

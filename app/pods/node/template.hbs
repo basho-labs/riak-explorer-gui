@@ -1,77 +1,78 @@
-{{#dashboard-module
-class='two-thirds'}}
-  {{#em-tabs}}
-    {{#em-tab-list}}
-      {{#em-tab}}Statistics{{/em-tab}}
-      {{#em-tab}}Configuration{{/em-tab}}
-      {{#em-tab}}Log Files{{/em-tab}}
-      {{#em-tab}}Config Files{{/em-tab}}
-    {{/em-tab-list}}
+{{#dashboard-module class='two-thirds'}}
+  {{#dashboard-module-body}}
+    {{#em-tabs}}
+      {{#em-tab-list}}
+        {{#em-tab}}Statistics{{/em-tab}}
+        {{#em-tab}}Configuration{{/em-tab}}
+        {{#em-tab}}Log Files{{/em-tab}}
+        {{#em-tab}}Config Files{{/em-tab}}
+      {{/em-tab-list}}
 
-    {{#em-tab-panel}}
-      <table class="key-value-table">
-        <tbody>
-        {{#each model.statsList as |stat|}}
-          <tr>
-            <td class='key'>{{stat.key}}</td>
-            <td class='value'>{{stat.value}}</td>
-          </tr>
-        {{/each}}
-        </tbody>
-      </table>
-    {{/em-tab-panel}}
-
-    {{#em-tab-panel}}
-      {{#if model.advancedConfig}}
-        <h4>Advanced</h4>
-        <ul class="code-list">
-          {{#each model.advancedConfig as |advancedItem|}}
-            <li><code>{{advancedItem}}</code></li>
+      {{#em-tab-panel}}
+        <table class="key-value-table">
+          <tbody>
+          {{#each model.statsList as |stat|}}
+            <tr>
+              <td class='key'>{{stat.key}}</td>
+              <td class='value'>{{stat.value}}</td>
+            </tr>
           {{/each}}
-        </ul>
+          </tbody>
+        </table>
+      {{/em-tab-panel}}
 
-        <h4>General</h4>
-      {{/if}}
+      {{#em-tab-panel}}
+        {{#if model.advancedConfig}}
+          <h4>Advanced</h4>
+          <ul class="code-list">
+            {{#each model.advancedConfig as |advancedItem|}}
+              <li><code>{{advancedItem}}</code></li>
+            {{/each}}
+          </ul>
 
-      <table class="key-value-table">
-        <tbody>
-        {{#each model.configList as |config|}}
-          <tr>
-            <td class='key'>{{config.key}}</td>
-            <td class='value'>{{config.value}}</td>
-          </tr>
-        {{/each}}
-        </tbody>
-      </table>
-    {{/em-tab-panel}}
+          <h4>General</h4>
+        {{/if}}
 
-    {{#em-tab-panel}}
-      {{#if model.logFiles}}
-        <ul class="button-list">
-          {{#each model.logFiles as |logFile|}}
-            <li>
-              {{link-to logFile.fileId 'log-file' model.cluster.id model.id logFile.fileId}}
-            </li>
+        <table class="key-value-table">
+          <tbody>
+          {{#each model.configList as |config|}}
+            <tr>
+              <td class='key'>{{config.key}}</td>
+              <td class='value'>{{config.value}}</td>
+            </tr>
           {{/each}}
-        </ul>
-      {{else}}
-        No log files for this node
-      {{/if}}
-    {{/em-tab-panel}}
+          </tbody>
+        </table>
+      {{/em-tab-panel}}
 
-    {{#em-tab-panel}}
-      {{#if model.configFiles}}
-        <ul class="button-list">
-          {{#each model.configFiles as |configFile|}}
-            <li>
-              {{link-to configFile.fileId 'config-file' model.cluster.id model.id configFile.fileId}}
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        No config files for this node
-      {{/if}}
-    {{/em-tab-panel}}
+      {{#em-tab-panel}}
+        {{#if model.logFiles}}
+          <ul class="button-list">
+            {{#each model.logFiles as |logFile|}}
+              <li>
+                {{link-to logFile.fileId 'log-file' model.cluster.id model.id logFile.fileId}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          No log files for this node
+        {{/if}}
+      {{/em-tab-panel}}
 
-  {{/em-tabs}}
+      {{#em-tab-panel}}
+        {{#if model.configFiles}}
+          <ul class="button-list">
+            {{#each model.configFiles as |configFile|}}
+              <li>
+                {{link-to configFile.fileId 'config-file' model.cluster.id model.id configFile.fileId}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          No config files for this node
+        {{/if}}
+      {{/em-tab-panel}}
+
+    {{/em-tabs}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

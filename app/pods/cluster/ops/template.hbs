@@ -1,28 +1,29 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module
-  class='half'
-  label='Nodes'}}
-    {{#if model.nodes}}
-      <ul class="button-list">
-        {{#each model.nodes as |node|}}
-          <li>
-            {{#if node.available}}
-              {{#link-to 'node' model.id node.id }}
-                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-                {{node.id}}
-              {{/link-to}}
-            {{else}}
-              {{#link-to 'node' model.id node.id class='danger'}}
-                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
-                {{node.id}}
-              {{/link-to}}
-            {{/if}}
-          </li>
-        {{/each}}
-      </ul>
-    {{else}}
-      <p>No nodes detected</p>
-    {{/if}}
+  {{#dashboard-module class='half'}}
+    {{dashboard-module-header label='Nodes'}}
+    {{#dashboard-module-body}}
+      {{#if model.nodes}}
+        <ul class="button-list">
+          {{#each model.nodes as |node|}}
+            <li>
+              {{#if node.available}}
+                {{#link-to 'node' model.id node.id }}
+                  <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                  {{node.id}}
+                {{/link-to}}
+              {{else}}
+                {{#link-to 'node' model.id node.id class='danger'}}
+                  <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                  {{node.id}}
+                {{/link-to}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p>No nodes detected</p>
+      {{/if}}
+    {{/dashboard-module-body}}
   {{/dashboard-module}}
 </div>
 
