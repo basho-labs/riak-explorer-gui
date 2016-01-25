@@ -22,6 +22,10 @@
   }
 
   .module-header {
+    @include flexbox;
+    @include flex-direction(row);
+    @include justify-content(space-between);
+
     margin-bottom: 10px;
     padding: 10px 20px;
     border-bottom: 1px solid $grayscale-color-x-light;
@@ -29,10 +33,65 @@
     .module-label {
       font-size: 18px;
     }
+
+    .module-actions {
+      .action-button {
+        @extend .btn;
+        @extend .btn-sm;
+        margin-left: 5px;
+      }
+
+      .edit {
+        @extend .btn-primary;
+      }
+
+      .cancel {
+        @extend .btn-danger;
+      }
+
+      .delete {
+        @extend .btn-danger;
+      }
+
+      .update {
+        @extend .btn-primary;
+      }
+
+      .create {
+        @extend .btn-primary;
+      }
+
+      .save {
+        @extend .btn-primary;
+      }
+
+      .raw {
+        @extend .btn-primary;
+      }
+
+      .refresh {
+        @extend .btn-primary;
+      }
+    }
   }
 
   .module-body {
     padding: 10px 20px;
+
+    .module-edit-group {
+      .group-header {
+        padding: 10px 0;
+        font-size: 18px;
+      }
+
+      .key {
+        width: 25%;
+      }
+
+      .value {
+        width: 75%;
+      }
+    }
   }
 
   .mini-label {

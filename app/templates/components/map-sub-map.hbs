@@ -1,0 +1,15 @@
+<h4>
+  <span class="map-section-title">
+    {{title}} ({{mapItems.length}})
+  </span>
+</h4>
+
+{{#each mapItems as | map |}}
+  <div class="map-name">
+    {{map.name}}
+    <span class="expand-contents">view contents</span>
+  </div>
+  <div class="sub-map-contents">
+    {{map-contents map=currentSubMap}}
+  </div>
+{{/each}}

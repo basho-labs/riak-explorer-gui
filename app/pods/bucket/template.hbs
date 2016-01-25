@@ -3,17 +3,17 @@
     {{dashboard-module-header label='Bucket Properties'}}
     {{#dashboard-module-body}}
       {{#if model.props}}
-        {{#em-tabs }}
-          {{#em-tab-list}}
-            {{#em-tab}}Overview{{/em-tab}}
-            {{#em-tab}}Advanced Properties{{/em-tab}}
-          {{/em-tab-list}}
+        {{#ivy-tabs }}
+          {{#ivy-tab-list}}
+            {{#ivy-tab}}Overview{{/ivy-tab}}
+            {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
+          {{/ivy-tab-list}}
 
-          {{#em-tab-panel}}
+          {{#ivy-tab-panel}}
             {{bucket-properties model=model}}
-          {{/em-tab-panel}}
+          {{/ivy-tab-panel}}
 
-          {{#em-tab-panel}}
+          {{#ivy-tab-panel}}
             <table class="key-value-table">
               {{#each model.props.propsList as |prop|}}
                 <tr>
@@ -22,8 +22,8 @@
                 </tr>
               {{/each}}
             </table>
-          {{/em-tab-panel}}
-        {{/em-tabs}}
+          {{/ivy-tab-panel}}
+        {{/ivy-tabs}}
       {{else}}
         Properties not loaded
       {{/if}}
@@ -31,7 +31,25 @@
   {{/dashboard-module}}
 
   {{#dashboard-module class='half'}}
-    {{dashboard-module-header label='Keys'}}
+    {{#dashboard-module-header label='Keys'}}
+      {{#if model.isKeyListLoaded}}
+        <div class="module-actions">
+          {{#if model.cluster.developmentMode}}
+            <button type="button" class="action-button refresh"
+              {{action 'refreshKeys' model}}>
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              Refresh Key List Cache
+            </button>
+          {{/if}}
+          {{#if model.keyList.showDeleteKeys}}
+              <button type="button" class="action-button delete" {{action 'deleteBucket' model}}>
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                Delete All Keys
+              </button>
+          {{/if}}
+        </div>
+      {{/if}}
+    {{/dashboard-module-header}}
     {{#dashboard-module-body}}
       {{#if model.isKeyListLoaded}}
         {{#if model.keyList.cachePresent}}
@@ -40,26 +58,6 @@
             <tr>
               <td class="key">Key list cache created:</td>
               <td class="value">{{model.keyList.created}}</td>
-            </tr>
-            <tr>
-              <td class="key">Available actions:</td>
-              <td class="value">
-                <ul class='button-list'>
-                  {{#if model.cluster.developmentMode}}
-                    <li>
-                      {{button.refresh-keys action="refreshKeys" bucket=model}}
-                    </li>
-                  {{/if}}
-                  {{#if model.keyList.showDeleteKeys}}
-                    <li>
-                      <button type="button" class="btn btn-xs btn-danger" {{action 'deleteBucket' model}}>
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        Delete All Keys
-                      </button>
-                    </li>
-                  {{/if}}
-                </ul>
-              </td>
             </tr>
             <tr>
               <td class="key">Cached Key List:</td>

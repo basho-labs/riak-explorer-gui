@@ -10,8 +10,7 @@
       <span class="mini-label">({{model.totalLines}} total lines)</span>
       {{/if}}
     </span>
-    {{!--TODO: Come back and redo this--}}
-    <div class="action-buttons">
+    <div class="module-actions">
       <span class="refresh action-button" {{action 'refreshLogFile' model}}>
         <span class={{if isRefreshing 'glyphicon glyphicon-refresh glyphicon-spin' 'glyphicon glyphicon-refresh'}} aria-hidden="true"></span>
         Refresh {{model.fileId}}

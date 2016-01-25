@@ -1,15 +1,12 @@
 {{#if headers}}
-
-  <h4>{{title}}</h4>
-  <table class="table">
+  <table class="key-value-table">
     <tbody>
-    {{#each headers as |header|}}
-      <tr>
-        <td width="30%;">{{header.key}}</td>
-        <td>{{header.value}}</td>
-      </tr>
-    {{/each}}
+      {{#each headers as |header|}}
+        <tr>
+          <td class="key">{{header.key}}</td>
+          <td class="value">{{header.value}}</td>
+        </tr>
+      {{/each}}
     </tbody>
   </table>
-
 {{/if}}

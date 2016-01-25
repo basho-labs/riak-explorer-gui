@@ -1,0 +1,31 @@
+.object-content-list {
+  font-size: 16px;
+
+  li {
+    margin-bottom: 5px;
+
+    &:hover {
+      .remove-item {
+        visibility: visible;
+      }
+    }
+
+    .remove-item {
+      @extend .btn;
+      @extend .btn-xs;
+      @extend .btn-danger;
+      visibility: hidden;
+    }
+
+    .input-add-item {
+      @extend .form-control;
+      display: inline;
+      width: 60%;
+    }
+
+    .button-add-item {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+}

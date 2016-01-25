@@ -1,13 +1,10 @@
 <div class="riak-object">
   <div class="object-contents">
-    <div class="object-contents-header">
-      <div class="object-contents-actions">
-        {{object-actions model=model deleteObject="deleteObject"}}
-      </div>
-    </div>
+
     <div class="object-contents-body">
       <form class="form-inline">
-        {{object-contents-registers model=model
+        {{object-contents-registers
+        model=model
         addField="addField"
         editField="editField"
         removeField="removeField"}}
@@ -30,9 +27,13 @@
       </form>
 
       <form class="form-inline">
-        {{object-contents-maps-embedded model=model
-        removeField="removeField" addField="addField" editField="editField"
-        addElement="addElement" removeElement="removeElement"
+        {{object-contents-maps-embedded
+        model=model
+        removeField="removeField"
+        addField="addField"
+        editField="editField"
+        addElement="addElement"
+        removeElement="removeElement"
         }}
       </form>
     </div>

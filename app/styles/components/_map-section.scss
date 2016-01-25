@@ -1,0 +1,64 @@
+.map-section {
+  margin-bottom: 30px;
+
+  .map-section-title {
+    @extend .label;
+    @extend .label-default;
+    margin-bottom: 10px;
+  }
+
+  .item-instance {
+    button {
+      @extend .btn;
+      @extend .btn-xs;
+      visibility: hidden;
+    }
+
+    &:hover {
+      button {
+        visibility: visible;
+      }
+    }
+
+    .delete-button {
+      @extend .btn-danger;
+    }
+
+    .edit-button {
+      @extend .btn-primary;
+    }
+  }
+
+  .add-instance {
+    .add-instance-input {
+      @extend .form-control;
+      display: inline;
+
+      &.make-room {
+        width: 50%;
+      }
+    }
+
+    .add-instance-button {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+}
+
+.map-section.map-sub-map {
+  .map-name {
+    font-weight: bold;
+
+    .expand-contents {
+      @extend a;
+      margin-left: 5px;
+      font-size: 11px;
+      font-weight: normal;
+    }
+  }
+
+  .sub-map-contents {
+    display: none;
+  }
+}

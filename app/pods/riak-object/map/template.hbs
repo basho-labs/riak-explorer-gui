@@ -1,8 +1,18 @@
 {{#dashboard-module}}
-  {{dashboard-module-header label='Object Details'}}
+  {{#dashboard-module-header label='Object Details'}}
+    <div class="module-actions">
+      <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        Delete Map
+      </button>
+    </div>
+  {{/dashboard-module-header}}
   {{#dashboard-module-body}}
     {{#if model.isLoaded}}
-      {{object-contents-map model=model deleteObject="deleteObject"}}
+      {{!--{{map-contents map=model}}--}}
+      <div class="legacy-map-styling">
+        {{object-contents-map model=model deleteObject="deleteObject"}}
+      </div>
     {{else}}
       {{loading-spinner}}
     {{/if}}
