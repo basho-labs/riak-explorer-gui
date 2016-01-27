@@ -12,10 +12,29 @@
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}
     {{#if model.isLoaded}}
-      {{object-contents-counter
-      model=model
-      incrementCounter="incrementCounter"
-      decrementCounter="decrementCounter"}}
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Current Value:</td>
+          <td class="value counter-value">{{model.contentsForDisplay}}</td>
+        </tr>
+        <tr>
+          <td class="key">
+            Change Value:
+          </td>
+          <td class="value">
+            <form class="form-inline">
+              <button type="button" class="btn btn-primary" {{action 'decrementCounter' model}}>
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="btn btn-primary" {{action 'incrementCounter' model}}>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     {{else}}
       {{loading-spinner}}
     {{/if}}

@@ -1670,6 +1670,7 @@ export default Ember.Service.extend({
           }
         }
       };
+
       Ember.$.ajax(ajaxHash);
     });
   },

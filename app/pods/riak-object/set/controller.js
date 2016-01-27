@@ -10,8 +10,12 @@ var RiakObjectSetController = RiakObjectController.extend({
      * @param {String} newItem Element to be added
      */
     addElement: function(set, newItem) {
-      this.get('explorer').updateDataType(set, 'addElement', newItem);
-      set.addElement(newItem);
+      newItem = newItem.trim();
+
+      if (newItem.length) {
+        this.get('explorer').updateDataType(set, 'addElement', newItem);
+        set.addElement(newItem);
+      }
     },
 
     /**

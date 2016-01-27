@@ -62,27 +62,29 @@
             <tr>
               <td class="key">Cached Key List:</td>
               <td class="value">
-                {{#if model.keyList.multipleListItems}}
-                  <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out
-                    of {{model.keyList.total}}</p>
-                {{else}}
-                  <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
-                {{/if}}
+                {{#if model.keyList.keys}}
+                  {{#if model.keyList.multipleListItems}}
+                    <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out
+                      of {{model.keyList.total}}</p>
+                  {{else}}
+                    <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
+                  {{/if}}
 
-                {{#pagination-component
-                chunkSize=model.keyList.pageSize
-                totalSize=model.keyList.total
-                sectionRequest='retrieveRequestedKeys'}}
-                  <ul class='button-list'>
-                    {{#each model.keyList.keys as |obj|}}
-                      <li>
-                        {{link.link-object obj=obj}}
-                      </li>
-                    {{else}}
-                      No keys found
-                    {{/each}}
-                  </ul>
-                {{/pagination-component}}
+                  {{#pagination-component
+                  chunkSize=model.keyList.pageSize
+                  totalSize=model.keyList.total
+                  sectionRequest='retrieveRequestedKeys'}}
+                    <ul class='button-list'>
+                      {{#each model.keyList.keys as |obj|}}
+                        <li>
+                          {{link.link-object obj=obj}}
+                        </li>
+                      {{/each}}
+                    </ul>
+                  {{/pagination-component}}
+                {{else}}
+                  No keys found
+                {{/if}}
               </td>
             </tr>
             </tbody>

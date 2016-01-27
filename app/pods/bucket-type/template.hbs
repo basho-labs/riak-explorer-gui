@@ -113,27 +113,29 @@
             <tr>
               <td class="key">Cached Bucket List</td>
               <td class="value">
-                {{#if model.bucketList.multipleListItems}}
-                  <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
-                    of {{model.bucketList.total}}</p>
-                {{else}}
-                  <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
-                {{/if}}
+                {{#if model.bucketList.buckets}}
+                  {{#if model.bucketList.multipleListItems}}
+                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
+                      of {{model.bucketList.total}}</p>
+                  {{else}}
+                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
+                  {{/if}}
 
-                {{#pagination-component
-                chunkSize=model.bucketList.pageSize
-                totalSize=model.bucketList.total
-                sectionRequest='retrieveRequestedBuckets'}}
-                  <ul class='button-list'>
-                    {{#each model.bucketList.buckets as |bucket|}}
-                      <li>
-                        {{link.link-bucket bucket=bucket}}
-                      </li>
-                    {{else}}
-                      No buckets found
-                    {{/each}}
-                  </ul>
-                {{/pagination-component}}
+                  {{#pagination-component
+                  chunkSize=model.bucketList.pageSize
+                  totalSize=model.bucketList.total
+                  sectionRequest='retrieveRequestedBuckets'}}
+                    <ul class='button-list'>
+                      {{#each model.bucketList.buckets as |bucket|}}
+                        <li>
+                          {{link.link-bucket bucket=bucket}}
+                        </li>
+                      {{/each}}
+                    </ul>
+                  {{/pagination-component}}
+                {{else}}
+                  No buckets found
+                {{/if}}
               </td>
             </tr>
             </tbody>
