@@ -11,6 +11,12 @@ ul {
   padding: 0;
 }
 
+ol {
+  li {
+    margin-bottom: 10px;
+  }
+}
+
 a {
   color: $branding-color-1;
 

@@ -5,6 +5,16 @@
         <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
         Update Object
       </button>
+
+      {{#link-to 'riak-object'
+      model.cluster.id
+      model.bucketType.bucketTypeId
+      model.bucket.bucketId
+      model.key
+      class='action-button cancel'}}
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        Cancel
+      {{/link-to}}
     </div>
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}

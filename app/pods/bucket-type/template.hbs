@@ -47,7 +47,7 @@
                 <td class='key'>Search Index:</td>
                 <td class='value'>
                   {{#if model.index}}
-                    {{#link-to 'search-index' model.index.cluster.clusterId model.index.name}}
+                    {{#link-to 'search-index' model.index.cluster.clusterId model.index.name class='btn btn-primary'}}
                       {{model.index.name}}
                     {{/link-to}}
                   {{else}}
@@ -124,7 +124,7 @@
                 chunkSize=model.bucketList.pageSize
                 totalSize=model.bucketList.total
                 sectionRequest='retrieveRequestedBuckets'}}
-                  <ul class='button-list small'>
+                  <ul class='button-list'>
                     {{#each model.bucketList.buckets as |bucket|}}
                       <li>
                         {{link.link-bucket bucket=bucket}}

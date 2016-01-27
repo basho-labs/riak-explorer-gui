@@ -60,3 +60,11 @@
     padding: 0;
   }
 }
+
+.alert {
+  &.alert-info {
+    a {
+      color: $branding-color-5;
+    }
+  }
+}
