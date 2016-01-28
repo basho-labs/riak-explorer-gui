@@ -1,0 +1,8 @@
+<h4 class="map-section-title">
+  {{title}}
+  <span class="badge">{{mapItems.length}}</span>
+</h4>
+
+{{#each mapItems as | map |}}
+  {{map-sub-map map=map}}
+{{/each}}

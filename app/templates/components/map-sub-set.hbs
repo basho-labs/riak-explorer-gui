@@ -1,16 +1,22 @@
-<h4>
-  <span class="map-section-title">
-    {{title}} ({{setsList.length}})
-  </span>
+<h4 class="map-section-title">
+  {{title}}
+  <span class="badge">{{setItems.length}}</span>
 </h4>
 <table class="key-value-table">
   <tbody>
-  {{#each setsList as | set |}}
+  {{#each setItems as | set |}}
     <tr class="item-instance">
       <td class="key">{{set.fullName}}</td>
       <td class="value">
-
-        {{!--<code>{{item.value}}</code>--}}
+        <ul class="object-content-list">
+          {{#each set.value as | setItem |}}
+            <li>
+              <code>
+                {{setItem}}
+              </code>
+            </li>
+          {{/each}}
+        </ul>
         {{!--{{#if removeField}}--}}
           {{!--<button type="button" class="delete-button" {{action 'removeField' map item}}>--}}
             {{!--<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>--}}
@@ -25,26 +31,25 @@
     </tr>
   {{/each}}
   </tbody>
+  {{!--{{#if addField}}--}}
+    {{!--<tr class="add-instance">--}}
+      {{!--<td class="key">--}}
+        {{!--{{input--}}
+        {{!--value=fieldToAddName--}}
+        {{!--class="add-instance-input"--}}
+        {{!--placeholder="field name"}}--}}
+      {{!--</td>--}}
+      {{!--<td class="value">--}}
+        {{!--{{input--}}
+        {{!--value=fieldToAddValue--}}
+        {{!--class="add-instance-input make-room"--}}
+        {{!--placeholder="value"}}--}}
 
-  {{#if addField}}
-    <tr class="add-instance">
-      <td class="key">
-        {{input
-        value=fieldToAddName
-        class="add-instance-input"
-        placeholder="field name"}}
-      </td>
-      <td class="value">
-        {{input
-        value=fieldToAddValue
-        class="add-instance-input make-room"
-        placeholder="value"}}
-
-        <button type="button" class="add-instance-button" {{action 'addField' map}}>
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-          Add {{title}}
-        </button>
-      </td>
-    </tr>
-  {{/if}}
+        {{!--<button type="button" class="add-instance-button" {{action 'addField' map}}>--}}
+          {{!--<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>--}}
+          {{!--Add {{title}}--}}
+        {{!--</button>--}}
+      {{!--</td>--}}
+    {{!--</tr>--}}
+  {{!--{{/if}}--}}
 </table>

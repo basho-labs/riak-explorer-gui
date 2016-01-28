@@ -9,10 +9,10 @@
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}
     {{#if model.isLoaded}}
-      {{!--{{map-contents map=model}}--}}
-      <div class="legacy-map-styling">
-        {{object-contents-map model=model deleteObject="deleteObject"}}
-      </div>
+      {{map-contents map=model}}
+      {{!--<div class="legacy-map-styling">--}}
+        {{!--{{object-contents-map model=model deleteObject="deleteObject"}}--}}
+      {{!--</div>--}}
     {{else}}
       {{loading-spinner}}
     {{/if}}
