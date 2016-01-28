@@ -1,9 +1,8 @@
 {{#dashboard-module}}
-  <header class="module-header">
-    File output
-  </header>
-
-  {{#code-highlighter language-type='js'}}
-    {{model.content}}
-  {{/code-highlighter}}
+  {{dashboard-module-header label='File output'}}
+  {{#dashboard-module-body}}
+    {{#code-highlighter language-type='js'}}
+      {{model.content}}
+    {{/code-highlighter}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

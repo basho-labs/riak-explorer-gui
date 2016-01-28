@@ -7,17 +7,15 @@
             <div class="form-group">
               <label for='contentType'>Content Type:</label>
               {{input value=model.metadata.contentType
-              id='metadata.contentType' class="form-control"}}
+              id='metadata.contentType'
+              class="form-control"}}
             </div>
           </form>
         {{else}}
           <b>{{model.metadata.contentType}}</b>
         {{/if}}
       </div>
-      <div class="object-contents-actions">
-        {{object-actions model=model isEditing=isEditing
-        deleteObject="deleteObject"}}
-      </div>
+
     </div>
     <div class="object-contents-body">
       {{#if isEditing}}

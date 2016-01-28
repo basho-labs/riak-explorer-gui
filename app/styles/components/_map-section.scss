@@ -1,0 +1,74 @@
+.map-section {
+  margin-bottom: 30px;
+
+  code {
+    font-size: 16px;
+  }
+
+  .map-section-title {
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .item-instance {
+    button {
+      @extend .btn;
+      @extend .btn-xs;
+      visibility: hidden;
+    }
+
+    &:hover {
+      button {
+        visibility: visible;
+      }
+    }
+
+    .delete-button {
+      @extend .btn-danger;
+    }
+
+    .edit-button {
+      @extend .btn-primary;
+    }
+  }
+
+  .add-instance {
+    .add-instance-input {
+      @extend .form-control;
+      display: inline;
+
+      &.make-room {
+        width: 50%;
+      }
+    }
+
+    .add-instance-button {
+      @extend .btn;
+      @extend .btn-primary;
+    }
+  }
+}
+
+.map-section.maps-list {
+  .map-name {
+    font-weight: bold;
+    margin-bottom: 10px;
+
+    .expand-contents {
+      margin-left: 15px;
+      font-weight: normal;
+      cursor: pointer;
+    }
+  }
+
+  .sub-map-contents {
+    display: none;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(0, 0, 0, .05);
+
+    &.expanded {
+      display: block;
+    }
+  }
+}

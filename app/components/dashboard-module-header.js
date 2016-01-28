@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  classNames: ['dashboard-module']
+  classNames: ['module-header'],
+
+  label: null
 });

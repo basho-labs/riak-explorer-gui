@@ -1,15 +1,21 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module label='Search Overview'}}
-    {{#link-to 'search-schema.create' model.id class='btn btn-small btn-primary'}}
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-      Create new search schema
-    {{/link-to}}
+  {{#dashboard-module class='two-thirds'}}
+    {{#dashboard-module-header label='Search Overview'}}
+      <div class="module-actions">
+        {{#link-to 'search-schema.create' model.id class='btn btn-small btn-primary'}}
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          Create new search schema
+        {{/link-to}}
+      </div>
+    {{/dashboard-module-header}}
 
-    {{#if model.searchIndexes}}
-      {{search-indexes indexes=model.searchIndexes}}
-    {{else}}
-      <p>No search indexes found</p>
-    {{/if}}
+    {{#dashboard-module-body}}
+      {{#if model.searchIndexes}}
+        {{search-indexes indexes=model.searchIndexes}}
+      {{else}}
+        <p>No search indexes found</p>
+      {{/if}}
+    {{/dashboard-module-body}}
   {{/dashboard-module}}
 </div>
 

@@ -18,14 +18,14 @@ var RiakObjectSet = RiakObject.extend({
    * @param {String} item Element to be added
    */
   addElement: function(item) {
-    if (!item) {
-      return;
-    }
-    let set = this.get('contents').value;
+    let set   = this.get('contents').value;
     let index = set.indexOf(item);
-    if (index > -1) {
+
+    if (index === -1) {
       set.push(item);
       this.set('contents', {value: set});
+    } else {
+      alert('Set items must be unique binary values');
     }
   },
 
@@ -70,11 +70,12 @@ var RiakObjectSet = RiakObject.extend({
    * @param {String} item Element to be removed
    */
   removeElement: function(item) {
-    var set = this.get('contents').value;
-    var index = set.indexOf(item);
+    let set = this.get('contents').value;
+    let index = set.indexOf(item);
+
     if (index > -1) {
       set.splice(index, 1);  // Remove item
-      this.set('contents', {value: set});
+      this.set('contents', { value: set });
     }
   }
 });

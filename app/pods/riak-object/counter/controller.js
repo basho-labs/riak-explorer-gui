@@ -8,11 +8,13 @@ var RiakObjectCounterController = RiakObjectController.extend({
 
       object.increment(object.get('incrementBy'));
     },
+
     decrementCounter: function(object) {
       this.get('explorer').updateDataType(object, 'decrement');
 
       object.decrement(object.get('decrementBy'));
     },
+
     // delay in milliseconds
     pollForModel: function(object, delay) {
       var self = this;

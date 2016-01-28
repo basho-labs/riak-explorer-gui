@@ -6,15 +6,17 @@
 
   .view-header {
     @include flex(none);
-    background-color: rgba(0, 0, 0, 0.03);
     border-bottom: 1px solid $grayscale-color-x-light;
     padding: 20px 40px;
+    height: 98px;
   }
 
   .view-body {
     @include flex(1);
     height: 100%;
     overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.03);
+    position: relative;
   }
 }
 

@@ -20,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.2.0",
+    "ember-bootstrap": "0.6.0",
     "ember-cli": "1.13.13",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-babel": "^5.1.5",
@@ -36,13 +37,14 @@
     "ember-data": "1.13.15",
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
+    "ember-truth-helpers": "1.2.0",
     "phantomjs2": "^2.0.2"
   },
   "dependencies": {
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
-    "ember-idx-tabs": "^0.1.4",
     "ember-power-select": "0.7.2",
-    "highlightjs": "^8.7.0"
+    "highlightjs": "^8.7.0",
+    "ivy-tabs": "ivyapp/ivy-tabs"
   }
 }

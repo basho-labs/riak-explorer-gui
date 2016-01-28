@@ -1,6 +1,7 @@
 {{#dashboard-module}}
-  <header class="module-header">
-    <div class="action-buttons">
+  {{#dashboard-module-header}}
+    <span>&nbsp;</span>
+    <div class="module-actions">
       {{#link-to 'search-schema.edit' model.cluster.id model.name class='edit action-button' }}
         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
         Edit Schema
@@ -11,9 +12,10 @@
         View Raw
       </a>
     </div>
-  </header>
-
-  {{#code-highlighter language-type='XML'}}
-    {{model.content}}
-  {{/code-highlighter}}
+  {{/dashboard-module-header}}
+  {{#dashboard-module-body}}
+    {{#code-highlighter language-type='XML'}}
+      {{model.content}}
+    {{/code-highlighter}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

@@ -18,7 +18,7 @@
 @import "components/breadcrumb-component";
 @import "components/loading-spinner";
 @import "components/view-label";
-@import "components/em-tabs";
+@import "components/ivy-tabs";
 @import "components/key-value-table";
 @import "components/button-list";
 @import "components/cluster-resource-link";
@@ -28,7 +28,8 @@
 @import "components/content-editable";
 @import "components/code-list";
 @import "components/cluster-status";
+@import "components/map-section";
+@import "components/object-content-list";
 // View specific styling
 @import "views/object-counter-container";
-@import "views/loading-container";
 

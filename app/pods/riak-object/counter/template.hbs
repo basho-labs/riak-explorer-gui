@@ -1,10 +1,42 @@
-{{#dashboard-module label='Counter info' class='object-counter-container'}}
-  {{#if model.isLoaded}}
-    {{object-contents-counter
-    model=model deleteObject="deleteObject"
-    incrementCounter="incrementCounter"
-    decrementCounter="decrementCounter"}}
-  {{else}}
-    {{loading-spinner}}
-  {{/if}}
+{{#dashboard-module class='object-counter-container half'}}
+  {{#dashboard-module-header label='Object Details'}}
+    {{#if model.isLoaded}}
+      <div class="module-actions">
+        <button type="button" class="action-button delete"
+          {{action 'deleteObject' model}}>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          Delete Counter
+        </button>
+      </div>
+    {{/if}}
+  {{/dashboard-module-header}}
+  {{#dashboard-module-body}}
+    {{#if model.isLoaded}}
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Current Value:</td>
+          <td class="value counter-value">{{model.contentsForDisplay}}</td>
+        </tr>
+        <tr>
+          <td class="key">
+            Change Value:
+          </td>
+          <td class="value">
+            <form class="form-inline">
+              <button type="button" class="btn btn-primary" {{action 'decrementCounter' model}}>
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              </button>
+              <button type="button" class="btn btn-primary" {{action 'incrementCounter' model}}>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    {{else}}
+      {{loading-spinner}}
+    {{/if}}
+  {{/dashboard-module-body}}
 {{/dashboard-module}}

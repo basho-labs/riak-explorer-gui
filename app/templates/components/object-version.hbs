@@ -1,26 +1,16 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-2" style="text-align: right;">
-      <strong>Last Modified:</strong>
-    </div>
-    <div class="col-md-10">
-      {{object.metadata.dateLastModified}}
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-2" style="text-align: right;">
-      <strong>Etag:</strong>
-    </div>
-    <div class="col-md-10">
-      {{object.metadata.etag}}
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-2" style="text-align: right;">
-      <strong>Causal Context:</strong>
-    </div>
-    <div class="col-md-10">
-      {{object.metadata.causalContext}}
-    </div>
-  </div>
-</div>
+<table class="key-value-table">
+  <tbody>
+  <tr>
+    <td class="key">Last Modified:</td>
+    <td class="value">{{object.metadata.dateLastModified}}</td>
+  </tr>
+  <tr>
+    <td class="key">Etag:</td>
+    <td class="value">{{object.metadata.etag}}</td>
+  </tr>
+  <tr>
+    <td class="key">Causal Context:</td>
+    <td class="value">{{object.metadata.causalContext}}</td>
+  </tr>
+  </tbody>
+</table>
