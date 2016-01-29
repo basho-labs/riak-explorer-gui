@@ -12,24 +12,6 @@ import RiakObject from "../model";
  */
 var RiakObjectSet = RiakObject.extend({
   /**
-   * Adds a given element to the set's contents.
-   *
-   * @method addElement
-   * @param {String} item Element to be added
-   */
-  addElement: function(item) {
-    let set   = this.get('contents').value;
-    let index = set.indexOf(item);
-
-    if (index === -1) {
-      set.push(item);
-      this.set('contents', {value: set});
-    } else {
-      alert('Set items must be unique binary values');
-    }
-  },
-
-  /**
    * Can this object type be edited directly, in a text box?
    *
    * @property canBeEdited
@@ -61,23 +43,7 @@ var RiakObjectSet = RiakObject.extend({
    */
   contentsForDisplay: function() {
     return this.get('contents').value;
-  }.property('contents'),
-
-  /**
-   * Removes a given element from the set's contents.
-   *
-   * @method removeElement
-   * @param {String} item Element to be removed
-   */
-  removeElement: function(item) {
-    let set = this.get('contents').value;
-    let index = set.indexOf(item);
-
-    if (index > -1) {
-      set.splice(index, 1);  // Remove item
-      this.set('contents', { value: set });
-    }
-  }
+  }.property('contents')
 });
 
 export default RiakObjectSet;

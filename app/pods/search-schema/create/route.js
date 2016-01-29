@@ -26,20 +26,29 @@ export default Ember.Route.extend(WrapperState, {
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
-        // TODO: Put in proper error messaging
-        alert('Invalid XML. Please check and make sure schema is valid xml.');
+        this.render('alerts.error-invalid-xml', {
+          into: 'application',
+          outlet: 'alert'
+        });
+
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('name')) {
-        // TODO: Put in proper error messaging
-        alert('Solr requires that the schema tag has a name attribute. Please update your xml.');
+        this.render('alerts.error-solr-must-have-name', {
+          into: 'application',
+          outlet: 'alert'
+        });
+
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('version')) {
-        // TODO: Put in proper error messaging
-        alert('Solr requires that the schema tag has a version attribute. Please update your xml.');
+        this.render('alerts.error-solr-must-have-version', {
+          into: 'application',
+          outlet: 'alert'
+        });
+
         return;
       }
 
@@ -52,8 +61,10 @@ export default Ember.Route.extend(WrapperState, {
       }).then(function(data) {
         self.transitionTo('search-schema', clusterId, schemaName);
       }, function(error) {
-        // TODO: Put in proper error messaging
-        alert('Something went wrong, schema was not saved.');
+        self.render('alerts.error-schema-not-saved', {
+          into: 'application',
+          outlet: 'alert'
+        });
       });
     }
   }

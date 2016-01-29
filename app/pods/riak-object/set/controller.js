@@ -4,21 +4,6 @@ import RiakObjectController from "../controller";
 var RiakObjectSetController = RiakObjectController.extend({
   actions: {
     /**
-     * Adds an element to the set.
-     * @event addElement
-     * @param {RiakSetObject} set
-     * @param {String} newItem Element to be added
-     */
-    addElement: function(set, newItem) {
-      newItem = newItem.trim();
-
-      if (newItem.length) {
-        this.get('explorer').updateDataType(set, 'addElement', newItem);
-        set.addElement(newItem);
-      }
-    },
-
-    /**
      * Polls the server to refresh the model
      * (kicks off a delayed call to +refreshModel+)
      * @param {RiakSetObject} model
@@ -42,17 +27,6 @@ var RiakObjectSetController = RiakObjectController.extend({
         .then(function(model) {
           controller.set('model', model);
         });
-    },
-
-    /**
-     * Removes specified element from the set.
-     * @event removeElement
-     * @param set {RiakSetObject}
-     * @param item {String} Element to be removed
-     */
-    removeElement: function(set, item) {
-      this.get('explorer').updateDataType(set, 'removeElement', item);
-      set.removeElement(item);
     }
   }
 });
