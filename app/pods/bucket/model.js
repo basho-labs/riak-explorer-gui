@@ -180,7 +180,31 @@ var Bucket = DS.Model.extend({
       return [];
     }
     return this.get('props').get('propsList');
-  }.property('props')
+  }.property('props'),
+
+  /**
+   * TODO: This should be moved to the bucket props model, but big refactor needs to take place
+   * Take bucket_props warnings and adds another check
+   *
+   * @method warnings
+   * @returns array{String}
+   */
+  warnings: function() {
+    let warnings = this.get('props').get('warnings');
+
+    // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
+    //  but the proper relationships are not set up. This augments that method and does the
+    //  appropriate check
+    if (this.get('cluster').get('productionMode') &&
+      this.get('props').get('isSearchIndexed')  &&
+      this.get('index').get('schema').get('isDefaultSchema')) {
+      warnings.push(
+        'This bucket is currently using a default schema on indexes in production. ' +
+        'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
+    }
+
+    return warnings;
+  }.property('cluster', 'props', 'index')
 });
 
 export default Bucket;

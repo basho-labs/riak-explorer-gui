@@ -1,3 +1,14 @@
+{{#if model.warnings}}
+  {{#bs-alert type="warning"}}
+    <ul>
+      <h4><span class="label label-warning">WARNINGS</span></h4>
+      {{#each model.warnings as |warning|}}
+        <li>{{warning}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
 <div class='bucket-types-container'>
   {{#dashboard-module class='half'}}
     {{dashboard-module-header label='Bucket-Type Properties'}}
@@ -55,18 +66,6 @@
                   {{/if}}
                 </td>
               </tr>
-              {{#if model.props.warnings}}
-                <tr>
-                  <td class='key'>Warnings:</td>
-                  <td class='value'>
-                    <ul>
-                      {{#each model.props.warnings as |warning|}}
-                        <li>{{warning}}</li>
-                      {{/each}}
-                    </ul>
-                  </td>
-                </tr>
-              {{/if}}
             </table>
           {{/ivy-tab-panel}}
 

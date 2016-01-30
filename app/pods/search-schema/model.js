@@ -15,6 +15,15 @@ export default DS.Model.extend({
   content: DS.attr(),
 
   /**
+   * Boolean check as to whether or not it is the default schema
+   * @method isDefaultSchema
+   * @returns Boolean
+   */
+  isDefaultSchema: function() {
+    return this.get('name') === '_yz_default';
+  }.property('name'),
+
+  /**
    * Returns a formatted schema url
    * @method url
    * @returns String
