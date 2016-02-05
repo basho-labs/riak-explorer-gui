@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/wrapper-state';
+import WrapperState from '../../../mixins/routes/wrapper-state';
+import Alerts from '../../../mixins/routes/alerts';
 
-export default Ember.Route.extend(WrapperState, {
+export default Ember.Route.extend(Alerts, WrapperState, {
   model(params) {
     return this.explorer.getCluster(params.clusterId)
       .then(function(cluster) {
@@ -60,10 +61,7 @@ export default Ember.Route.extend(WrapperState, {
       }).then(function(data) {
         self.transitionTo('search-schema', clusterId, schemaId);
       }, function(error) {
-        self.render('alerts.error-schema-not-saved', {
-          into: 'application',
-          outlet: 'alert'
-        });
+        self.showAlert('alerts.error-schema-not-saved');
       });
     }
   }

@@ -1,6 +1,7 @@
 import RiakObjectRoute from "../route";
+import Alerts from '../../../mixins/routes/alerts';
 
-var RiakObjectSetRoute = RiakObjectRoute.extend({
+var RiakObjectSetRoute = RiakObjectRoute.extend(Alerts, {
   actions: {
     /**
      * Adds an element to the set.
@@ -19,15 +20,9 @@ var RiakObjectSetRoute = RiakObjectRoute.extend({
         set.set('contents', { value: setItems });
 
         // Empty out any lingering warnings on success
-        this.render('alerts.empty', {
-          into: 'application',
-          outlet: 'alert'
-        });
+        this.removeAlert();
       } else {
-        this.render('alerts.error-set-items-unique', {
-          into: 'application',
-          outlet: 'alert'
-        });
+        this.showAlert('alerts.error-set-items-unique');
       }
     },
 

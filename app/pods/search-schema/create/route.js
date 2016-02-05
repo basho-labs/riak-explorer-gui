@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/wrapper-state';
+import WrapperState from '../../../mixins/routes/wrapper-state';
+import Alerts from '../../../mixins/routes/alerts';
 
-export default Ember.Route.extend(WrapperState, {
+export default Ember.Route.extend(WrapperState, Alerts, {
   model(params) {
     return this.explorer.getCluster(params.clusterId);
   },
@@ -26,29 +27,17 @@ export default Ember.Route.extend(WrapperState, {
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
-        this.render('alerts.error-invalid-xml', {
-          into: 'application',
-          outlet: 'alert'
-        });
-
+        this.showAlert('alerts.error-invalid-xml');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('name')) {
-        this.render('alerts.error-solr-must-have-name', {
-          into: 'application',
-          outlet: 'alert'
-        });
-
+        this.showAlert('alerts.error-solr-must-have-name');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('version')) {
-        this.render('alerts.error-solr-must-have-version', {
-          into: 'application',
-          outlet: 'alert'
-        });
-
+        this.showAlert('alerts.error-solr-must-have-version');
         return;
       }
 
