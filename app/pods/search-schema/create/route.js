@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/wrapper-state';
+import WrapperState from '../../../mixins/routes/wrapper-state';
+import Alerts from '../../../mixins/routes/alerts';
 
-export default Ember.Route.extend(WrapperState, {
+export default Ember.Route.extend(WrapperState, Alerts, {
   model(params) {
     return this.explorer.getCluster(params.clusterId);
   },
@@ -26,20 +27,17 @@ export default Ember.Route.extend(WrapperState, {
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
-        // TODO: Put in proper error messaging
-        alert('Invalid XML. Please check and make sure schema is valid xml.');
+        this.showAlert('alerts.error-invalid-xml');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('name')) {
-        // TODO: Put in proper error messaging
-        alert('Solr requires that the schema tag has a name attribute. Please update your xml.');
+        this.showAlert('alerts.error-solr-must-have-name');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('version')) {
-        // TODO: Put in proper error messaging
-        alert('Solr requires that the schema tag has a version attribute. Please update your xml.');
+        this.showAlert('alerts.error-solr-must-have-version');
         return;
       }
 
@@ -52,8 +50,10 @@ export default Ember.Route.extend(WrapperState, {
       }).then(function(data) {
         self.transitionTo('search-schema', clusterId, schemaName);
       }, function(error) {
-        // TODO: Put in proper error messaging
-        alert('Something went wrong, schema was not saved.');
+        self.render('alerts.error-schema-not-saved', {
+          into: 'application',
+          outlet: 'alert'
+        });
       });
     }
   }

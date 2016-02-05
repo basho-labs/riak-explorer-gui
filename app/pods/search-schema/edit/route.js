@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/wrapper-state';
+import WrapperState from '../../../mixins/routes/wrapper-state';
+import Alerts from '../../../mixins/routes/alerts';
 
-export default Ember.Route.extend(WrapperState, {
+export default Ember.Route.extend(Alerts, WrapperState, {
   model(params) {
     return this.explorer.getCluster(params.clusterId)
       .then(function(cluster) {
@@ -43,8 +44,11 @@ export default Ember.Route.extend(WrapperState, {
       try {
         xmlDoc = Ember.$.parseXML(xmlString);
       } catch (error) {
-        // TODO: Put in proper error messaging
-        alert('Invalid XML. Please check and make sure schema is valid xml.');
+        this.render('alerts.error-invalid-xml', {
+          into: 'application',
+          outlet: 'alert'
+        });
+
         return;
       }
 
@@ -57,9 +61,7 @@ export default Ember.Route.extend(WrapperState, {
       }).then(function(data) {
         self.transitionTo('search-schema', clusterId, schemaId);
       }, function(error) {
-        // TODO: Put in proper error messaging
-        alert('Something went wrong, schema was not saved.');
-        self.transitionTo('search-schema', clusterId, schemaId);
+        self.showAlert('alerts.error-schema-not-saved');
       });
     }
   }

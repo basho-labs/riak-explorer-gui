@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/wrapper-state';
+import WrapperState from '../../../mixins/routes/wrapper-state';
 
 var RiakObjectEditRoute = Ember.Route.extend(WrapperState, {
   model: function(params) {

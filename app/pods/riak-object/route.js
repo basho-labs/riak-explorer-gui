@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import WrapperState from '../../mixins/wrapper-state';
+import WrapperState from '../../mixins/routes/wrapper-state';
 
 var RiakObjectRoute = Ember.Route.extend(WrapperState, {
   actions: {

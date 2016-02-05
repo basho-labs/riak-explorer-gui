@@ -33,7 +33,7 @@
     <td class='key'>Search Index:</td>
     <td class='value'>
       {{#if model.index}}
-        {{#link-to 'search-index' model.index.cluster.clusterId model.index.name}}
+        {{#link-to 'search-index' model.index.cluster.clusterId model.index.name class='btn btn-primary'}}
           {{model.index.name}}
         {{/link-to}}
       {{else}}
