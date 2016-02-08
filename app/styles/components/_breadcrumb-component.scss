@@ -1,6 +1,6 @@
 .breadcrumb-container {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   min-height: 17px;
 
   .breadcrumb {
@@ -11,6 +11,8 @@
 
     li {
       color: lighten($grayscale-color-dark, $color-accent-percentage-large);
+      margin-bottom: 0;
+
       &:last-child {
         a {
           cursor: default;
