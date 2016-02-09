@@ -28,7 +28,10 @@
             <table class="key-value-table">
               {{#each model.props.propsList as |prop|}}
                 <tr>
-                  <td class='key'>{{prop.key}}</td>
+                  <td class='key'>
+                    {{prop.key}}
+                    {{tooltip.bucket-props itemKey=prop.key}}
+                  </td>
                   <td class='value'>{{prop.value}}</td>
                 </tr>
               {{/each}}
