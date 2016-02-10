@@ -1,0 +1,32 @@
+.tooltip-icon {
+  font-size: 10px;
+  color: #777;
+  cursor: help;
+}
+
+.tooltip {
+  &.in {
+    opacity: 1;
+  }
+
+  .tooltip-content-wrapper {
+    padding: 10px;
+
+    .title {
+      @extend .label;
+      @extend .label-default;
+      font-size: 14px;
+    }
+
+    .description {
+      margin: 10px 0 5px 0;
+    }
+
+    .default, .editable, .type {
+      font-style: italic;
+      font-size: 12px;
+    }
+  }
+}
+
+

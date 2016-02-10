@@ -10,7 +10,7 @@
 {{/if}}
 
 <div class='bucket-types-container'>
-  {{#dashboard-module class='half'}}
+  {{#dashboard-module class='small-width'}}
     {{dashboard-module-header label='Bucket Properties'}}
     {{#dashboard-module-body}}
       {{#if model.props}}
@@ -28,7 +28,10 @@
             <table class="key-value-table">
               {{#each model.props.propsList as |prop|}}
                 <tr>
-                  <td class='key'>{{prop.key}}</td>
+                  <td class='key'>
+                    {{prop.key}}
+                    {{tooltip.bucket-props itemKey=prop.key}}
+                  </td>
                   <td class='value'>{{prop.value}}</td>
                 </tr>
               {{/each}}
@@ -41,7 +44,7 @@
     {{/dashboard-module-body}}
   {{/dashboard-module}}
 
-  {{#dashboard-module class='half'}}
+  {{#dashboard-module class='small-width'}}
     {{#dashboard-module-header label='Keys'}}
       {{#if model.isKeyListLoaded}}
         <div class="module-actions">
