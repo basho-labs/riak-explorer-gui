@@ -20,7 +20,7 @@ var SearchIndex = DS.Model.extend({
   schema: DS.belongsTo('search-schema', {async: true}),
 
   /**
-   * Returns the search index name/id
+   * Returns the search index name
    * @property name
    * @type String
    */

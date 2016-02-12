@@ -4,7 +4,7 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 export default Ember.Route.extend(WrapperState, {
 
   model: function(params) {
-    return this.explorer.getLogFile(params.clusterId, params.nodeId, params.logId);
+    return this.explorer.getLogFile(params.clusterName, params.nodeName, params.logName);
   },
 
   afterModel: function(model, transition) {
@@ -16,7 +16,7 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Log Detail',
-      label: model.get('fileId')
+      label: model.get('name')
     });
   },
 

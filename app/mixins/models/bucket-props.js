@@ -1,22 +1,8 @@
-import DS from 'ember-data';
 import Ember from 'ember';
-import objectToArray from '../utils/riak-util';
+import DS from 'ember-data';
+import objectToArray from '../../utils/riak-util';
 
-/**
- * Represents a Bucket's or a Bucket Type's properties.
- * Since a Bucket inherits all of its parent Bucket Type's properties, both
- *    models use this object to store their properties.
- *
- * @see http://docs.basho.com/riak/latest/theory/concepts/Buckets/
- * @see http://docs.basho.com/riak/latest/dev/references/http/set-bucket-props/
- * @see http://docs.basho.com/riak/latest/dev/advanced/bucket-types/
- * @see http://docs.basho.com/riak/latest/dev/advanced/replication-properties/
- *
- * @class BucketProps
- * @extends DS.Model
- * @constructor
- */
-var BucketProps = DS.Model.extend({
+export default Ember.Mixin.create({
   /**
    * Hash of key/value pairs, obtained as a result of
    *    an HTTP GET Bucket Properties API call,
@@ -111,6 +97,18 @@ var BucketProps = DS.Model.extend({
   }.property('props'),
 
   /**
+   * Has this Bucket Type not been activated via `riak-admin bucket-types activate`?
+   * (Buckets inherit this setting from their parent bucket types.)
+   * Inverse of the isActive method
+   *
+   * @property isInactive
+   * @type Boolean
+   */
+  isInactive: function() {
+    return !this.get('props').active;
+  }.property('props'),
+
+  /**
    * Has the 'Last Write Wins' optimization been turned on for this bucket?
    * @see http://docs.basho.com/riak/latest/dev/using/conflict-resolution/#last-write-wins
    *
@@ -185,7 +183,6 @@ var BucketProps = DS.Model.extend({
   nVal: function() {
     return this.get('props').n_val;
   }.property('props'),
-
 
   objectType: function() {
     let type = [];
@@ -323,8 +320,17 @@ var BucketProps = DS.Model.extend({
         warnings.push('Dotted Version Vectors (dvv_enabled) should be enabled when Siblings are enabled.');
       }
     }
-    return warnings;
-  }.property('props')
-});
+    // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
+    //  but the proper relationships are not set up. This augments that method and does the
+    //  appropriate check
+    //if (this.get('cluster').get('productionMode') &&
+    //    this.get('isSearchIndexed') &&
+    //    this.get('index').get('schema').get('isDefaultSchema')) {
+    //      warnings.push(
+    //        'This bucket type is currently using a default schema on indexes in production. ' +
+    //        'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
+    //}
 
-export default BucketProps;
+    return warnings;
+  }.property('props', 'cluster', 'index')
+});

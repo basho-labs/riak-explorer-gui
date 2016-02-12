@@ -11,13 +11,13 @@
       onchange=(action 'clusterSelected')
       as |cluster|}}
         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
-        {{cluster.id}}
+        {{cluster.name}}
       {{/power-select}}
 
       {{#if currentCluster}}
         <div class="current-cluster">
           <header>
-            <div class="title">Cluster: {{currentCluster.id}}</div>
+            <div class="title">Cluster: {{currentCluster.name}}</div>
             <ul class="meta list-inline">
               {{#if currentCluster.hasVersion}}
                 <li>{{currentCluster.riakVersion}}</li>
@@ -32,15 +32,15 @@
             <span class="cluster-status-circle {{currentCluster.status}}"></span>
           </header>
           <nav class="cluster-section-links current-section-is-{{clusterSubSection}}">
-            {{#link-to 'cluster.data' currentCluster.id class='data'}}
+            {{#link-to 'cluster.data' currentCluster.name class='data'}}
               <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
               Data
             {{/link-to}}
-            {{#link-to 'cluster.ops' currentCluster.id class='ops'}}
+            {{#link-to 'cluster.ops' currentCluster.name class='ops'}}
               <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
               Ops
             {{/link-to}}
-            {{#link-to 'cluster.query' currentCluster.id class='query'}}
+            {{#link-to 'cluster.query' currentCluster.name class='query'}}
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
               Query
             {{/link-to}}

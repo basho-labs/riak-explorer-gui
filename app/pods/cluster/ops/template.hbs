@@ -7,14 +7,14 @@
           {{#each model.nodes as |node|}}
             <li>
               {{#if node.available}}
-                {{#link-to 'node' model.id node.id }}
+                {{#link-to 'node' model.name node.name }}
                   <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-                  {{node.id}}
+                  {{node.name}}
                 {{/link-to}}
               {{else}}
-                {{#link-to 'node' model.id node.id class='danger'}}
+                {{#link-to 'node' model.name node.name class='danger'}}
                   <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
-                  {{node.id}}
+                  {{node.name}}
                 {{/link-to}}
               {{/if}}
             </li>

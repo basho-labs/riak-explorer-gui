@@ -152,7 +152,7 @@ table {
 // Table backgrounds
 //
 // Exact selectors below required to override `.table-striped` and prevent
-// inheritance to nested tables.
+// inheritance to nested table.
 
 // Generate the contextual variants
 @include table-row-variant('active', $table-bg-active);
@@ -162,9 +162,9 @@ table {
 @include table-row-variant('danger', $state-danger-bg);
 
 
-// Responsive tables
+// Responsive table
 //
-// Wrap your tables in `.table-responsive` and we'll make them mobile friendly
+// Wrap your table in `.table-responsive` and we'll make them mobile friendly
 // by enabling horizontal scrolling. Only applies <768px. Everything above that
 // will display normally.
 
@@ -196,7 +196,7 @@ table {
       }
     }
 
-    // Special overrides for the bordered tables
+    // Special overrides for the bordered table
     > .table-bordered {
       border: 0;
 

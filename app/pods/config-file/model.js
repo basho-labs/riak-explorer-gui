@@ -19,9 +19,9 @@ export default DS.Model.extend({
   /**
    * The name of the file. The actual id is a composite id (i.e. cluster1/node1/file1.log).
    *
-   * @property fileId
+   * @property name
    * @type String
    */
-  fileId: DS.attr('string')
+  name: DS.attr('string')
 });
 

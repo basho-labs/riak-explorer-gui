@@ -4,7 +4,7 @@ import Alerts from '../../../mixins/routes/alerts';
 
 export default Ember.Route.extend(WrapperState, Alerts, {
   model(params) {
-    return this.explorer.getCluster(params.clusterId);
+    return this.explorer.getCluster(params.clusterName);
   },
 
   afterModel(model, transition) {
@@ -19,10 +19,10 @@ export default Ember.Route.extend(WrapperState, Alerts, {
   },
 
   actions: {
-    createSchema: function(clusterId, schemaName, schemaContent) {
+    createSchema: function(clusterName, schemaName, schemaContent) {
       let self = this;
       let xmlDoc = null;
-      let url = `/riak/clusters/${clusterId}/search/schema/${schemaName}`;
+      let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
 
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
@@ -48,7 +48,7 @@ export default Ember.Route.extend(WrapperState, Alerts, {
         processData: false,
         data: xmlDoc
       }).then(function(data) {
-        self.transitionTo('search-schema', clusterId, schemaName);
+        self.transitionTo('search-schema', clusterName, schemaName);
       }, function(error) {
         self.render('alerts.error-schema-not-saved', {
           into: 'application',

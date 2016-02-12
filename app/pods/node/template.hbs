@@ -50,7 +50,7 @@
           <ul class="button-list">
             {{#each model.logFiles as |logFile|}}
               <li>
-                {{link-to logFile.fileId 'log-file' model.cluster.id model.id logFile.fileId}}
+                {{link-to logFile.name 'log-file' model.cluster.name model.name logFile.name}}
               </li>
             {{/each}}
           </ul>
@@ -64,7 +64,7 @@
           <ul class="button-list">
             {{#each model.configFiles as |configFile|}}
               <li>
-                {{link-to configFile.fileId 'config-file' model.cluster.id model.id configFile.fileId}}
+                {{link-to configFile.name 'config-file' model.cluster.name model.name configFile.name}}
               </li>
             {{/each}}
           </ul>

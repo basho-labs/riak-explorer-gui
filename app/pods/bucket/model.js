@@ -17,14 +17,14 @@ var Bucket = DS.Model.extend({
    * KeyList.
    * @method init
    */
-  init() {
-    this._super();
-    let emptyList = this.store.createRecord('key-list', {
-      cluster: this.get('cluster'),
-      keys: []
-    });
-    this.set('keyList', emptyList);
-  },
+  //init() {
+  //  this._super();
+  //  let emptyList = this.store.createRecord('key-list', {
+  //    cluster: this.get('cluster'),
+  //    keys: []
+  //  });
+  //  this.set('keyList', emptyList);
+  //},
 
   /**
    * Riak Bucket Type in which this bucket lives.
@@ -42,7 +42,7 @@ var Bucket = DS.Model.extend({
    * @type Cluster
    * @writeOnce
    */
-  cluster: DS.belongsTo('cluster'),
+  //cluster: DS.belongsTo('cluster'),
 
   /**
    * Contains the results of cached key lists for this bucket,
@@ -51,7 +51,7 @@ var Bucket = DS.Model.extend({
    * @property key-list
    * @type KeyList
    */
-  keyList: DS.belongsTo('key-list'),
+  //keyList: DS.belongsTo('key-list'),
 
   /**
    * Bucket Properties object. Note: Bucket Types and Buckets share the
@@ -61,7 +61,7 @@ var Bucket = DS.Model.extend({
    * @property props
    * @type BucketProps
    */
-  props: DS.belongsTo('bucket-props'),
+  //props: DS.belongsTo('bucket-props'),
 
   /**
    * Has the keyList been loaded from the server?
@@ -70,7 +70,7 @@ var Bucket = DS.Model.extend({
    * @type Boolean
    * @default false
    */
-  isKeyListLoaded: DS.attr('boolean', {defaultValue: false}),
+  //isKeyListLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
    * Bucket name (unique within a cluster and bucket type)
@@ -78,7 +78,8 @@ var Bucket = DS.Model.extend({
    * @property name
    * @type String
    */
-  name: DS.attr('string'),
+  name: DS.attr('string')
+  //,
 
   /**
    * Returns the bucket name (this is an alias/helper function)
@@ -86,9 +87,9 @@ var Bucket = DS.Model.extend({
    * @property bucketId
    * @type String
    */
-  bucketId: function() {
-    return this.get('name');
-  }.property('name'),
+  //bucketId: function() {
+  //  return this.get('name');
+  //}.property('name'),
 
   /**
    * Returns the bucket type's name
@@ -96,9 +97,9 @@ var Bucket = DS.Model.extend({
    * @property bucketTypeId
    * @type String
    */
-  bucketTypeId: function() {
-    return this.get('bucketType').get('bucketTypeId');
-  }.property('cluster'),
+  //bucketTypeId: function() {
+  //  return this.get('bucketType').get('bucketTypeId');
+  //}.property('cluster'),
 
   /**
    * Returns the name of the cluster in which this bucket resides.
@@ -107,9 +108,9 @@ var Bucket = DS.Model.extend({
    * @property clusterId
    * @type String
    */
-  clusterId: function() {
-    return this.get('cluster').get('clusterId');
-  }.property('cluster'),
+  //clusterId: function() {
+  //  return this.get('cluster').get('clusterId');
+  //}.property('cluster'),
 
   /**
    * Returns the name of the Search Index associated with this bucket
@@ -118,10 +119,10 @@ var Bucket = DS.Model.extend({
    * @property index
    * @type String
    */
-  index: function() {
-    return this.get('cluster').get('searchIndexes')
-      .findBy('name', this.get('props').get('searchIndexName'));
-  }.property('cluster'),
+  //index: function() {
+  //  return this.get('cluster').get('searchIndexes')
+  //    .findBy('name', this.get('props').get('searchIndexName'));
+  //}.property('cluster'),
 
   /**
    * Has this bucket type been activated?
@@ -129,14 +130,14 @@ var Bucket = DS.Model.extend({
    * @property isActive
    * @type Boolean
    */
-  isActive: function() {
-    if (this.get('bucketTypeId') === 'default') {
-      // Buckets in the Default type don't have the 'active' attribute
-      // in the props, but are actually active.
-      return true;
-    }
-    return this.get('props').get('isActive');
-  }.property('props'),
+  //isActive: function() {
+  //  if (this.get('bucketTypeId') === 'default') {
+  //    // Buckets in the Default type don't have the 'active' attribute
+  //    // in the props, but are actually active.
+  //    return true;
+  //  }
+  //  return this.get('props').get('isActive');
+  //}.property('props'),
 
   /**
    * Returns the Ember.js/Ember Data model name of the objects stored within
@@ -147,26 +148,26 @@ var Bucket = DS.Model.extend({
    * @readOnly
    * @default 'riak-object'
    */
-  objectModelName: function() {
-    let modelType = null;
-
-    switch (true) {
-      case this.get('props').get('isCounter'):
-        modelType = 'riak-object.counter';
-        break;
-      case this.get('props').get('isSet'):
-        modelType = 'riak-object.set';
-        break;
-      case this.get('props').get('isMap'):
-        modelType = 'riak-object.map';
-        break;
-      default:
-        modelType = 'riak-object';
-        break;
-    }
-
-    return modelType;
-  }.property('props'),
+  //objectModelName: function() {
+  //  let modelType = null;
+  //
+  //  switch (true) {
+  //    case this.get('props').get('isCounter'):
+  //      modelType = 'riak-object.counter';
+  //      break;
+  //    case this.get('props').get('isSet'):
+  //      modelType = 'riak-object.set';
+  //      break;
+  //    case this.get('props').get('isMap'):
+  //      modelType = 'riak-object.map';
+  //      break;
+  //    default:
+  //      modelType = 'riak-object';
+  //      break;
+  //  }
+  //
+  //  return modelType;
+  //}.property('props'),
 
   /**
    * Returns this bucket's properties as an array of key/value tuples.
@@ -175,12 +176,12 @@ var Bucket = DS.Model.extend({
    * @method propsList
    * @return {Array<Hash>}
    */
-  propsList: function() {
-    if (!this.get('props')) {
-      return [];
-    }
-    return this.get('props').get('propsList');
-  }.property('props'),
+  //propsList: function() {
+  //  if (!this.get('props')) {
+  //    return [];
+  //  }
+  //  return this.get('props').get('propsList');
+  //}.property('props'),
 
   /**
    * TODO: This should be moved to the bucket props model, but big refactor needs to take place
@@ -189,24 +190,24 @@ var Bucket = DS.Model.extend({
    * @method warnings
    * @returns array{String}
    */
-  warnings: function() {
-    if (this.get('props')) {
-      let warnings = this.get('props').get('warnings');
-
-      // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
-      //  but the proper relationships are not set up. This augments that method and does the
-      //  appropriate check
-      if (this.get('cluster').get('productionMode') &&
-        this.get('props').get('isSearchIndexed')  &&
-        this.get('index').get('schema').get('isDefaultSchema')) {
-        warnings.push(
-          'This bucket is currently using a default schema on indexes in production. ' +
-          'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
-      }
-
-      return warnings;
-    }
-  }.property('cluster', 'props', 'index')
+  //warnings: function() {
+  //  if (this.get('props')) {
+  //    let warnings = this.get('props').get('warnings');
+  //
+  //    // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
+  //    //  but the proper relationships are not set up. This augments that method and does the
+  //    //  appropriate check
+  //    if (this.get('cluster').get('productionMode') &&
+  //      this.get('props').get('isSearchIndexed')  &&
+  //      this.get('index').get('schema').get('isDefaultSchema')) {
+  //      warnings.push(
+  //        'This bucket is currently using a default schema on indexes in production. ' +
+  //        'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
+  //    }
+  //
+  //    return warnings;
+  //  }
+  //}.property('cluster', 'props', 'index')
 });
 
 export default Bucket;

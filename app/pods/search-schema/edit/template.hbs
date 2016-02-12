@@ -7,19 +7,21 @@
         Update Schema
       </span>
 
-      {{#link-to 'search-schema' model.cluster.id model.name class='cancel action-button' }}
+      {{#link-to 'search-schema' model.cluster.name model.name class='cancel action-button' }}
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         Cancel
       {{/link-to}}
     </div>
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}
-    <pre class="editable">
-    <code>
-      {{content-editable
-      value=model.content
-      type="html"}}
-    </code>
-  </pre>
+    {{#if model.content}}
+      <pre class="editable">
+        <code>
+          {{content-editable
+          value=model.content
+          type="html"}}
+        </code>
+      </pre>
+    {{/if}}
   {{/dashboard-module-body}}
 {{/dashboard-module}}

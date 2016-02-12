@@ -48,6 +48,10 @@ export default DS.Model.extend({
    */
   config: DS.attr(),
 
+  name: DS.attr('string'),
+
+  name: DS.attr('string'),
+
   /**
    * All the nodes statistics. Stored as an Object hashmap.
    *

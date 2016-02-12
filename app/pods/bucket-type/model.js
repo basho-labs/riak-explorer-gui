@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import BucketProps from '../../mixins/models/bucket-props';
 
 /**
  * Represents a Riak Bucket Type
@@ -10,28 +11,16 @@ import DS from 'ember-data';
  * @uses BucketProps
  * @uses BucketList
  */
-var BucketType = DS.Model.extend({
-  /**
-   * Initializes a new BucketType instance by setting up an empty
-   * BucketList.
-   * @method init
-   */
-  init() {
-    this._super();
-    let emptyList = this.store.createRecord('bucket-list', {
-      cluster: this.get('cluster'),
-      buckets: []
-    });
-    this.set('bucketList', emptyList);
-  },
+var BucketType = DS.Model.extend(BucketProps, {
+  bucketList: DS.belongsTo('bucket-list', {async: true}),
 
   /**
    * Contains the results of cached bucket lists for this bucket type,
    * fetched from the API.
-   * @property bucket-list
-   * @type BucketList
+   * @property buckets
+   * @type Bucket
    */
-  bucketList: DS.belongsTo('bucket-list'),
+  buckets: DS.hasMany('bucket', {async: true}),
 
   /**
    * Riak cluster in which this bucket type lives.
@@ -39,16 +28,7 @@ var BucketType = DS.Model.extend({
    * @type Cluster
    * @writeOnce
    */
-  cluster: DS.belongsTo('cluster'),
-
-  /**
-   * Bucket Type Properties object.
-   * Note: Bucket Types and Buckets share the same Properties format.
-   * When not specified, buckets inherit their properties from the Bucket Type
-   * @property props
-   * @type BucketProps
-   */
-  props: DS.belongsTo('bucket-props'),
+  cluster: DS.belongsTo('cluster', {async: true}),
 
   /**
    * Has the bucketList been loaded from the server?
@@ -56,7 +36,7 @@ var BucketType = DS.Model.extend({
    * @type Boolean
    * @default false
    */
-  isBucketListLoaded: DS.attr('boolean', {defaultValue: false}),
+  //isBucketListLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
    * Bucket Type name (unique per cluster),
@@ -64,78 +44,7 @@ var BucketType = DS.Model.extend({
    * @property name
    * @type String
    */
-  name: DS.attr('string'),
-
-  bucketTypeId: function() {
-    return this.get('originalId');
-  }.property('originalId'),
-
-  /**
-   * Returns the name of the cluster in which this bucket type resides.
-   * (As specified in the `riak_explorer.conf` file)
-   * @property clusterId
-   * @type String
-   */
-  clusterId: function() {
-    return this.get('cluster').get('clusterId');
-  }.property('cluster'),
-
-  /**
-   * Returns the Search Index associated with this bucket type,
-   *     if applicable.
-   * @property index
-   * @type String
-   */
-  index: function() {
-    return this.get('cluster').get('searchIndexes')
-      .findBy('name', this.get('props').get('searchIndexName'));
-  }.property('cluster', 'props'),
-
-  /**
-   * Returns true if this Bucket Type has been activated.
-   *
-   * @property isActive
-   * @type Boolean
-   */
-  isActive: function() {
-    return this.get('props').get('isActive');
-  }.property('props'),
-
-  /**
-   * Returns true if this Bucket Type has not yet been activated.
-   *
-   * @property isInactive
-   * @type Boolean
-   */
-  isInactive: function() {
-    return !this.get('isActive');
-  }.property('props'),
-
-  /**
-   * TODO: This should be moved to the bucket props model, but big refactor needs to take place
-   * Take bucket_props warnings and adds another check
-   *
-   * @method warnings
-   * @returns array{String}
-   */
-  warnings: function() {
-    if (this.get('props')) {
-      let warnings = this.get('props').get('warnings');
-
-      // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
-      //  but the proper relationships are not set up. This augments that method and does the
-      //  appropriate check
-      if (this.get('cluster').get('productionMode') &&
-        this.get('props').get('isSearchIndexed')  &&
-        this.get('index').get('schema').get('isDefaultSchema')) {
-        warnings.push(
-          'This bucket type is currently using a default schema on indexes in production. ' +
-          'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
-      }
-
-      return warnings;
-    }
-  }.property('cluster', 'props', 'index')
+  name: DS.attr('string')
 });
 
 export default BucketType;

@@ -12,24 +12,24 @@ Router.map(function() {
   this.route('cluster.query', {path: '/cluster/:clusterName/query'});
 
   // Cluster-Data Routes
-  this.route('bucket-type', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId'});
-  this.route('bucket', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId'});
-  this.route('riak-object', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId/key/:key'});
-  this.route('riak-object.edit', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId/key/:key/edit'});
-  this.route('riak-object.counter', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId/counter/:key'});
-  this.route('riak-object.set', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId/set/:key'});
-  this.route('riak-object.map', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId/bucket/:bucketId/map/:key'});
+  this.route('bucket-type', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName'});
+  this.route('bucket', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName'});
+  this.route('riak-object', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:name'});
+  this.route('riak-object.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:name/edit'});
+  this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:name'});
+  this.route('riak-object.set', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/set/:name'});
+  this.route('riak-object.map', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/map/:name'});
 
   // Cluster-Ops Routes
-  this.route('node', {path: '/cluster/:clusterId/ops/nodes/:nodeId/'});
-  this.route('log-file', {path: '/cluster/:clusterId/ops/nodes/:nodeId/logs/:logId'});
-  this.route('config-file', {path: '/cluster/:clusterId/ops/nodes/:nodeId/configs/:configId'});
+  this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});
+  this.route('log-file', {path: '/cluster/:clusterName/ops/nodes/:nodeName/logs/:logName'});
+  this.route('config-file', {path: '/cluster/:clusterName/ops/nodes/:nodeName/configs/:configName'});
 
   // Cluster-Query Routes
-  this.route('search-index', {path: '/cluster/:clusterId/query/index/:searchIndexId'});
-  this.route('search-schema', {path: '/cluster/:clusterId/query/schema/:searchSchemaId'});
-  this.route('search-schema.edit', {path: '/cluster/:clusterId/query/schema/:searchSchemaId/edit'});
-  this.route('search-schema.create', {path: '/cluster/:clusterId/query/schema/create'});
+  this.route('search-index', {path: '/cluster/:clusterName/query/index/:searchIndexName'});
+  this.route('search-schema', {path: '/cluster/:clusterName/query/schema/:searchSchemaName'});
+  this.route('search-schema.edit', {path: '/cluster/:clusterName/query/schema/:searchSchemaName/edit'});
+  this.route('search-schema.create', {path: '/cluster/:clusterName/query/schema/create'});
 
   // Error Routes
   this.route('error', {path: '/error'}, function() {

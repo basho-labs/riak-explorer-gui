@@ -368,6 +368,29 @@ export default Ember.Service.extend({
   //},
 
   /**
+   * Creates a Schema instance if it does not exist,
+   *  and then returns instance.
+   *
+   * @method createSchema
+   * @param name {String}
+   * @param cluster {Cluster}
+   * @return {Schema}
+   */
+  createSchema(name, cluster) {
+    let schema = cluster.get('searchSchemas').findBy('name', name);
+
+    if (!schema) {
+      schema = this.store.createRecord('search-schema', {
+        id: `${cluster.get('name')}/${name}`,
+        cluster: cluster,
+        name: name
+      });
+    }
+
+    return schema;
+  },
+
+  /**
    * Creates and returns an ObjectMetadata instance by parsing the raw
    * header string returned by AJAX calls, if available.
    *
@@ -699,49 +722,85 @@ export default Ember.Service.extend({
    * @param {BucketType} bucketType
    * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
    */
-  //getBucketList(cluster, bucketType, start = 1, rows = this.pageSize) {
-  //  var explorer = this;
-  //  var clusterId = cluster.get('clusterId');
-  //  var bucketTypeId = bucketType.get('bucketTypeId');
-  //
-  //  var url = `${this.apiURL}explore/clusters/${clusterId}/bucket_types/${bucketTypeId}/buckets?start=${start}&rows=${rows}`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    var xhrConfig = {
-  //      url: url,
-  //      dataType: 'json',
-  //      type: 'GET',
-  //      success: function(data) {
-  //        bucketType.set('isBucketListLoaded', true);
-  //        resolve(explorer.createBucketList(data, cluster, bucketType, start));
-  //      },
-  //      error: function(jqXHR, textStatus) {
-  //        // Fail (likely a 404, cache not yet created)
-  //        if (jqXHR.status === 404) {
-  //          // Return an empty (Loading..) list. Controller will poll to
-  //          // refresh it, later
-  //          let data = null;
-  //          let emptyList = explorer.createBucketList(data, cluster, bucketType);
-  //          if (cluster.get('developmentMode')) {
-  //            bucketType.set('isBucketListLoaded', false);
-  //            emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
-  //            // Kick off a Cache Refresh
-  //            explorer.bucketCacheRefresh(clusterId, bucketTypeId);
-  //          } else {
-  //            bucketType.set('isBucketListLoaded', true);
-  //            // In Production mode, no cache refresh will happen
-  //            emptyList.set('cachePresent', false);
-  //          }
-  //          Ember.run(null, resolve, emptyList);
-  //        } else {
-  //          Ember.run(null, reject, textStatus);
-  //        }
-  //      }
-  //    };
-  //
-  //    Ember.$.ajax(xhrConfig);
-  //  });
-  //},
+  getBucketList(bucketType) {
+    if (Ember.isEmpty(bucketType.get('bucketList').get('id'))) {
+      let clusterName = bucketType.get('cluster').get('name');
+      let bucketTypeName = bucketType.get('name');
+
+      return this.store.queryRecord('bucket-list', { clusterName: clusterName, bucketTypeName: bucketTypeName })
+        .then(
+          function(bucketList) {
+          bucketType.set('bucketList', bucketList);
+
+          return bucketType.get('bucketList');
+        });
+    } else {
+      return bucketType.get('bucketList');
+    }
+  },
+
+  /**
+   * Performs a 'Fetch cached Bucket List' API call to Explorer.
+   * If the call encounters a 404 Not Found (meaning, the bucket list cache
+   * is empty), it proactively kicks off a Bucket Cache Refresh operation.
+   * @see ExplorerService.bucketCacheRefresh
+   *
+   * @method getBucketList
+   * @param {Cluster} cluster
+   * @param {BucketType} bucketType
+   * @return {Ember.RSVP.Promise<BucketList>} Result of the AJAX request
+   */
+  getBuckets(bucketType) {
+    if (Ember.isEmpty(bucketType.get('buckets'))) {
+      let clusterName = bucketType.get('cluster').get('name');
+      let bucketTypeName = bucketType.get('name');
+
+      return this.store.query('bucket', { clusterName: clusterName, bucketTypeName: bucketTypeName })
+        .then(function(buckets) {
+          bucketType.set('buckets', buckets);
+
+          return bucketType.get('buckets');
+        });
+    } else {
+      return bucketType.get('buckets');
+    }
+
+    //return new Ember.RSVP.Promise(function(resolve, reject) {
+    //  var xhrConfig = {
+    //    url: url,
+    //    dataType: 'json',
+    //    type: 'GET',
+    //    success: function(data) {
+    //      bucketType.set('isBucketListLoaded', true);
+    //      resolve(explorer.createBucketList(data, cluster, bucketType, start));
+    //    },
+    //    error: function(jqXHR, textStatus) {
+    //      // Fail (likely a 404, cache not yet created)
+    //      if (jqXHR.status === 404) {
+    //        // Return an empty (Loading..) list. Controller will poll to
+    //        // refresh it, later
+    //        let data = null;
+    //        let emptyList = explorer.createBucketList(data, cluster, bucketType);
+    //        if (cluster.get('developmentMode')) {
+    //          bucketType.set('isBucketListLoaded', false);
+    //          emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
+    //          // Kick off a Cache Refresh
+    //          explorer.bucketCacheRefresh(clusterId, bucketTypeId);
+    //        } else {
+    //          bucketType.set('isBucketListLoaded', true);
+    //          // In Production mode, no cache refresh will happen
+    //          emptyList.set('cachePresent', false);
+    //        }
+    //        Ember.run(null, resolve, emptyList);
+    //      } else {
+    //        Ember.run(null, reject, textStatus);
+    //      }
+    //    }
+    //  };
+    //
+    //  Ember.$.ajax(xhrConfig);
+    //});
+  },
 
   /**
    * Performs a proxied 'Fetch Bucket Properties' HTTP API call to Riak.
@@ -791,14 +850,26 @@ export default Ember.Service.extend({
    * @param {String} bucketTypeId
    * @return {Ember.RSVP.Promise<BucketType>}
    */
-  //getBucketType(clusterId, bucketTypeId) {
-  //  var self = this;
-  //  return self.getCluster(clusterId)
-  //    .then(function(cluster) {
-  //      return cluster.get('bucketTypes')
-  //        .findBy('originalId', bucketTypeId);
-  //    });
-  //},
+  getBucketType(clusterName, bucketTypeName) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
+        return cluster.get('bucketTypes').findBy('name', bucketTypeName);
+      })
+      .then(function(bucketType) {
+        return Ember.RSVP.allSettled([
+          bucketType,
+          self.getBucketList(bucketType),
+          self.getBuckets(bucketType)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let bucketType = PromiseArray[0].value;
+
+        return bucketType;
+      });
+  },
 
   /**
    * Fetches, creates and returns a Bucket Type instance as well as the
@@ -830,9 +901,6 @@ export default Ember.Service.extend({
    */
   getBucketTypesForCluster(cluster) {
     if (Ember.isEmpty(cluster.get('bucketTypes'))) {
-      // If this page was accessed directly
-      //  (via a bookmark and not from a link), bucket types are likely
-      //  to be not loaded yet. Load them.
       return this.store.query('bucket-type', { clusterName: cluster.get('name') })
         .then(function(bucketTypes) {
           cluster.set('bucketTypes', bucketTypes);
@@ -864,30 +932,30 @@ export default Ember.Service.extend({
    * Fetches a given config file and its dependencies
    *
    * @method getConfigFile
-   * @param clusterId
-   * @param nodeId
-   * @param configId
+   * @param clusterName
+   * @param nodeName
+   * @param configName
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getConfigFile(clusterId, nodeId, configId) {
-  //  let self = this;
-  //
-  //  return this.getNode(clusterId, nodeId)
-  //    .then(function(node) {
-  //      return node.get('configFiles').findBy('fileId', configId);
-  //    })
-  //    .then(function(configFile) {
-  //      return Ember.RSVP.allSettled([
-  //        configFile,
-  //        self.getConfigFileContents(configFile)
-  //      ]);
-  //    })
-  //    .then(function(PromiseArray) {
-  //      let configFile = PromiseArray[0].value;
-  //
-  //      return configFile;
-  //    });
-  //},
+  getConfigFile(clusterName, nodeName, configName) {
+    let self = this;
+
+    return this.getNode(clusterName, nodeName)
+      .then(function(node) {
+        return node.get('configFiles').findBy('name', configName);
+      })
+      .then(function(configFile) {
+        return Ember.RSVP.allSettled([
+          configFile,
+          self.getConfigFileContents(configFile)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let configFile = PromiseArray[0].value;
+
+        return configFile;
+      });
+  },
 
   /**
    * Fetches a given config files contents
@@ -896,32 +964,32 @@ export default Ember.Service.extend({
    * @param config
    * @return {Ember.$.Promise} result of the AJAX call
    */
-  //getConfigFileContents(config) {
-  //  let clusterId = config.get('node').get('cluster').get('id');
-  //  let nodeId    = config.get('node').get('id');
-  //  let configId  = config.get('fileId');
-  //  let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/config/files/${configId}`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    let request = Ember.$.ajax({
-  //      url: url,
-  //      type: 'GET',
-  //      headers: {
-  //        Accept : "plain/text;"
-  //      }
-  //    });
-  //
-  //    request.done(function(data) {
-  //      config.set('content', data);
-  //
-  //      resolve(config);
-  //    });
-  //
-  //    request.fail(function(data) {
-  //      reject(data);
-  //    });
-  //  });
-  //},
+  getConfigFileContents(config) {
+    let clusterName = config.get('node').get('cluster').get('name');
+    let nodeName    = config.get('node').get('name');
+    let configName  = config.get('name');
+    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/config/files/${configName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+          Accept : "plain/text;"
+        }
+      });
+
+      request.done(function(data) {
+        config.set('content', data);
+
+        resolve(config);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
 
   /**
    * Creates and returns a Cluster object and initializes it with dependent
@@ -951,15 +1019,7 @@ export default Ember.Service.extend({
         //  and set the schema/index association
         cluster.get('searchIndexes').forEach(function(index) {
           let schemaName = index.get('schemaRef');
-          let schema = cluster.get('searchSchemas').findBy('name', schemaName);
-
-          if (!schema) {
-            schema = self.store.createRecord('search-schema', {
-              id: `${cluster.get('name')}/${name}`,
-              cluster: cluster,
-              name: schemaName
-            });
-          }
+          let schema = self.createSchema(schemaName, cluster);
 
           index.set('schema', schema);
         });
@@ -1071,26 +1131,26 @@ export default Ember.Service.extend({
    * @param logId
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getLogFile(clusterId, nodeId, logId) {
-  //  let self = this;
-  //
-  //  return this.getNode(clusterId, nodeId)
-  //    .then(function(node) {
-  //      return node.get('logFiles').findBy('fileId', logId);
-  //    })
-  //    .then(function(logFile) {
-  //      return Ember.RSVP.allSettled([
-  //        logFile,
-  //        self.getLogFileContents(logFile),
-  //        self.getLogFileLength(logFile)
-  //      ]);
-  //    })
-  //    .then(function(PromiseArray) {
-  //      let logFile = PromiseArray[0].value;
-  //
-  //      return logFile;
-  //    });
-  //},
+  getLogFile(clusterName, nodeName, logName) {
+    let self = this;
+
+    return this.getNode(clusterName, nodeName)
+      .then(function(node) {
+        return node.get('logFiles').findBy('name', logName);
+      })
+      .then(function(logFile) {
+        return Ember.RSVP.allSettled([
+          logFile,
+          self.getLogFileContents(logFile),
+          self.getLogFileLength(logFile)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let logFile = PromiseArray[0].value;
+
+        return logFile;
+      });
+  },
 
   /**
    * Fetches a given log files contents
@@ -1099,33 +1159,33 @@ export default Ember.Service.extend({
    * @param log
    * @return {Ember.$.Promise} result of the AJAX call
    */
-  //getLogFileContents(log, rows = this.pageSize) {
-  //  let clusterId = log.get('node').get('cluster').get('id');
-  //  let nodeId    = log.get('node').get('id');
-  //  let logId     = log.get('fileId');
-  //  let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/log/files/${logId}?rows=${rows}`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    let request = Ember.$.ajax({
-  //      url: url,
-  //      type: 'GET',
-  //      headers: {
-  //        Accept : "plain/text;"
-  //      }
-  //    });
-  //
-  //    request.done(function(data) {
-  //      log.set('content', data);
-  //      log.set('pageSize', rows);
-  //
-  //      resolve(log);
-  //    });
-  //
-  //    request.fail(function(data) {
-  //      reject(data);
-  //    });
-  //  });
-  //},
+  getLogFileContents(log, rows = this.pageSize) {
+    let clusterName = log.get('node').get('cluster').get('name');
+    let nodeName    = log.get('node').get('name');
+    let logName     = log.get('name');
+    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}?rows=${rows}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+          Accept : "plain/text;"
+        }
+      });
+
+      request.done(function(data) {
+        log.set('content', data);
+        log.set('pageSize', rows);
+
+        resolve(log);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
 
   /**
    * Fetches and sets the amount of lines in a given log file
@@ -1134,32 +1194,32 @@ export default Ember.Service.extend({
    * @param log
    * @return {Ember.$.Promise} result of the AJAX call
    */
-  //getLogFileLength(log) {
-  //  let clusterId = log.get('node').get('cluster').get('id');
-  //  let nodeId    = log.get('node').get('id');
-  //  let logId     = log.get('fileId');
-  //  let url  = `${this.apiURL}explore/clusters/${clusterId}/nodes/${nodeId}/log/files/${logId}`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    let request = Ember.$.ajax({
-  //      url: url,
-  //      type: 'GET',
-  //      dataType: 'json'
-  //    });
-  //
-  //    request.done(function(data) {
-  //      let totalLines = data[logId].total_lines;
-  //
-  //      log.set('totalLines', totalLines);
-  //
-  //      resolve(log);
-  //    });
-  //
-  //    request.fail(function(data) {
-  //      reject(data);
-  //    });
-  //  });
-  //},
+  getLogFileLength(log) {
+    let clusterName = log.get('node').get('cluster').get('name');
+    let nodeName    = log.get('node').get('name');
+    let logName     = log.get('name');
+    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json'
+      });
+
+      request.done(function(data) {
+        let totalLines = data[logName].total_lines;
+
+        log.set('totalLines', totalLines);
+
+        resolve(log);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
 
   /**
    * Fetches a given node and all its basic dependencies: stats, configuration, and log files
@@ -1169,28 +1229,28 @@ export default Ember.Service.extend({
    * @param nodeId
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getNode(clusterId, nodeId) {
-  //  let self = this;
-  //
-  //  return this.getCluster(clusterId)
-  //    .then(function(cluster) {
-  //      return cluster.get('nodes').findBy('id', nodeId);
-  //    })
-  //    .then(function(node) {
-  //      return Ember.RSVP.allSettled([
-  //        node,
-  //        self.getNodeStats(node),
-  //        self.getNodeConfig(node),
-  //        self.getNodeLogFiles(node),
-  //        self.getNodeConfigFiles(node)
-  //      ]);
-  //    })
-  //    .then(function(PromiseArray) {
-  //      let node = PromiseArray[0].value;
-  //
-  //      return node;
-  //    });
-  //},
+  getNode(clusterName, nodeName) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
+        return cluster.get('nodes').findBy('name', nodeName);
+      })
+      .then(function(node) {
+        return Ember.RSVP.allSettled([
+          node,
+          self.getNodeStats(node),
+          self.getNodeConfig(node),
+          self.getNodeLogFiles(node),
+          self.getNodeConfigFiles(node)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let node = PromiseArray[0].value;
+
+        return node;
+      });
+  },
 
   /**
    * Fetches a given nodes basic configuration stats
@@ -1199,32 +1259,32 @@ export default Ember.Service.extend({
    * @param {Node} node
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getNodeConfig(node) {
-  //  let url = `${this.apiURL}explore/nodes/${node.get('id')}/config`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    let request = Ember.$.ajax({
-  //      url: url,
-  //      type: 'GET'
-  //    });
-  //
-  //    request.done(function(data) {
-  //      if (data.config.advanced_config) {
-  //        node.set('advancedConfig', data.config.advanced_config);
-  //      }
-  //
-  //      if (data.config.config) {
-  //        node.set('config', data.config.config);
-  //      }
-  //
-  //      resolve(data);
-  //    });
-  //
-  //    request.fail(function(data) {
-  //      reject(data);
-  //    });
-  //  });
-  //},
+  getNodeConfig(node) {
+    let url = `${this.apiURL}explore/nodes/${node.get('name')}/config`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        if (data.config.advanced_config) {
+          node.set('advancedConfig', data.config.advanced_config);
+        }
+
+        if (data.config.config) {
+          node.set('config', data.config.config);
+        }
+
+        resolve(data);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
 
   /**
    * Fetches and creates a set of config file for a given node.
@@ -1233,18 +1293,18 @@ export default Ember.Service.extend({
    * @param {Node} node
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getNodeConfigFiles(node) {
-  //  if (Ember.isEmpty(node.get('configFiles'))) {
-  //    return this.store.query('config-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
-  //      .then(function(configFiles) {
-  //        node.set('configFiles', configFiles);
-  //
-  //        return configFiles;
-  //      });
-  //  } else {
-  //    return node.get('configFiles');
-  //  }
-  //},
+  getNodeConfigFiles(node) {
+    if (Ember.isEmpty(node.get('configFiles'))) {
+      return this.store.query('config-file', {clusterName: node.get('cluster').get('name'), nodeName: node.get('name')})
+        .then(function(configFiles) {
+          node.set('configFiles', configFiles);
+
+          return node.get('configFiles');
+        });
+    } else {
+      return node.get('configFiles');
+    }
+  },
 
   /**
    * Fetches and creates a set of log file for a given node.
@@ -1253,18 +1313,18 @@ export default Ember.Service.extend({
    * @param {Node} node
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  //getNodeLogFiles(node) {
-  //  if (Ember.isEmpty(node.get('logFiles'))) {
-  //    return this.store.query('log-file', {clusterId: node.get('cluster').get('id'), nodeId: node.get('id')})
-  //      .then(function(logFiles) {
-  //        node.set('logFiles', logFiles);
-  //
-  //        return logFiles;
-  //      });
-  //  } else {
-  //    return node.get('logFiles');
-  //  }
-  //},
+  getNodeLogFiles(node) {
+    if (Ember.isEmpty(node.get('logFiles'))) {
+      return this.store.query('log-file', {clusterName: node.get('cluster').get('name'), nodeName: node.get('name')})
+        .then(function(logFiles) {
+          node.set('logFiles', logFiles);
+
+          return node.get('logFiles');
+        });
+    } else {
+      return node.get('logFiles');
+    }
+  },
 
   /**
    * Returns the results of a Riak node HTTP ping result.
@@ -1273,8 +1333,8 @@ export default Ember.Service.extend({
    * @param {String} nodeId
    * @return {Ember.RSVP.Promise} result of the AJAX call
    */
-  getNodePing(nodeId) {
-    let url = `${this.apiURL}riak/nodes/${nodeId}/ping`;
+  getNodePing(nodeName) {
+    let url = `${this.apiURL}riak/nodes/${nodeName}/ping`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1310,8 +1370,8 @@ export default Ember.Service.extend({
 
       request.done(function(data) {
         cluster.get('nodes').forEach(function(node) {
-          let nodeId = node.get('id');
-          let nodeStatus = data.status.nodes.findBy('id', nodeId).status;
+          let nodeName = node.get('name');
+          let nodeStatus = data.status.nodes.findBy('id', nodeName).status;
 
           node.set('status', nodeStatus);
         });
@@ -1352,26 +1412,26 @@ export default Ember.Service.extend({
    * @param {DS.Model} Node
    * @return {Ember.RSVP.Promise<Node>}
    */
-  //getNodeStats(node) {
-  //  let url = `${this.apiURL}riak/nodes/${node.get('id')}/stats`;
-  //
-  //  return new Ember.RSVP.Promise(function(resolve, reject) {
-  //    let request = Ember.$.ajax({
-  //      url: url,
-  //      type: 'GET'
-  //    });
-  //
-  //    request.done(function(data) {
-  //      node.set('stats', data);
-  //
-  //      resolve(node);
-  //    });
-  //
-  //    request.fail(function(data) {
-  //      reject(data);
-  //    });
-  //  });
-  //},
+  getNodeStats(node) {
+    let url = `${this.apiURL}riak/nodes/${node.get('name')}/stats`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        node.set('stats', data);
+
+        resolve(node);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
 
   /**
    * Fetches and returns a Riak Object for the specified location
@@ -1552,9 +1612,9 @@ export default Ember.Service.extend({
 
     this.getNodesForCluster(cluster).then(function(nodes) {
       nodes.forEach(function(node) {
-        let nodeId = node.get('id');
+        let nodeName = node.get('name');
 
-        self.getNodePing(nodeId).then(function onSuccess(data) {
+        self.getNodePing(nodeName).then(function onSuccess(data) {
           node.set('available', true);
         }, function onFail(data) {
           node.set('available', false);

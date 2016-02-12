@@ -13,8 +13,7 @@
   {{#dashboard-module class='half'}}
     {{dashboard-module-header label='Bucket-Type Properties'}}
     {{#dashboard-module-body}}
-      {{#if model.props}}
-        {{#ivy-tabs }}
+      {{#ivy-tabs }}
           {{#ivy-tab-list}}
             {{#ivy-tab}}Overview{{/ivy-tab}}
             {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
@@ -25,7 +24,7 @@
               <tr>
                 <td class='key'>Object type</td>
                 <td class='value'>
-                  {{model.props.objectType}}
+                  {{model.objectType}}
                   {{#if model.isActive}}
                     <span class="label label-success">Active</span>
                   {{else}}
@@ -35,21 +34,21 @@
               </tr>
               <tr>
                 <td class='key'>Conflict Res. Strategy</td>
-                <td class='value'>{{model.props.resolutionStrategy}}</td>
+                <td class='value'>{{model.resolutionStrategy}}</td>
               </tr>
               <tr>
                 <td class='key'>Quorum</td>
                 <td class='value'>
-                  N_Val: {{model.props.nVal}}
-                  {{#if model.props.quorumRelevant}}
+                  N_Val: {{model.nVal}}
+                  {{#if model.quorumRelevant}}
                     <br/>
-                    R: {{model.props.quorum.r}}, W: {{model.props.quorum.w}},
-                    PR: {{model.props.quorum.pr}}, PW: {{model.props.quorum.pw}},
-                    DW: {{model.props.quorum.dw}}
+                    R: {{model.quorum.r}}, W: {{model.quorum.w}},
+                    PR: {{model.quorum.pr}}, PW: {{model.quorum.pw}},
+                    DW: {{model.quorum.dw}}
                     <br/>
                     <small>
-                      (basic_quorum: {{model.props.quorum.basic_quorum}},
-                      notfound_ok: {{model.props.quorum.basic_quorum}})
+                      (basic_quorum: {{model.quorum.basic_quorum}},
+                      notfound_ok: {{model.quorum.basic_quorum}})
                     </small>
                   {{/if}}
                 </td>
@@ -61,7 +60,7 @@
                 </td>
                 <td class='value'>
                   {{#if model.index}}
-                    {{#link-to 'search-index' model.index.cluster.clusterId model.index.name class='btn btn-primary'}}
+                    {{#link-to 'search-index' model.index.cluster.name model.index.name class='btn btn-primary'}}
                       {{model.index.name}}
                     {{/link-to}}
                   {{else}}
@@ -74,7 +73,8 @@
 
           {{#ivy-tab-panel}}
             <table class="key-value-table">
-              {{#each model.props.propsList as |prop|}}
+              {{!--TODO: Refactor once in Ember 2.0--}}
+              {{#each model.propsList as |prop|}}
                 <tr>
                   <td class='key'>
                     {{prop.key}}
@@ -86,75 +86,72 @@
             </table>
           {{/ivy-tab-panel}}
         {{/ivy-tabs}}
-      {{else}}
-        Properties not loaded
-      {{/if}}
     {{/dashboard-module-body}}
   {{/dashboard-module}}
 
-  {{#dashboard-module class='small-width'}}
-    {{#dashboard-module-header label='Buckets'}}
-      {{#if model.isBucketListLoaded}}
-        <div class="module-actions">
-          {{#if model.cluster.developmentMode}}
-            <button type="button" class="action-button refresh" {{action 'refreshBuckets' model}}>
-              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              Refresh Bucket List Cache
-            </button>
-          {{/if}}
-        </div>
-      {{/if}}
-    {{/dashboard-module-header}}
-    {{#dashboard-module-body}}
-      {{#if model.isBucketListLoaded}}
-        {{#if model.bucketList.cachePresent}}
-          <table class="key-value-table">
-            <tbody>
-            <tr>
-              <td class="key">Bucket List cache created:</td>
-              <td class="value">{{model.bucketList.created}}</td>
-            </tr>
+  {{!--{{#dashboard-module class='small-width'}}--}}
+    {{!--{{#dashboard-module-header label='Buckets'}}--}}
+      {{!--{{#if model.isBucketListLoaded}}--}}
+        {{!--<div class="module-actions">--}}
+          {{!--{{#if model.cluster.developmentMode}}--}}
+            {{!--<button type="button" class="action-button refresh" {{action 'refreshBuckets' model}}>--}}
+              {{!--<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>--}}
+              {{!--Refresh Bucket List Cache--}}
+            {{!--</button>--}}
+          {{!--{{/if}}--}}
+        {{!--</div>--}}
+      {{!--{{/if}}--}}
+    {{!--{{/dashboard-module-header}}--}}
+    {{!--{{#dashboard-module-body}}--}}
+      {{!--{{#if model.isBucketListLoaded}}--}}
+        {{!--{{#if model.bucketList.cachePresent}}--}}
+          {{!--<table class="key-value-table">--}}
+            {{!--<tbody>--}}
+            {{!--<tr>--}}
+              {{!--<td class="key">Bucket List cache created:</td>--}}
+              {{!--<td class="value">{{model.bucketList.created}}</td>--}}
+            {{!--</tr>--}}
 
-            <tr>
-              <td class="key">Cached Bucket List</td>
-              <td class="value">
-                {{#if model.bucketList.buckets}}
-                  {{#if model.bucketList.multipleListItems}}
-                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
-                      of {{model.bucketList.total}}</p>
-                  {{else}}
-                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
-                  {{/if}}
+            {{!--<tr>--}}
+              {{!--<td class="key">Cached Bucket List</td>--}}
+              {{!--<td class="value">--}}
+                {{!--{{#if model.bucketList.buckets}}--}}
+                  {{!--{{#if model.bucketList.multipleListItems}}--}}
+                    {{!--<p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out--}}
+                      {{!--of {{model.bucketList.total}}</p>--}}
+                  {{!--{{else}}--}}
+                    {{!--<p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>--}}
+                  {{!--{{/if}}--}}
 
-                  {{#pagination-component
-                  chunkSize=model.bucketList.pageSize
-                  totalSize=model.bucketList.total
-                  sectionRequest='retrieveRequestedBuckets'}}
-                    <ul class='button-list'>
-                      {{#each model.bucketList.buckets as |bucket|}}
-                        <li>
-                          {{link.link-bucket bucket=bucket}}
-                        </li>
-                      {{/each}}
-                    </ul>
-                  {{/pagination-component}}
-                {{else}}
-                  No buckets found
-                {{/if}}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        {{else}}
-          <p>
-            Cached list not available.
-            This cluster is in Production mode, and so no cache refresh is
-            possible.
-          </p>
-        {{/if}}
-      {{else}}
-        {{loading-spinner statusMessage=model.bucketList.statusMessage}}
-      {{/if}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+                  {{!--{{#pagination-component--}}
+                  {{!--chunkSize=model.bucketList.pageSize--}}
+                  {{!--totalSize=model.bucketList.total--}}
+                  {{!--sectionRequest='retrieveRequestedBuckets'}}--}}
+                    {{!--<ul class='button-list'>--}}
+                      {{!--{{#each model.bucketList.buckets as |bucket|}}--}}
+                        {{!--<li>--}}
+                          {{!--{{link.link-bucket bucket=bucket}}--}}
+                        {{!--</li>--}}
+                      {{!--{{/each}}--}}
+                    {{!--</ul>--}}
+                  {{!--{{/pagination-component}}--}}
+                {{!--{{else}}--}}
+                  {{!--No buckets found--}}
+                {{!--{{/if}}--}}
+              {{!--</td>--}}
+            {{!--</tr>--}}
+            {{!--</tbody>--}}
+          {{!--</table>--}}
+        {{!--{{else}}--}}
+          {{!--<p>--}}
+            {{!--Cached list not available.--}}
+            {{!--This cluster is in Production mode, and so no cache refresh is--}}
+            {{!--possible.--}}
+          {{!--</p>--}}
+        {{!--{{/if}}--}}
+      {{!--{{else}}--}}
+        {{!--{{loading-spinner statusMessage=model.bucketList.statusMessage}}--}}
+      {{!--{{/if}}--}}
+    {{!--{{/dashboard-module-body}}--}}
+  {{!--{{/dashboard-module}}--}}
 </div>

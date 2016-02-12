@@ -1,56 +1,56 @@
 <ol class="breadcrumb">
   {{#if isClusterData}}
     {{#if data.cluster}}
-      <li>{{link-to 'data' 'cluster.data' data.cluster.id}}</li>
+      <li>{{link-to 'data' 'cluster.data' data.cluster.name}}</li>
     {{/if}}
 
     {{#if data.bucketType}}
       <li>
-        {{link-to data.bucketType.bucketTypeId 'bucket-type'
-        data.cluster.id
-        data.bucketType.bucketTypeId}}
+        {{link-to data.bucketType.name 'bucket-type'
+        data.cluster.name
+        data.bucketType.name}}
       </li>
     {{/if}}
 
     {{#if data.bucket}}
       <li>
-        {{link-to data.bucket.bucketId 'bucket'
-        data.cluster.id
-        data.bucketType.bucketTypeId
-        data.bucket.bucketId}}
+        {{link-to data.bucket.name 'bucket'
+        data.cluster.name
+        data.bucketType.name
+        data.bucket.name}}
       </li>
     {{/if}}
 
     {{#if data.riakObject}}
-      <li>{{data.riakObject.key}}</li>
+      <li>{{data.riakObject.name}}</li>
     {{/if}}
   {{/if}}
 
   {{#if isClusterOps}}
     {{#if data.cluster}}
-      <li>{{link-to 'ops' 'cluster.ops' data.cluster.id}}</li>
+      <li>{{link-to 'ops' 'cluster.ops' data.cluster.name}}</li>
     {{/if}}
 
     {{#if data.node}}
       <li>
-        {{link-to data.node.id 'node'
-        data.cluster.id
-        data.node.id}}
+        {{link-to data.node.name 'node'
+        data.cluster.name
+        data.node.name}}
       </li>
     {{/if}}
 
     {{#if data.logFile}}
-      <li>{{data.logFile.fileId}}</li>
+      <li>{{data.logFile.name}}</li>
     {{/if}}
 
     {{#if data.configFile}}
-      <li>{{data.configFile.fileId}}</li>
+      <li>{{data.configFile.name}}</li>
     {{/if}}
   {{/if}}
 
   {{#if isClusterQuery}}
     {{#if data.cluster}}
-      <li>{{link-to 'query' 'cluster.query' data.cluster.id}}</li>
+      <li>{{link-to 'query' 'cluster.query' data.cluster.name}}</li>
     {{/if}}
 
     {{#if data.searchSchema}}
