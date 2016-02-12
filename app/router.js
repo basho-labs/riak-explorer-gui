@@ -7,9 +7,9 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   // Cluster Routes
-  this.route('cluster.ops', {path: '/cluster/:clusterId/ops'});
-  this.route('cluster.data', {path: '/cluster/:clusterId/data'});
-  this.route('cluster.query', {path: '/cluster/:clusterId/query'});
+  this.route('cluster.ops', {path: '/cluster/:clusterName/ops'});
+  this.route('cluster.data', {path: '/cluster/:clusterName/data'});
+  this.route('cluster.query', {path: '/cluster/:clusterName/query'});
 
   // Cluster-Data Routes
   this.route('bucket-type', {path: '/cluster/:clusterId/data/bucket_type/:bucketTypeId'});

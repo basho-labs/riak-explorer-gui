@@ -4,7 +4,7 @@ import config from '../config/environment';
 
 var SearchIndexAdapter = DS.RESTAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}riak/clusters/${query.clusterId}/search/index`;
+    return `${config.baseURL}riak/clusters/${query.clusterName}/search/index`;
   },
 
   query(store, type, query) {
@@ -12,7 +12,7 @@ var SearchIndexAdapter = DS.RESTAdapter.extend({
 
     let promise = this.ajax(url, 'GET').then(function(indexes) {
       indexes.forEach(function(index) {
-        index.id = `${query.clusterId}/${index.name}`;
+        index.id = `${query.clusterName}/${index.name}`;
       });
 
       return indexes;

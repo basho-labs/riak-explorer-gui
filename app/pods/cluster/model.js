@@ -15,7 +15,7 @@ var Cluster = DS.Model.extend({
    * @property bucketTypes
    * @type Array<BucketType>
    */
-  bucketTypes: DS.hasMany('bucket-type'),
+  bucketTypes: DS.hasMany('bucket-type', {async: true}),
 
   /**
    * Riak nodes assigned to the cluster
@@ -72,17 +72,6 @@ var Cluster = DS.Model.extend({
   }.property('bucketTypes'),
 
   /**
-   * Returns the name of the cluster
-   * (As specified in the `riak_explorer.conf` file)
-   * Note: Currently unrelated to the source/datacenter name used by MDC Repl
-   * @method clusterId
-   * @type String
-   */
-  clusterId: function() {
-    return this.get('id');
-  }.property('id'),
-
-  /**
    * Boolean check to see if the cluster has a Riak version number associated with it
    *
    * @method hasVersion
@@ -131,6 +120,17 @@ var Cluster = DS.Model.extend({
   isEnterpriseEdition: function() {
     return this.get('riakType') === 'ee';
   }.property('riakType'),
+
+  /**
+   * Returns the name of the cluster
+   * (As specified in the `riak_explorer.conf` file)
+   * Note: Currently unrelated to the source/datacenter name used by MDC Repl
+   * @method clusterId
+   * @type String
+   */
+  name: function() {
+    return this.get('id');
+  }.property('id'),
 
   /**
    * Returns true if this cluster is in production mode (development_mode=off)

@@ -61,10 +61,10 @@ var BucketType = DS.Model.extend({
   /**
    * Bucket Type name (unique per cluster),
    *    as appears on `riak-admin bucket-type list`
-   * @property originalId
+   * @property name
    * @type String
    */
-  originalId: DS.attr('string'),
+  name: DS.attr('string'),
 
   bucketTypeId: function() {
     return this.get('originalId');
@@ -110,20 +110,6 @@ var BucketType = DS.Model.extend({
   isInactive: function() {
     return !this.get('isActive');
   }.property('props'),
-
-  /**
-   * Alias for the record's `id`, which is a composite ID in the form of
-   *     `'<clusterId>/<bucketName>'`.
-   * @see ExplorerResourceAdapter.normalizeId
-   *
-   * @method name
-   * @type String
-   * @example
-   *    'dev-cluster/users'
-   */
-  name: function() {
-    return this.get('id');
-  }.property('id'),
 
   /**
    * TODO: This should be moved to the bucket props model, but big refactor needs to take place

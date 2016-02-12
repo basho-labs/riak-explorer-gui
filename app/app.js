@@ -9,9 +9,9 @@ Ember.MODEL_FACTORY_INJECTIONS = true;
 
 // Disable deprecations and warnings
 // Comment out to enable
-Ember.deprecate = function(){};
-Ember.warn      = function(i){};
-Ember.debug     = function(){};
+// Ember.deprecate = function(){};
+// Ember.warn      = function(i){};
+// Ember.debug     = function(){};
 
 App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
