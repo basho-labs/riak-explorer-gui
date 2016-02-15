@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import BucketProps from '../../mixins/models/bucket-props';
 
 /**
  * Represents a Riak Bucket
@@ -8,24 +9,9 @@ import DS from 'ember-data';
  * @constructor
  * @uses BucketType
  * @uses Cluster
- * @uses BucketProps
- * @uses KeyList
+ * @uses ObjectList
  */
-var Bucket = DS.Model.extend({
-  /**
-   * Initializes a new Bucket instance by setting up an empty
-   * KeyList.
-   * @method init
-   */
-  //init() {
-  //  this._super();
-  //  let emptyList = this.store.createRecord('key-list', {
-  //    cluster: this.get('cluster'),
-  //    keys: []
-  //  });
-  //  this.set('keyList', emptyList);
-  //},
-
+var Bucket = DS.Model.extend(BucketProps, {
   /**
    * Riak Bucket Type in which this bucket lives.
    *
@@ -33,25 +19,18 @@ var Bucket = DS.Model.extend({
    * @type BucketType
    * @writeOnce
    */
-  bucketType: DS.belongsTo('bucket-type'),
-
-  /**
-   * Riak cluster in which this bucket lives.
-   *
-   * @property cluster
-   * @type Cluster
-   * @writeOnce
-   */
-  //cluster: DS.belongsTo('cluster'),
+  bucketType: DS.belongsTo('bucket-type', {async: true}),
 
   /**
    * Contains the results of cached key lists for this bucket,
    * fetched from the API.
    *
    * @property key-list
-   * @type KeyList
+   * @type objectList
    */
-  //keyList: DS.belongsTo('key-list'),
+  objectList: DS.belongsTo('object-list', {async: true}),
+
+  objects: DS.hasMany('riak-object', {async: true}),
 
   /**
    * Bucket Properties object. Note: Bucket Types and Buckets share the
@@ -78,8 +57,11 @@ var Bucket = DS.Model.extend({
    * @property name
    * @type String
    */
-  name: DS.attr('string')
-  //,
+  name: DS.attr('string'),
+
+  cluster: function() {
+    return this.get('bucketType').get('cluster');
+  }.property('bucketType')
 
   /**
    * Returns the bucket name (this is an alias/helper function)

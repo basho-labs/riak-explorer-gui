@@ -7,6 +7,7 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
+    pageSize: 500,
 
     EmberENV: {
       FEATURES: {

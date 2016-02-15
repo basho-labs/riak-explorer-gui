@@ -20,14 +20,14 @@ export default Ember.Mixin.create({
    * @type Number
    * @default 0
    */
-  listCount: DS.attr('number', {defaultValue: 0}),
+  count: DS.attr('number', {defaultValue: 0}),
 
   /**
    * Timestamp of when the cached list was generated on the server side
    * @property created
    * @type String
    */
-  listCreatedAt: DS.attr(),
+  created: DS.attr(),
 
   /**
    * Is the List operation waiting for a cache to be generated?
@@ -35,21 +35,21 @@ export default Ember.Mixin.create({
    * @type Boolean
    * @default false
    */
-  listIsLoaded: DS.attr('boolean', {defaultValue: false}),
+  //isLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
    * The index of the first item in the current page, in relation to the entire list
    * @property firstItemIndex
    * @type Integer
    */
-  listFirstItemIndex: DS.attr('number', {defaultValue: 1}),
+  firstItemIndex: DS.attr('number', {defaultValue: 1}),
 
   /**
    * The number of items per page
    * @property pageSize
    * @type Integer
    */
-  listPageSize: DS.attr('number', {defaultValue: 0}),
+  pageSize: DS.attr('number', {defaultValue: 0}),
 
   /**
    * Status message to display to the user. Relevant for long-running
@@ -61,7 +61,7 @@ export default Ember.Mixin.create({
    * @property statusMessage
    * @type String
    */
-  listStatusMessage: DS.attr('string', {defaultValue: 'Requesting cached list...'}),
+  statusMessage: DS.attr('string', {defaultValue: 'Requesting cached list...'}),
 
   /**
    * Total number of items in the cached list on the API side.
@@ -69,7 +69,7 @@ export default Ember.Mixin.create({
    * @type Number
    * @default 0
    */
-  listTotalSize: DS.attr('number', {defaultValue: 0}),
+  total: DS.attr('number', {defaultValue: 0}),
 
   /**
    * The index of the last item in the current page, in relation to the entire list
@@ -77,17 +77,17 @@ export default Ember.Mixin.create({
    * @method lastItemIndex
    * @returns Integer
    */
-  listLastItemIndex: function() {
+  lastItemIndex: function() {
     return this.get('firstItemIndex') + this.get('count') - 1;
   }.property('firstItemIndex', 'count'),
 
   /**
    * Whether or not the current page has more than 1 item in it
    *
-   * @method lastItemIndex
+   * @method hasMultipleListItems
    * @returns Boolean
    */
-  listHasMultipleListItems: function() {
+  hasMultipleListItems: function() {
     return this.get('count') > 1;
   }.property('count')
 });

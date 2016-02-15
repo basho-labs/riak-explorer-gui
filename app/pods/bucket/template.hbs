@@ -13,103 +13,71 @@
   {{#dashboard-module class='small-width'}}
     {{dashboard-module-header label='Bucket Properties'}}
     {{#dashboard-module-body}}
-      {{#if model.props}}
-        {{#ivy-tabs }}
-          {{#ivy-tab-list}}
-            {{#ivy-tab}}Overview{{/ivy-tab}}
-            {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
-          {{/ivy-tab-list}}
+      {{#ivy-tabs }}
+        {{#ivy-tab-list}}
+          {{#ivy-tab}}Overview{{/ivy-tab}}
+          {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
+        {{/ivy-tab-list}}
 
-          {{#ivy-tab-panel}}
-            {{bucket-properties model=model}}
-          {{/ivy-tab-panel}}
+        {{#ivy-tab-panel}}
+          {{table.bucket-props-overview model=model}}
+        {{/ivy-tab-panel}}
 
-          {{#ivy-tab-panel}}
-            <table class="key-value-table">
-              {{#each model.props.propsList as |prop|}}
-                <tr>
-                  <td class='key'>
-                    {{prop.key}}
-                    {{tooltip.bucket-props itemKey=prop.key}}
-                  </td>
-                  <td class='value'>{{prop.value}}</td>
-                </tr>
-              {{/each}}
-            </table>
-          {{/ivy-tab-panel}}
-        {{/ivy-tabs}}
-      {{else}}
-        Properties not loaded
-      {{/if}}
+        {{#ivy-tab-panel}}
+          {{table.bucket-props-advanced model=model}}
+        {{/ivy-tab-panel}}
+      {{/ivy-tabs}}
     {{/dashboard-module-body}}
   {{/dashboard-module}}
 
   {{#dashboard-module class='small-width'}}
     {{#dashboard-module-header label='Keys'}}
-      {{#if model.isKeyListLoaded}}
+      {{#if model.bucketList}}
         <div class="module-actions">
-          {{#if model.cluster.developmentMode}}
-            <button type="button" class="action-button refresh"
-              {{action 'refreshKeys' model}}>
-              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              Refresh Key List Cache
-            </button>
-          {{/if}}
-          {{#if model.keyList.showDeleteKeys}}
-              <button type="button" class="action-button delete" {{action 'deleteBucket' model}}>
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                Delete All Keys
-              </button>
-          {{/if}}
         </div>
       {{/if}}
     {{/dashboard-module-header}}
     {{#dashboard-module-body}}
-      {{#if model.isKeyListLoaded}}
-        {{#if model.keyList.cachePresent}}
-          <table class="key-value-table">
-            <tbody>
-            <tr>
-              <td class="key">Key list cache created:</td>
-              <td class="value">{{model.keyList.created}}</td>
-            </tr>
-            <tr>
-              <td class="key">Cached Key List:</td>
-              <td class="value">
-                {{#if model.keyList.keys}}
-                  {{#if model.keyList.multipleListItems}}
-                    <p>Displaying keys {{model.keyList.firstItemIndex}}-{{model.keyList.lastItemIndex}} out
-                      of {{model.keyList.total}}</p>
-                  {{else}}
-                    <p>Displaying key {{model.keyList.firstItemIndex}} out of {{model.keyList.total}}</p>
-                  {{/if}}
-
-                  {{#pagination-component
-                  chunkSize=model.keyList.pageSize
-                  totalSize=model.keyList.total
-                  sectionRequest='retrieveRequestedKeys'}}
-                    <ul class='button-list'>
-                      {{#each model.keyList.keys as |obj|}}
-                        <li>
-                          {{link.link-object obj=obj}}
-                        </li>
-                      {{/each}}
-                    </ul>
-                  {{/pagination-component}}
+      {{#if model.objectList}}
+        <table class="key-value-table">
+          <tbody>
+          <tr>
+            <td class="key">Key List cache created:</td>
+            <td class="value">{{model.objectList.created}}</td>
+          </tr>
+          <tr>
+            <td class="key">Cached Key List</td>
+            <td class="value">
+              {{#if model.objectList.count}}
+                {{#if model.objectList.hasMultipleListItems}}
+                  <p>Displaying keys {{model.objectList.firstItemIndex}}-{{model.objectList.lastItemIndex}} out
+                    of {{model.objectList.total}} total keys</p>
                 {{else}}
-                  No keys found
+                  <p>Displaying bucket {{model.objectList.firstItemIndex}} out of {{model.objectList.total}} total keys</p>
                 {{/if}}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        {{else}}
-          <p>Cached list not available.
-            This cluster is in Production mode, and so no cache refresh is
-            possible.</p>
-        {{/if}}
+
+                <ul class='button-list'>
+                  {{#each model.objects as |object|}}
+                    <li>
+                      {{#link-to 'riak-object'
+                      object.bucket.bucketType.cluster.name
+                      object.bucket.bucketType.name
+                      object.bucket.name
+                      object.name}}
+                        {{object.name}}
+                      {{/link-to}}
+                    </li>
+                  {{/each}}
+                </ul>
+              {{else}}
+                No keys found
+              {{/if}}
+            </td>
+          </tr>
+          </tbody>
+        </table>
       {{else}}
-        {{loading-spinner statusMessage=model.keyList.statusMessage}}
+        {{loading-spinner statusMessage="fetching bucket keys"}}
       {{/if}}
     {{/dashboard-module-body}}
   {{/dashboard-module}}

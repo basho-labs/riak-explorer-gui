@@ -17,13 +17,4 @@ export default Ember.Route.extend(WrapperState, {
       label: model.get('bucketTypeId')
     });
   }
-  //,
-
-  //setupController: function(controller, model) {
-  //  this._super(controller, model);
-  //
-  //  if (!model.get('isBucketListLoaded')) {
-  //    controller.pollForModel(model, 3000);
-  //  }
-  //}
 });
