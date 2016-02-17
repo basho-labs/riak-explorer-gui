@@ -7,10 +7,7 @@ import CachedList from "../mixins/models/cached-list";
  *
  * @class BucketList
  * @extends CachedList
- * @constructor
  * @uses BucketType
- * @uses Bucket
- * @uses Cluster
  */
 var BucketList = DS.Model.extend(CachedList, {
   /**

@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import BucketProps from '../../mixins/models/bucket-props';
+import CachedListWatcher from '../../mixins/models/cached-list-watcher';
 
 /**
  * Represents a Riak Bucket Type
@@ -11,7 +12,7 @@ import BucketProps from '../../mixins/models/bucket-props';
  * @uses BucketProps
  * @uses BucketList
  */
-var BucketType = DS.Model.extend(BucketProps, {
+var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
   bucketList: DS.belongsTo('bucket-list', {async: true}),
 
   /**
@@ -29,14 +30,6 @@ var BucketType = DS.Model.extend(BucketProps, {
    * @writeOnce
    */
   cluster: DS.belongsTo('cluster', {async: true}),
-
-  /**
-   * Has the bucketList been loaded from the server?
-   * @property isBucketListLoaded
-   * @type Boolean
-   * @default false
-   */
-  //isBucketListLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
    * Bucket Type name (unique per cluster),

@@ -32,52 +32,69 @@
 
   {{#dashboard-module class='small-width'}}
     {{#dashboard-module-header label='Keys'}}
-      {{#if model.bucketList}}
+      {{#if model.objectList}}
         <div class="module-actions">
+          {{#if model.cluster.developmentMode}}
+            <button type="button" class="action-button refresh" {{action 'refreshObjects' model}}>
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              Refresh Key List Cache
+            </button>
+          {{/if}}
+          {{!--{{#if model.allowDelete}}--}}
+            {{!--<button type="button" class="action-button delete" {{action 'deleteObjects' model}}>--}}
+              {{!--<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>--}}
+              {{!--Delete All Keys--}}
+            {{!--</button>--}}
+          {{!--{{/if}}--}}
         </div>
       {{/if}}
     {{/dashboard-module-header}}
     {{#dashboard-module-body}}
-      {{#if model.objectList}}
-        <table class="key-value-table">
-          <tbody>
-          <tr>
-            <td class="key">Key List cache created:</td>
-            <td class="value">{{model.objectList.created}}</td>
-          </tr>
-          <tr>
-            <td class="key">Cached Key List</td>
-            <td class="value">
-              {{#if model.objectList.count}}
-                {{#if model.objectList.hasMultipleListItems}}
-                  <p>Displaying keys {{model.objectList.firstItemIndex}}-{{model.objectList.lastItemIndex}} out
-                    of {{model.objectList.total}} total keys</p>
-                {{else}}
-                  <p>Displaying bucket {{model.objectList.firstItemIndex}} out of {{model.objectList.total}} total keys</p>
-                {{/if}}
+      {{#if model.isListLoaded}}
+        {{#if model.objectList}}
+          <table class="key-value-table">
+            <tbody>
+            <tr>
+              <td class="key">Key List cache created:</td>
+              <td class="value">{{model.objectList.created}}</td>
+            </tr>
+            <tr>
+              <td class="key">Cached Key List</td>
+              <td class="value">
+                {{#if model.objectList.count}}
+                  {{#if model.objectList.hasMultipleListItems}}
+                    <p>Displaying keys {{model.objectList.firstItemIndex}}-{{model.objectList.lastItemIndex}} out
+                      of {{model.objectList.total}} total keys</p>
+                  {{else}}
+                    <p>Displaying bucket {{model.objectList.firstItemIndex}} out of {{model.objectList.total}} total keys</p>
+                  {{/if}}
 
-                <ul class='button-list'>
-                  {{#each model.objects as |object|}}
-                    <li>
-                      {{#link-to 'riak-object'
-                      object.bucket.bucketType.cluster.name
-                      object.bucket.bucketType.name
-                      object.bucket.name
-                      object.name}}
-                        {{object.name}}
-                      {{/link-to}}
-                    </li>
-                  {{/each}}
-                </ul>
-              {{else}}
-                No keys found
-              {{/if}}
-            </td>
-          </tr>
-          </tbody>
-        </table>
+                  <ul class='button-list'>
+                    {{#each model.objects as |object|}}
+                      <li>
+                        {{#link-to 'riak-object'
+                        object.bucket.bucketType.cluster.name
+                        object.bucket.bucketType.name
+                        object.bucket.name
+                        object.name}}
+                          {{object.name}}
+                        {{/link-to}}
+                      </li>
+                    {{/each}}
+                  </ul>
+                {{else}}
+                  No keys found
+                {{/if}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        {{else}}
+          <p>Cached key list not available.</p>
+          <p>This cluster is in Production mode, and so no cache refresh is possible.</p>
+        {{/if}}
       {{else}}
-        {{loading-spinner statusMessage="fetching bucket keys"}}
+        {{loading-spinner statusMessage=model.statusMessage}}
       {{/if}}
     {{/dashboard-module-body}}
   {{/dashboard-module}}

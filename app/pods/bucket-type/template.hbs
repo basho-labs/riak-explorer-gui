@@ -10,7 +10,7 @@
 {{/if}}
 
 <div class='bucket-types-container'>
-  {{#dashboard-module class='half'}}
+  {{#dashboard-module class='small-width'}}
     {{dashboard-module-header label='Bucket-Type Properties'}}
     {{#dashboard-module-body}}
       {{#ivy-tabs }}
@@ -35,106 +35,59 @@
       {{#if model.bucketList}}
         <div class="module-actions">
           {{#if model.cluster.developmentMode}}
-            {{!--<button type="button" class="action-button refresh" {{action 'refreshBuckets' model}}>--}}
-              {{!--<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>--}}
-              {{!--Refresh Bucket List Cache--}}
-            {{!--</button>--}}
+            <button type="button" class="action-button refresh" {{action 'refreshBuckets' model}}>
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              Refresh Bucket List Cache
+            </button>
           {{/if}}
         </div>
       {{/if}}
     {{/dashboard-module-header}}
     {{#dashboard-module-body}}
-      {{#if model.bucketList}}
-        <table class="key-value-table">
-          <tbody>
+      {{#if model.isListLoaded}}
+        {{#if model.bucketList}}
+          <table class="key-value-table">
+            <tbody>
             <tr>
               <td class="key">Bucket List cache created:</td>
               <td class="value">{{model.bucketList.created}}</td>
             </tr>
+
             <tr>
               <td class="key">Cached Bucket List</td>
               <td class="value">
                 {{#if model.bucketList.count}}
-                  {{#if model.bucketList.hasMultipleListItems}}
+                  {{#if model.bucketList.multipleListItems}}
                     <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
-                      of {{model.bucketList.total}} total buckets</p>
+                      of {{model.bucketList.total}}</p>
                   {{else}}
-                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}} total buckets</p>
+                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
                   {{/if}}
 
                   <ul class='button-list'>
                     {{#each model.buckets as |bucket|}}
-                      <li>
-                        {{#link-to 'bucket' bucket.bucketType.cluster.name bucket.bucketType.name bucket.name}}
-                          {{bucket.name}}
-                        {{/link-to}}
-                      </li>
+                      <li>{{link.link-bucket bucket=bucket}}</li>
                     {{/each}}
                   </ul>
-
-                  {{!-- TODO: How is pageSize being hydrated??? --}}
-                  {{!--{{#pagination-component--}}
-                  {{!--chunkSize=model.bucketList.pageSize--}}
-                  {{!--totalSize=model.bucketList.total--}}
-                  {{!--sectionRequest='retrieveRequestedBuckets'}}--}}
-
-                  {{!--{{/pagination-component}}--}}
+                {{!--{{#pagination-component--}}
+                {{!--chunkSize=model.bucketList.pageSize--}}
+                {{!--totalSize=model.bucketList.total--}}
+                {{!--sectionRequest='retrieveRequestedBuckets'}}--}}
+                {{!--{{/pagination-component}}--}}
                 {{else}}
                   No buckets found
                 {{/if}}
               </td>
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        {{else}}
+          <p>Cached bucket list not available.</p>
+          <p>This cluster is in Production mode, and so no cache refresh is possible.</p>
+        {{/if}}
       {{else}}
-      {{!--{{loading-spinner statusMessage=model.bucketList.statusMessage}}--}}
-        {{loading-spinner statusMessage="fetching bucket list"}}
+        {{loading-spinner statusMessage=model.statusMessage}}
       {{/if}}
-      {{!--{{#if model.bucketList.cachePresent}}--}}
-        {{!--<table class="key-value-table">--}}
-          {{!--<tbody>--}}
-          {{!--<tr>--}}
-            {{!--<td class="key">Bucket List cache created:</td>--}}
-            {{!--<td class="value">{{model.bucketList.created}}</td>--}}
-          {{!--</tr>--}}
-
-          {{!--<tr>--}}
-            {{!--<td class="key">Cached Bucket List</td>--}}
-            {{!--<td class="value">--}}
-              {{!--{{#if model.bucketList.buckets}}--}}
-                {{!--{{#if model.bucketList.multipleListItems}}--}}
-                  {{!--<p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out--}}
-                    {{!--of {{model.bucketList.total}}</p>--}}
-                {{!--{{else}}--}}
-                  {{!--<p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>--}}
-                {{!--{{/if}}--}}
-
-                {{!--{{#pagination-component--}}
-                {{!--chunkSize=model.bucketList.pageSize--}}
-                {{!--totalSize=model.bucketList.total--}}
-                {{!--sectionRequest='retrieveRequestedBuckets'}}--}}
-                  {{!--<ul class='button-list'>--}}
-                    {{!--{{#each model.bucketList.buckets as |bucket|}}--}}
-                      {{!--<li>--}}
-                        {{!--{{link.link-bucket bucket=bucket}}--}}
-                      {{!--</li>--}}
-                    {{!--{{/each}}--}}
-                  {{!--</ul>--}}
-                {{!--{{/pagination-component}}--}}
-              {{!--{{else}}--}}
-                {{!--No buckets found--}}
-              {{!--{{/if}}--}}
-            {{!--</td>--}}
-          {{!--</tr>--}}
-          {{!--</tbody>--}}
-        {{!--</table>--}}
-      {{!--{{else}}--}}
-        {{!--<p>--}}
-          {{!--Cached list not available.--}}
-          {{!--This cluster is in Production mode, and so no cache refresh is--}}
-          {{!--possible.--}}
-        {{!--</p>--}}
-      {{!--{{/if}}--}}
     {{/dashboard-module-body}}
   {{/dashboard-module}}
 </div>

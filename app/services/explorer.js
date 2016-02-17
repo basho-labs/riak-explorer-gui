@@ -51,7 +51,15 @@ export default Ember.Service.extend({
 
     cluster.get('searchIndexes').forEach(function(index) {
       let schemaName = index.get('schemaRef');
-      let schema = self.createSchema(schemaName, cluster);
+      let schema = cluster.get('searchSchemas').findBy('name', schemaName);
+
+      if (!schema) {
+        schema = self.store.createRecord('search-schema', {
+          id: `${cluster.get('name')}/${schemaName}`,
+          cluster: cluster,
+          name: schemaName
+        });
+      }
 
       index.set('schema', schema);
     });
@@ -71,26 +79,65 @@ export default Ember.Service.extend({
   },
 
   /**
-   * Creates a Schema instance if it does not exist,
-   *  and then returns instance.
+   * Creates a Schema instance
    *
    * @method createSchema
-   * @param {String} name
-   * @param {Cluster} cluster
-   * @return {DS.Model} Schema
+   * @param {String} clusterName
+   * @param {String} schemaName
+   * @param {XML.String} data
    */
-  createSchema(name, cluster) {
-    let schema = cluster.get('searchSchemas').findBy('name', name);
+  createSchema(clusterName, schemaName, data) {
+    let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
 
-    if (!schema) {
-      schema = this.store.createRecord('search-schema', {
-        id: `${cluster.get('name')}/${name}`,
-        cluster: cluster,
-        name: name
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/xml',
+      processData: false,
+      data: data
+    });
+  },
+
+  /**
+   * Performs a limited 'Delete Bucket' command via the Explorer API.
+   * (This is done as a convenience operation for Devs, since Riak doesn't
+   * currently support a whole-bucket delete.)
+   * To be more precise, the Explorer backend iterates through all the keys
+   * in its Key List cache for that bucket, and issues Delete Object commands
+   * for those keys.
+   *
+   * Limitations:
+   * - This is only available in Development Mode
+   * - Explorer can only delete objects whose keys are in its cache.
+   *
+   * Note: This means that the object list cache must already be populated for a delete action to be taken on the
+   *  bucket
+   *
+   * @method deleteObjectsInList
+   * @param {DS.Store} bucket
+   */
+  deleteObjectsInList(bucket) {
+    let clusterName = bucket.get('cluster').get('name');
+    let bucketTypeName = bucket.get('bucketType').get('name');
+    let bucketName = bucket.get('name');
+    var url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      Ember.$.ajax({
+        type: "DELETE",
+        url: url,
+        success: function(data, textStatus, jqXHR) {
+          resolve(jqXHR.status);
+        },
+        error: function(jqXHR, textStatus) {
+          if (jqXHR.status === 202) {
+            resolve(jqXHR.status);
+          } else {
+            reject(textStatus);
+          }
+        }
       });
-    }
-
-    return schema;
+    });
   },
 
   /**
@@ -130,19 +177,31 @@ export default Ember.Service.extend({
    * @return {DS.Model} BucketList
    */
   getBucketList(bucketType) {
-    if (Ember.isEmpty(bucketType.get('bucketList').get('id'))) {
-      let clusterName = bucketType.get('cluster').get('name');
-      let bucketTypeName = bucketType.get('name');
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let queryTries = 0;
+    let self = this;
 
-      return this.store.queryRecord('bucket-list', { clusterName: clusterName, bucketTypeName: bucketTypeName })
-        .then(function(bucketList) {
+    return this.store.queryRecord('bucket-list', { clusterName: clusterName, bucketTypeName: bucketTypeName })
+      .then(
+        function onSuccess(bucketList) {
           bucketType.set('bucketList', bucketList);
+          bucketType.set('isListLoaded', true);
 
           return bucketType.get('bucketList');
-        });
-    } else {
-      return bucketType.get('bucketList');
-    }
+        },
+        function onFail() {
+          if (bucketType.get('cluster').get('developmentMode') && queryTries < 3) {
+            // kick off a cache refresh if in development mode and retry
+            queryTries++;
+            bucketType.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
+            self.refreshBucketList(bucketType);
+          } else {
+            // Let the UI know that the response has been completed
+            bucketType.set('isListLoaded', true);
+          }
+        }
+      );
   },
 
   /**
@@ -375,7 +434,10 @@ export default Ember.Service.extend({
   getCluster(clusterName) {
     var self = this;
 
-    return this.store.findRecord('cluster', clusterName)
+    return this.getClusters()
+      .then(function(clusters) {
+        return clusters.findBy('name', clusterName);
+      })
       .then(function(cluster) {
         return Ember.RSVP.allSettled([
           cluster,
@@ -398,6 +460,26 @@ export default Ember.Service.extend({
 
         return cluster;
       });
+  },
+
+  getClusters() {
+    return this.store.findAll('cluster');
+  },
+
+  /**
+   *
+   * @method getIndex
+   * @param {String} clusterName
+   * @param {String} indexName
+   * @param {DS.Model} SearchIndex
+   */
+  getIndex(clusterName, indexName) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
+        return cluster.get('searchIndexes').findBy('name', indexName);
+      })
   },
 
   /**
@@ -486,6 +568,7 @@ export default Ember.Service.extend({
     let nodeName    = log.get('node').get('name');
     let logName     = log.get('name');
     let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}?rows=${this.pageSize}`;
+    let self = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -498,7 +581,7 @@ export default Ember.Service.extend({
 
       request.done(function(data) {
         log.set('content', data);
-        log.set('pageSize', rows);
+        log.set('pageSize', self.pageSize);
 
         resolve(log);
       });
@@ -725,21 +808,32 @@ export default Ember.Service.extend({
    * @return {DS.Model} ObjectList
    */
   getObjectList(bucket) {
-    if (Ember.isEmpty(bucket.get('objectList').get('id'))) {
-      let clusterName = bucket.get('cluster').get('name');
-      let bucketTypeName = bucket.get('bucketType').get('name');
-      let bucketName = bucket.get('name');
+    let clusterName = bucket.get('cluster').get('name');
+    let bucketTypeName = bucket.get('bucketType').get('name');
+    let bucketName = bucket.get('name');
+    let queryTries = 0;
+    let self = this;
 
-      return this.store.queryRecord('object-list', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
-        .then(
-          function(objectList) {
-            bucket.set('objectList', objectList);
+    return this.store.queryRecord('object-list', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
+      .then(
+        function onSuccess(objectList) {
+          bucket.set('objectList', objectList);
+          bucket.set('isListLoaded', true);
 
-            return bucket.get('objectList');
-          });
-    } else {
-      return bucket.get('objectList');
-    }
+          return bucket.get('objectList');
+        },
+        function onFail() {
+          if (bucket.get('cluster').get('developmentMode') && queryTries < 3) {
+            // kick off a cache refresh if in development mode and retry
+            queryTries++;
+            bucket.set('statusMessage', 'Cache not found. Refreshing from a streaming list keys call...');
+            self.refreshObjectList(bucket);
+          } else {
+            // Let the UI know that the response has been completed
+            bucket.set('isListLoaded', true);
+          }
+        }
+      );
   },
 
   /**
@@ -762,6 +856,67 @@ export default Ember.Service.extend({
         });
     } else {
       return bucket.get('objects');
+    }
+  },
+
+  /**
+   *
+   * @method getSearchSchema
+   * @param {String} clusterName
+   * @param {String} schemaName
+   * @return {DS.Model} SearchSchema
+   */
+  getSearchSchema(clusterName, schemaName) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
+        return cluster.get('searchSchemas').findBy('name', schemaName);
+      })
+      .then(function(schema) {
+        return Ember.RSVP.allSettled([
+          schema,
+          self.getSearchSchemaContent(schema)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let schema = PromiseArray[0].value;
+
+        return schema;
+      });
+  },
+
+  /**
+   *
+   * @method getSearchSchemaContent
+   * @param {DS.Model} schema
+   * @return {String} schema.content
+   */
+  getSearchSchemaContent(schema) {
+    if (!schema.get('content')) {
+
+      let url = schema.get('url');
+
+      return new Ember.RSVP.Promise(function(resolve, reject) {
+        let request = Ember.$.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'xml'
+        });
+
+        request.done(function(data) {
+          let xmlString = (new XMLSerializer()).serializeToString(data);
+          schema.set('content', xmlString);
+
+          resolve(schema.get('content'));
+        });
+
+        request.fail(function(data) {
+          reject(data);
+        });
+      });
+    } else {
+      return schema.get('content');
     }
   },
 
@@ -805,5 +960,72 @@ export default Ember.Service.extend({
       self.checkNodes(this._clusterRef);
       self.pollNodes(this._clusterRef);
     }, 10000);
+  },
+
+  /**
+   *
+   * @method refreshBucketList
+   * @param {DS.Model} bucketType
+   */
+  refreshBucketList(bucketType) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/refresh_buckets/source/riak_kv`;
+    let self = this;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'POST'
+      });
+
+      request.complete(function(data) {
+        self.getBucketList(bucketType);
+        self.getBuckets(bucketType);
+      });
+    });
+  },
+
+  /**
+   *
+   * @method refreshObjectList
+   * @param {DS.Model} bucket
+   */
+  refreshObjectList(bucket) {
+    let clusterName = bucket.get('cluster').get('name');
+    let bucketTypeName = bucket.get('bucketType').get('name');
+    let bucketName = bucket.get('name');
+    let url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
+    let self = this;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'POST'
+      });
+
+      request.complete(function(data) {
+        self.getObjectList(bucket);
+        self.getObjects(bucket);
+      });
+    });
+  },
+
+  /**
+   *
+   * @method updateSchema
+   * @param {DS.Model} schema
+   * @param {XML.String} data
+   */
+  updateSchema(schema, data) {
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: schema.get('url'),
+      contentType: 'application/xml',
+      processData: false,
+      data: data
+    });
   }
 });
+
+

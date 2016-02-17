@@ -13,10 +13,13 @@ export default Ember.Route.extend({
   model: function() {
     let self = this;
 
-    return this.store.findAll('cluster').then(function(data) {
-      return data;
-    }, function(error) {
-      self.transitionTo('error.service-not-found');
-    });
+    return this.explorer.getClusters().then(
+      function onSuccess(clusters) {
+        return clusters;
+      },
+      function onFail(error) {
+        self.transitionTo('error.service-not-found');
+      }
+    );
   }
 });

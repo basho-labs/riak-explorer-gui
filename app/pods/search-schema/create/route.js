@@ -22,7 +22,6 @@ export default Ember.Route.extend(WrapperState, Alerts, {
     createSchema: function(clusterName, schemaName, schemaContent) {
       let self = this;
       let xmlDoc = null;
-      let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
 
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
@@ -41,21 +40,18 @@ export default Ember.Route.extend(WrapperState, Alerts, {
         return;
       }
 
-      return Ember.$.ajax({
-        type: 'PUT',
-        url: url,
-        contentType: 'application/xml',
-        processData: false,
-        data: xmlDoc
-      }).then(function(data) {
-        self.transitionTo('search-schema', clusterName, schemaName);
-      }, function(error) {
-        self.render('alerts.error-schema-not-saved', {
-          into: 'application',
-          outlet: 'alert'
-        });
-      });
+      this.explorer.createSchema(clusterName, schemaName, xmlDoc).then(
+        function onSuccess() {
+          // TODO: Need to update this to give better feedback to user on what is going on
+          self.transitionTo('cluster.query', clusterName);
+        },
+        function onFail() {
+          self.render('alerts.error-schema-not-saved', {
+            into: 'application',
+            outlet: 'alert'
+          });
+        }
+      );
     }
   }
-
 });

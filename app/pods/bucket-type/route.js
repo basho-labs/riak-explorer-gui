@@ -16,5 +16,22 @@ export default Ember.Route.extend(WrapperState, {
       preLabel: 'Bucket-Type',
       label: model.get('bucketTypeId')
     });
+  },
+
+  actions: {
+    //retrieveRequestedBuckets: function(startIndex) {
+    //  let service = this.get('explorer');
+    //  let bucketType = this.get('model');
+    //  let cluster = bucketType.get('cluster');
+    //
+    //  return service.getBucketTypeWithBucketList(bucketType, cluster, startIndex);
+    //},
+
+    refreshBuckets: function(bucketType) {
+      bucketType.set('isListLoaded', false);
+      bucketType.set('statusMessage', 'Refreshing from a streaming list buckets call...');
+
+      this.explorer.refreshBucketList(bucketType);
+    }
   }
 });

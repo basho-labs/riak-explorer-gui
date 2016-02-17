@@ -64,6 +64,16 @@ export default Ember.Mixin.create({
   }.property('props'),
 
   /**
+   * Returns the name of the Search Index associated with this bucket/bucketType
+   *
+   * @property index
+   * @type String
+   */
+  index: function() {
+    return this.get('cluster').get('searchIndexes').findBy('name', this.get('searchIndexName'));
+  }.property('cluster', 'searchIndexName'),
+
+  /**
    * Has this Bucket Type been activated via `riak-admin bucket-types activate`?
    * (Buckets inherit this setting from their parent bucket types.)
    *
@@ -323,13 +333,13 @@ export default Ember.Mixin.create({
     // Check for default schema inappropriate conditions. Ideally this would be happening on the bucket props model,
     //  but the proper relationships are not set up. This augments that method and does the
     //  appropriate check
-    //if (this.get('cluster').get('productionMode') &&
-    //    this.get('isSearchIndexed') &&
-    //    this.get('index').get('schema').get('isDefaultSchema')) {
-    //      warnings.push(
-    //        'This bucket type is currently using a default schema on indexes in production. ' +
-    //        'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
-    //}
+    if (this.get('cluster').get('productionMode') &&
+        this.get('isSearchIndexed') &&
+        this.get('index').get('schema').get('isDefaultSchema')) {
+          warnings.push(
+            'This bucket type is currently using a default schema on indexes in production. ' +
+            'This can be very harmful, and it is recommended to instead use a custom schema on indexes.');
+    }
 
     return warnings;
   }.property('props', 'cluster', 'index')
