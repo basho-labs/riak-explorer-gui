@@ -73,7 +73,37 @@ var RiakObject = DS.Model.extend(ObjectHeaders, {
     contentType.startsWith('application/json') ||
     contentType.startsWith('application/xml') ||
     contentType.startsWith('multipart/mixed'));
-  }.property('contentType')
+  }.property('contentType'),
+
+  routePath: function() {
+    let bucket = this.get('bucket');
+    let routePath = null;
+
+    switch (true) {
+      case bucket.get('isCounter'):
+        routePath = 'riak-object.counter';
+        break;
+      case bucket.get('isSet'):
+        routePath = 'riak-object.set';
+        break;
+      case bucket.get('isMap'):
+        routePath = 'riak-object.map';
+        break;
+      default:
+        routePath = 'riak-object';
+        break;
+    }
+
+    return routePath;
+  }.property('bucket'),
+
+  addAdditionalCRDTBehavior: function() {
+    //if (this.get('bucket').get('isSet')) {
+    //  debugger;
+    //  //Foo.apply(this);
+    //}
+  }.property('bucket')
+
 
   /**
    * Has the object been fully loaded from the server?

@@ -20,15 +20,8 @@ export default Ember.Mixin.create({
    *
    * @property headers
    * @type Hash
-   * @default { custom:[], indexes:[], other:{} }
    */
-  headers: DS.attr(null, {
-    defaultValue: {
-      custom: [],     // x-riak-meta-*
-      indexes: [],    // x-riak-index-*
-      other: {}       // everything else
-    }
-  }),
+  headers: DS.attr(),
 
   /**
    * Causal context header, used for server-side conflict resolution.
@@ -41,7 +34,9 @@ export default Ember.Mixin.create({
    * @type String
    */
   causalContext: function() {
-    return this.get('headers').other['x-riak-vclock'];
+    if (this.get('headers')) {
+      return this.get('headers').other['x-riak-vclock'];
+    }
   }.property('headers'),
 
   /**
@@ -51,7 +46,9 @@ export default Ember.Mixin.create({
    * @type String
    */
   contentType: function() {
-    return this.get('headers').other['content-type'];
+    if (this.get('headers')) {
+      return this.get('headers').other['content-type'];
+    }
   }.property('headers'),
 
   /**
@@ -62,7 +59,9 @@ export default Ember.Mixin.create({
    * @type String
    */
   dateLastModified: function() {
-    return this.get('headers').other['last-modified'];
+    if (this.get('headers')) {
+      return this.get('headers').other['last-modified'];
+    }
   }.property('headers'),
 
   /**
@@ -74,7 +73,9 @@ export default Ember.Mixin.create({
    * @type String
    */
   dateLoaded: function() {
-    return this.get('headers').other['date'];
+    if (this.get('headers')) {
+      return this.get('headers').other['date'];
+    }
   }.property('headers'),
 
   /**
@@ -85,7 +86,9 @@ export default Ember.Mixin.create({
    * @type String
    */
   etag: function() {
-    return this.get('headers').other['etag'];
+    if (this.get('headers')) {
+      return this.get('headers').other['etag'];
+    }
   }.property('headers'),
 
   /**
@@ -97,7 +100,9 @@ export default Ember.Mixin.create({
    *     [ { "x-riak-meta-user_id": "user123" }]
    */
   headersCustom: function() {
-    return this.get('headers').custom;
+    if (this.get('headers')) {
+      return this.get('headers').custom;
+    }
   }.property('headers'),
 
   /**
@@ -111,35 +116,34 @@ export default Ember.Mixin.create({
    * @return {Hash} Headers object suitable for a jQuery AJAX PUT request
    */
   headersForUpdate: function() {
-    // Start with the causal context
-    var headers = {
-      'X-Riak-Vclock': this.get('causalContext')
-    };
-    var header;
-    var i;
-    // Add the 2i indexes, if applicable
-    var indexes = this.get('headersIndexes');
-    for (i = 0; i < indexes.length; i++) {
-      header = indexes[i];
-      headers[header.key] = header.value;
+    if (this.get('headers')) {
+      // Start with the causal context
+      let headers = {};
+
+      headers['X-Riak-Vclock'] = this.get('causalContext');
+
+      this.get('indexes').forEach(function(index) {
+        headers[index.key] = index.value;
+      });
+
+      this.get('headersCustom').forEach(function(header) {
+        headers[header.key] = header.value;
+      });
+
+      return headers;
     }
-    // Add the user-defined custom headers
-    var customHeaders = this.get('headersCustom');
-    for (i = 0; i < customHeaders.length; i++) {
-      header = customHeaders[i];
-      headers[header.key] = header.value;
-    }
-    return headers;
   }.property('headers'),
 
   /**
    * List of user-defined Secondary Indexes for this object.
    * @see http://docs.basho.com/riak/latest/dev/references/http/secondary-indexes/
-   * @property headersIndexes
+   * @property indexes
    * @type Array<Hash>
    */
-  headersIndexes: function() {
-    return this.get('headers').indexes;
+  indexes: function() {
+    if (this.get('headers')) {
+      return this.get('headers').indexes;
+    }
   }.property('headers'),
 
   /**
@@ -154,6 +158,8 @@ export default Ember.Mixin.create({
    * @readOnly
    */
   isDeleted: function() {
-    return this.get('headers').other['x-riak-deleted'];
+    if (this.get('headers')) {
+      return this.get('headers').other['x-riak-deleted'];
+    }
   }.property('headers')
 });

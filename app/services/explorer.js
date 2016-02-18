@@ -815,7 +815,6 @@ export default Ember.Service.extend({
     });
   },
 
-
   getObject(clusterName, bucketTypeName, bucketName, objectName) {
     let self = this;
 
@@ -1144,6 +1143,43 @@ export default Ember.Service.extend({
       contentType: 'application/xml',
       processData: false,
       data: data
+    });
+  },
+
+  /**
+   * Performs an update AJAX operation to the Riak Object
+   *
+   * @method updateDataType
+   * @param {DS.Model} object
+   * @param {String} operation
+   */
+  updateObject(object, operation) {
+    let clusterUrl = object.get('cluster').get('proxyUrl');
+    let bucketTypeName = object.get('bucketType').get('name');
+    let bucketName = object.get('bucket').get('name');
+    let objectName = object.get('name');
+    let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        contentType: 'application/json',
+        type: 'POST',
+        dataType: 'json',
+        url: url,
+        data: JSON.stringify(operation)
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 204) {
+          resolve(jqXHR.status);
+        } else {
+          reject(jqXHR);
+        }
+      });
     });
   }
 });
