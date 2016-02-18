@@ -14,11 +14,11 @@ Router.map(function() {
   // Cluster-Data Routes
   this.route('bucket-type', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName'});
   this.route('bucket', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName'});
-  this.route('riak-object', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:name'});
-  this.route('riak-object.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:name/edit'});
-  this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:name'});
-  this.route('riak-object.set', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/set/:name'});
-  this.route('riak-object.map', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/map/:name'});
+  this.route('riak-object', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:objectName'});
+  this.route('riak-object.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:objectName/edit'});
+  this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:objectName'});
+  this.route('riak-object.set', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/set/:objectName'});
+  this.route('riak-object.map', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/map/:objectName'});
 
   // Cluster-Ops Routes
   this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});

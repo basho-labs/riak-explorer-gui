@@ -1,14 +1,6 @@
-import DS from 'ember-data';
+import Ember from 'ember';
 
-/**
- * Riak Object metadata and custom headers.
- * @see RiakObject
- *
- * @class ObjectMetadata
- * @extends DS.Model
- * @constructor
- */
-var ObjectMetadata = DS.Model.extend({
+export default Ember.Mixin.create({
   /**
    * Hash containing an object's metadata/headers.
    * Divided into three categories:
@@ -165,5 +157,3 @@ var ObjectMetadata = DS.Model.extend({
     return this.get('headers').other['x-riak-deleted'];
   }.property('headers')
 });
-
-export default ObjectMetadata;

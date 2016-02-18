@@ -1,48 +1,42 @@
 {{#dashboard-module class='medium-width'}}
   {{#dashboard-module-header label='Object Contents'}}
-    {{#if model.isLoaded}}
-      <div class="module-actions">
-        <a href="{{model.rawUrl}}" class="action-button raw">
-          <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-          View raw
-        </a>
+    <div class="module-actions">
+      <a href="{{model.url}}" class="action-button raw">
+        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+        View raw
+      </a>
 
-        {{#link-to 'riak-object.edit' model classNames='action-button edit' }}
-          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-          Edit Object
-        {{/link-to}}
+      {{!--{{#link-to 'riak-object.edit' model classNames='action-button edit' }}--}}
+        {{!--<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>--}}
+        {{!--Edit Object--}}
+      {{!--{{/link-to}}--}}
 
-        <button type="button" class="action-button delete"
-          {{action 'deleteObject' model}}>
-          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-          Delete
-        </button>
-      </div>
-    {{/if}}
+      {{!--<button type="button" class="action-button delete"--}}
+        {{!--{{action 'deleteObject' model}}>--}}
+        {{!--<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>--}}
+        {{!--Delete--}}
+      {{!--</button>--}}
+    </div>
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}
-    {{#if model.isLoaded}}
-      <div class="object-contents">
-        <table class="key-value-table">
-          <tbody>
+    <div class="object-contents">
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Content-Type</td>
+          <td class="value">{{model.contentType}}</td>
+        </tr>
+        {{#if model.showContents}}
           <tr>
-            <td class="key">Content-Type</td>
-            <td class="value">{{model.metadata.contentType}}</td>
+            <td class="key">Content</td>
+            <td class="value">
+              <code>{{model.contents}}</code>
+            </td>
           </tr>
-          {{#if model.contentsForDisplay}}
-            <tr>
-              <td class="key">Content-Type</td>
-              <td class="value">
-                <code>{{model.contentsForDisplay}}</code>
-              </td>
-            </tr>
-          {{/if}}
-          </tbody>
-        </table>
-      </div>
-    {{else}}
-      {{loading-spinner}}
-    {{/if}}
+        {{/if}}
+        </tbody>
+      </table>
+    </div>
   {{/dashboard-module-body}}
 {{/dashboard-module}}
 
@@ -50,8 +44,7 @@
   {{dashboard-module-header label='Object Metadata'}}
 
   {{#dashboard-module-body}}
-    {{#if model.isLoaded}}
-      {{#ivy-tabs}}
+    {{#ivy-tabs}}
         {{#ivy-tab-list}}
           {{#ivy-tab}}General{{/ivy-tab}}
           {{#ivy-tab}}Secondary Indexes{{/ivy-tab}}
@@ -59,22 +52,17 @@
         {{/ivy-tab-list}}
 
         {{#ivy-tab-panel}}
-          {{object-version object=model}}
+          {{table.object-version object=model}}
         {{/ivy-tab-panel}}
 
         {{#ivy-tab-panel}}
-          {{object-headers
-          headers=model.metadata.headersIndexes}}
+          {{table.object-headers headers=model.headersIndexes}}
         {{/ivy-tab-panel}}
 
         {{#ivy-tab-panel}}
-          {{object-headers
-          headers=model.metadata.headersCustom}}
+          {{table.object-headers headers=model.headersCustom}}
         {{/ivy-tab-panel}}
       {{/ivy-tabs}}
-    {{else}}
-      {{loading-spinner}}
-    {{/if}}
   {{/dashboard-module-body}}
 {{/dashboard-module}}
 

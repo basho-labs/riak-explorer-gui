@@ -25,5 +25,9 @@ export default ApplicationAdapter.extend({
     });
 
     return promise;
+  },
+
+  findRecord(store, type, id, snapshot) {
+    debugger;
   }
 });

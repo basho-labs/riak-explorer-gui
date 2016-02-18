@@ -373,7 +373,9 @@ export default Ember.Service.extend({
    */
   createObjectFromAjax(key, bucket, rawHeader, payload, url) {
     let metadata = this.createObjectMetadata(rawHeader);
+
     let modelName = bucket.get('objectModelName');
+
     let newObject = this.store.createRecord(modelName, {
       key: key,
       bucket: bucket,
@@ -383,6 +385,7 @@ export default Ember.Service.extend({
       isLoaded: true,
       rawUrl: url
     });
+
     let contents = this.createObjectContents(bucket, newObject, payload);
 
     newObject.set('contents', contents);
@@ -1547,6 +1550,7 @@ export default Ember.Service.extend({
         }
       }
     }
+
     return {
       other: other_headers,
       indexes: indexes,

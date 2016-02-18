@@ -2,25 +2,8 @@ import Ember from 'ember';
 import WrapperState from '../../mixins/routes/wrapper-state';
 
 var RiakObjectRoute = Ember.Route.extend(WrapperState, {
-  actions: {
-    error: function(error, transition) {
-      if (error && error.status === 404) {
-        transition.queryParams = transition.params['riak-object'];
-        this.transitionTo('error.object-not-found', transition);
-      } else {
-        // Unknown error, bubble error event up to routes/application.js
-        return true;
-      }
-    }
-  },
-
   model: function(params) {
-    var explorer = this.explorer;
-
-    return explorer.getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
-      .then(function(bucket) {
-        return explorer.getRiakObject(bucket, params.key);
-      });
+    return this.explorer.getObject(params.clusterName, params.bucketTypeName, params.bucketName, params.objectName);
   },
 
   afterModel: function(model, transition) {
@@ -33,20 +16,30 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Riak Object',
-      label: model.get('key')
+      label: model.get('name')
     });
-  },
-
-  setupController: function(controller, model) {
-    this._super(controller, model);
-
-    if (!model.get('isLoaded')) {
-      this.explorer.getRiakObject(model.get('bucket'), model.get('key'))
-        .then(function(object) {
-          controller.set('model', object);
-        });
-    }
   }
+
+  //actions: {
+  //  error: function(error, transition) {
+  //    if (error && error.status === 404) {
+  //      transition.queryParams = transition.params['riak-object'];
+  //      this.transitionTo('error.object-not-found', transition);
+  //    } else {
+  //      // Unknown error, bubble error event up to routes/application.js
+  //      return true;
+  //    }
+  //  },
+  //
+  //  deleteObject: function(object) {
+  //    this.get('explorer').deleteObject(object);
+  //    this.get('explorer').markDeletedKey(object);
+  //
+  //    // Once the delete has been issued,
+  //    // return to the bucket's Key List view.
+  //    this.transitionTo('bucket', object.get('bucket'));
+  //  }
+  //},
 });
 
 export default RiakObjectRoute;

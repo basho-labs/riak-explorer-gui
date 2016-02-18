@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import ObjectHeaders from '../../mixins/models/object-headers';
 
 /**
  * Represents a plain (non Data Type) Riak Object.
@@ -19,7 +20,7 @@ import DS from 'ember-data';
  * @param [rawUrl] {String}
  * @param [contents] {Object} Object value/payload
  */
-var RiakObject = DS.Model.extend({
+var RiakObject = DS.Model.extend(ObjectHeaders, {
   /**
    * Riak Bucket in which this object lives.
    * @property bucket
@@ -29,18 +30,50 @@ var RiakObject = DS.Model.extend({
   bucket: DS.belongsTo('bucket', {async: true}),
 
   /**
-   * Riak object headers/metadata.
-   * @property metadata
-   * @type ObjectMetadata
-   */
-  //metadata: DS.belongsTo('object-metadata'),
-
-  /**
    * The value/contents of the object.
    * @property contents
    * @type Object
    */
-  //contents: DS.attr(),
+  contents: DS.attr(),
+
+  /**
+   * The object's primary key.
+   * @property name
+   * @type String
+   */
+  name: DS.attr('string'),
+
+  /**
+   * The URL to fetch the raw contents of the object directly from server.
+   * Used with the 'View Raw' button.
+   * @property rawUrl
+   * @type String
+   * @writeOnce
+   */
+  url: DS.attr('string'),
+
+  bucketType: function() {
+    return this.get('bucket').get('bucketType');
+  }.property('bucket'),
+
+  cluster: function() {
+    return this.get('bucket').get('bucketType').get('cluster');
+  }.property('bucket'),
+
+  /**
+   * Boolean check to see if the contents should be shown through the UI.
+   *
+   * @method showContents
+   * @return {Boolean}
+   */
+  showContents: function() {
+    let contentType = this.get('contentType');
+
+    return (contentType.startsWith('plain/text') ||
+    contentType.startsWith('application/json') ||
+    contentType.startsWith('application/xml') ||
+    contentType.startsWith('multipart/mixed'));
+  }.property('contentType')
 
   /**
    * Has the object been fully loaded from the server?
@@ -51,14 +84,6 @@ var RiakObject = DS.Model.extend({
   //isLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
-   * The object's primary key.
-   * @property key
-   * @type String
-   * @writeOnce
-   */
-  name: DS.attr('string')
-
-  /**
    * Was this object marked as deleted by Explorer UI?
    * Note: Deleted objects may still show up in the API-side key list cache.
    * @property markedDeleted
@@ -66,58 +91,6 @@ var RiakObject = DS.Model.extend({
    * @default false
    */
   //markedDeleted: DS.attr('boolean', {defaultValue: false}),
-
-  /**
-   * The URL to fetch the raw contents of the object directly from server.
-   * Used with the 'View Raw' button.
-   * @property rawUrl
-   * @type String
-   * @writeOnce
-   */
-  //rawUrl: DS.attr('string')
-
-  /**
-   * Can this object type be edited directly, in a text box?
-   * @property canBeEdited
-   * @readOnly
-   * @default true
-   * @type {Boolean}
-   */
-  //canBeEdited: function() {
-  //  return true;
-  //}.property(),
-
-  /**
-   * Can this object be viewed/downloaded directly from the browser?
-   * @property canBeViewedRaw
-   * @readOnly
-   * @default true
-   * @type {Boolean}
-   */
-  //canBeViewedRaw: function() {
-  //  return true;
-  //}.property(),
-
-  /**
-   * Returns a browser-displayable representation of the object value,
-   *     if possible (based on the object's `contentType`).
-   * @method contentsForDisplay
-   * @return {String|Null}
-   */
-  //contentsForDisplay: function() {
-  //  let contentType = this.get('metadata').get('contentType');
-  //  let displayContents;
-  //  // Determine whether this is browser-displayable contents
-  //  if (contentType.startsWith('plain/text') ||
-  //    contentType.startsWith('application/json') ||
-  //    contentType.startsWith('application/xml') ||
-  //    contentType.startsWith('multipart/mixed')) {
-  //    displayContents = this.get('contents');
-  //  } else {
-  //    displayContents = null;
-  //  }
-  //  return displayContents;
-  //}.property('contents', 'metadata'),
 
   /**
    * Returns true if the object has been deleted either on the server

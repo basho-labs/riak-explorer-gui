@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import config from '../config/environment';
 import objectToArray from '../utils/riak-util';
+import parseHeader from '../utils/parse-header';
 
 /**
  * An Ember service responsible for AJAX communication with the Explorer API.
@@ -158,7 +159,14 @@ export default Ember.Service.extend({
       .then(function(bucket) {
         return Ember.RSVP.allSettled([
           bucket,
-          self.getBucketProps(bucket),
+          self.getBucketProps(bucket)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let bucket = PromiseArray[0].value;
+
+        return Ember.RSVP.allSettled([
+          bucket,
           self.getObjectList(bucket),
           self.getObjects(bucket)
         ]);
@@ -462,6 +470,12 @@ export default Ember.Service.extend({
       });
   },
 
+  /**
+   * Fetches all clusters defined in the riak_explorer.conf file
+   *
+   * @method getClusters
+   * @return {DS.Array} Cluster
+   */
   getClusters() {
     return this.store.findAll('cluster');
   },
@@ -801,6 +815,112 @@ export default Ember.Service.extend({
     });
   },
 
+
+  getObject(clusterName, bucketTypeName, bucketName, objectName) {
+    let self = this;
+
+    return this.getBucket(clusterName, bucketTypeName, bucketName)
+      .then(function(bucket) {
+        let isCRDT = !!(bucket.get('isCRDT'));
+
+        return bucket.get('objects').findBy('name', objectName)
+      })
+      .then(function(riakObject) {
+        return Ember.RSVP.allSettled([
+          riakObject,
+          self.getObjectContents(riakObject)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let riakObject = PromiseArray[0].value;
+
+        return riakObject;
+      });
+  },
+
+  // TODO: This can probably be ported over to be used the adapter findRecord
+  //        method once moved over to ED 2.0 using the 'include' object
+  //        Ref: https://github.com/emberjs/data/pull/3976
+  getObjectContents(object) {
+    let clusterUrl = object.get('cluster').get('proxyUrl');
+    let bucketTypeName = object.get('bucketType').get('name');
+    let bucketName = object.get('bucket').get('name');
+    let objectName = object.get('name');
+    let isCRDT = !!(object.get('bucket').get('isCRDT'));
+    let url = (isCRDT)
+      ? `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`
+      : `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
+    let xhrOptions = {
+      url: url,
+      type: 'GET',
+      cache: false,
+      headers: {'Accept': '*/*, multipart/mixed'},
+      processData: !isCRDT
+    };
+
+    if (isCRDT) { xhrOptions.dataType = 'json'; }
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax(xhrOptions);
+
+      request.done(function(data, textStatus, jqXHR) {
+        let headerObj = parseHeader(jqXHR.getAllResponseHeaders());
+        let content = (isCRDT) ? data : jqXHR.responseText;
+
+        object.set('headers', headerObj);
+        object.set('contents', content);
+        object.set('url', url);
+
+        resolve(object);
+      });
+
+      request.fail(function(data) {
+        debugger;
+      });
+    });
+
+    //return new Ember.RSVP.Promise(function(resolve, reject) {
+    //
+    //  if (bucket.get('props').get('isCRDT')) {
+    //    ajaxHash.success = function(data, textStatus, jqXHR) {
+    //
+    //      headerString = jqXHR.getAllResponseHeaders();
+    //      contents = data;  // Parsed json
+    //
+    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
+    //        contents, url));
+    //    };
+    //  } else {
+    //    ajaxHash.success = function(data, textStatus, jqXHR) {
+    //
+    //      headerString = jqXHR.getAllResponseHeaders();
+    //      contents = jqXHR.responseText;  // Unparsed payload
+    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
+    //        contents, url));
+    //    };
+    //  }
+    //
+    //  ajaxHash.error = function(jqXHR, textStatus) {
+    //    if (jqXHR.status === 200 && textStatus === 'parsererror') {
+    //      // jQuery tries to parse JSON objects, and throws
+    //      // parse errors when they're invalid. Suppress this.
+    //      headerString = jqXHR.getAllResponseHeaders();
+    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
+    //        jqXHR.responseText, url));
+    //    }
+    //    if (jqXHR.status === 300) {
+    //      // Handle 300 Multiple Choices case for siblings
+    //      headerString = jqXHR.getAllResponseHeaders();
+    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
+    //        jqXHR.responseText, url));
+    //    } else {
+    //      reject(jqXHR);
+    //    }
+    //  };
+    //  Ember.$.ajax(ajaxHash);
+    //});
+  },
+
   /**
    *
    * @method getObjectList
@@ -848,7 +968,7 @@ export default Ember.Service.extend({
       let bucketTypeName = bucket.get('bucketType').get('name');
       let bucketName = bucket.get('name');
 
-      return this.store.query('riak-object', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
+      return this.store.query('riak-object', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName})
         .then(function(objects) {
           bucket.set('objects', objects);
 
