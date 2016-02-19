@@ -1,7 +1,6 @@
 import RiakObjectRoute from '../route';
-import Alerts from '../../../mixins/routes/alerts'
 
-export default RiakObjectRoute.extend(Alerts, {
+export default RiakObjectRoute.extend({
   actions: {
     /**
      * Adds an element to the set.

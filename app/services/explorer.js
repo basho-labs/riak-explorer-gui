@@ -100,6 +100,40 @@ export default Ember.Service.extend({
   },
 
   /**
+   * Performs a Delete Object operation, via a proxied Riak HTTP API request.
+   *
+   * @see http://docs.basho.com/riak/latest/ops/advanced/deletion/
+   * @see http://docs.basho.com/riak/latest/dev/references/http/delete-object/
+   *
+   * @method deleteObject
+   * @param object {RiakObject} RiakObject instance or subclasses (Maps, Sets, etc)
+   * @return {Ember.RSVP.Promise} Result of the AJAX request.
+   */
+  deleteObject(object) {
+    let clusterUrl = object.get('cluster').get('proxyUrl');
+    let bucketTypeName = object.get('bucketType').get('name');
+    let bucketName = object.get('bucket').get('name');
+    let objectName = object.get('name');
+    let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        type: "DELETE",
+        url: url,
+        headers: {'X-Riak-Vclock': object.get('causalContext')}
+      });
+
+      request.done(function(data, textStatus, jqXHR) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR, textStatus) {
+        reject(textStatus);
+      });
+    });
+  },
+
+  /**
    * Performs a limited 'Delete Bucket' command via the Explorer API.
    * (This is done as a convenience operation for Devs, since Riak doesn't
    * currently support a whole-bucket delete.)
