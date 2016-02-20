@@ -27,17 +27,30 @@ export default Ember.Route.extend(WrapperState, {
     //  return service.getBucketWithKeyList(bucket, startIndex);
     //},
 
-    deleteObjects: function(bucket) {
+    //deleteObjects: function(bucket) {
+    //  let self = this;
+    //
+    //  bucket.set('isListLoaded', false);
+    //  this.explorer.deleteObjectsInList(bucket);
+    //},
+
+    refreshObjects: function(bucket) {
       let self = this;
 
       bucket.set('isListLoaded', false);
-      this.explorer.deleteObjectsInList(bucket);
-    },
-
-    refreshObjects: function(bucket) {
-      bucket.set('isListLoaded', false);
       bucket.set('statusMessage', 'Refreshing from a streaming list keys call...');
-      this.explorer.refreshObjectList(bucket);
+
+      bucket.get('objectList')
+        .then(function(item) {
+          return item.destroyRecord()
+        })
+        .then(function() {
+          self.explorer.refreshObjectList(bucket);
+        })
+        .then(function() {
+          self.explorer.getObjectList(bucket);
+          self.explorer.getObjects(bucket);
+      });
     }
   }
 });

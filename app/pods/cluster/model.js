@@ -149,8 +149,8 @@ var Cluster = DS.Model.extend({
    * @return {String} URL
    */
   proxyUrl: function() {
-    return `${config.baseURL}riak/clusters/${this.get('id')}`;
-  }.property('id'),
+    return `${config.baseURL}riak/clusters/${this.get('name')}`;
+  }.property('name'),
 
   /**
    * Calculates cluster status based on node health. If all child nodes are valid and

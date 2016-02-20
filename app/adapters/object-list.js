@@ -10,7 +10,6 @@ export default ApplicationAdapter.extend({
     let url = this.urlForQueryRecord(query, type.modelName);
 
     let promise = this.ajax(url, 'GET').then(function(data) {
-
       if (data.keys) {
         data.objectList = data.keys;
 
@@ -24,5 +23,13 @@ export default ApplicationAdapter.extend({
     });
 
     return promise;
+  },
+
+  urlForDeleteRecord(id, modelName, snapshot) {
+    let clusterName = snapshot.belongsTo('bucket').belongsTo('bucketType').belongsTo('cluster').id;
+    let bucketTypeName = snapshot.belongsTo('bucket').belongsTo('bucketType').attr('name');
+    let bucketName = snapshot.belongsTo('bucket').attr('name');
+
+    return `${config.baseURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/keys`;
   }
 });

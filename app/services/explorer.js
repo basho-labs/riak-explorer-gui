@@ -100,40 +100,6 @@ export default Ember.Service.extend({
   },
 
   /**
-   * Performs a Delete Object operation, via a proxied Riak HTTP API request.
-   *
-   * @see http://docs.basho.com/riak/latest/ops/advanced/deletion/
-   * @see http://docs.basho.com/riak/latest/dev/references/http/delete-object/
-   *
-   * @method deleteObject
-   * @param object {RiakObject} RiakObject instance or subclasses (Maps, Sets, etc)
-   * @return {Ember.RSVP.Promise} Result of the AJAX request.
-   */
-  deleteObject(object) {
-    let clusterUrl = object.get('cluster').get('proxyUrl');
-    let bucketTypeName = object.get('bucketType').get('name');
-    let bucketName = object.get('bucket').get('name');
-    let objectName = object.get('name');
-    let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        type: "DELETE",
-        url: url,
-        headers: {'X-Riak-Vclock': object.get('causalContext')}
-      });
-
-      request.done(function(data, textStatus, jqXHR) {
-        resolve(data);
-      });
-
-      request.fail(function(jqXHR, textStatus) {
-        reject(textStatus);
-      });
-    });
-  },
-
-  /**
    * Performs a limited 'Delete Bucket' command via the Explorer API.
    * (This is done as a convenience operation for Devs, since Riak doesn't
    * currently support a whole-bucket delete.)
@@ -148,10 +114,10 @@ export default Ember.Service.extend({
    * Note: This means that the object list cache must already be populated for a delete action to be taken on the
    *  bucket
    *
-   * @method deleteObjectsInList
+   * @method deleteBucket
    * @param {DS.Store} bucket
    */
-  deleteObjectsInList(bucket) {
+  deleteBucket(bucket) {
     let clusterName = bucket.get('cluster').get('name');
     let bucketTypeName = bucket.get('bucketType').get('name');
     let bucketName = bucket.get('name');
@@ -498,7 +464,7 @@ export default Ember.Service.extend({
         self.checkNodes(cluster);
 
         // Continue to check on node health
-        self.pollNodes(cluster);
+        //self.pollNodes(cluster);
 
         return cluster;
       });
@@ -964,7 +930,6 @@ export default Ember.Service.extend({
     let clusterName = bucket.get('cluster').get('name');
     let bucketTypeName = bucket.get('bucketType').get('name');
     let bucketName = bucket.get('name');
-    let queryTries = 0;
     let self = this;
 
     return this.store.queryRecord('object-list', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
@@ -976,11 +941,13 @@ export default Ember.Service.extend({
           return bucket.get('objectList');
         },
         function onFail() {
-          if (bucket.get('cluster').get('developmentMode') && queryTries < 3) {
+          if (bucket.get('cluster').get('developmentMode')) {
             // kick off a cache refresh if in development mode and retry
-            queryTries++;
             bucket.set('statusMessage', 'Cache not found. Refreshing from a streaming list keys call...');
-            self.refreshObjectList(bucket);
+
+            self.refreshObjectList(bucket).then(function() {
+              self.getObjectList(bucket);
+            });
           } else {
             // Let the UI know that the response has been completed
             bucket.set('isListLoaded', true);
@@ -1149,7 +1116,6 @@ export default Ember.Service.extend({
     let bucketTypeName = bucket.get('bucketType').get('name');
     let bucketName = bucket.get('name');
     let url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
-    let self = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1157,9 +1123,16 @@ export default Ember.Service.extend({
         type: 'POST'
       });
 
-      request.complete(function(data) {
-        self.getObjectList(bucket);
-        self.getObjects(bucket);
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 202) {
+          resolve(jqXHR.status);
+        } else {
+          reject(jqXHR);
+        }
       });
     });
   },

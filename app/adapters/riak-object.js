@@ -1,5 +1,6 @@
 import ApplicationAdapter from './application';
 import config from '../config/environment';
+import clusterProxyUrl from '../utils/cluster-proxy-url';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
@@ -27,7 +28,19 @@ export default ApplicationAdapter.extend({
     return promise;
   },
 
-  findRecord(store, type, id, snapshot) {
-    debugger;
+  deleteRecord(store, type, snapshot) {
+    let clusterName = snapshot.belongsTo('bucket').belongsTo('bucketType').belongsTo('cluster').id;
+    let bucketTypeName = snapshot.belongsTo('bucket').belongsTo('bucketType').attr('name');
+    let bucketName = snapshot.belongsTo('bucket').attr('name');
+    let objectName = snapshot.attr('name');
+    let clusterUrl = clusterProxyUrl(clusterName);
+    let vClock = snapshot.attr('headers').other['x-riak-vclock']
+    let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
+
+    return Ember.$.ajax({
+      type: "DELETE",
+      url: url,
+      headers: {'X-Riak-Vclock': vClock}
+    });
   }
 });

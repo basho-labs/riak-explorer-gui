@@ -36,11 +36,12 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
       let clusterName = object.get('cluster').get('name');
       let bucketTypeName = object.get('bucketType').get('name');
       let bucketName = object.get('bucket').get('name');
+      let objectList = object.get('bucket').get('objectList');
       let self = this;
 
-      this.explorer.deleteObject(object).then(
+      object.destroyRecord().then(
         function onSuccess() {
-          self.transitionTo('bucket', object.get('bucket'));
+          self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
         },
         function onError() {
           this.showAlert('alerts.error-request-was-not-processed');
