@@ -28,6 +28,21 @@ export default ApplicationAdapter.extend({
     return promise;
   },
 
+  /**
+   * Performs a limited 'Delete Bucket' command via the Explorer API.
+   * (This is done as a convenience operation for Devs, since Riak doesn't
+   * currently support a whole-bucket delete.)
+   * To be more precise, the Explorer backend iterates through all the keys
+   * in its Key List cache for that bucket, and issues Delete Object commands
+   * for those keys.
+   *
+   * Limitations:
+   * - This is only available in Development Mode
+   * - Explorer can only delete objects whose keys are in its cache.
+   *
+   * Note: This means that the object list cache must already be populated for a delete action to be taken on the
+   *  bucket
+   */
   deleteRecord(store, type, snapshot) {
     let clusterName = snapshot.belongsTo('bucket').belongsTo('bucketType').belongsTo('cluster').id;
     let bucketTypeName = snapshot.belongsTo('bucket').belongsTo('bucketType').attr('name');

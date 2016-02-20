@@ -15,7 +15,7 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Bucket',
-      label: model.get('bucketId')
+      label: model.get('name')
     });
   },
 
@@ -27,12 +27,15 @@ export default Ember.Route.extend(WrapperState, {
     //  return service.getBucketWithKeyList(bucket, startIndex);
     //},
 
-    //deleteObjects: function(bucket) {
-    //  let self = this;
-    //
-    //  bucket.set('isListLoaded', false);
-    //  this.explorer.deleteObjectsInList(bucket);
-    //},
+    deleteBucket: function(bucket) {
+      let clusterName = bucket.get('bucketType').get('cluster').get('name');
+      let bucketTypeName = bucket.get('bucketType').get('name');
+      let self = this;
+
+      bucket.destroyRecord().then(function() {
+        self.transitionTo('bucket-type', clusterName, bucketTypeName);
+      });
+    },
 
     refreshObjects: function(bucket) {
       let self = this;

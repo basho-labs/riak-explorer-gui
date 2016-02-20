@@ -14,7 +14,7 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Bucket-Type',
-      label: model.get('bucketTypeId')
+      label: model.get('name')
     });
   },
 

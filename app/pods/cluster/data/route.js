@@ -5,7 +5,7 @@ export default ClusterRoute.extend({
     this._super(model, transition);
     this.setViewLabel({
       preLabel: 'Cluster Data',
-      label: model.get('id')
+      label: model.get('name')
     });
   }
 });

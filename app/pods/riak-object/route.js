@@ -16,7 +16,7 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
       riakObject: model
     });
     this.setViewLabel({
-      preLabel: 'Riak Object',
+      preLabel: 'Object',
       label: model.get('name')
     });
   },

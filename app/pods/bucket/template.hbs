@@ -11,7 +11,17 @@
 
 <div class='bucket-types-container'>
   {{#dashboard-module class='small-width'}}
-    {{dashboard-module-header label='Bucket Properties'}}
+    {{#dashboard-module-header label='Bucket Properties'}}
+      <div class="module-actions">
+        {{#if model.allowDelete}}
+          <button type="button" class="action-button delete" {{action 'deleteBucket' model}}>
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            Delete Bucket
+          </button>
+        {{/if}}
+      </div>
+    {{/dashboard-module-header}}
+
     {{#dashboard-module-body}}
       {{#ivy-tabs }}
         {{#ivy-tab-list}}
@@ -31,21 +41,15 @@
   {{/dashboard-module}}
 
   {{#dashboard-module class='small-width'}}
-    {{#dashboard-module-header label='Keys'}}
+    {{#dashboard-module-header label='Objects'}}
       {{#if model.objectList}}
         <div class="module-actions">
           {{#if model.cluster.developmentMode}}
             <button type="button" class="action-button refresh" {{action 'refreshObjects' model}}>
               <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-              Refresh Key List Cache
+              Refresh Object List Cache
             </button>
           {{/if}}
-          {{!--{{#if model.allowDelete}}--}}
-            {{!--<button type="button" class="action-button delete" {{action 'deleteObjects' model}}>--}}
-              {{!--<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>--}}
-              {{!--Delete All Keys--}}
-            {{!--</button>--}}
-          {{!--{{/if}}--}}
         </div>
       {{/if}}
     {{/dashboard-module-header}}
@@ -55,11 +59,11 @@
           <table class="key-value-table">
             <tbody>
             <tr>
-              <td class="key">Key List cache created:</td>
+              <td class="key">Object List Cache Created:</td>
               <td class="value">{{model.objectList.created}}</td>
             </tr>
             <tr>
-              <td class="key">Cached Key List</td>
+              <td class="key">Object List Cache</td>
               <td class="value">
                 {{#if model.objectList.count}}
                   {{#if model.objectList.hasMultipleListItems}}

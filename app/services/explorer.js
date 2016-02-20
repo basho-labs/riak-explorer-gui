@@ -100,48 +100,6 @@ export default Ember.Service.extend({
   },
 
   /**
-   * Performs a limited 'Delete Bucket' command via the Explorer API.
-   * (This is done as a convenience operation for Devs, since Riak doesn't
-   * currently support a whole-bucket delete.)
-   * To be more precise, the Explorer backend iterates through all the keys
-   * in its Key List cache for that bucket, and issues Delete Object commands
-   * for those keys.
-   *
-   * Limitations:
-   * - This is only available in Development Mode
-   * - Explorer can only delete objects whose keys are in its cache.
-   *
-   * Note: This means that the object list cache must already be populated for a delete action to be taken on the
-   *  bucket
-   *
-   * @method deleteBucket
-   * @param {DS.Store} bucket
-   */
-  deleteBucket(bucket) {
-    let clusterName = bucket.get('cluster').get('name');
-    let bucketTypeName = bucket.get('bucketType').get('name');
-    let bucketName = bucket.get('name');
-    var url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}`;
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      Ember.$.ajax({
-        type: "DELETE",
-        url: url,
-        success: function(data, textStatus, jqXHR) {
-          resolve(jqXHR.status);
-        },
-        error: function(jqXHR, textStatus) {
-          if (jqXHR.status === 202) {
-            resolve(jqXHR.status);
-          } else {
-            reject(textStatus);
-          }
-        }
-      });
-    });
-  },
-
-  /**
    *
    * @method getBucket
    * @param {String} clusterName

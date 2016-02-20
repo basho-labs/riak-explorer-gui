@@ -23,5 +23,33 @@ export default ApplicationAdapter.extend({
     });
 
     return promise;
+  },
+
+  deleteRecord(store, type, snapshot) {
+    let clusterName = snapshot.belongsTo('bucketType').belongsTo('cluster').id;
+    let bucketTypeName = snapshot.belongsTo('bucketType').attr('name');
+    let bucketName = snapshot.attr('name');
+    let url = `${config.baseURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      Ember.$.ajax({
+        type: "DELETE",
+        url: url,
+        success: function(data, textStatus, jqXHR) {
+          resolve(jqXHR.status);
+        },
+        error: function(jqXHR, textStatus) {
+          if (jqXHR.status === 202) {
+            resolve(jqXHR.status);
+          } else {
+            reject(textStatus);
+          }
+        }
+      });
+    });
   }
 });
+
+
+
+
