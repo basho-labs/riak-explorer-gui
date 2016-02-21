@@ -3,7 +3,7 @@
     <div class="module-actions">
       <a href="{{model.url}}" class="action-button raw">
         <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-        View raw
+        View Raw Data
       </a>
 
       {{!--{{#link-to 'riak-object.edit' model classNames='action-button edit' }}--}}
@@ -11,11 +11,10 @@
         {{!--Edit Object--}}
       {{!--{{/link-to}}--}}
 
-      {{!--<button type="button" class="action-button delete"--}}
-        {{!--{{action 'deleteObject' model}}>--}}
-        {{!--<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>--}}
-        {{!--Delete--}}
-      {{!--</button>--}}
+      <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        Delete Object
+      </button>
     </div>
   {{/dashboard-module-header}}
   {{#dashboard-module-body}}

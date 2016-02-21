@@ -822,9 +822,11 @@ export default Ember.Service.extend({
 
       request.done(function(data, textStatus, jqXHR) {
         let headerObj = parseHeader(jqXHR.getAllResponseHeaders());
-        let content = (isCRDT) ? data : jqXHR.responseText;
+        let type    = (isCRDT) ? data.type : 'default';
+        let content = (isCRDT) ? data.value : jqXHR.responseText;
 
         object.set('headers', headerObj);
+        object.set('type', type);
         object.set('contents', content);
         object.set('url', url);
 

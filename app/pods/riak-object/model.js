@@ -43,6 +43,8 @@ var RiakObject = DS.Model.extend(ObjectHeaders, {
    */
   name: DS.attr('string'),
 
+  type: DS.attr('string'),
+
   /**
    * The URL to fetch the raw contents of the object directly from server.
    * Used with the 'View Raw' button.

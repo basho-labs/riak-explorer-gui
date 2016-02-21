@@ -13,23 +13,6 @@ var RiakObjectCounterController = RiakObjectController.extend({
       this.get('explorer').updateDataType(object, 'decrement');
 
       object.decrement(object.get('decrementBy'));
-    },
-
-    // delay in milliseconds
-    pollForModel: function(object, delay) {
-      var self = this;
-      Ember.run.later(function() {
-        self.refreshModel(object);
-      }, delay);
-    },
-
-    refreshModel: function(object) {
-      var controller = this;
-      controller.get('explorer').getRiakObject(object.get('bucket'),
-        object.get('key'), controller.store)
-        .then(function(object) {
-          controller.set('model', object);
-        });
     }
   }
 });

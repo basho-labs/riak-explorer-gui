@@ -598,7 +598,7 @@ export default Ember.Service.extend({
    * @param {Bucket} bucket
    * @return {Ember.RSVP.Promise} Result of the Delete Bucket AJAX request
    */
-  deleteBucket(bucket) {
+  deleteBucket(bucket)  {
     var cluster = bucket.get('clusterId');
     var bucketType = bucket.get('bucketTypeId');
     var bucketId = bucket.get('bucketId');
