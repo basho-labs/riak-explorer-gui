@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import WrapperState from '../../../mixins/routes/wrapper-state';
 import Alerts from '../../../mixins/routes/alerts';
+import LoadingSlider from '../../../mixins/routes/loading-slider';
 
-export default Ember.Route.extend(WrapperState, Alerts, {
+export default Ember.Route.extend(WrapperState, Alerts, LoadingSlider, {
   model(params) {
     return this.explorer.getCluster(params.clusterName);
   },

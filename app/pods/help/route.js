@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import WrapperState from '../../mixins/routes/wrapper-state';
+import LoadingSlider from '../../mixins/routes/loading-slider';
 
-export default Ember.Route.extend(WrapperState, {
+export default Ember.Route.extend(WrapperState, LoadingSlider, {
   model: function(params) {
     return null;
   },
@@ -11,6 +12,7 @@ export default Ember.Route.extend(WrapperState, {
     this.setViewLabel({
       preLabel: 'Help Section'
     });
+    this.simulateLoad();
   }
 });
 

@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import LoadingSlider from '../mixins/routes/loading-slider';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(LoadingSlider, {
   // Load the list of available clusters, for the left nav
   model: function() {
     let self = this;
