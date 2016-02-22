@@ -6,7 +6,7 @@ export default DS.Model.extend({
    * @property node
    * @type DS.Model
    */
-  node: DS.belongsTo('node', {async: true}),
+  node: DS.belongsTo('node'),
 
   /**
    * Contents of the node file so they can be displayed in the ui. will be limited to the amount of

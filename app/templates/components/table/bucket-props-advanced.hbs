@@ -1,10 +1,11 @@
 {{!--TODO: Refactor once in Ember 2.0--}}
-{{#each model.propsList as |prop|}}
+
+{{#each-in model.props as |key value|}}
   <tr>
     <td class='key'>
-      {{prop.key}}
-      {{tooltip.bucket-props itemKey=prop.key}}
+      {{key}}
+      {{tooltip.bucket-props itemKey=key}}
     </td>
-    <td class='value'>{{prop.value}}</td>
+    <td class='value'>{{value}}</td>
   </tr>
-{{/each}}
+{{/each-in}}

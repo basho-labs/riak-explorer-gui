@@ -3,14 +3,6 @@ import Ember from 'ember';
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
   /**
-   This indicates that the
-   store should call `normalizeResponse` instead of `extract` and to expect
-   a JSON-API Document back.
-   @property isNewSerializerAPI
-   */
-  isNewSerializerAPI: true,
-
-  /**
    `keyForAttribute` can be used to define rules for how to convert an
    attribute name in your model to a key in your JSON.
 

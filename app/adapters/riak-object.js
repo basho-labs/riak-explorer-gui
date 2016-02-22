@@ -1,3 +1,4 @@
+import Ember from "ember";
 import ApplicationAdapter from './application';
 import config from '../config/environment';
 import clusterProxyUrl from '../utils/cluster-proxy-url';
@@ -16,7 +17,7 @@ export default ApplicationAdapter.extend({
           return {
             id: `${query.clusterName}/${query.bucketTypeName}/${query.bucketName}/${key}`,
             name: key
-          }
+          };
         });
 
         delete data.keys;
@@ -49,7 +50,7 @@ export default ApplicationAdapter.extend({
     let bucketName = snapshot.belongsTo('bucket').attr('name');
     let objectName = snapshot.attr('name');
     let clusterUrl = clusterProxyUrl(clusterName);
-    let vClock = snapshot.attr('headers').other['x-riak-vclock']
+    let vClock = snapshot.attr('headers').other['x-riak-vclock'];
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
 
     return Ember.$.ajax({

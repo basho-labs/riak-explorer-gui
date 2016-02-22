@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import WrapperState from '../../mixins/routes/wrapper-state';
-import Alerts from '../../mixins/routes/alerts'
+import Alerts from '../../mixins/routes/alerts';
 
 var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
   model: function(params) {

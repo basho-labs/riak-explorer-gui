@@ -1,4 +1,4 @@
-export function initialize(container, app) {
+export function initialize(app) {
   // inject explorer service into all routes
   app.inject('route', 'explorer', 'service:explorer');
   // inject the store into the explorer service

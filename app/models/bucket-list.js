@@ -15,7 +15,7 @@ var BucketList = DS.Model.extend(CachedList, {
    * @property bucketType
    * @type BucketType
    */
-  bucketType: DS.belongsTo('bucket-type', {async: true})
+  bucketType: DS.belongsTo('bucket-type')
 });
 
 export default BucketList;

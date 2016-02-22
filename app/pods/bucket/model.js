@@ -20,7 +20,7 @@ var Bucket = DS.Model.extend(BucketProps, CachedListWatcher, {
    * @type BucketType
    * @writeOnce
    */
-  bucketType: DS.belongsTo('bucket-type', {async: true}),
+  bucketType: DS.belongsTo('bucket-type'),
 
   /**
    * Contains the results of cached key lists for this bucket,
@@ -29,9 +29,9 @@ var Bucket = DS.Model.extend(BucketProps, CachedListWatcher, {
    * @property key-list
    * @type objectList
    */
-  objectList: DS.belongsTo('object-list', {async: true}),
+  objectList: DS.belongsTo('object-list'),
 
-  objects: DS.hasMany('riak-object', {async: true}),
+  objects: DS.hasMany('riak-object'),
 
   /**
    * Bucket name (unique within a cluster and bucket type)

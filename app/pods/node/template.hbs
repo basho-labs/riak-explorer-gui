@@ -11,10 +11,10 @@
       {{#ivy-tab-panel}}
         <table class="key-value-table">
           <tbody>
-          {{#each model.statsList as |stat|}}
+          {{#each model.stats as |key value|}}
             <tr>
-              <td class='key'>{{stat.key}}</td>
-              <td class='value'>{{stat.value}}</td>
+              <td class='key'>{{key}}</td>
+              <td class='value'>{{value}}</td>
             </tr>
           {{/each}}
           </tbody>
@@ -35,10 +35,10 @@
 
         <table class="key-value-table">
           <tbody>
-          {{#each model.configList as |config|}}
+          {{#each model.config as |key value|}}
             <tr>
-              <td class='key'>{{config.key}}</td>
-              <td class='value'>{{config.value}}</td>
+              <td class='key'>{{key}}</td>
+              <td class='value'>{{value}}</td>
             </tr>
           {{/each}}
           </tbody>

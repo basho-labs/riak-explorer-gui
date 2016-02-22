@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import objectToArray from '../../utils/riak-util';
 
 export default Ember.Mixin.create({
   /**
@@ -208,20 +207,6 @@ export default Ember.Mixin.create({
     }
 
     return type.join(', ');
-  }.property('props'),
-
-  /**
-   * Returns a flat list of properties, used for display on a View Properties
-   *     page.
-   *
-   * @method propsList
-   * @return {Array<Hash>} List of key/value pairs
-   */
-  propsList: function() {
-    if (!this.get('props')) {
-      return [];
-    }
-    return objectToArray(this.get('props'));
   }.property('props'),
 
   /**

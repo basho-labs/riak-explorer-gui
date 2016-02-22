@@ -45,7 +45,7 @@ export default Ember.Route.extend(WrapperState, {
 
       bucket.get('objectList')
         .then(function(item) {
-          return item.destroyRecord()
+          return item.destroyRecord();
         })
         .then(function() {
           self.explorer.refreshObjectList(bucket);

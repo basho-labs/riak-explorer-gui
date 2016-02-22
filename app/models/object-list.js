@@ -7,7 +7,7 @@ var ObjectList = DS.Model.extend(CachedList, {
    * @property bucketType
    * @type BucketType
    */
-  bucket: DS.belongsTo('bucket', {async: true})
+  bucket: DS.belongsTo('bucket')
 
   /**
    * Returns true if this list has a nonzero key count.

@@ -8,7 +8,7 @@ var SearchIndex = DS.Model.extend({
    * @type {DS.Model} Cluster
    * @writeOnce
    */
-  cluster: DS.belongsTo('cluster', {async: true}),
+  cluster: DS.belongsTo('cluster'),
 
   /**
    * Schema the search index is using
@@ -17,7 +17,7 @@ var SearchIndex = DS.Model.extend({
    * @type {DS.Model} Search Schema
    * @writeOnce
    */
-  schema: DS.belongsTo('search-schema', {async: true}),
+  schema: DS.belongsTo('search-schema'),
 
   /**
    * Returns the search index name

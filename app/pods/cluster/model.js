@@ -15,28 +15,28 @@ var Cluster = DS.Model.extend({
    * @property bucketTypes
    * @type Array<BucketType>
    */
-  bucketTypes: DS.hasMany('bucket-type', {async: true}),
+  bucketTypes: DS.hasMany('bucket-type'),
 
   /**
    * Riak nodes assigned to the cluster
    * @property nodes
    * @type Array<BucketType>
    */
-  nodes: DS.hasMany('node', {async: true}),
+  nodes: DS.hasMany('node'),
 
   /**
    * Search indexes created on the cluster
    * @property searchIndexes
    * @type Array<BucketType>
    */
-  searchIndexes: DS.hasMany('search-index', {async: true}),
+  searchIndexes: DS.hasMany('search-index'),
 
   /**
    * Search schemas created on the cluster
    * @property searchSchemas
    * @type Array<BucketType>
    */
-  searchSchemas: DS.hasMany('search-schema', {async: true}),
+  searchSchemas: DS.hasMany('search-schema'),
 
   /**
    * Is this cluster in Dev Mode? Set in the Explorer config file.

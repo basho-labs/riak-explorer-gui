@@ -1,3 +1,4 @@
+import Ember from "ember";
 import ApplicationAdapter from './application';
 import config from '../config/environment';
 
@@ -15,7 +16,7 @@ export default ApplicationAdapter.extend({
           return {
             id: `${query.clusterName}/${query.bucketTypeName}/${bucketName}`,
             name: bucketName
-          }
+          };
         });
       }
 

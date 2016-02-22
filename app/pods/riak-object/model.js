@@ -27,7 +27,7 @@ var RiakObject = DS.Model.extend(ObjectHeaders, {
    * @type Bucket
    * @writeOnce
    */
-  bucket: DS.belongsTo('bucket', {async: true}),
+  bucket: DS.belongsTo('bucket'),
 
   /**
    * The value/contents of the object.

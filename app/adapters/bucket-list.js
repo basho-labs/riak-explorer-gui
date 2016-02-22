@@ -16,7 +16,7 @@ export default ApplicationAdapter.extend({
         delete data.buckets;
         delete data.bucketList.buckets;
 
-        data.bucketList.id = `${query.clusterName}/${query.bucketTypeName}/bucketList`
+        data.bucketList.id = `${query.clusterName}/${query.bucketTypeName}/bucketList`;
       }
 
       return data;

@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import config from '../config/environment';
-import objectToArray from '../utils/riak-util';
 import parseHeader from '../utils/parse-header';
 
 /**
@@ -451,7 +450,7 @@ export default Ember.Service.extend({
     return this.getCluster(clusterName)
       .then(function(cluster) {
         return cluster.get('searchIndexes').findBy('name', indexName);
-      })
+      });
   },
 
   /**
@@ -780,7 +779,7 @@ export default Ember.Service.extend({
       .then(function(bucket) {
         let isCRDT = !!(bucket.get('isCRDT'));
 
-        return bucket.get('objects').findBy('name', objectName)
+        return bucket.get('objects').findBy('name', objectName);
       })
       .then(function(riakObject) {
         return Ember.RSVP.allSettled([
@@ -804,9 +803,7 @@ export default Ember.Service.extend({
     let bucketName = object.get('bucket').get('name');
     let objectName = object.get('name');
     let isCRDT = !!(object.get('bucket').get('isCRDT'));
-    let url = (isCRDT)
-      ? `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`
-      : `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
+    let url = (isCRDT) ? `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}` : `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
     let xhrOptions = {
       url: url,
       type: 'GET',
@@ -834,7 +831,7 @@ export default Ember.Service.extend({
       });
 
       request.fail(function(data) {
-        debugger;
+        reject(data);
       });
     });
 

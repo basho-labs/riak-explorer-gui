@@ -13,7 +13,7 @@ import CachedListWatcher from '../../mixins/models/cached-list-watcher';
  * @uses BucketList
  */
 var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
-  bucketList: DS.belongsTo('bucket-list', {async: true}),
+  bucketList: DS.belongsTo('bucket-list'),
 
   /**
    * Contains the results of cached bucket lists for this bucket type,
@@ -21,7 +21,7 @@ var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
    * @property buckets
    * @type Bucket
    */
-  buckets: DS.hasMany('bucket', {async: true}),
+  buckets: DS.hasMany('bucket'),
 
   /**
    * Riak cluster in which this bucket type lives.
@@ -29,7 +29,7 @@ var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
    * @type Cluster
    * @writeOnce
    */
-  cluster: DS.belongsTo('cluster', {async: true}),
+  cluster: DS.belongsTo('cluster'),
 
   /**
    * Bucket Type name (unique per cluster),

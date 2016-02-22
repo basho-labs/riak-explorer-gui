@@ -1,4 +1,5 @@
-import schemaRoute from '../route'
+import Ember from 'ember';
+import schemaRoute from '../route';
 import Alerts from '../../../mixins/routes/alerts';
 
 export default schemaRoute.extend(Alerts, {
