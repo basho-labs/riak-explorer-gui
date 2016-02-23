@@ -14,7 +14,7 @@ export default schemaRoute.extend(Alerts, {
       try {
         xmlDoc = Ember.$.parseXML(xmlString);
       } catch (error) {
-        this.render('alerts.error-invalid-xml', {
+        this.render('alerts._error_old-invalid-xml', {
           into: 'application',
           outlet: 'alert'
         });
@@ -27,7 +27,7 @@ export default schemaRoute.extend(Alerts, {
           self.transitionTo('search-schema', clusterName, schemaName);
         },
         function onFail() {
-          self.showAlert('alerts.error-schema-not-saved');
+          self.showAlert('alerts._error_old-schema-not-saved');
         }
       );
     }

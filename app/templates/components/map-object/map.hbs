@@ -1,0 +1,20 @@
+<div class="map-item" id={{name}}>
+  <div class="map-name">
+    {{name}}
+    <span class="expand-contents">
+    <code {{action 'subMapToggle'}}>
+      {{#if showContent}}
+        <span class="glyphicon glyphicon-zoom-out" aria-hidden="true"></span>
+        <span class="toggle-text">hide contents</span>
+      {{else}}
+        <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span>
+        <span class="toggle-text">view contents</span>
+      {{/if}}
+    </code>
+  </span>
+  </div>
+  <div class={{if showContent 'sub-map-contents expanded' 'sub-map-contents'}}>
+    {{map-object.contents sortedMap=value}}
+  </div>
+</div>
+

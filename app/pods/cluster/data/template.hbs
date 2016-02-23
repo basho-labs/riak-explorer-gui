@@ -1,7 +1,7 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module class='medium-width'}}
-    {{dashboard-module-header label='Cluster Properties'}}
-    {{#dashboard-module-body}}
+  {{#dashboard-module.container class='medium-width'}}
+    {{dashboard-module.header label='Cluster Properties'}}
+    {{#dashboard-module.body}}
       <table class="key-value-table">
       <tbody>
       <tr>
@@ -34,32 +34,32 @@
       </tr>
       </tbody>
     </table>
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 
-  {{#dashboard-module class='medium-width'}}
-    {{dashboard-module-header label='Active Bucket Types'}}
-    {{#dashboard-module-body}}
+  {{#dashboard-module.container class='medium-width'}}
+    {{dashboard-module.header label='Active Bucket Types'}}
+    {{#dashboard-module.body}}
       {{#if model.activeBucketTypes}}
         {{table.bucket-types
         bucketTypes=model.activeBucketTypes}}
       {{else}}
         <p>No bucket types have been activated</p>
       {{/if}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 
-  {{#dashboard-module class='medium-width'}}
-    {{dashboard-module-header label='Inactive Bucket Types'}}
-    {{#dashboard-module-body}}
+  {{#dashboard-module.container class='medium-width'}}
+    {{dashboard-module.header label='Inactive Bucket Types'}}
+    {{#dashboard-module.body}}
       {{#if model.inactiveBucketTypes}}
         {{table.bucket-types
         bucketTypes=model.inactiveBucketTypes}}
       {{else}}
         <p>No inactive buckets</p>
       {{/if}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 </div>
 
 

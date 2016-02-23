@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import ObjectHeaders from '../../mixins/models/object-headers';
+import MapObject from '../../mixins/models/map-object';
 
 /**
  * Represents a plain (non Data Type) Riak Object.
@@ -20,7 +21,7 @@ import ObjectHeaders from '../../mixins/models/object-headers';
  * @param [rawUrl] {String}
  * @param [contents] {Object} Object value/payload
  */
-var RiakObject = DS.Model.extend(ObjectHeaders, {
+var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
   /**
    * Riak Bucket in which this object lives.
    * @property bucket
@@ -97,46 +98,7 @@ var RiakObject = DS.Model.extend(ObjectHeaders, {
     }
 
     return routePath;
-  }.property('bucket'),
-
-  addAdditionalCRDTBehavior: function() {
-    //if (this.get('bucket').get('isSet')) {
-    //  debugger;
-    //  //Foo.apply(this);
-    //}
   }.property('bucket')
-
-
-  /**
-   * Has the object been fully loaded from the server?
-   * @property isLoaded
-   * @type Boolean
-   * @default false
-   */
-  //isLoaded: DS.attr('boolean', {defaultValue: false}),
-
-  /**
-   * Was this object marked as deleted by Explorer UI?
-   * Note: Deleted objects may still show up in the API-side key list cache.
-   * @property markedDeleted
-   * @type Boolean
-   * @default false
-   */
-  //markedDeleted: DS.attr('boolean', {defaultValue: false}),
-
-  /**
-   * Returns true if the object has been deleted either on the server
-   *    or via the Explorer app.
-   * @method isDeleted
-   * @return {Boolean}
-   */
-  //isDeleted: function() {
-  //  var deletedOnRiak = false;
-  //  if (this.get('metadata')) {
-  //    deletedOnRiak = this.get('metadata').get('isDeleted');
-  //  }
-  //  return this.get('markedDeleted') || deletedOnRiak;
-  //}.property('markedDeleted', 'metadata')
 });
 
 export default RiakObject;

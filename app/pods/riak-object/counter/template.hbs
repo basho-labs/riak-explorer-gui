@@ -1,5 +1,5 @@
-{{#dashboard-module class='object-counter-container small-width'}}
-  {{#dashboard-module-header label='Object Details'}}
+{{#dashboard-module.container class='object-counter-container small-width'}}
+  {{#dashboard-module.header label='Object Details'}}
     {{#if model.isLoaded}}
       <div class="module-actions">
         <button type="button" class="action-button delete"
@@ -9,8 +9,8 @@
         </button>
       </div>
     {{/if}}
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     {{#if model.isLoaded}}
       <table class="key-value-table">
         <tbody>
@@ -38,5 +38,5 @@
     {{else}}
       {{loading-spinner}}
     {{/if}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

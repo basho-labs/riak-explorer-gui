@@ -32,12 +32,8 @@ Router.map(function() {
   this.route('search-schema.create', {path: '/cluster/:clusterName/query/schema/create'});
 
   // Error Routes
-  this.route('error', {path: '/error'}, function() {
-    this.route('unknown');
-    this.route('cluster-not-found');
-    this.route('object-not-found');
-    this.route('service-not-found');
-  });
+  this.route('error', {path: '*path'}); // Catch all for any unmatched routes
+  this.route('error.service-not-found', {path: '/error/service-not-found'});
 
   // Misc. Routes
   this.route('help');

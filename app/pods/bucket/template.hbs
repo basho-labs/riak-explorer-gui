@@ -10,8 +10,8 @@
 {{/if}}
 
 <div class='bucket-types-container'>
-  {{#dashboard-module class='small-width'}}
-    {{#dashboard-module-header label='Bucket Properties'}}
+  {{#dashboard-module.container class='small-width'}}
+    {{#dashboard-module.header label='Bucket Properties'}}
       <div class="module-actions">
         {{#if model.allowDelete}}
           <button type="button" class="action-button delete" {{action 'deleteBucket' model}}>
@@ -20,9 +20,9 @@
           </button>
         {{/if}}
       </div>
-    {{/dashboard-module-header}}
+    {{/dashboard-module.header}}
 
-    {{#dashboard-module-body}}
+    {{#dashboard-module.body}}
       {{#ivy-tabs }}
         {{#ivy-tab-list}}
           {{#ivy-tab}}Overview{{/ivy-tab}}
@@ -37,11 +37,11 @@
           {{table.bucket-props-advanced model=model}}
         {{/ivy-tab-panel}}
       {{/ivy-tabs}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 
-  {{#dashboard-module class='small-width'}}
-    {{#dashboard-module-header label='Objects'}}
+  {{#dashboard-module.container class='small-width'}}
+    {{#dashboard-module.header label='Objects'}}
       {{#if model.objectList}}
         <div class="module-actions">
           {{#if model.cluster.developmentMode}}
@@ -52,8 +52,8 @@
           {{/if}}
         </div>
       {{/if}}
-    {{/dashboard-module-header}}
-    {{#dashboard-module-body}}
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
       {{#if model.isListLoaded}}
         {{#if model.objectList}}
           <table class="key-value-table">
@@ -100,6 +100,6 @@
       {{else}}
         {{loading-spinner statusMessage=model.statusMessage}}
       {{/if}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 </div>

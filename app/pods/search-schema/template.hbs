@@ -1,5 +1,5 @@
-{{#dashboard-module}}
-  {{#dashboard-module-header}}
+{{#dashboard-module.container}}
+  {{#dashboard-module.header}}
     <span>&nbsp;</span>
     <div class="module-actions">
       {{#link-to 'search-schema.edit' model.cluster.name model.name class='edit action-button' }}
@@ -12,12 +12,12 @@
         View Raw
       </a>
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     {{#if model.content}}
       {{#code-highlighter language-type='XML'}}
         {{model.content}}
       {{/code-highlighter}}
     {{/if}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

@@ -2,7 +2,7 @@ import { moduleForModel, test } from 'ember-qunit';
 import Ember from 'ember';
 
 moduleForModel('bucket-type', 'Unit | Model | bucket type', {
-  needs: ['model:cluster', 'model:bucketList', 'model:bucketProps']
+  needs: ['model:cluster', 'model:bucketList', 'model:bucket']
 });
 
 test('it exists', function(assert) {
@@ -31,10 +31,10 @@ test('bucket lists relationship', function(assert) {
   assert.equal(relationship.kind, 'belongsTo');
 });
 
-test('bucket properties relationship', function(assert) {
+test('buckets relationship', function(assert) {
   let klass = this.subject({}).constructor;
-  let relationship = Ember.get(klass, 'relationshipsByName').get('props');
+  let relationship = Ember.get(klass, 'relationshipsByName').get('buckets');
 
-  assert.equal(relationship.key, 'props');
-  assert.equal(relationship.kind, 'belongsTo');
+  assert.equal(relationship.key, 'buckets');
+  assert.equal(relationship.kind, 'hasMany');
 });

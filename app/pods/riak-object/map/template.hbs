@@ -1,0 +1,13 @@
+{{#dashboard-module.container}}
+  {{#dashboard-module.header label='Object Details'}}
+    <div class="module-actions">
+      <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        Delete Map
+      </button>
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{map-object.contents sortedMap=model.contentsSortedBySubType}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

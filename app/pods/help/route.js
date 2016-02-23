@@ -3,12 +3,14 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
   model: function(params) {
-    return this.explorer.getCluster(params.clusterName);
+    return null;
   },
 
   afterModel: function(model, transition) {
-    this.setSidebarCluster(model);
     this.setBreadCrumbs(null);
-    this.setViewLabel(null);
+    this.setViewLabel({
+      preLabel: 'Help Section'
+    });
   }
 });
+

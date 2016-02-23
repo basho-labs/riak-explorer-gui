@@ -1,5 +1,5 @@
-{{#dashboard-module class=''}}
-  {{#dashboard-module-header}}
+{{#dashboard-module.container}}
+  {{#dashboard-module.header}}
     <span>&nbsp;</span>
     <div class="module-actions">
       <span class="update action-button" {{action 'updateSchema' model}}>
@@ -12,8 +12,8 @@
         Cancel
       {{/link-to}}
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     {{#if model.content}}
       <pre class="editable">
         <code>
@@ -23,5 +23,5 @@
         </code>
       </pre>
     {{/if}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

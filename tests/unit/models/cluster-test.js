@@ -70,23 +70,32 @@ test('status', function(assert) {
     assert.equal(model.get('status'), 'down');
 
     // Create some mock nodes
-    let node1 = store.createRecord('node', { id: 'node1', cluster: model });
-    let node2 = store.createRecord('node', { id: 'node2', cluster: model });
-    let node3 = store.createRecord('node', { id: 'node3', cluster: model });
+    let node1 = store.createRecord('node', { name: 'node1', cluster: model });
+    let node2 = store.createRecord('node', { name: 'node2', cluster: model });
+    let node3 = store.createRecord('node', { name: 'node3', cluster: model });
 
-    node1.set('available', true).set('status', 'valid');
-    node2.set('available', true).set('status', 'valid');
-    node3.set('available', true).set('status', 'valid');
+    node1.set('available', true);
+    node1.set('status', 'valid');
+    node2.set('available', true);
+    node2.set('status', 'valid');
+    node3.set('available', true);
+    node3.set('status', 'valid');
     assert.equal(model.get('status'), 'ok');
 
-    node1.set('available', false).set('status', 'valid');
-    node2.set('available', false).set('status', 'invalid');
-    node3.set('available', false).set('status', 'valid');
+    node1.set('available', false);
+    node1.set('status', 'valid');
+    node2.set('available', false);
+    node2.set('status', 'invalid');
+    node3.set('available', false);
+    node3.set('status', 'valid');
     assert.equal(model.get('status'), 'down');
 
-    node1.set('available', true).set('status', 'valid');
-    node2.set('available', false).set('status', 'invalid');
-    node3.set('available', false).set('status', 'valid');
+    node1.set('available', true);
+    node1.set('status', 'valid');
+    node2.set('available', false);
+    node2.set('status', 'invalid');
+    node3.set('available', false);
+    node3.set('status', 'valid');
     assert.equal(model.get('status'), 'warning');
   });
 });

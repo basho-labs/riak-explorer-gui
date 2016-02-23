@@ -1,5 +1,5 @@
-{{#dashboard-module class='medium-width'}}
-  {{#dashboard-module-header label='Object Details'}}
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Object Details'}}
     <div class="module-actions">
       <a href="{{model.url}}" class="btn btn-sm btn-primary">
         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
@@ -10,8 +10,8 @@
         Delete Object
       </button>
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     <table class="key-value-table">
         <tbody>
         <tr>
@@ -43,5 +43,5 @@
         </tr>
         </tbody>
       </table>
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

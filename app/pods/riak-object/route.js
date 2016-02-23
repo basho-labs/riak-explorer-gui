@@ -22,16 +22,6 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
   },
 
   actions: {
-    error: function(error, transition) {
-      if (error && error.status === 404) {
-        transition.queryParams = transition.params['riak-object'];
-        this.transitionTo('error.object-not-found', transition);
-      } else {
-        // Unknown error, bubble error event up to routes/application.js
-        return true;
-      }
-    },
-
     deleteObject: function(object) {
       let clusterName = object.get('cluster').get('name');
       let bucketTypeName = object.get('bucketType').get('name');
@@ -44,7 +34,7 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
           self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
         },
         function onError() {
-          this.showAlert('alerts.error-request-was-not-processed');
+          this.showAlert('alerts._error_old-request-was-not-processed');
         }
       );
     }

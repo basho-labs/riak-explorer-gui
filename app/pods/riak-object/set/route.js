@@ -21,7 +21,7 @@ export default RiakObjectRoute.extend({
         // Empty out any lingering warnings on success
         this.removeAlert();
       } else {
-        this.showAlert('alerts.error-set-items-unique');
+        this.showAlert('alerts._error_old-set-items-unique');
       }
     },
 

@@ -1,7 +1,7 @@
 <div class='cluster-information-container'>
-  {{#dashboard-module class='small-width'}}
-    {{dashboard-module-header label='Nodes'}}
-    {{#dashboard-module-body}}
+  {{#dashboard-module.container class='small-width'}}
+    {{dashboard-module.header label='Nodes'}}
+    {{#dashboard-module.body}}
       {{#if model.nodes}}
         <ul class="button-list">
           {{#each model.nodes as |node|}}
@@ -23,8 +23,8 @@
       {{else}}
         <p>No nodes detected</p>
       {{/if}}
-    {{/dashboard-module-body}}
-  {{/dashboard-module}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 </div>
 
 

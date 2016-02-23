@@ -1,5 +1,5 @@
-{{#dashboard-module}}
-  {{#dashboard-module-header}}
+{{#dashboard-module.container}}
+  {{#dashboard-module.header}}
     <span>&nbsp;</span>
     <div class="module-actions">
       <span class="create action-button" {{action 'createSchema' model.name schemaName schemaContent}}>
@@ -12,9 +12,9 @@
         Cancel
       {{/link-to}}
     </div>
-  {{/dashboard-module-header}}
+  {{/dashboard-module.header}}
 
-  {{#dashboard-module-body}}
+  {{#dashboard-module.body}}
     <form>
       <div class="form-group">
         <label>Schema Name</label>
@@ -26,5 +26,5 @@
         {{textarea value=schemaContent rows=10 class='form-control'}}
       </div>
     </form>
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

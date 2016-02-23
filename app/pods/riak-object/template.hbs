@@ -1,5 +1,5 @@
-{{#dashboard-module class='medium-width'}}
-  {{#dashboard-module-header label='Object Contents'}}
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Object Contents'}}
     <div class="module-actions">
       <a href="{{model.url}}" class="action-button raw">
         <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
@@ -16,8 +16,8 @@
         Delete Object
       </button>
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     <div class="object-contents">
       <table class="key-value-table">
         <tbody>
@@ -36,13 +36,13 @@
         </tbody>
       </table>
     </div>
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
 
-{{#dashboard-module class='medium-width'}}
-  {{dashboard-module-header label='Object Metadata'}}
+{{#dashboard-module.container class='medium-width'}}
+  {{dashboard-module.header label='Object Metadata'}}
 
-  {{#dashboard-module-body}}
+  {{#dashboard-module.body}}
     {{#ivy-tabs}}
         {{#ivy-tab-list}}
           {{#ivy-tab}}General{{/ivy-tab}}
@@ -62,7 +62,7 @@
           {{table.object-headers headers=model.headersCustom}}
         {{/ivy-tab-panel}}
       {{/ivy-tabs}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
 
 

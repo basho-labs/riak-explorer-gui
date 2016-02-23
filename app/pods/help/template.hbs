@@ -1,0 +1,78 @@
+{{render 'alerts.feedback-welcome'}}
+
+{{#dashboard-module.container class='medium-width'}}
+  {{dashboard-module.header label='Riak Resources'}}
+  {{#dashboard-module.body}}
+    <p>
+      Riak Docs:
+      <a
+        href="http://docs.basho.com/"
+        target="_blank">
+        docs.basho.com
+      </a>
+    </p>
+    <p>
+      Riak mailing list:
+      <a
+        href="http://lists.basho.com/mailman/listinfo/riak-users_lists.basho.com"
+        target="_blank">
+        lists.basho.com/mailman/listinfo/riak-users_lists.basho.com
+      </a>
+    </p>
+    <p>
+      Riak IRC on Freenode:
+      <a
+        href="http://irc.lc/freenode/riak"
+        target="_blank">
+        irc.lc/freenode/riak
+      </a>
+    </p>
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
+
+{{#dashboard-module.container class='medium-width'}}
+  {{dashboard-module.header label='Riak Explorer Resources'}}
+  {{#dashboard-module.body}}
+    <p>
+      Github repository:
+      <a
+        href="https://github.com/basho-labs/riak_explorer"
+        target="_blank">
+        github.com/basho-labs/riak_explorer
+      </a>
+    </p>
+    <p>
+      Riak Explorer API:
+      <a
+        href="http://basho-labs.github.io/riak_explorer/docs/api.html"
+        target="_blank">
+        basho-labs.github.io/riak_explorer/docs/api.html
+      </a>
+    </p>
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
+
+{{#dashboard-module.container class='medium-width'}}
+  {{dashboard-module.header label='Setting up a cluster in Riak Explorer'}}
+  {{#dashboard-module.body}}
+    <ol>
+      <li>
+        <a href="http://docs.basho.com/riak/latest/downloads/" target="_blank">Download</a>
+        and
+        <a href="http://docs.basho.com/riak/latest/installing/" target="_blank">Install</a>
+        Riak, and get a cluster up an running. Our
+        <a href="http://docs.basho.com/riak/latest/quickstart/" target="_blank">five minute install</a>
+        is a great guide to follow if you are unfamiliar with this process.
+      </li>
+      <li>
+        Verify the default settings in <code>riak_explorer/etc/riak_explorer.conf</code> will work for your configuration
+        (primarily that port 9000 is available on your host, and that the <code>listener</code> variable is pointed at one of the nodes in your cluster).
+        Pay special attention to development mode settings, this should be off for use with a production environment to
+        prevent accidental key listings.
+      </li>
+      <li>
+        Restart the Riak Explorer application and explore!
+      </li>
+    </ol>
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

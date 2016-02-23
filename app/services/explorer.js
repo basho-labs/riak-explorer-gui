@@ -229,7 +229,7 @@ export default Ember.Service.extend({
     //      bucketType.set('isBucketListLoaded', true);
     //      resolve(explorer.createBucketList(data, cluster, bucketType, start));
     //    },
-    //    error: function(jqXHR, textStatus) {
+    //    _error_old: function(jqXHR, textStatus) {
     //      // Fail (likely a 404, cache not yet created)
     //      if (jqXHR.status === 404) {
     //        // Return an empty (Loading..) list. Controller will poll to
@@ -856,7 +856,7 @@ export default Ember.Service.extend({
     //    };
     //  }
     //
-    //  ajaxHash.error = function(jqXHR, textStatus) {
+    //  ajaxHash._error_old = function(jqXHR, textStatus) {
     //    if (jqXHR.status === 200 && textStatus === 'parsererror') {
     //      // jQuery tries to parse JSON objects, and throws
     //      // parse errors when they're invalid. Suppress this.

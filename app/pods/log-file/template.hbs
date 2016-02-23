@@ -1,5 +1,5 @@
-{{#dashboard-module}}
-  {{#dashboard-module-header}}
+{{#dashboard-module.container}}
+  {{#dashboard-module.header}}
     <span class="module-label">
       {{#if model.moreLinesThanPageSize}}
         File output from
@@ -16,10 +16,10 @@
         Refresh {{model.name}}
       </span>
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
     {{#code-highlighter language-type='js'}}
       {{model.content}}
     {{/code-highlighter}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
