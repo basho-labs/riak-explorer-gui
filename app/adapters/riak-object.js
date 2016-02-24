@@ -1,7 +1,6 @@
 import Ember from "ember";
 import ApplicationAdapter from './application';
 import config from '../config/environment';
-import clusterProxyUrl from '../utils/cluster-proxy-url';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
@@ -45,18 +44,44 @@ export default ApplicationAdapter.extend({
    *  bucket
    */
   deleteRecord(store, type, snapshot) {
-    let clusterName = snapshot.belongsTo('bucket').belongsTo('bucketType').belongsTo('cluster').id;
-    let bucketTypeName = snapshot.belongsTo('bucket').belongsTo('bucketType').attr('name');
-    let bucketName = snapshot.belongsTo('bucket').attr('name');
-    let objectName = snapshot.attr('name');
-    let clusterUrl = clusterProxyUrl(clusterName);
-    let vClock = snapshot.attr('headers').other['x-riak-vclock'];
+    let object = snapshot.record;
+    let clusterUrl = object.get('cluster').get('proxyUrl');
+    let bucketTypeName = object.get('bucketType').get('name');
+    let bucketName = object.get('bucket').get('name');
+    let objectName = object.get('name');
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
 
     return Ember.$.ajax({
       type: "DELETE",
       url: url,
-      headers: {'X-Riak-Vclock': vClock}
+      headers: {'X-Riak-Vclock': object.get('causalContext')}
+    });
+  },
+
+  updateRecord(store, type, snapshot) {
+    let object = snapshot.record;
+    let clusterUrl = object.get('cluster').get('proxyUrl');
+    let bucketTypeName = object.get('bucketType').get('name');
+    let bucketName = object.get('bucket').get('name');
+    let objectName = object.get('name');
+    let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
+
+    let headers = {};
+    headers['X-Riak-Vclock'] = object.get('causalContext');
+    object.get('indexes').forEach(function(index) {
+      headers[index.key] = index.value;
+    });
+    object.get('headersCustom').forEach(function(header) {
+      headers[header.key] = header.value;
+    });
+
+    return Ember.$.ajax({
+      type: "PUT",
+      processData: false,
+      contentType: object.get('contentType'),
+      url: url,
+      headers: headers,
+      data: object.get('contents')
     });
   }
 });

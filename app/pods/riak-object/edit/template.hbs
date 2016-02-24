@@ -1,0 +1,76 @@
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Object Edit'}}
+    <div class="module-actions">
+      <button type="button" class="action-button save" {{action 'saveObject' model}}>
+        <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+        Update Object
+      </button>
+
+      {{#link-to 'riak-object'
+      model.cluster.name
+      model.bucketType.bucketTypeId
+      model.bucket.bucketId
+      model.key
+      class='action-button cancel'}}
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        Cancel
+      {{/link-to}}
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    <div class="module-edit-group">
+        <table class="key-value-table">
+          <tbody>
+          <tr>
+            <td class="key group-header">Object Contents</td>
+            <td class="value"></td>
+          </tr>
+          <tr>
+            <td class="key">Content Type:</td>
+            <td class="value">
+              {{input value=model.contentType
+              id='metadata.contentType'
+              class="form-control"}}
+            </td>
+          </tr>
+          <tr>
+            <td class="key">Content Type:</td>
+            <td class="value">
+              {{textarea
+              class="form-control"
+              value=model.contents
+              rows=8
+              autofocus=true}}
+            </td>
+          </tr>
+
+          <tr>
+            <td class="key group-header">Secondary Indexes</td>
+            <td class="value"></td>
+          </tr>
+          {{#each model.indexes as |header|}}
+            <tr>
+              <td class="key">{{header.key}}</td>
+              <td class="value">
+                {{input value=header.value id=header.key class="form-control"}}
+              </td>
+            </tr>
+          {{/each}}
+
+          <tr>
+            <td class="key group-header">Custom Headers</td>
+            <td class="value"></td>
+          </tr>
+          {{#each model.headersCustom as |header|}}
+            <tr>
+              <td class="key">{{header.key}}</td>
+              <td class="value">
+                {{input value=header.value id=header.key class="form-control"}}
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
