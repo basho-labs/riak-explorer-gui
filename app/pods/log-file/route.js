@@ -2,9 +2,8 @@ import Ember from 'ember';
 import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
-
   model: function(params) {
-    return this.explorer.getLogFile(params.clusterId, params.nodeId, params.logId);
+    return this.explorer.getLogFile(params.clusterName, params.nodeName, params.logName);
   },
 
   afterModel: function(model, transition) {
@@ -16,22 +15,20 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Log Detail',
-      label: model.get('fileId')
+      label: model.get('name')
     });
   },
 
   actions: {
     refreshLogFile: function(log) {
-      let self = this;
-
-      this.controllerFor('log-file').set('isRefreshing', true);
+      log.set('isRefreshing', true);
 
       // TODO: Add functionality to change the amount of lines the log file is tailing
       this.explorer.getLogFileContents(log).then(function() {
         // The response back from the server is very fast on a lot of these requests,
         //  so let the animation run for an extra second to give the feedback loop that
         //  the request has gone through.
-        setTimeout(() => self.controllerFor('log-file').set('isRefreshing', false), 1000);
+        setTimeout(() => log.set('isRefreshing', false), 1000);
       });
     }
   }

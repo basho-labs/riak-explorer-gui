@@ -3,19 +3,10 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
   model: function(params) {
-    var clusterId = params.clusterId;
-    var bucketTypeId = params.bucketTypeId;
-    var explorer = this.explorer;
-
-    return this.explorer
-      .getBucketType(clusterId, bucketTypeId)
-      .then(function(bucketType) {
-        return explorer.getBucketTypeWithBucketList(bucketType, bucketType.get('cluster'));
-      });
+    return this.explorer.getBucketType(params.clusterName, params.bucketTypeName);
   },
 
   afterModel: function(model, transition) {
-
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
@@ -23,15 +14,24 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Bucket-Type',
-      label: model.get('bucketTypeId')
+      label: model.get('name')
     });
   },
 
-  setupController: function(controller, model) {
-    this._super(controller, model);
+  actions: {
+    //retrieveRequestedBuckets: function(startIndex) {
+    //  let service = this.get('explorer');
+    //  let bucketType = this.get('model');
+    //  let cluster = bucketType.get('cluster');
+    //
+    //  return service.getBucketTypeWithBucketList(bucketType, cluster, startIndex);
+    //},
 
-    if (!model.get('isBucketListLoaded')) {
-      controller.pollForModel(model, 3000);
+    refreshBuckets: function(bucketType) {
+      bucketType.set('isListLoaded', false);
+      bucketType.set('statusMessage', 'Refreshing from a streaming list buckets call...');
+
+      this.explorer.refreshBucketList(bucketType);
     }
   }
 });

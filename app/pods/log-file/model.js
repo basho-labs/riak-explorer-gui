@@ -6,7 +6,7 @@ export default DS.Model.extend({
    * @property node
    * @type DS.Model
    */
-  node: DS.belongsTo('node', {async: true}),
+  node: DS.belongsTo('node'),
 
   /**
    * Contents of the node file so they can be displayed in the ui. will be limited to the amount of
@@ -20,10 +20,10 @@ export default DS.Model.extend({
   /**
    * The name of the file. The actual id is a composite id (i.e. cluster1/node1/file1.log).
    *
-   * @property fileId
+   * @property name
    * @type String
    */
-  fileId: DS.attr('string'),
+  name: DS.attr('string'),
 
   /**
    * Tracks the state of whether the model is refetching this.get('content').

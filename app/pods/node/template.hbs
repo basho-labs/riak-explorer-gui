@@ -1,5 +1,5 @@
-{{#dashboard-module class='medium-width'}}
-  {{#dashboard-module-body}}
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.body}}
     {{#ivy-tabs}}
       {{#ivy-tab-list}}
         {{#ivy-tab}}Statistics{{/ivy-tab}}
@@ -11,12 +11,12 @@
       {{#ivy-tab-panel}}
         <table class="key-value-table">
           <tbody>
-          {{#each model.statsList as |stat|}}
+          {{#each-in model.stats as |key value|}}
             <tr>
-              <td class='key'>{{stat.key}}</td>
-              <td class='value'>{{stat.value}}</td>
+              <td class='key'>{{key}}</td>
+              <td class='value'>{{value}}</td>
             </tr>
-          {{/each}}
+          {{/each-in}}
           </tbody>
         </table>
       {{/ivy-tab-panel}}
@@ -35,12 +35,12 @@
 
         <table class="key-value-table">
           <tbody>
-          {{#each model.configList as |config|}}
+          {{#each-in model.config as |key value|}}
             <tr>
-              <td class='key'>{{config.key}}</td>
-              <td class='value'>{{config.value}}</td>
+              <td class='key'>{{key}}</td>
+              <td class='value'>{{value}}</td>
             </tr>
-          {{/each}}
+          {{/each-in}}
           </tbody>
         </table>
       {{/ivy-tab-panel}}
@@ -50,7 +50,7 @@
           <ul class="button-list">
             {{#each model.logFiles as |logFile|}}
               <li>
-                {{link-to logFile.fileId 'log-file' model.cluster.id model.id logFile.fileId}}
+                {{link-to logFile.name 'log-file' model.cluster.name model.name logFile.name}}
               </li>
             {{/each}}
           </ul>
@@ -64,7 +64,7 @@
           <ul class="button-list">
             {{#each model.configFiles as |configFile|}}
               <li>
-                {{link-to configFile.fileId 'config-file' model.cluster.id model.id configFile.fileId}}
+                {{link-to configFile.name 'config-file' model.cluster.name model.name configFile.name}}
               </li>
             {{/each}}
           </ul>
@@ -72,7 +72,6 @@
           No config files for this node
         {{/if}}
       {{/ivy-tab-panel}}
-
     {{/ivy-tabs}}
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

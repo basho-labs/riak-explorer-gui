@@ -4,7 +4,7 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 export default Ember.Route.extend(WrapperState, {
 
   model: function(params) {
-    return this.explorer.getConfigFile(params.clusterId, params.nodeId, params.configId);
+    return this.explorer.getConfigFile(params.clusterName, params.nodeName, params.configName);
   },
 
   afterModel: function(model, transition) {
@@ -16,7 +16,7 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Config Detail',
-      label: model.get('fileId')
+      label: model.get('name')
     });
   }
 });

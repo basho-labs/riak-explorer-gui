@@ -3,18 +3,7 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
   model(params) {
-    let self = this;
-
-    return this.explorer.getCluster(params.clusterId)
-      .then(function(cluster) {
-        let schema = cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
-
-        if (!schema) {
-          schema = self.explorer.createSchema(params.searchSchemaId, cluster);
-        }
-
-        return schema;
-      });
+    return this.explorer.getSearchSchema(params.clusterName, params.searchSchemaName);
   },
 
   afterModel(model, transition) {
@@ -26,15 +15,6 @@ export default Ember.Route.extend(WrapperState, {
     this.setViewLabel({
       preLabel: 'Search Schema',
       label: model.get('name')
-    });
-
-    return Ember.$.ajax({
-      type: 'GET',
-      url: model.get('url'),
-      dataType: 'xml'
-    }).then(function(data) {
-      let xmlString = (new XMLSerializer()).serializeToString(data);
-      model.set('content', xmlString);
     });
   }
 });

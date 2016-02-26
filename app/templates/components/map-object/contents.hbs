@@ -1,0 +1,22 @@
+{{#each-in sortedMap as |type contents|}}
+  {{#if (eq type 'maps')}}
+    {{map-object.maps
+    title=type
+    maps=contents}}
+  {{!--removeField=removeField}}--}}
+  {{else if (eq type 'sets')}}
+    {{map-object.sets
+    title=type
+    map=map
+    sets=contents
+    removeField=removeField}}
+  {{else}}
+    {{map-object.section
+    title=type
+    map=map
+    items=contents}}
+  {{!--removeField=removeField--}}
+  {{!--editField=editField--}}
+  {{!--addField=addField--}}
+  {{/if}}
+{{/each-in}}

@@ -1,5 +1,5 @@
-{{#dashboard-module class=''}}
-  {{#dashboard-module-header}}
+{{#dashboard-module.container}}
+  {{#dashboard-module.header}}
     <span>&nbsp;</span>
     <div class="module-actions">
       <span class="update action-button" {{action 'updateSchema' model}}>
@@ -7,19 +7,21 @@
         Update Schema
       </span>
 
-      {{#link-to 'search-schema' model.cluster.id model.name class='cancel action-button' }}
+      {{#link-to 'search-schema' model.cluster.name model.name class='cancel action-button' }}
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         Cancel
       {{/link-to}}
     </div>
-  {{/dashboard-module-header}}
-  {{#dashboard-module-body}}
-    <pre class="editable">
-    <code>
-      {{content-editable
-      value=model.content
-      type="html"}}
-    </code>
-  </pre>
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#if model.content}}
+      <pre class="editable">
+        <code>
+          {{content-editable
+          value=model.content
+          type="html"}}
+        </code>
+      </pre>
+    {{/if}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

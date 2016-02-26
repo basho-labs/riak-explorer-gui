@@ -1,5 +1,4 @@
 import DS from 'ember-data';
-import objectToArray from '../../utils/riak-util';
 
 export default DS.Model.extend({
   /**
@@ -7,21 +6,21 @@ export default DS.Model.extend({
    * @property cluster
    * @type DS.Model
    */
-  cluster: DS.belongsTo('cluster', {async: true}),
+  cluster: DS.belongsTo('cluster'),
 
   /**
    * The nodes various configuration files
    * @property configFiles
    * @type DS.Model
    */
-  configFiles: DS.hasMany('config-file', {async: true}),
+  configFiles: DS.hasMany('config-file'),
 
   /**
    * The nodes various log files
    * @property logFiles
    * @type DS.Model
    */
-  logFiles: DS.hasMany('log-file', {async: true}),
+  logFiles: DS.hasMany('log-file'),
 
   /**
    * Whether or not the node is available when pinged.
@@ -48,6 +47,8 @@ export default DS.Model.extend({
    */
   config: DS.attr(),
 
+  name: DS.attr('string'),
+
   /**
    * All the nodes statistics. Stored as an Object hashmap.
    *
@@ -65,23 +66,6 @@ export default DS.Model.extend({
   status: DS.attr('string', {defaultValue: 'invalid'}),
 
   /**
-   * All of the nodes configuration settings, stored as an array of key-value objects.
-   *  ex. [{key: 'anti_entropy', value: 'active'}, {key: 'anti_entropy.bloomfilter', value: 'on'}...]
-   *
-   * @method configList
-   * @return {Array<Object<Config>>}
-   */
-  configList: function() {
-    let configList = [];
-
-    if (this.get('config')) {
-      configList = objectToArray(this.get('config'));
-    }
-
-    return configList;
-  }.property('config'),
-
-  /**
    * Node health is determined by whether or not the node is available and if it's
    *  status is valid
    *
@@ -90,22 +74,5 @@ export default DS.Model.extend({
    */
   isHealthy: function() {
     return !!(this.get('available') && this.get('status') === 'valid');
-  }.property('available', 'status'),
-
-  /**
-   * All of the nodes statistics, stored as an array of key-value objects.
-   *  ex. [{key: 'asn1_version', value: '2.0.3'}, {key: 'basho_stats_version', value: '1.0.3'}...]
-   *
-   * @method statsList
-   * @return {Array<Object<Stats>>}
-   */
-  statsList: function() {
-    let statsList = [];
-
-    if (this.get('stats')) {
-      statsList = objectToArray(this.get('stats'));
-    }
-
-    return statsList;
-  }.property('stats')
+  }.property('available', 'status')
 });

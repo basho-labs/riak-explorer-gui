@@ -3,7 +3,7 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
   model: function(params) {
-    return this.explorer.getNode(params.clusterId, params.nodeId);
+    return this.explorer.getNode(params.clusterName, params.nodeName);
   },
 
   afterModel: function(model, transition) {
@@ -14,7 +14,7 @@ export default Ember.Route.extend(WrapperState, {
     });
     this.setViewLabel({
       preLabel: 'Node Detail',
-      label: model.get('id')
+      label: model.get('name')
     });
   }
 });

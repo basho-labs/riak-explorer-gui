@@ -8,7 +8,7 @@ export default DS.Model.extend({
    * @type {DS.Model} Cluster
    * @writeOnce
    */
-  cluster: DS.belongsTo('cluster', {async: true}),
+  cluster: DS.belongsTo('cluster'),
 
   name: DS.attr('string'),
 

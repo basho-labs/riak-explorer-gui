@@ -1,0 +1,27 @@
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Object Type</th>
+  <th>n_val</th>
+  <th>Conflict Res. Strategy</th>
+</tr>
+</thead>
+<tbody>
+{{#each bucketTypes as |bt|}}
+  <tr>
+    <td>
+      {{link.bucket-type bucketType=bt btnBlock=true}}
+    </td>
+    <td>
+      {{bt.objectType}}
+    </td>
+    <td>
+      {{bt.nVal}}
+    </td>
+    <td>
+      {{bt.resolutionStrategy}}
+    </td>
+  </tr>
+{{/each}}
+</tbody>
+

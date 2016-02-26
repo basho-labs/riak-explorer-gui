@@ -22,21 +22,21 @@ var Cluster = DS.Model.extend({
    * @property nodes
    * @type Array<BucketType>
    */
-  nodes: DS.hasMany('node', {async: true}),
+  nodes: DS.hasMany('node'),
 
   /**
    * Search indexes created on the cluster
    * @property searchIndexes
    * @type Array<BucketType>
    */
-  searchIndexes: DS.hasMany('search-index', {async: true}),
+  searchIndexes: DS.hasMany('search-index'),
 
   /**
    * Search schemas created on the cluster
    * @property searchSchemas
    * @type Array<BucketType>
    */
-  searchSchemas: DS.hasMany('search-schema', {async: true}),
+  searchSchemas: DS.hasMany('search-schema'),
 
   /**
    * Is this cluster in Dev Mode? Set in the Explorer config file.
@@ -70,17 +70,6 @@ var Cluster = DS.Model.extend({
   activeBucketTypes: function() {
     return this.get('bucketTypes').filterBy('isActive');
   }.property('bucketTypes'),
-
-  /**
-   * Returns the name of the cluster
-   * (As specified in the `riak_explorer.conf` file)
-   * Note: Currently unrelated to the source/datacenter name used by MDC Repl
-   * @method clusterId
-   * @type String
-   */
-  clusterId: function() {
-    return this.get('id');
-  }.property('id'),
 
   /**
    * Boolean check to see if the cluster has a Riak version number associated with it
@@ -133,6 +122,17 @@ var Cluster = DS.Model.extend({
   }.property('riakType'),
 
   /**
+   * Returns the name of the cluster
+   * (As specified in the `riak_explorer.conf` file)
+   * Note: Currently unrelated to the source/datacenter name used by MDC Repl
+   * @method clusterId
+   * @type String
+   */
+  name: function() {
+    return this.get('id');
+  }.property('id'),
+
+  /**
    * Returns true if this cluster is in production mode (development_mode=off)
    * @method productionMode
    * @type Boolean
@@ -149,8 +149,8 @@ var Cluster = DS.Model.extend({
    * @return {String} URL
    */
   proxyUrl: function() {
-    return config.baseURL + 'riak/clusters/' + this.get('id');
-  }.property('id'),
+    return `${config.baseURL}riak/clusters/${this.get('name')}`;
+  }.property('name'),
 
   /**
    * Calculates cluster status based on node health. If all child nodes are valid and

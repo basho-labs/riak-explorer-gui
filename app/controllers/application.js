@@ -5,7 +5,7 @@ export default Ember.Controller.extend({
     clusterSelected(cluster) {
       this.set('currentCluster', cluster);
       // Default to data view since no cluster overview view
-      this.transitionToRoute('cluster.data', cluster.get('id'));
+      this.transitionToRoute('cluster.data', cluster.get('name'));
     }
   },
 

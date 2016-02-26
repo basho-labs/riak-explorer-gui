@@ -1,26 +1,10 @@
 import Ember from 'ember';
 import WrapperState from '../../mixins/routes/wrapper-state';
+import Alerts from '../../mixins/routes/alerts';
 
-var RiakObjectRoute = Ember.Route.extend(WrapperState, {
-  actions: {
-    error: function(error, transition) {
-      if (error && error.status === 404) {
-        transition.queryParams = transition.params['riak-object'];
-        this.transitionTo('error.object-not-found', transition);
-      } else {
-        // Unknown error, bubble error event up to routes/application.js
-        return true;
-      }
-    }
-  },
-
+var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
   model: function(params) {
-    var explorer = this.explorer;
-
-    return explorer.getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
-      .then(function(bucket) {
-        return explorer.getRiakObject(bucket, params.key);
-      });
+    return this.explorer.getObject(params.clusterName, params.bucketTypeName, params.bucketName, params.objectName);
   },
 
   afterModel: function(model, transition) {
@@ -32,19 +16,27 @@ var RiakObjectRoute = Ember.Route.extend(WrapperState, {
       riakObject: model
     });
     this.setViewLabel({
-      preLabel: 'Riak Object',
-      label: model.get('key')
+      preLabel: 'Object',
+      label: model.get('name')
     });
   },
 
-  setupController: function(controller, model) {
-    this._super(controller, model);
+  actions: {
+    deleteObject: function(object) {
+      let clusterName = object.get('cluster').get('name');
+      let bucketTypeName = object.get('bucketType').get('name');
+      let bucketName = object.get('bucket').get('name');
+      let objectList = object.get('bucket').get('objectList');
+      let self = this;
 
-    if (!model.get('isLoaded')) {
-      this.explorer.getRiakObject(model.get('bucket'), model.get('key'))
-        .then(function(object) {
-          controller.set('model', object);
-        });
+      object.destroyRecord().then(
+        function onSuccess() {
+          self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
+        },
+        function onError() {
+          this.showAlert('alerts._error_old-request-was-not-processed');
+        }
+      );
     }
   }
 });

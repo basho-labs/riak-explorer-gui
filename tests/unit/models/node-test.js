@@ -45,13 +45,16 @@ test('isHealthy', function(assert) {
   let model = this.subject();
 
   Ember.run(function() {
-    model.set('available', true).set('status', 'valid');
+    model.set('available', true);
+    model.set('status', 'valid');
     assert.equal(model.get('isHealthy'), true);
 
-    model.set('available', false).set('status', 'valid');
+    model.set('available', false);
+    model.set('status', 'valid');
     assert.equal(model.get('isHealthy'), false);
 
-    model.set('available', true).set('status', 'invalid');
+    model.set('available', true);
+    model.set('status', 'invalid');
     assert.equal(model.get('isHealthy'), false);
   });
 });

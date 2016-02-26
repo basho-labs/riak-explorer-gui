@@ -1,50 +1,20 @@
 import Ember from 'ember';
-import WrapperState from '../../../mixins/routes/wrapper-state';
+import schemaRoute from '../route';
 import Alerts from '../../../mixins/routes/alerts';
 
-export default Ember.Route.extend(Alerts, WrapperState, {
-  model(params) {
-    return this.explorer.getCluster(params.clusterId)
-      .then(function(cluster) {
-        return cluster.get('searchSchemas').findBy('name', params.searchSchemaId);
-      });
-  },
-
-  afterModel(model, transition) {
-    this.setSidebarCluster(model.get('cluster'));
-    this.setBreadCrumbs({
-      cluster: model.get('cluster'),
-      searchSchema: model
-    });
-    this.setViewLabel({
-      preLabel: 'Search Schema',
-      label: model.get('name')
-    });
-
-    if (!model.get('content')) {
-      return Ember.$.ajax({
-        type: 'GET',
-        url: model.get('url'),
-        dataType: 'xml'
-      }).then(function(data) {
-        let xmlString = (new XMLSerializer()).serializeToString(data);
-        model.set('content', xmlString);
-      });
-    }
-  },
-
+export default schemaRoute.extend(Alerts, {
   actions: {
     updateSchema: function(schema) {
       let xmlString = schema.get('content');
-      let self = this;
       let xmlDoc = null;
-      let clusterId = schema.get('cluster').get('id');
-      let schemaId = schema.get('name');
+      let clusterName = schema.get('cluster').get('name');
+      let schemaName = schema.get('name');
+      let self = this;
 
       try {
         xmlDoc = Ember.$.parseXML(xmlString);
       } catch (error) {
-        this.render('alerts.error-invalid-xml', {
+        this.render('alerts._error_old-invalid-xml', {
           into: 'application',
           outlet: 'alert'
         });
@@ -52,17 +22,14 @@ export default Ember.Route.extend(Alerts, WrapperState, {
         return;
       }
 
-      return Ember.$.ajax({
-        type: 'PUT',
-        url: schema.get('url'),
-        contentType: 'application/xml',
-        processData: false,
-        data: xmlDoc
-      }).then(function(data) {
-        self.transitionTo('search-schema', clusterId, schemaId);
-      }, function(error) {
-        self.showAlert('alerts.error-schema-not-saved');
-      });
+      this.explorer.updateSchema(schema, xmlDoc).then(
+        function onSuccess() {
+          self.transitionTo('search-schema', clusterName, schemaName);
+        },
+        function onFail() {
+          self.showAlert('alerts._error_old-schema-not-saved');
+        }
+      );
     }
   }
 });

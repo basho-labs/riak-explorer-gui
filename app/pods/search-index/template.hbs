@@ -1,6 +1,6 @@
-{{#dashboard-module class='small-width'}}
-  {{dashboard-module-header label='Index Details'}}
-  {{#dashboard-module-body}}
+{{#dashboard-module.container class='small-width'}}
+  {{dashboard-module.header label='Index Details'}}
+  {{#dashboard-module.body}}
     <table class="key-value-table">
       <tbody>
       <tr>
@@ -14,7 +14,7 @@
       <tr>
         <td class="key">Schema</td>
         <td class="value">
-          {{#link-to 'search-schema' model.cluster.id model.schema.name class='btn btn-small btn-primary'}}
+          {{#link-to 'search-schema' model.cluster.name model.schema.name class='btn btn-small btn-primary'}}
             {{model.schema.name}}
           {{/link-to}}
         </td>
@@ -26,7 +26,7 @@
             <ul class="button-list">
               {{#each model.bucketTypesUsing as |bucketType|}}
                 <li>
-                  {{link.bucket-type bucketType=bucketType btnBlock=true}}
+                  {{link.bucket-type bucketType=bucketType}}
                 </li>
               {{/each}}
             </ul>
@@ -37,5 +37,5 @@
       </tr>
       </tbody>
     </table>
-  {{/dashboard-module-body}}
-{{/dashboard-module}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

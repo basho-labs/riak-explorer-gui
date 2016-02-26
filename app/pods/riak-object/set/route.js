@@ -1,49 +1,44 @@
-import RiakObjectRoute from "../route";
-import Alerts from '../../../mixins/routes/alerts';
+import RiakObjectRoute from '../route';
 
-var RiakObjectSetRoute = RiakObjectRoute.extend(Alerts, {
+export default RiakObjectRoute.extend({
   actions: {
     /**
      * Adds an element to the set.
      * @event addElement
-     * @param {RiakSetObject} set
-     * @param {String} newItem Element to be added
+     * @param {DS.Model} set
+     * @param {String} newItem
      */
     addElement: function(set, newItem) {
       let itemToBeSubmitted = newItem.trim();
-      let setItems = set.get('contents').value;
+      let setItems = set.get('contents');
 
       if (itemToBeSubmitted.length &&
-          setItems.indexOf(itemToBeSubmitted) === -1) {
-        this.get('explorer').updateDataType(set, 'addElement', itemToBeSubmitted);
-        setItems.push(itemToBeSubmitted);
-        set.set('contents', { value: setItems });
+        setItems.indexOf(itemToBeSubmitted) === -1) {
+
+        setItems.pushObject(itemToBeSubmitted);
+        this.explorer.updateObject(set, { add: itemToBeSubmitted });
 
         // Empty out any lingering warnings on success
         this.removeAlert();
       } else {
-        this.showAlert('alerts.error-set-items-unique');
+        this.showAlert('alerts._error_old-set-items-unique');
       }
     },
 
     /**
      * Removes specified element from the set.
      * @event removeElement
-     * @param set {RiakSetObject}
-     * @param item {String} Element to be removed
+     * @param {DS.Model} set
+     * @param {String} item
      */
     removeElement: function(set, item) {
-      let setItems = set.get('contents').value;
+      let setItems = set.get('contents');
       let indexOfItem = setItems.indexOf(item);
 
       if (indexOfItem > -1) {
-        this.get('explorer').updateDataType(set, 'removeElement', item);
-
-        setItems.splice(indexOfItem, 1);
-        set.set('contents', { value: setItems });
+        setItems.removeAt(indexOfItem, 1);
+        this.explorer.updateObject(set, { remove: item });
       }
     }
   }
 });
-
-export default RiakObjectSetRoute;

@@ -3,10 +3,7 @@ import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(WrapperState, {
   model: function(params) {
-    return this.explorer.getCluster(params.clusterId)
-      .then(function(cluster) {
-        return cluster.get('searchIndexes').findBy('name', params.searchIndexId);
-      });
+    return this.explorer.getIndex(params.clusterName, params.searchIndexName);
   },
 
   afterModel: function(model, transition) {

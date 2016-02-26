@@ -1,29 +1,17 @@
-import Ember from 'ember';
-import WrapperState from '../../../mixins/routes/wrapper-state';
+import RiakObjectRoute from '../route';
 
-var RiakObjectEditRoute = Ember.Route.extend(WrapperState, {
-  model: function(params) {
-    var explorer = this.explorer;
+export default RiakObjectRoute.extend({
+  actions: {
+    saveObject: function(object) {
+      let clusterName = object.get('cluster').get('name');
+      let bucketTypeName = object.get('bucketType').get('name');
+      let bucketName = object.get('bucket').get('name');
+      let objectName = object.get('name');
+      let self = this;
 
-    return explorer.getBucket(params.clusterId, params.bucketTypeId, params.bucketId)
-      .then(function(bucket) {
-        return explorer.getRiakObject(bucket, params.key);
+      object.save().then(function() {
+        self.transitionTo('riak-object', clusterName, bucketTypeName, bucketName, objectName);
       });
-  },
-
-  afterModel: function(model, transition) {
-    this.setSidebarCluster(model.get('cluster'));
-    this.setBreadCrumbs({
-      cluster: model.get('cluster'),
-      bucketType: model.get('bucketType'),
-      bucket: model.get('bucket'),
-      riakObject: model
-    });
-    this.setViewLabel({
-      preLabel: 'Riak Object',
-      label: model.get('key')
-    });
+    }
   }
 });
-
-export default RiakObjectEditRoute;

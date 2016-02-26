@@ -1,0 +1,8 @@
+<h4 class="map-section-title">
+  {{title}}
+  <span class="badge">{{object-length maps}}</span>
+</h4>
+
+{{#each-in maps as |name value|}}
+  {{map-object.map name=name value=value}}
+{{/each-in}}
