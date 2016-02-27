@@ -2,6 +2,10 @@
   .ivy-tab-list {
     border-bottom: 1px solid $grayscale-color-x-light;
 
+    &.capitalize {
+      text-transform: capitalize;
+    }
+
     .ivy-tab {
       padding: 15px 0;
       margin: 0 30px 0 0;
@@ -28,5 +32,44 @@
   &.half-width {
     display: inline-block;
     width: 50%;
+  }
+
+  &.vertical {
+    @include flexbox;
+    @include flex-direction(row);
+    margin-top: 20px;
+
+    .ivy-tab-list {
+      @include flex(none);
+      border-right: 1px solid $grayscale-color-x-light;
+      border-bottom: none;
+
+      .ivy-tab {
+        display: block;
+        padding: 8px 20px 8px 0;
+        margin: 0;
+        cursor: pointer;
+        font-weight: bold;
+        color: $branding-color-1;
+        border: none;
+        outline: none;
+
+        &:first-child {
+          padding-top: 0px;
+        }
+
+        &[aria-selected=true] {
+          cursor: default;
+          color: $grayscale-color-dark;
+          border-right: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
+          margin-right: -1px;
+        }
+      }
+    }
+
+    .ivy-tab-panel {
+      @include flex(1);
+      padding: 0 20px 0 30px;
+    }
   }
 }

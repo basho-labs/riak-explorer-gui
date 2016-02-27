@@ -1,32 +1,44 @@
-.tooltip-icon {
-  font-size: 10px;
-  color: #777;
-  cursor: help;
-}
-
-.tooltip {
-  &.in {
-    opacity: 1;
+.ember-application {
+  .tooltip-icon {
+    font-size: 10px;
+    color: #777;
+    cursor: help;
   }
 
-  .tooltip-content-wrapper {
-    padding: 10px;
-
-    .title {
-      @extend .label;
-      @extend .label-default;
-      font-size: 14px;
+  .tooltip {
+    &.in {
+      opacity: 1;
     }
 
-    .description {
-      margin: 10px 0 5px 0;
+    &.tooltip-wide {
+      max-width: 300px;
     }
 
-    .default, .editable, .type {
-      font-style: italic;
-      font-size: 12px;
+    .tooltip-content-wrapper {
+      padding: 10px;
+
+      .title {
+        @extend .label;
+        @extend .label-default;
+        display: inline-block;
+        font-size: 14px;
+        margin-bottom: 10px;
+        word-break: break-word;
+      }
+
+      .description {
+        display: inline-block;
+        margin-bottom: 5px;
+        word-break: break-word;
+      }
+
+      .small {
+        font-style: italic;
+        font-size: 12px;
+      }
     }
   }
 }
+
 
 

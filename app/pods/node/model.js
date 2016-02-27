@@ -1,4 +1,6 @@
 import DS from 'ember-data';
+import _ from 'lodash/lodash';
+import NodeStatsHelp from '../../utils/riak-help-json/riak_status';
 
 export default DS.Model.extend({
   /**
@@ -74,5 +76,32 @@ export default DS.Model.extend({
    */
   isHealthy: function() {
     return !!(this.get('available') && this.get('status') === 'valid');
-  }.property('available', 'status')
+  }.property('available', 'status'),
+
+  statsByCategory: function() {
+    if (this.get('stats')) {
+      let stats = this.get('stats');
+
+      // Removes any key in NodeStatsHelp that is not found in stats
+      let pruned = _.pick(NodeStatsHelp, Object.keys(stats));
+
+      // Removes any key in NodeStatsHelp that is not found in stats
+      let merged = _.forEach(pruned, function(value, key) {
+          value.current_value = stats[key];
+      });
+
+      // Groups all the keys in NodeStatsHelp by category
+      let groupedBy = _.groupBy(merged, 'category');
+
+      // Alpha-sort by category
+      let sorted = {};
+      Object.keys(groupedBy)
+        .sort()
+        .forEach(function(key) {
+          sorted[key] = groupedBy[key];
+        });
+
+      return  sorted;
+    }
+  }.property('stats')
 });

@@ -1,4 +1,4 @@
-{{#dashboard-module.container class='medium-width'}}
+{{#dashboard-module.container}}
   {{#dashboard-module.body}}
     {{#ivy-tabs}}
       {{#ivy-tab-list}}
@@ -9,16 +9,36 @@
       {{/ivy-tab-list}}
 
       {{#ivy-tab-panel}}
-        <table class="key-value-table">
-          <tbody>
-          {{#each-in model.stats as |key value|}}
-            <tr>
-              <td class='key'>{{key}}</td>
-              <td class='value'>{{value}}</td>
-            </tr>
+        {{!--TODO: Move Stats into own route, too much info in this view--}}
+        {{#ivy-tabs class='vertical'}}
+          {{#ivy-tab-list class='capitalize'}}
+            {{#each-in model.statsByCategory as |category stats|}}
+              {{#ivy-tab}}
+                {{category}}
+              {{/ivy-tab}}
+            {{/each-in}}
+          {{/ivy-tab-list}}
+
+          {{#each-in model.statsByCategory as |category stats|}}
+            {{#ivy-tab-panel}}
+              <table class="key-value-table">
+                <tbody>
+                {{#each stats as |stat|}}
+                  <tr>
+                    <td class="key">
+                      {{stat.name}}
+                      {{tooltip.node-stats info=stat}}
+                    </td>
+                    <td class="value">
+                      {{stat.current_value}}
+                    </td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+            {{/ivy-tab-panel}}
           {{/each-in}}
-          </tbody>
-        </table>
+        {{/ivy-tabs}}
       {{/ivy-tab-panel}}
 
       {{#ivy-tab-panel}}
