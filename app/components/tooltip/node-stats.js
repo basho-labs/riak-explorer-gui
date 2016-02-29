@@ -17,8 +17,8 @@ export default Ember.Component.extend({
       const element = this.$()[0];
 
       const wrapperStart = `<div class='tooltip-content-wrapper'>`;
-      const title = `<div class='title'>${info.name}</div>`;
-      const desc = (info.description.length) ? `<div class='description'>${info.description}</div>` : "";
+      const title = `<div class="title-wrapper"><div class='title'>${info.name}</div></div>`;
+      const desc = (info.description.length) ? `<div class="description-wrapper"><div class='description'>${info.description}</div></div>` : "";
       const example = (info.example.length) ? `<div class='example small'>Example: ${info.example}</div>` : "";
       const schema_type = (info.json_schema_type.length) ? `<div class='schema-type small'>Type: ${info.json_schema_type}</div>` : "";
       const metric_type = (info.metric_type.length) ? `<div class='metric-type small'>Metric Type: ${info.metric_type}</div>` : "";

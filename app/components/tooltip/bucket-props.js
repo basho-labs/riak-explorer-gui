@@ -21,8 +21,8 @@ export default Ember.Component.extend({
       const toolTipTemplate =
         `
         <div class='tooltip-content-wrapper'>
-          <div class='title'>${key}</div>
-          <div class='description'>${helpInfo.description}</div>
+          <div class='title-wrapper'><div class='title'>${key}</div></div>
+          <div class='description-wrapper'><div class='description'>${helpInfo.description}</div></div>
           <div class='default small'>Default Value: ${helpInfo.default}</div>
           <div class='editable small'>Editable: ${helpInfo.editable}</div>
           <div class='type small'>Type: ${helpInfo.json_schema_type}</div>

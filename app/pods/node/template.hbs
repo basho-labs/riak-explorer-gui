@@ -55,9 +55,12 @@
 
         <table class="key-value-table">
           <tbody>
-          {{#each-in model.config as |key value|}}
+          {{#each-in model.config as |name value|}}
             <tr>
-              <td class='key'>{{key}}</td>
+              <td class='key'>
+                {{name}}
+                {{tooltip.node-config itemKey=name}}
+              </td>
               <td class='value'>{{value}}</td>
             </tr>
           {{/each-in}}

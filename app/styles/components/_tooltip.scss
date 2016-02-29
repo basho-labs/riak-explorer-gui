@@ -11,25 +11,30 @@
     }
 
     &.tooltip-wide {
-      max-width: 300px;
+      max-width: 400px;
     }
 
     .tooltip-content-wrapper {
       padding: 10px;
 
-      .title {
-        @extend .label;
-        @extend .label-default;
-        display: inline-block;
-        font-size: 14px;
+      .title-wrapper {
         margin-bottom: 10px;
-        word-break: break-word;
+
+        .title {
+          @extend .label;
+          @extend .label-default;
+          font-size: 14px;
+          word-break: break-word;
+        }
       }
 
-      .description {
-        display: inline-block;
+      .description-wrapper {
         margin-bottom: 5px;
-        word-break: break-word;
+
+        .description {
+          display: inline-block;
+          word-break: break-word;
+        }
       }
 
       .small {
