@@ -41,6 +41,8 @@ export default DS.Model.extend({
    */
   advancedConfig: DS.attr(),
 
+  alphaSortedConfig: DS.attr(),
+
   /**
    * All the nodes configuration settings. Stored as an Object hashmap.
    *
@@ -58,6 +60,8 @@ export default DS.Model.extend({
    * @type Object
    */
   stats: DS.attr(),
+
+  statsByCategory: DS.attr(),
 
   /**
    * Whether or not the node's ring file is "valid" or "invalid".
@@ -78,16 +82,38 @@ export default DS.Model.extend({
     return !!(this.get('available') && this.get('status') === 'valid');
   }.property('available', 'status'),
 
-  statsByCategory: function() {
-    if (this.get('stats')) {
+  setAlphaSortedConfig: function() {
+    if (!this.get('alphaSortedConfig')) {
+      let config = _.cloneDeep(this.get('config'));
+      let sortedKeys = Object.keys(config).sort();
+      let alphaSortedConfig = {};
+
+      sortedKeys.forEach(function(key) {
+        alphaSortedConfig[key] = config[key];
+      });
+
+      return this.set('alphaSortedConfig', alphaSortedConfig);
+    }
+  }.observes('config'),
+
+  setStatsByCategory: function() {
+    if (!this.get('statsByCategory')) {
       let stats = this.get('stats');
 
       // Removes any key in NodeStatsHelp that is not found in stats
+      //debugger;
       let pruned = _.pick(NodeStatsHelp, Object.keys(stats));
 
-      // Removes any key in NodeStatsHelp that is not found in stats
+      // Adds Current Value from stats and merges it with the appropriate key in StatsHelp
       let merged = _.forEach(pruned, function(value, key) {
           value.current_value = stats[key];
+
+          // Stringify "disk" property so it can be displayed in the UI
+          if (key === 'disk') {
+            value.current_value = value.current_value.map(function(obj) {
+              return JSON.stringify(obj)
+            });
+          }
       });
 
       // Groups all the keys in NodeStatsHelp by category
@@ -101,7 +127,7 @@ export default DS.Model.extend({
           sorted[key] = groupedBy[key];
         });
 
-      return  sorted;
+      return  this.set('statsByCategory', sorted);
     }
-  }.property('stats')
+  }.observes('stats')
 });

@@ -5,18 +5,25 @@
       <table class="key-value-table">
       <tbody>
       <tr>
+        <td class="key">Status</td>
+        <td class="value"><span class="cluster-status cluster-status-label {{model.status}}">{{model.status}}</span></td>
+      </tr>
+      <tr>
         <td class="key">Development Mode</td>
         <td class="value">
-          {{#if model.developmentMode}}
-            On
-          {{else}}
-            Off
-          {{/if}}
+          <code>
+            {{#if model.developmentMode}}
+              On
+            {{else}}
+              Off
+            {{/if}}
+          </code>
         </td>
       </tr>
       <tr>
         <td class="key">Edition Type</td>
         <td class="value">
+          <code>
           {{#if model.isEnterpriseEdition}}
             Enterprise
           {{else}}
@@ -26,12 +33,10 @@
               {{model.riakType}}
             {{/if}}
           {{/if}}
+          </code>
         </td>
       </tr>
-      <tr>
-        <td class="key">Status</td>
-        <td class="value"><span class="cluster-status cluster-status-label {{model.status}}">{{model.status}}</span></td>
-      </tr>
+
       </tbody>
     </table>
     {{/dashboard-module.body}}

@@ -2,14 +2,40 @@
   {{#dashboard-module.body}}
     {{#ivy-tabs}}
       {{#ivy-tab-list}}
-        {{#ivy-tab}}Statistics{{/ivy-tab}}
         {{#ivy-tab}}Configuration{{/ivy-tab}}
+        {{#ivy-tab}}Statistics{{/ivy-tab}}
         {{#ivy-tab}}Log Files{{/ivy-tab}}
         {{#ivy-tab}}Config Files{{/ivy-tab}}
       {{/ivy-tab-list}}
 
       {{#ivy-tab-panel}}
-        {{!--TODO: Move Stats into own route, too much info in this view--}}
+        {{#if model.advancedConfig}}
+          <h4>Advanced</h4>
+          <ul class="code-list">
+            {{#each model.advancedConfig as |advancedItem|}}
+              <li><code>{{advancedItem}}</code></li>
+            {{/each}}
+          </ul>
+
+          <h4>General</h4>
+        {{/if}}
+
+        <table class="key-value-table">
+          <tbody>
+          {{#each-in model.alphaSortedConfig as |name value|}}
+            <tr>
+              <td class='key'>
+                {{name}}
+                {{tooltip.node-config itemKey=name}}
+              </td>
+              <td class='value'><code>{{value}}</code></td>
+            </tr>
+          {{/each-in}}
+          </tbody>
+        </table>
+      {{/ivy-tab-panel}}
+
+      {{#ivy-tab-panel}}
         {{#ivy-tabs class='vertical'}}
           {{#ivy-tab-list class='capitalize'}}
             {{#each-in model.statsByCategory as |category stats|}}
@@ -27,10 +53,10 @@
                   <tr>
                     <td class="key">
                       {{stat.name}}
-                      {{tooltip.node-stats info=stat}}
+                      {{tooltip.node-stats itemKey=stat.name}}
                     </td>
                     <td class="value">
-                      {{stat.current_value}}
+                      <code>{{stat.current_value}}</code>
                     </td>
                   </tr>
                 {{/each}}
@@ -39,33 +65,6 @@
             {{/ivy-tab-panel}}
           {{/each-in}}
         {{/ivy-tabs}}
-      {{/ivy-tab-panel}}
-
-      {{#ivy-tab-panel}}
-        {{#if model.advancedConfig}}
-          <h4>Advanced</h4>
-          <ul class="code-list">
-            {{#each model.advancedConfig as |advancedItem|}}
-              <li><code>{{advancedItem}}</code></li>
-            {{/each}}
-          </ul>
-
-          <h4>General</h4>
-        {{/if}}
-
-        <table class="key-value-table">
-          <tbody>
-          {{#each-in model.config as |name value|}}
-            <tr>
-              <td class='key'>
-                {{name}}
-                {{tooltip.node-config itemKey=name}}
-              </td>
-              <td class='value'>{{value}}</td>
-            </tr>
-          {{/each-in}}
-          </tbody>
-        </table>
       {{/ivy-tab-panel}}
 
       {{#ivy-tab-panel}}

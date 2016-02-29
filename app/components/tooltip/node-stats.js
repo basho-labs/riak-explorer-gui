@@ -1,17 +1,19 @@
 import Ember from 'ember';
 import renderTooltip from 'ember-tooltips/utils/render-tooltip';
+import NodeStatsHelp from '../../utils/riak-help-json/riak_status';
 
 export default Ember.Component.extend({
   tagName: 'span',
 
   classNames: ['tooltip-icon', 'node-stats-tooltip', 'glyphicon', 'glyphicon-info-sign'],
 
-  info: null,
+  itemKey: null,
 
   tooltipInstance: null,
 
   didRender: function() {
-    let info = this.get('info');
+    let key  = this.get('itemKey');
+    let info = NodeStatsHelp[key];
 
     if (info) {
       const element = this.$()[0];
@@ -44,10 +46,6 @@ export default Ember.Component.extend({
         event: 'hover',
         typeClass: 'wide'
       }));
-
-      if (info.name === "search_query_throughput_count") {
-        this.get('tooltipInstance').show();
-      }
     }
   }
 });
