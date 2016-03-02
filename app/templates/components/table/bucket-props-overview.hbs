@@ -2,6 +2,11 @@
   <td class='key'>Object Type</td>
   <td class='value'>
     {{model.objectType}}
+  </td>
+</tr>
+<tr>
+  <td class='key'>Activated</td>
+  <td class='value'>
     {{#if model.isActive}}
       <span class="label label-success">Active</span>
     {{else}}
@@ -11,12 +16,12 @@
 </tr>
 <tr>
   <td class='key'>Conflict Res. Strategy</td>
-  <td class='value'>{{model.resolutionStrategy}}</td>
+  <td class='value'><code>{{model.resolutionStrategy}}</code></td>
 </tr>
 <tr>
   <td class='key'>Quorum</td>
   <td class='value'>
-    N_Val: {{model.nVal}}
+    <code>N_Val: {{model.nVal}}
     {{#if model.quorumRelevant}}
       <br/>
       R: {{model.quorum.r}}, W: {{model.quorum.w}},
@@ -27,6 +32,7 @@
         notfound_ok: {{model.quorum.basic_quorum}})
       </small>
     {{/if}}
+    </code>
   </td>
 </tr>
 <tr>

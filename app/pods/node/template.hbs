@@ -1,25 +1,12 @@
-{{#dashboard-module.container class='medium-width'}}
+{{#dashboard-module.container}}
   {{#dashboard-module.body}}
     {{#ivy-tabs}}
       {{#ivy-tab-list}}
-        {{#ivy-tab}}Statistics{{/ivy-tab}}
         {{#ivy-tab}}Configuration{{/ivy-tab}}
+        {{#ivy-tab}}Statistics{{/ivy-tab}}
         {{#ivy-tab}}Log Files{{/ivy-tab}}
         {{#ivy-tab}}Config Files{{/ivy-tab}}
       {{/ivy-tab-list}}
-
-      {{#ivy-tab-panel}}
-        <table class="key-value-table">
-          <tbody>
-          {{#each-in model.stats as |key value|}}
-            <tr>
-              <td class='key'>{{key}}</td>
-              <td class='value'>{{value}}</td>
-            </tr>
-          {{/each-in}}
-          </tbody>
-        </table>
-      {{/ivy-tab-panel}}
 
       {{#ivy-tab-panel}}
         {{#if model.advancedConfig}}
@@ -35,14 +22,49 @@
 
         <table class="key-value-table">
           <tbody>
-          {{#each-in model.config as |key value|}}
+          {{#each-in model.alphaSortedConfig as |name value|}}
             <tr>
-              <td class='key'>{{key}}</td>
-              <td class='value'>{{value}}</td>
+              <td class='key'>
+                {{name}}
+                {{tooltip.node-config itemKey=name}}
+              </td>
+              <td class='value'><code>{{value}}</code></td>
             </tr>
           {{/each-in}}
           </tbody>
         </table>
+      {{/ivy-tab-panel}}
+
+      {{#ivy-tab-panel}}
+        {{#ivy-tabs class='vertical'}}
+          {{#ivy-tab-list class='capitalize'}}
+            {{#each-in model.statsByCategory as |category stats|}}
+              {{#ivy-tab}}
+                {{category}}
+              {{/ivy-tab}}
+            {{/each-in}}
+          {{/ivy-tab-list}}
+
+          {{#each-in model.statsByCategory as |category stats|}}
+            {{#ivy-tab-panel}}
+              <table class="key-value-table">
+                <tbody>
+                {{#each stats as |stat|}}
+                  <tr>
+                    <td class="key">
+                      {{stat.name}}
+                      {{tooltip.node-stats itemKey=stat.name}}
+                    </td>
+                    <td class="value">
+                      <code>{{stat.current_value}}</code>
+                    </td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+            {{/ivy-tab-panel}}
+          {{/each-in}}
+        {{/ivy-tabs}}
       {{/ivy-tab-panel}}
 
       {{#ivy-tab-panel}}

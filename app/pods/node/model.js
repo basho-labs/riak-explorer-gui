@@ -1,4 +1,6 @@
 import DS from 'ember-data';
+import _ from 'lodash/lodash';
+import NodeStatsHelp from '../../utils/riak-help-json/riak_status';
 
 export default DS.Model.extend({
   /**
@@ -39,6 +41,8 @@ export default DS.Model.extend({
    */
   advancedConfig: DS.attr(),
 
+  alphaSortedConfig: DS.attr(),
+
   /**
    * All the nodes configuration settings. Stored as an Object hashmap.
    *
@@ -57,6 +61,8 @@ export default DS.Model.extend({
    */
   stats: DS.attr(),
 
+  statsByCategory: DS.attr(),
+
   /**
    * Whether or not the node's ring file is "valid" or "invalid".
    *
@@ -74,5 +80,54 @@ export default DS.Model.extend({
    */
   isHealthy: function() {
     return !!(this.get('available') && this.get('status') === 'valid');
-  }.property('available', 'status')
+  }.property('available', 'status'),
+
+  setAlphaSortedConfig: function() {
+    if (!this.get('alphaSortedConfig')) {
+      let config = _.cloneDeep(this.get('config'));
+      let sortedKeys = Object.keys(config).sort();
+      let alphaSortedConfig = {};
+
+      sortedKeys.forEach(function(key) {
+        alphaSortedConfig[key] = config[key];
+      });
+
+      return this.set('alphaSortedConfig', alphaSortedConfig);
+    }
+  }.observes('config'),
+
+  setStatsByCategory: function() {
+    if (!this.get('statsByCategory')) {
+      let stats = this.get('stats');
+
+      // Removes any key in NodeStatsHelp that is not found in stats
+      //debugger;
+      let pruned = _.pick(NodeStatsHelp, Object.keys(stats));
+
+      // Adds Current Value from stats and merges it with the appropriate key in StatsHelp
+      let merged = _.forEach(pruned, function(value, key) {
+          value.current_value = stats[key];
+
+          // Stringify "disk" property so it can be displayed in the UI
+          if (key === 'disk') {
+            value.current_value = value.current_value.map(function(obj) {
+              return JSON.stringify(obj)
+            });
+          }
+      });
+
+      // Groups all the keys in NodeStatsHelp by category
+      let groupedBy = _.groupBy(merged, 'category');
+
+      // Alpha-sort by category
+      let sorted = {};
+      Object.keys(groupedBy)
+        .sort()
+        .forEach(function(key) {
+          sorted[key] = groupedBy[key];
+        });
+
+      return  this.set('statsByCategory', sorted);
+    }
+  }.observes('stats')
 });
