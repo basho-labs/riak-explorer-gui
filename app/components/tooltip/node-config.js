@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import renderTooltip from 'ember-tooltips/utils/render-tooltip';
-import NodeConfigHelp from '../../utils/riak-help-json/riak_config';
+import NodeConfigHelp from '../../utils/riak-help/riak_config';
 
 export default Ember.Component.extend({
   tagName: 'span',

@@ -1,6 +1,6 @@
 import DS from 'ember-data';
 import _ from 'lodash/lodash';
-import NodeStatsHelp from '../../utils/riak-help-json/riak_status';
+import NodeStatsHelp from '../../utils/riak-help/riak_status';
 
 export default DS.Model.extend({
   /**
