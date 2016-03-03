@@ -111,7 +111,7 @@ export default DS.Model.extend({
           // Stringify "disk" property so it can be displayed in the UI
           if (key === 'disk') {
             value.current_value = value.current_value.map(function(obj) {
-              return JSON.stringify(obj)
+              return JSON.stringify(obj);
             });
           }
       });

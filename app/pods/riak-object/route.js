@@ -1,8 +1,10 @@
 import Ember from 'ember';
-import WrapperState from '../../mixins/routes/wrapper-state';
 import Alerts from '../../mixins/routes/alerts';
+import LoadingSlider from '../../mixins/routes/loading-slider';
+import ScrollReset from '../../mixins/routes/scroll-reset';
+import WrapperState from '../../mixins/routes/wrapper-state';
 
-var RiakObjectRoute = Ember.Route.extend(WrapperState, Alerts, {
+var RiakObjectRoute = Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
   model: function(params) {
     return this.explorer.getObject(params.clusterName, params.bucketTypeName, params.bucketName, params.objectName);
   },
