@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import renderTooltip from 'ember-tooltips/utils/render-tooltip';
-import bucketPropsHelp from '../../utils/riak-help-json/bucket_props';
+import bucketPropsHelp from '../../utils/riak-help/bucket_props';
 
 export default Ember.Component.extend({
   tagName: 'span',
