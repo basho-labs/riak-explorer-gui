@@ -1,8 +1,15 @@
 import Ember from 'ember';
 import schemaRoute from '../route';
 import Alerts from '../../../mixins/routes/alerts';
+import ScrollReset from '../../../mixins/routes/scroll-reset';
 
-export default schemaRoute.extend(Alerts, {
+export default schemaRoute.extend(Alerts, ScrollReset, {
+  afterModel(model, transition) {
+    this.simulateLoad();
+
+    return this._super(model, transition);
+  },
+
   actions: {
     updateSchema: function(schema) {
       let xmlString = schema.get('content');
