@@ -72,10 +72,38 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
   showContents: function() {
     let contentType = this.get('contentType');
 
-    return (contentType.startsWith('plain/text') ||
-    contentType.startsWith('application/json') ||
-    contentType.startsWith('application/xml') ||
-    contentType.startsWith('multipart/mixed'));
+    if (contentType) {
+      return (contentType.startsWith('plain/text') ||
+      contentType.startsWith('application/json') ||
+      contentType.startsWith('application/javascript') ||
+      contentType.startsWith('application/xml') ||
+      contentType.startsWith('multipart/mixed'));
+    } else {
+      return false;
+    }
+  }.property('contentType'),
+
+  contentTypeLanguage: function() {
+    let contentType = this.get('contentType');
+    let language = null;
+
+    if (contentType) {
+      switch (contentType) {
+        case 'application/json':
+          language = 'json';
+          break;
+        case 'application/javascript':
+          language = 'javascript';
+          break;
+        case 'application/xml':
+          language = 'xml';
+          break;
+        default:
+          break;
+      }
+    }
+
+    return language;
   }.property('contentType'),
 
   routePath: function() {

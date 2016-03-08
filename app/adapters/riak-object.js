@@ -67,13 +67,19 @@ export default ApplicationAdapter.extend({
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
 
     let headers = {};
-    headers['X-Riak-Vclock'] = object.get('causalContext');
-    object.get('indexes').forEach(function(index) {
-      headers[index.key] = index.value;
-    });
-    object.get('headersCustom').forEach(function(header) {
-      headers[header.key] = header.value;
-    });
+    if (object.get('causalContext')) {
+      headers['X-Riak-Vclock'] = object.get('causalContext');
+    }
+    if (object.get('indexes')) {
+      object.get('indexes').forEach(function(index) {
+        headers[index.key] = index.value;
+      });
+    }
+    if (object.get('headersCustom')) {
+      object.get('headersCustom').forEach(function(header) {
+        headers[header.key] = header.value;
+      });
+    }
 
     return Ember.$.ajax({
       type: "PUT",

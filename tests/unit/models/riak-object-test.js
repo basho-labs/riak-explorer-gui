@@ -1,4 +1,4 @@
-import { moduleForModel, test, pending } from 'ember-qunit';
+import { moduleForModel, test } from 'ember-qunit';
 import Ember from 'ember';
 
 moduleForModel('riak-object', 'Unit | Model | riak object', {
@@ -21,7 +21,3 @@ test('bucket relationship', function(assert) {
 
   assert.equal(relationship.kind, 'belongsTo');
 });
-
-pending('contents for display', function() {
-});
-
