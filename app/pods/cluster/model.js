@@ -185,7 +185,18 @@ var Cluster = DS.Model.extend({
     }
 
     return status;
-  }.property('nodes.@each.isHealthy')
+  }.property('nodes.@each.isHealthy'),
+
+  warnings: function() {
+    let warnings = {};
+
+    if (this.get('productionMode') && this.get('nodes').get('length') < 5) {
+      warnings.insufficientNodes = "For production deployments we recommend using no fewer than 5 nodes, as node " +
+        "failures in smaller clusters can compromise the fault-tolerance of the system.";
+    }
+
+    return warnings;
+  }.property('productionMode', 'nodes')
 });
 
 export default Cluster;

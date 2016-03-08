@@ -68,3 +68,8 @@
     }
   }
 }
+
+code {
+  background-color: lighten($branding-color-1, 48%);
+  color: darken($branding-color-1, 2%);
+}
