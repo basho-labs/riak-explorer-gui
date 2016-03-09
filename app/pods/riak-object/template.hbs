@@ -26,13 +26,21 @@
         <tbody>
         <tr>
           <td class="key">Content-Type</td>
-          <td class="value">{{model.contentType}}</td>
+          <td class="value">
+            {{#if model.contentType}}
+              <code>{{model.contentType}}</code>
+            {{else}}
+              <code>Undefined</code>
+            {{/if}}
+          </td>
         </tr>
         {{#if model.showContents}}
           <tr>
             <td class="key">Content</td>
             <td class="value">
-              <code>{{model.contents}}</code>
+              {{#code-highlighter language-type=model.contentTypeLanguage}}
+                {{model.contents}}
+              {{/code-highlighter}}
             </td>
           </tr>
         {{/if}}
