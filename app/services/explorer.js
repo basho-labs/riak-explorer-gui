@@ -421,7 +421,7 @@ export default Ember.Service.extend({
         self.checkNodes(cluster);
 
         // Continue to check on node health
-        //self.pollNodes(cluster);
+        self.pollNodes(cluster);
 
         return cluster;
       });

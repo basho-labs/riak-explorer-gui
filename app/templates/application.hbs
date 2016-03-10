@@ -31,7 +31,7 @@
                 <li class='dev-mode'>Dev mode</li>
               {{/if}}
             </ul>
-            <span class="cluster-status-circle {{currentCluster.status}}"></span>
+            {{cluster-status-indicator status=currentCluster.status}}
           </header>
           <nav class="cluster-section-links current-section-is-{{clusterSubSection}}">
             {{#link-to 'cluster.data' currentCluster.name class='data'}}
