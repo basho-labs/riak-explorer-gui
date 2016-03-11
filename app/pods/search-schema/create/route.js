@@ -28,17 +28,17 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       try {
         xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
-        this.showAlert('alerts._error_old-invalid-xml');
+        this.showAlert('alerts.error-invalid-xml');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('name')) {
-        this.showAlert('alerts._error_old-solr-must-have-name');
+        this.showAlert('alerts.error-solr-must-have-name');
         return;
       }
 
       if (!Ember.$(xmlDoc).find('schema').attr('version')) {
-        this.showAlert('alerts._error_old-solr-must-have-version');
+        this.showAlert('alerts.error-solr-must-have-version');
         return;
       }
 
@@ -48,7 +48,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
           self.transitionTo('cluster.query', clusterName);
         },
         function onFail() {
-          self.render('alerts._error_old-schema-not-saved', {
+          self.render('alerts.error-schema-not-saved', {
             into: 'application',
             outlet: 'alert'
           });

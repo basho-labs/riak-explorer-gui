@@ -970,31 +970,26 @@ export default Ember.Service.extend({
    * @return {String} schema.content
    */
   getSearchSchemaContent(schema) {
-    if (!schema.get('content')) {
+    let url = schema.get('url');
 
-      let url = schema.get('url');
-
-      return new Ember.RSVP.Promise(function(resolve, reject) {
-        let request = Ember.$.ajax({
-          url: url,
-          type: 'GET',
-          dataType: 'xml'
-        });
-
-        request.done(function(data) {
-          let xmlString = (new XMLSerializer()).serializeToString(data);
-          schema.set('content', xmlString);
-
-          resolve(schema.get('content'));
-        });
-
-        request.fail(function(data) {
-          reject(data);
-        });
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'xml'
       });
-    } else {
-      return schema.get('content');
-    }
+
+      request.done(function(data) {
+        let xmlString = (new XMLSerializer()).serializeToString(data);
+        schema.set('content', xmlString);
+
+        resolve(schema.get('content'));
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
   },
 
   /**
