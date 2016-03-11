@@ -12,6 +12,10 @@
       </li>
     {{/if}}
 
+    {{#if data.bucketTypeCreate}}
+      <li>create bucket type</li>
+    {{/if}}
+
     {{#if data.bucket}}
       <li>
         {{link-to data.bucket.name 'bucket'
