@@ -10,9 +10,16 @@ export default schemaRoute.extend(Alerts, ScrollReset, {
     return this._super(model, transition);
   },
 
+  setupController (controller, model) {
+    this._super(controller, model);
+    let currentContent = model.get('content');
+
+    controller.set('editableContent', currentContent);
+  },
+
   actions: {
     updateSchema: function(schema) {
-      let xmlString = schema.get('content');
+      let xmlString = this.controller.get('editableContent');
       let xmlDoc = null;
       let clusterName = schema.get('cluster').get('name');
       let schemaName = schema.get('name');
@@ -21,7 +28,7 @@ export default schemaRoute.extend(Alerts, ScrollReset, {
       try {
         xmlDoc = Ember.$.parseXML(xmlString);
       } catch (error) {
-        this.render('alerts._error_old-invalid-xml', {
+        this.render('alerts.error-invalid-xml', {
           into: 'application',
           outlet: 'alert'
         });
@@ -34,7 +41,7 @@ export default schemaRoute.extend(Alerts, ScrollReset, {
           self.transitionTo('search-schema', clusterName, schemaName);
         },
         function onFail() {
-          self.showAlert('alerts._error_old-schema-not-saved');
+          self.showAlert('alerts.error-schema-not-saved');
         }
       );
     }

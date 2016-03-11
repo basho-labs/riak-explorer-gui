@@ -36,7 +36,7 @@ var RiakObjectRoute = Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, Wra
           self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
         },
         function onError() {
-          this.showAlert('alerts._error_old-request-was-not-processed');
+          this.showAlert('alerts.error-request-was-not-processed');
         }
       );
     }
