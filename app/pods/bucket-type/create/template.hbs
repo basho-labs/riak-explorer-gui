@@ -1,28 +1,71 @@
-{{#dashboard-module.container class='medium-width'}}
-  {{#dashboard-module.header label='New Bucket Type'}}
-    <div class="module-actions">
-      <span class="create action-button" {{action 'createBucketType'}}>
-        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-        Create Bucket Type
-      </span>
+{{#if errors}}
+  {{#bs-alert type="danger"}}
+    <ul>
+      <h4><span class="label label-danger">Errors</span></h4>
+      {{#each errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
 
-      {{#link-to 'cluster.data' model.name class='cancel action-button'}}
-        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        Cancel
-      {{/link-to}}
-    </div>
-  {{/dashboard-module.header}}
-
-  {{#dashboard-module.body}}
-    <form>
-      <div class="form-group">
-        <label>Bucket Type Name</label>
-        {{input value=bucketTypeName class='form-control'}}
+<div class="bucket-type-create-container" xmlns="http://www.w3.org/1999/html">
+  {{#dashboard-module.container class='medium-width'}}
+    {{#dashboard-module.header label='New Bucket Type'}}
+      <div class="module-actions">
+        <button class="cancel action-button" {{action 'cancelCreateBucketType'}}>
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          Cancel
+        </button>
       </div>
-      {{!--<div class="form-group">--}}
-        {{!--<label>Schema XML</label>--}}
-        {{!--{{textarea rows=10 class='form-control'}}--}}
-      {{!--</div>--}}
-    </form>
-  {{/dashboard-module.body}}
-{{/dashboard-module.container}}
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      <form class="bucket-type-create-form">
+        <div class="form-group name-input">
+          <label>Name</label>
+          {{input value=bucketTypeName class='form-control'}}
+        </div>
+
+        <div class="form-group type-input">
+          <label>Data Type</label>
+          <select onchange={{action (mut dataType) value="target.value"}} class='form-control'>
+            {{#each dataTypes as |type|}}
+              <option value={{type}} selected={{eq dataType type}}>{{type}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        {{#each properties as |property index|}}
+          <div class="property-container">
+            <div class="form-group property-input">
+              <label>Property Key</label>
+              {{input value=property.key class='form-control'}}
+            </div>
+            <div class="form-group property-input">
+              <label>Property Value</label>
+              {{input value=property.value class='form-control'}}
+            </div>
+
+            <span class="remove-property label label-danger" {{action 'removeProperty' index}}>
+              remove
+            </span>
+          </div>
+        {{/each}}
+
+        <div class="form-group add-property">
+          <span {{action 'addNewProperty'}}>
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Add bucket type property
+          </span>
+        </div>
+
+        <div class="form-group create-button">
+          <button class="btn btn-primary" {{action 'createBucketType'}}>
+            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            Create Bucket Type
+          </button>
+        </div>
+      </form>
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>

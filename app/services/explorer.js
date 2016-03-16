@@ -98,6 +98,17 @@ export default Ember.Service.extend({
     });
   },
 
+  createBucketType(clusterName, bucketType) {
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(bucketType.data)
+    });
+  },
+
   /**
    *
    * @method getBucket
@@ -293,16 +304,12 @@ export default Ember.Service.extend({
    * @return {DS.Array} BucketType
    */
   getBucketTypes(cluster) {
-    if (Ember.isEmpty(cluster.get('bucketTypes'))) {
-      return this.store.query('bucket-type', { clusterName: cluster.get('name') })
-        .then(function(bucketTypes) {
-          cluster.set('bucketTypes', bucketTypes);
+    return this.store.query('bucket-type', { clusterName: cluster.get('name') })
+      .then(function(bucketTypes) {
+        cluster.set('bucketTypes', bucketTypes);
 
-          return cluster.get('bucketTypes');
-        });
-    } else {
-      return cluster.get('bucketTypes');
-    }
+        return cluster.get('bucketTypes');
+      });
   },
 
   /**
