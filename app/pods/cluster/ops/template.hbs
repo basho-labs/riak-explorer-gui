@@ -1,0 +1,38 @@
+{{#if model.warnings.insufficientNodes}}
+  {{#bs-alert type="warning"}}
+    <h4><span class="label label-warning">WARNING: Insufficient Nodes</span></h4>
+    <p>{{model.warnings.insufficientNodes}}</p>
+    <p>Reference: <a href="http://docs.basho.com/riak/latest/ops/building/planning/cluster/#Number-of-Nodes" target="_blank">Cluster Planning</a></p>
+  {{/bs-alert}}
+{{/if}}
+
+<div class='cluster-information-container'>
+  {{#dashboard-module.container class='small-width'}}
+    {{dashboard-module.header label='Nodes'}}
+    {{#dashboard-module.body}}
+      {{#if model.nodes}}
+        <ul class="button-list">
+          {{#each model.nodes as |node|}}
+            <li>
+              {{#if node.available}}
+                {{#link-to 'node' model.name node.name }}
+                  <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                  {{node.name}}
+                {{/link-to}}
+              {{else}}
+                {{#link-to 'node' model.name node.name class='danger'}}
+                  <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                  {{node.name}}
+                {{/link-to}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p>No nodes detected</p>
+      {{/if}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>
+
+

@@ -10,6 +10,11 @@
 .glyphicon {
   margin-right: 2px;
   top: 2px;
+
+  &.glyphicon-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+  }
 }
 
 .btn-primary {
@@ -32,6 +37,7 @@
       th {
         padding: 10px 15px;
         border-bottom: 1px;
+        text-align: left;
       }
     }
   }
@@ -41,7 +47,29 @@
       td {
         padding: 10px 15px;
         vertical-align: middle;
+        text-align: left;
       }
     }
   }
+}
+
+.list-inline {
+  margin: 0;
+
+  li {
+    padding: 0;
+  }
+}
+
+.alert {
+  &.alert-info {
+    a {
+      color: $branding-color-5;
+    }
+  }
+}
+
+code {
+  background-color: lighten($branding-color-1, 48%);
+  color: darken($branding-color-1, 2%);
 }

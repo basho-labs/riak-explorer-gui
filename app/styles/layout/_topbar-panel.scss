@@ -1,14 +1,11 @@
 .topbar {
-  @include dark-background-font;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  @include flex(none);
+  @include flexbox;
+  @include flex-direction(row);
+  @include justify-content(space-between);
   background-color: $grayscale-color-dark;
   border-bottom: 1px solid darken($grayscale-color-dark, $color-accent-percentage-small);
   height: $topbar-panel-height;
-  margin: 0;
 
   .logo {
     display: inline-block;
@@ -18,35 +15,30 @@
   }
 
   .topbar-nav {
-    @include clearfix;
-    float: right;
-  }
+    display: inline-block;
 
-  .topbar-nav-group {
-    @include clearfix;
-  }
+    .topbar-nav-item {
+      float: left;
+      border-left: 1px solid $grayscale-color-x-dark;
 
-  .topbar-nav-item {
-    float: left;
-    border-left: 1px solid $grayscale-color-x-dark;
-
-    a {
-      @include dark-background-font;
-      display: inline-block;
-      padding: 0 20px;
-      line-height: $topbar-panel-height;
-      border-left: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
-
-      &:hover {
+      a {
         @include dark-background-font;
-        background-color: darken($grayscale-color-dark, $color-accent-percentage-small);
-        border-left: 1px solid $grayscale-color-dark;
-      }
+        display: inline-block;
+        padding: 0 20px;
+        line-height: $topbar-panel-height;
+        border-left: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
 
-      &.selected {
-        cursor: default;
-        border-left: 1px solid darken($grayscale-color-dark, $color-accent-percentage-large);
-        background-color: darken($grayscale-color-dark, $color-accent-percentage-large);
+        &:hover {
+          @include dark-background-font;
+          background-color: darken($grayscale-color-dark, $color-accent-percentage-small);
+          border-left: 1px solid $grayscale-color-dark;
+        }
+
+        &.selected {
+          cursor: default;
+          border-left: 1px solid darken($grayscale-color-dark, $color-accent-percentage-large);
+          background-color: darken($grayscale-color-dark, $color-accent-percentage-large);
+        }
       }
     }
   }

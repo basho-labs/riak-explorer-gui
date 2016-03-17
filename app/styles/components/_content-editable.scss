@@ -1,0 +1,18 @@
+// Don't focus when inside of a code block
+code {
+  .ember-content-editable {
+    margin-top: -50px; // Not sure why this space is being added to the component
+    min-height: 100px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+pre.editable {
+  background: #FFF;
+  border-color: #000;
+  border-radius: 0px;
+}
+

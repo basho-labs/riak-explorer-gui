@@ -1,5 +1,9 @@
 # Riak Explorer GUI
 
+[![Build Status](https://travis-ci.org/basho-labs/riak-explorer-gui.svg?branch=master)](https://travis-ci.org/basho-labs/riak-explorer-gui)
+[![License](https://img.shields.io/badge/license-apache-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Join the chat at https://gitter.im/basho-labs/riak-explorer-gui](https://badges.gitter.im/basho-labs/riak-explorer-gui.svg)](https://gitter.im/basho-labs/riak-explorer-gui?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is the GUI component of the [Riak Explorer](https://github.com/basho-labs/riak_explorer)
 project.
 
@@ -38,7 +42,8 @@ and alter the port. Assuming riak_explorer is running on port `9000` and the Emb
 `4200`, you can set up some rewrite rules to handle these cases. If using [Charles Proxy](http://www.charlesproxy.com/),
 make sure your network is allowing a proxy server and create two rewrite rules for the location `localhost:4200`
  - Match `:4200/explore` Replace: `:9000/explore`
- - Match `:4200/riak` Replace: `:9000/riak`
+ - Match `:4200/riak`    Replace: `:9000/riak`
+ - Match `:4200/control` Replace: `:9000/control`
 
 If you don't want to use a proxy server to intercept and alter requests, you can also build the project and copy it over
 to the riak_explorer `dist` directory:
@@ -95,12 +100,28 @@ identity map, caching, etc) are:
     inject these manually. Look at `ExplorerResourceAdapter.normalizeId`,
     `injectParentIds` and `normalizeProps` to get an idea of what's involved.
 
+### Generating Documentation
+
+This project uses [YUIDoc](http://yui.github.io/yuidoc/) to annotate comments
+in the source code, and [ember-cli-yuidoc](https://github.com/cibernox/ember-cli-yuidoc)
+to auto-generate documentation from it. Run:
+
+```
+ember ember-cli-yuidoc
+```
+
+And the docs will be generated in the `docs/` directory.
+
 ### Running Tests
 
-(Default Ember doc copy)
+Testing requires that [phantomjs](http://phantomjs.org/) is installed on your local machine.
 
+To run the test suite:
 * `ember test`
+
+To run the test suite with watcher and ability to view tests in browser:
 * `ember test --server`
+* In the browser visit: [http://localhost:7357/](http://localhost:7357/)
 
 ### Building
 

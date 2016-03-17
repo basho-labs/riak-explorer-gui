@@ -1,5 +1,72 @@
-{{topbar-panel}}
-{{#wrapper-panel}}
-  {{sidebar-panel clusters=model}}
-  {{results-panel}}
-{{/wrapper-panel}}
+{{loading-slider isLoading=loading}}
+
+<div class="app-panel">
+  {{render 'partials.topbar'}}
+  <div class="wrapper-panel">
+    <div class="sidebar-panel">
+      {{#power-select
+      class='cluster-selector'
+      searchEnabled=false
+      selected=currentCluster
+      placeholder='Select Cluster'
+      options=model
+      onchange=(action 'clusterSelected')
+      as |cluster|}}
+        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+        {{cluster.name}}
+      {{/power-select}}
+
+      {{#if currentCluster}}
+        <div class="current-cluster">
+          <header>
+            <div class="title">Cluster: {{currentCluster.name}}</div>
+            <ul class="meta list-inline">
+              {{#if currentCluster.hasVersion}}
+                <li>{{currentCluster.riakVersion}}</li>
+              {{/if}}
+              {{#if currentCluster.hasType}}
+                <li>{{currentCluster.riakType}}</li>
+              {{/if}}
+              {{#if currentCluster.developmentMode}}
+                <li class='dev-mode'>Dev mode</li>
+              {{/if}}
+            </ul>
+            {{cluster-status-indicator status=currentCluster.status}}
+          </header>
+          <nav class="cluster-section-links current-section-is-{{clusterSubSection}}">
+            {{#link-to 'cluster.data' currentCluster.name class='data'}}
+              <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
+              Data
+            {{/link-to}}
+            {{#link-to 'cluster.ops' currentCluster.name class='ops'}}
+              <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+              Ops
+            {{/link-to}}
+            {{#link-to 'cluster.query' currentCluster.name class='query'}}
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              Query
+            {{/link-to}}
+          </nav>
+        </div>
+      {{/if}}
+    </div>
+    <div class="results-panel">
+      {{#if showViewHeader}}
+        <div class='view-header'>
+          {{breadcrumb-component
+          clusterSubSection=clusterSubSection
+          data=breadCrumbMap}}
+
+          {{view-label
+          pre-label=viewLabelMap.preLabel
+          label=viewLabelMap.label}}
+        </div>
+      {{/if}}
+
+      <div class="view-body">
+        {{outlet 'alert'}}
+        {{outlet}}
+      </div>
+    </div>
+  </div>
+</div>

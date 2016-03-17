@@ -1,0 +1,19 @@
+.cluster-status {
+  &.cluster-status-label {
+    @extend .label;
+
+    text-transform: uppercase;
+
+    &.ok {
+      @extend .label-success;
+    }
+
+    &.warning {
+      @extend .label-warning;
+    }
+
+    &.down {
+      @extend .label-danger;
+    }
+  }
+}

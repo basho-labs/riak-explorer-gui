@@ -1,5 +1,3 @@
-import RiakObjectRoute from "../route";
+import RiakObjectRoute from '../route';
 
-var RiakObjectMapRoute = RiakObjectRoute.extend({
-});
-export default RiakObjectMapRoute;
+export default RiakObjectRoute.extend({});

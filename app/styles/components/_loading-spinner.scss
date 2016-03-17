@@ -1,42 +1,71 @@
-@-webkit-keyframes sk-bounce {
-  0%, 100% { -webkit-transform: scale(0.0) }
-  50% { -webkit-transform: scale(1.0) }
-}
+$spinner-color: #69717d !default;
+$spinner-size: 48px !default;
 
-@keyframes sk-bounce {
-  0%, 100% {
-    transform: scale(0.0);
-    -webkit-transform: scale(0.0);
-  } 50% {
-      transform: scale(1.0);
-      -webkit-transform: scale(1.0);
-    }
-}
+.loading-background {
+  @include flexbox;
+  @include align-items(center);
+  @include justify-content(center);
+  min-height: 200px;
+  background: rgba(0, 0, 0, 0.03);
+  margin: -20px;
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  position: relative;
-
-  .double-bounce1, .double-bounce2 {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    opacity: 0.75;
+  &.entire-page {
+    margin: 0;
     position: absolute;
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
-    -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
-    animation: sk-bounce 2.0s infinite ease-in-out;
+    background: none;
   }
+}
 
-  .double-bounce1 {
-    background-color: $branding-color-1;
+.loading-container {
+  max-width: 50%;
+  background: white;
+  border: 1px solid $grayscale-color-x-light;
+  border-radius: 3px;
+  padding: 30px;
+  text-align: center;
+  margin: 0 auto;
+  .status-message {
+    margin-bottom: 20px;
   }
+  .spinner {
+    font-size: $spinner-size;
+    position: relative;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    .spinner-blade {
+      position: absolute;
+      left: 0.4629em;
+      bottom: 0;
+      width: 0.074em;
+      height: 0.2777em;
+      border-radius: 0.0555em;
+      background-color: transparent;
+      transform-origin: center -0.2222em;
+      animation: spinner-fade 1s infinite linear;
+      $animation-delay: 0s;
+      $blade-rotation: 0deg;
+      @for $i from 1 through 12 {
+        &:nth-child(#{$i}) {
+          animation-delay: $animation-delay;
+          transform: rotate($blade-rotation);
+          $blade-rotation: $blade-rotation + 30;
+          $animation-delay: $animation-delay + 0.083;
+        }
+      }
+    }
+  }
+}
 
-  .double-bounce2 {
-    background-color: $branding-color-3;
-    -webkit-animation-delay: -1.0s;
-    animation-delay: -1.0s;
+@keyframes spinner-fade {
+  0% {
+    background-color: $spinner-color;
+  }
+  100% {
+    background-color: transparent;
   }
 }

@@ -5,6 +5,10 @@
     a {
       @extend .btn;
       @extend .btn-primary;
+
+      &.danger {
+        @extend .btn-danger;
+      }
     }
   }
 

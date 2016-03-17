@@ -11,6 +11,12 @@ ul {
   padding: 0;
 }
 
+ol {
+  li {
+    margin-bottom: 10px;
+  }
+}
+
 a {
   color: $branding-color-1;
 
@@ -33,5 +39,26 @@ h1, h2, h3, h4, h5, h6 {
 p {
   &:last-child {
     margin: 0;
+  }
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
   }
 }

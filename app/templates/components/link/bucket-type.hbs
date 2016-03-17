@@ -1,5 +1,3 @@
-{{#link-to 'bucket-type' bucketType
-        class='btn btn-sm btn-primary btn-block cluster-resource-link' }}
-    <span class="glyphicon glyphicon-inbox cluster-resource-icon"
-        aria-hidden="true"></span>
-    {{bucketType.bucketTypeId}}{{/link-to}}
+{{#link-to 'bucket-type' bucketType.cluster.name bucketType.name class='cluster-resource-link'}}
+  {{bucketType.name}}
+{{/link-to}}

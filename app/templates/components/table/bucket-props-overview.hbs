@@ -1,0 +1,52 @@
+<tr>
+  <td class='key'>Object Type</td>
+  <td class='value'>
+    {{model.objectType}}
+  </td>
+</tr>
+<tr>
+  <td class='key'>Activated</td>
+  <td class='value'>
+    {{#if model.isActive}}
+      <span class="label label-success">Active</span>
+    {{else}}
+      <span class="label label-default">Inactive</span>
+    {{/if}}
+  </td>
+</tr>
+<tr>
+  <td class='key'>Conflict Res. Strategy</td>
+  <td class='value'><code>{{model.resolutionStrategy}}</code></td>
+</tr>
+<tr>
+  <td class='key'>Quorum</td>
+  <td class='value'>
+    <code>N_Val: {{model.nVal}}
+    {{#if model.quorumRelevant}}
+      <br/>
+      R: {{model.quorum.r}}, W: {{model.quorum.w}},
+      PR: {{model.quorum.pr}}, PW: {{model.quorum.pw}},
+      DW: {{model.quorum.dw}}
+      <small>
+        (basic_quorum: {{model.quorum.basic_quorum}},
+        notfound_ok: {{model.quorum.basic_quorum}})
+      </small>
+    {{/if}}
+    </code>
+  </td>
+</tr>
+<tr>
+  <td class='key'>
+    Search Index
+    {{tooltip.bucket-props itemKey='search_index'}}
+  </td>
+  <td class='value'>
+    {{#if model.index}}
+      {{#link-to 'search-index' model.index.cluster.name model.index.name class='btn btn-primary'}}
+        {{model.index.name}}
+      {{/link-to}}
+    {{else}}
+      n/a (not being indexed)
+    {{/if}}
+  </td>
+</tr>

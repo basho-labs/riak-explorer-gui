@@ -1,170 +1,93 @@
-<div class='view-header'>
-  {{breadcrumb-component
-  clusterId=model.clusterId
-  bucketTypeId=model.bucketTypeId
-  }}
-  {{view-label
-  pre-label='Bucket-Type'
-  label=model.bucketTypeId}}
-</div>
+{{#if model.warnings}}
+  {{#bs-alert type="warning"}}
+    <ul>
+      <h4><span class="label label-warning">WARNINGS</span></h4>
+      {{#each model.warnings as |warning|}}
+        <li>{{warning}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
 
 <div class='bucket-types-container'>
-  {{#dashboard-module}}
+  {{#dashboard-module.container class='small-width'}}
+    {{dashboard-module.header label='Bucket-Type Properties'}}
+    {{#dashboard-module.body}}
+      {{#ivy-tabs }}
+        {{#ivy-tab-list}}
+          {{#ivy-tab}}Overview{{/ivy-tab}}
+          {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
+        {{/ivy-tab-list}}
 
-    {{#if model.props}}
-      {{#em-tabs class='half-width'}}
-        {{#em-tab-list}}
-          {{#em-tab}}Overview{{/em-tab}}
-          {{#em-tab}}Advanced Properties{{/em-tab}}
-        {{/em-tab-list}}
+        {{#ivy-tab-panel}}
+          {{table.bucket-props-overview model=model}}
+        {{/ivy-tab-panel}}
 
-        {{#em-tab-panel}}
-          <table class='key-value-table'>
+        {{#ivy-tab-panel}}
+          {{table.bucket-props-advanced model=model}}
+        {{/ivy-tab-panel}}
+      {{/ivy-tabs}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+
+  {{#dashboard-module.container class='small-width'}}
+    {{#dashboard-module.header label='Buckets'}}
+      {{#if model.bucketList}}
+        <div class="module-actions">
+          {{#if model.cluster.developmentMode}}
+            <button type="button" class="action-button refresh" {{action 'refreshBuckets' model}}>
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              Refresh Bucket List Cache
+            </button>
+          {{/if}}
+        </div>
+      {{/if}}
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      {{#if model.isListLoaded}}
+        {{#if model.bucketList}}
+          <table class="key-value-table">
+            <tbody>
             <tr>
-              <td class='key'>Object type:</td>
-              <td class='value'>
-                {{model.props.objectType}}
-                {{#if model.isActive}}
-                  <span class="label label-success">Active</span>
-                {{else}}
-                  <span class="label label-default">Inactive</span>
-                {{/if}}
-              </td>
-            </tr>
-            <tr>
-              <td class='key'>Conflict Res. Strategy:</td>
-              <td class='value'>{{model.props.resolutionStrategy}}</td>
-            </tr>
-            <tr>
-              <td class='key'>Quorum:</td>
-              <td class='value'>
-                N_Val: {{model.props.nVal}}
-                {{#if model.props.quorumRelevant}}
-                  <br />
-                  R: {{model.props.quorum.r}}, W: {{model.props.quorum.w}},
-                  PR: {{model.props.quorum.pr}}, PW: {{model.props.quorum.pw}},
-                  DW: {{model.props.quorum.dw}}
-                  <small>
-                    (basic_quorum: {{model.props.quorum.basic_quorum}},
-                    notfound_ok: {{model.props.quorum.basic_quorum}})
-                  </small>
-                {{/if}}
-              </td>
+              <td class="key">Bucket List Cache Created:</td>
+              <td class="value">{{model.bucketList.created}}</td>
             </tr>
 
-            {{#if model.props.isSearchIndexed}}
-              <tr>
-                <td class='key'>Search Index:</td>
-                <td class='value'>{{model.props.searchIndexName}}</td>
-              </tr>
-              {{#if model.index}}
-                <tr>
-                  <td class='key'>Search Schema:</td>
-                  <td class='value'>
-                    <a href="{{model.cluster.proxyUrl}}/search/schema/{{model.index.schema}}">
-                      {{model.index.schema}}
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class='key'>Index N_Val:</td>
-                  <td class='value'>{{model.index.n_val}}</td>
-                </tr>
-              {{else}}
-                <tr>
-                    <td class='key'></td>
-                    <td class='value'>
-                      <em>Warning: Index with id <code>{{model.props.searchIndexName}}</code>
-                        has not been created on this cluster!</em>
-                    </td>
-                </tr>
-              {{/if}}
-            {{else}}
-              <tr>
-                <td class='key'>Search Index:</td>
-                <td class='value'>Not available (not being indexed)</td>
-              </tr>
-            {{/if}}
-            {{#if model.props.warnings}}
-              <tr>
-                <td class='key'>Warnings:</td>
-                <td class='value'>
-                  <ul>
-                    {{#each model.props.warnings as |warning|}}
-                      <li>{{warning}}</li>
+            <tr>
+              <td class="key">Bucket List Cache</td>
+              <td class="value">
+                {{#if model.bucketList.count}}
+                  {{#if model.bucketList.multipleListItems}}
+                    <p>Displaying buckets {{model.bucketList.firstItemIndex}}-{{model.bucketList.lastItemIndex}} out
+                      of {{model.bucketList.total}}</p>
+                  {{else}}
+                    <p>Displaying bucket {{model.bucketList.firstItemIndex}} out of {{model.bucketList.total}}</p>
+                  {{/if}}
+
+                  <ul class='button-list'>
+                    {{#each model.buckets as |bucket|}}
+                      <li>{{link.link-bucket bucket=bucket}}</li>
                     {{/each}}
                   </ul>
-                </td>
-              </tr>
-            {{/if}}
-          </table>
-        {{/em-tab-panel}}
-
-        {{#em-tab-panel}}
-          <table class="key-value-table">
-            {{#each model.props.propsList as |prop|}}
-              <tr>
-                <td class='key'>{{prop.key}}</td>
-                <td class='value'>{{prop.value}}</td>
-              </tr>
-            {{/each}}
-          </table>
-        {{/em-tab-panel}}
-      {{/em-tabs}}
-    {{else}}
-      Properties not loaded
-    {{/if}}
-  {{/dashboard-module}}
-
-  {{#dashboard-module label='Buckets'}}
-    {{#if model.isBucketListLoaded}}
-      <table class="key-value-table">
-        <tbody>
-          <tr>
-            <td class="key">Bucket List cache created:</td>
-            <td class="value">{{model.bucketList.created}}</td>
-          </tr>
-          <tr>
-            <td class="key">Bucket List count:</td>
-            <td class="value">{{model.bucketList.total}}</td>
-          </tr>
-          {{#if model.cluster.developmentMode}}
-            <tr>
-              <td class="key">Available actions:</td>
-              <td class="value">
-                <ul class='button-list'>
-                  <li>
-                    {{button.refresh-buckets
-                    action="refreshBuckets"
-                    bucketType=model}}
-                  </li>
-                </ul>
+                {{!--{{#pagination-component--}}
+                {{!--chunkSize=model.bucketList.pageSize--}}
+                {{!--totalSize=model.bucketList.total--}}
+                {{!--sectionRequest='retrieveRequestedBuckets'}}--}}
+                {{!--{{/pagination-component}}--}}
+                {{else}}
+                  No buckets found
+                {{/if}}
               </td>
             </tr>
-          {{/if}}
-          <tr>
-            <td class="key">Stored buckets</td>
-            <td class="value">
-              {{#pagination-component
-              chunk-length=model.bucketList.count
-              total-length=model.bucketList.total
-              section-request='retrieveRequestedBuckets'}}
-                <ul class='button-list small'>
-                  {{#each model.bucketList.buckets as |bucket|}}
-                    <li>
-                      {{link.link-bucket bucket=bucket}}
-                    </li>
-                  {{else}}
-                    No buckets found
-                  {{/each}}
-                </ul>
-              {{/pagination-component}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    {{else}}
-      {{loading-spinner}}
-    {{/if}}
-  {{/dashboard-module}}
+            </tbody>
+          </table>
+        {{else}}
+          <p>Cached bucket list not available.</p>
+          <p>This cluster is in Production mode, and so no cache refresh is possible.</p>
+        {{/if}}
+      {{else}}
+        {{loading-spinner statusMessage=model.statusMessage}}
+      {{/if}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
 </div>

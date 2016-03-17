@@ -1,0 +1,99 @@
+{{#dashboard-module.container}}
+  {{#dashboard-module.body}}
+    {{#ivy-tabs}}
+      {{#ivy-tab-list}}
+        {{#ivy-tab}}Configuration{{/ivy-tab}}
+        {{#ivy-tab}}Statistics{{/ivy-tab}}
+        {{#ivy-tab}}Log Files{{/ivy-tab}}
+        {{#ivy-tab}}Config Files{{/ivy-tab}}
+      {{/ivy-tab-list}}
+
+      {{#ivy-tab-panel}}
+        {{#if model.advancedConfig}}
+          <h4>Advanced</h4>
+          <ul class="code-list">
+            {{#each model.advancedConfig as |advancedItem|}}
+              <li><code>{{advancedItem}}</code></li>
+            {{/each}}
+          </ul>
+
+          <h4>General</h4>
+        {{/if}}
+
+        <table class="key-value-table">
+          <tbody>
+          {{#each-in model.alphaSortedConfig as |name value|}}
+            <tr>
+              <td class='key'>
+                {{name}}
+                {{tooltip.node-config itemKey=name}}
+              </td>
+              <td class='value'><code>{{value}}</code></td>
+            </tr>
+          {{/each-in}}
+          </tbody>
+        </table>
+      {{/ivy-tab-panel}}
+
+      {{#ivy-tab-panel}}
+        {{#ivy-tabs class='vertical'}}
+          {{#ivy-tab-list class='capitalize'}}
+            {{#each-in model.statsByCategory as |category stats|}}
+              {{#ivy-tab}}
+                {{category}}
+              {{/ivy-tab}}
+            {{/each-in}}
+          {{/ivy-tab-list}}
+
+          {{#each-in model.statsByCategory as |category stats|}}
+            {{#ivy-tab-panel}}
+              <table class="key-value-table">
+                <tbody>
+                {{#each stats as |stat|}}
+                  <tr>
+                    <td class="key">
+                      {{stat.name}}
+                      {{tooltip.node-stats itemKey=stat.name}}
+                    </td>
+                    <td class="value">
+                      <code>{{stat.current_value}}</code>
+                    </td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+            {{/ivy-tab-panel}}
+          {{/each-in}}
+        {{/ivy-tabs}}
+      {{/ivy-tab-panel}}
+
+      {{#ivy-tab-panel}}
+        {{#if model.logFiles}}
+          <ul class="button-list">
+            {{#each model.logFiles as |logFile|}}
+              <li>
+                {{link-to logFile.name 'log-file' model.cluster.name model.name logFile.name}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          No log files for this node
+        {{/if}}
+      {{/ivy-tab-panel}}
+
+      {{#ivy-tab-panel}}
+        {{#if model.configFiles}}
+          <ul class="button-list">
+            {{#each model.configFiles as |configFile|}}
+              <li>
+                {{link-to configFile.name 'config-file' model.cluster.name model.name configFile.name}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          No config files for this node
+        {{/if}}
+      {{/ivy-tab-panel}}
+    {{/ivy-tabs}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

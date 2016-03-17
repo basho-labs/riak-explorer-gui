@@ -1,0 +1,7 @@
+.app-panel {
+  @include flexbox;
+  @include flex-direction(column);
+  height: 100vh;
+  min-height: 0;
+}
+

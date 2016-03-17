@@ -1,37 +1,46 @@
 import Ember from 'ember';
+import Alerts from '../../mixins/routes/alerts';
+import LoadingSlider from '../../mixins/routes/loading-slider';
+import ScrollReset from '../../mixins/routes/scroll-reset';
+import WrapperState from '../../mixins/routes/wrapper-state';
 
-var RiakObjectRoute = Ember.Route.extend({
-    actions: {
-        error: function(error, transition) {
-            if (error && error.status === 404) {
-                transition.queryParams = transition.params['riak-object'];
-                this.transitionTo('error.object-not-found', transition);
-            } else {
-                // Unknown error, bubble error event up to routes/application.js
-                return true;
-            }
+var RiakObjectRoute = Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
+  model: function(params) {
+    return this.explorer.getObject(params.clusterName, params.bucketTypeName, params.bucketName, params.objectName);
+  },
+
+  afterModel: function(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      bucketType: model.get('bucketType'),
+      bucket: model.get('bucket'),
+      riakObject: model
+    });
+    this.setViewLabel({
+      preLabel: 'Object',
+      label: model.get('name')
+    });
+  },
+
+  actions: {
+    deleteObject: function(object) {
+      let clusterName = object.get('cluster').get('name');
+      let bucketTypeName = object.get('bucketType').get('name');
+      let bucketName = object.get('bucket').get('name');
+      let objectList = object.get('bucket').get('objectList');
+      let self = this;
+
+      object.destroyRecord().then(
+        function onSuccess() {
+          self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
+        },
+        function onError() {
+          this.showAlert('alerts.error-request-was-not-processed');
         }
-    },
-
-    model: function(params) {
-        var explorer = this.explorer;
-        var store = this.store;
-        return explorer.getBucket(params.clusterId,
-                params.bucketTypeId, params.bucketId, store)
-            .then(function(bucket) {
-                return explorer.getRiakObject(bucket, params.key, store);
-            });
-    },
-
-    setupController: function(controller, model) {
-        this._super(controller, model);
-        if(!model.get('isLoaded')) {
-            this.explorer.getRiakObject(model.get('bucket'),
-                    model.get('key'), this.store)
-                .then(function(object) {
-                    controller.set('model', object);
-                });
-        }
+      );
     }
+  }
 });
+
 export default RiakObjectRoute;

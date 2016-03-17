@@ -1,0 +1,34 @@
+.action-buttons {
+  text-align: right;
+  float: right;
+
+  .action-button {
+    @extend .btn;
+    @extend .btn-sm;
+    margin-left: 5px;
+  }
+
+  .edit {
+    @extend .btn-primary;
+  }
+
+  .cancel {
+    @extend .btn-danger;
+  }
+
+  .update {
+    @extend .btn-primary;
+  }
+
+  .create {
+    @extend .btn-primary;
+  }
+
+  .raw {
+    @extend .btn-primary;
+  }
+
+  .refresh {
+    @extend .btn-primary;
+  }
+}

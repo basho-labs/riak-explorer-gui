@@ -1,4 +1,6 @@
 import DS from 'ember-data';
+import ObjectHeaders from '../../mixins/models/object-headers';
+import MapObject from '../../mixins/models/map-object';
 
 /**
  * Represents a plain (non Data Type) Riak Object.
@@ -19,161 +21,112 @@ import DS from 'ember-data';
  * @param [rawUrl] {String}
  * @param [contents] {Object} Object value/payload
  */
-var RiakObject = DS.Model.extend({
-    /**
-     * Riak Bucket in which this object lives.
-     * @property bucket
-     * @type Bucket
-     * @writeOnce
-     */
-    bucket: DS.belongsTo('bucket'),
+var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
+  /**
+   * Riak Bucket in which this object lives.
+   * @property bucket
+   * @type Bucket
+   * @writeOnce
+   */
+  bucket: DS.belongsTo('bucket'),
 
-    /**
-     * Riak Bucket Type in which this object lives.
-     * @property bucketType
-     * @type BucketType
-     * @writeOnce
-     */
-    bucketType: DS.belongsTo('bucket-type'),
+  /**
+   * The value/contents of the object.
+   * @property contents
+   * @type Object
+   */
+  contents: DS.attr(),
 
-    /**
-     * Riak cluster in which this object lives.
-     * @property cluster
-     * @type Cluster
-     * @writeOnce
-     */
-    cluster: DS.belongsTo('cluster'),
+  /**
+   * The object's primary key.
+   * @property name
+   * @type String
+   */
+  name: DS.attr('string'),
 
-    /**
-     * The value/contents of the object.
-     * @property contents
-     * @type Object
-     */
-    contents: DS.attr(),
+  type: DS.attr('string'),
 
-    /**
-     * Has the object been fully loaded from the server?
-     * @property isLoaded
-     * @type Boolean
-     * @default false
-     */
-    isLoaded: DS.attr('boolean', {defaultValue: false}),
+  /**
+   * The URL to fetch the raw contents of the object directly from server.
+   * Used with the 'View Raw' button.
+   * @property rawUrl
+   * @type String
+   * @writeOnce
+   */
+  url: DS.attr('string'),
 
-    /**
-     * The object's primary key.
-     * @property key
-     * @type String
-     * @writeOnce
-     */
-    key: DS.attr('string'),
+  bucketType: function() {
+    return this.get('bucket').get('bucketType');
+  }.property('bucket'),
 
-    /**
-     * Was this object marked as deleted by Explorer UI?
-     * Note: Deleted objects may still show up in the API-side key list cache.
-     * @property markedDeleted
-     * @type Boolean
-     * @default false
-     */
-    markedDeleted: DS.attr('boolean', {defaultValue: false}),
+  cluster: function() {
+    return this.get('bucket').get('bucketType').get('cluster');
+  }.property('bucket'),
 
-    /**
-     * Riak object headers/metadata.
-     * @property metadata
-     * @type ObjectMetadata
-     */
-    metadata: DS.belongsTo('object-metadata'),
+  /**
+   * Boolean check to see if the contents should be shown through the UI.
+   *
+   * @method showContents
+   * @return {Boolean}
+   */
+  showContents: function() {
+    let contentType = this.get('contentType');
 
-    /**
-     * The URL to fetch the raw contents of the object directly from server.
-     * Used with the 'View Raw' button.
-     * @property rawUrl
-     * @type String
-     * @writeOnce
-     */
-    rawUrl: DS.attr('string'),
+    if (contentType) {
+      return (contentType.startsWith('plain/text') ||
+      contentType.startsWith('application/json') ||
+      contentType.startsWith('application/javascript') ||
+      contentType.startsWith('application/xml') ||
+      contentType.startsWith('multipart/mixed'));
+    } else {
+      return false;
+    }
+  }.property('contentType'),
 
-    /**
-     * @property bucketId
-     * @type String
-     */
-    bucketId: function() {
-        return this.get('bucket').get('bucketId');
-    }.property('bucket'),
+  contentTypeLanguage: function() {
+    let contentType = this.get('contentType');
+    let language = null;
 
-    /**
-     * @property bucketTypeId
-     * @type String
-     */
-    bucketTypeId: function() {
-        return this.get('bucketType').get('bucketTypeId');
-    }.property('bucket'),
+    if (contentType) {
+      switch (contentType) {
+        case 'application/json':
+          language = 'json';
+          break;
+        case 'application/javascript':
+          language = 'javascript';
+          break;
+        case 'application/xml':
+          language = 'xml';
+          break;
+        default:
+          break;
+      }
+    }
 
-    /**
-     * Can this object type be edited directly, in a text box?
-     * @property canBeEdited
-     * @readOnly
-     * @default true
-     * @type {Boolean}
-     */
-    canBeEdited: function() {
-        return true;
-    }.property(),
+    return language;
+  }.property('contentType'),
 
-    /**
-     * Can this object be viewed/downloaded directly from the browser?
-     * @property canBeViewedRaw
-     * @readOnly
-     * @default true
-     * @type {Boolean}
-     */
-    canBeViewedRaw: function() {
-        return true;
-    }.property(),
+  routePath: function() {
+    let bucket = this.get('bucket');
+    let routePath = null;
 
-    /**
-     * Returns the name of the cluster in which this bucket type resides.
-     * (As specified in the `riak_explorer.conf` file)
-     * @property clusterId
-     * @type String
-     */
-    clusterId: function() {
-        return this.get('cluster').get('clusterId');
-    }.property('bucket'),
+    switch (true) {
+      case bucket.get('isCounter'):
+        routePath = 'riak-object.counter';
+        break;
+      case bucket.get('isSet'):
+        routePath = 'riak-object.set';
+        break;
+      case bucket.get('isMap'):
+        routePath = 'riak-object.map';
+        break;
+      default:
+        routePath = 'riak-object';
+        break;
+    }
 
-    /**
-     * Returns a browser-displayable representation of the object value,
-     *     if possible (based on the object's `contentType`).
-     * @method contentsForDisplay
-     * @return {String|Null}
-     */
-    contentsForDisplay: function() {
-        let contentType = this.get('metadata').get('contentType');
-        let displayContents;
-        // Determine whether this is browser-displayable contents
-        if(contentType.startsWith('plain/text') ||
-                contentType.startsWith('application/json') ||
-                contentType.startsWith('application/xml') ||
-                contentType.startsWith('multipart/mixed') ) {
-            displayContents = this.get('contents');
-        } else {
-            displayContents = null;
-        }
-        return displayContents;
-    }.property('contents', 'metadata'),
-
-    /**
-     * Returns true if the object has been deleted either on the server
-     *    or via the Explorer app.
-     * @method isDeleted
-     * @return {Boolean}
-     */
-    isDeleted: function() {
-        var deletedOnRiak = false;
-        if(this.get('metadata')) {
-            deletedOnRiak = this.get('metadata').get('isDeleted');
-        }
-        return this.get('markedDeleted') || deletedOnRiak;
-    }.property('markedDeleted', 'metadata')
+    return routePath;
+  }.property('bucket')
 });
 
 export default RiakObject;

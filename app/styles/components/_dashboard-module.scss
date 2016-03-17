@@ -1,10 +1,101 @@
 .dashboard-module {
-  margin: 20px 20px 40px 40px;
+  margin: 20px 20px 30px 40px;
+  background: #FFF;
+  border: 1px solid $grayscale-color-x-light;
+  border-top: 3px solid $grayscale-color-x-light;
 
-  .module-label {
-    font-size: 20px;
-    font-weight: 500;
-    text-transform: capitalize;
-    margin-bottom: 10px;
+  &.small-width {
+    max-width: 600px;
+  }
+
+  &.medium-width {
+    max-width: 800px;
+  }
+
+  &.no-border {
+    border: none;
+    background: none;
+
+    .module-body {
+      padding: 0;
+    }
+  }
+
+  .module-header {
+    @include flexbox;
+    @include flex-direction(row);
+    @include justify-content(space-between);
+
+    padding: 10px 20px;
+    border-bottom: 1px solid $grayscale-color-x-light;
+
+    .module-label {
+      font-size: 18px;
+      line-height: 30px;
+    }
+
+    .module-actions {
+      .action-button {
+        @extend .btn;
+        @extend .btn-sm;
+        margin-left: 5px;
+      }
+
+      .edit {
+        @extend .btn-primary;
+      }
+
+      .cancel {
+        @extend .btn-danger;
+      }
+
+      .delete {
+        @extend .btn-danger;
+      }
+
+      .update {
+        @extend .btn-primary;
+      }
+
+      .create {
+        @extend .btn-primary;
+      }
+
+      .save {
+        @extend .btn-primary;
+      }
+
+      .raw {
+        @extend .btn-primary;
+      }
+
+      .refresh {
+        @extend .btn-primary;
+      }
+    }
+  }
+
+  .module-body {
+    padding: 20px;
+    position: relative;
+
+    .module-edit-group {
+      .group-header {
+        padding: 10px 0;
+        font-size: 18px;
+      }
+
+      .key {
+        width: 25%;
+      }
+
+      .value {
+        width: 75%;
+      }
+    }
+  }
+
+  .mini-label {
+    font-size: 10px;
   }
 }

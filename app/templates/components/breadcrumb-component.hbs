@@ -1,20 +1,68 @@
-<div class='breadcrumb-container'>
-  <ol class="breadcrumb">
-    <li>{{link-to 'overview' 'index'}}</li>
-    {{#if clusterId}}
-      <li>{{link-to clusterId 'cluster' clusterId}}</li>
+<ol class="breadcrumb">
+  {{#if isClusterData}}
+    {{#if data.cluster}}
+      <li>{{link-to 'data' 'cluster.data' data.cluster.name}}</li>
     {{/if}}
-    {{#if bucketTypeId}}
-      <li>{{link-to bucketTypeId 'bucket-type' clusterId bucketTypeId}}</li>
+
+    {{#if data.bucketType}}
+      <li>
+        {{link-to data.bucketType.name 'bucket-type'
+        data.cluster.name
+        data.bucketType.name}}
+      </li>
     {{/if}}
-    {{#if bucketId}}
-      <li>{{link-to bucketId 'bucket' clusterId bucketTypeId bucketId}}</li>
+
+    {{#if data.bucket}}
+      <li>
+        {{link-to data.bucket.name 'bucket'
+        data.cluster.name
+        data.bucketType.name
+        data.bucket.name}}
+      </li>
     {{/if}}
-    {{#if keyId}}
-      <li>{{link-to keyId 'riak-object' clusterId bucketTypeId bucketId keyId}}</li>
+
+    {{#if data.riakObject}}
+      <li>{{data.riakObject.name}}</li>
     {{/if}}
-    {{#if pageTitle}}
-      <li>{{pageTitle}}</li>
+  {{/if}}
+
+  {{#if isClusterOps}}
+    {{#if data.cluster}}
+      <li>{{link-to 'ops' 'cluster.ops' data.cluster.name}}</li>
     {{/if}}
-  </ol>
-</div>
+
+    {{#if data.node}}
+      <li>
+        {{link-to data.node.name 'node'
+        data.cluster.name
+        data.node.name}}
+      </li>
+    {{/if}}
+
+    {{#if data.logFile}}
+      <li>{{data.logFile.name}}</li>
+    {{/if}}
+
+    {{#if data.configFile}}
+      <li>{{data.configFile.name}}</li>
+    {{/if}}
+  {{/if}}
+
+  {{#if isClusterQuery}}
+    {{#if data.cluster}}
+      <li>{{link-to 'query' 'cluster.query' data.cluster.name}}</li>
+    {{/if}}
+
+    {{#if data.searchSchema}}
+      <li>{{data.searchSchema.name}}</li>
+    {{/if}}
+
+    {{#if data.searchIndex}}
+      <li>{{data.searchIndex.name}}</li>
+    {{/if}}
+
+    {{#if data.schemaCreate}}
+      <li>create schema</li>
+    {{/if}}
+  {{/if}}
+</ol>

@@ -1,32 +1,61 @@
 import Ember from 'ember';
+import LoadingSlider from '../../mixins/routes/loading-slider';
+import ScrollReset from '../../mixins/routes/scroll-reset';
+import WrapperState from '../../mixins/routes/wrapper-state';
 
-export default Ember.Route.extend({
-    model: function(params) {
-        let explorer = this.explorer;
-        let store = this.store;
+export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
+  model: function(params) {
+    return this.explorer.getBucket(params.clusterName, params.bucketTypeName, params.bucketName);
+  },
 
-        return explorer
-          .getBucket(params.clusterId, params.bucketTypeId, params.bucketId, store)
-          .then(function(bucket) {
-            return explorer.getBucketWithKeyList(bucket, store);
-          });
+  afterModel: function(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      bucketType: model.get('bucketType'),
+      bucket: model
+    });
+    this.setViewLabel({
+      preLabel: 'Bucket',
+      label: model.get('name')
+    });
+  },
+
+  actions: {
+    //retrieveRequestedKeys: function(startIndex) {
+    //  let service = this.get('explorer');
+    //  let bucket = this.get('model');
+    //
+    //  return service.getBucketWithKeyList(bucket, startIndex);
+    //},
+
+    deleteBucket: function(bucket) {
+      let clusterName = bucket.get('bucketType').get('cluster').get('name');
+      let bucketTypeName = bucket.get('bucketType').get('name');
+      let self = this;
+
+      bucket.destroyRecord().then(function() {
+        self.transitionTo('bucket-type', clusterName, bucketTypeName);
+      });
     },
 
-    setupController: function(controller, model) {
-        this._super(controller, model);
-        // When user follows a bucket link from the Bucket Type view,
-        //   the props are not yet initialized. Also, the model()
-        //   function, above, is not called. Handle this case.
-        if(Ember.isEmpty(model.get('props'))) {
-            this.explorer
-              .getBucketProps(model.get('clusterId'), model.get('bucketTypeId'), model.get('bucketId'), this.store)
-              .then(function(bucketProps) {
-                model.set('props', bucketProps);
-              });
-        }
-        // Start fetching the key list
-        if(!model.get('isKeyListLoaded')) {
-            controller.pollForModel(model, 3000);
-        }
+    refreshObjects: function(bucket) {
+      let self = this;
+
+      bucket.set('isListLoaded', false);
+      bucket.set('statusMessage', 'Refreshing from a streaming list keys call...');
+
+      bucket.get('objectList')
+        .then(function(item) {
+          return item.destroyRecord();
+        })
+        .then(function() {
+          self.explorer.refreshObjectList(bucket);
+        })
+        .then(function() {
+          self.explorer.getObjectList(bucket);
+          self.explorer.getObjects(bucket);
+      });
     }
+  }
 });

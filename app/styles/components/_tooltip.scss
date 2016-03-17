@@ -1,0 +1,50 @@
+.ember-application {
+  .tooltip-icon {
+    font-size: 10px;
+    color: #777;
+    cursor: help;
+  }
+
+  .tooltip {
+    &.in {
+      opacity: 1;
+    }
+
+    &.tooltip-wide {
+      max-width: 400px;
+    }
+
+    .tooltip-content-wrapper {
+      padding: 10px;
+
+      .title-wrapper {
+        margin-bottom: 10px;
+
+        .title {
+          @extend .label;
+          @extend .label-default;
+          font-size: 14px;
+          word-break: break-word;
+        }
+      }
+
+      .description-wrapper {
+        margin-bottom: 5px;
+
+        .description {
+          display: inline-block;
+          word-break: break-word;
+        }
+      }
+
+      .small {
+        font-style: italic;
+        font-size: 12px;
+        word-break: break-word;
+      }
+    }
+  }
+}
+
+
+
