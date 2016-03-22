@@ -15,7 +15,7 @@
       <div class="module-actions">
         {{#if model.allowDelete}}
           <button type="button" class="action-button delete" {{action 'deleteBucket' model}}>
-            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <span class="ion-ios-trash" aria-hidden="true"></span>
             Delete Bucket
           </button>
         {{/if}}
@@ -46,7 +46,7 @@
         <div class="module-actions">
           {{#if model.cluster.developmentMode}}
             <button type="button" class="action-button refresh" {{action 'refreshObjects' model}}>
-              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+              <span class="ion-refresh" aria-hidden="true"></span>
               Refresh Object List Cache
             </button>
           {{/if}}

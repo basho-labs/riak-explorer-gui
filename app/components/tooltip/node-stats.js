@@ -5,7 +5,7 @@ import NodeStatsHelp from '../../utils/riak-help/riak_status';
 export default Ember.Component.extend({
   tagName: 'span',
 
-  classNames: ['tooltip-icon', 'node-stats-tooltip', 'glyphicon', 'glyphicon-info-sign'],
+  classNames: ['tooltip-icon', 'node-stats-tooltip', 'ion-information-circled'],
 
   itemKey: null,
 
