@@ -140,3 +140,21 @@
     }
   }
 }
+
+@media only screen and (max-width: 768px) {
+  .sidebar-panel {
+    width: 100%;
+
+    .current-cluster {
+      header {
+        display: none;
+      }
+
+      .cluster-section-links {
+        a {
+          padding: 5px 5px 5px 25px;
+        }
+      }
+    }
+  }
+}

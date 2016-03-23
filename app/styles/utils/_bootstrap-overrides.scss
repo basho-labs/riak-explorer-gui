@@ -11,7 +11,7 @@
 .table {
   border-color: $grayscale-color-x-light;
   display: inline-block;
-  margin: 0px;
+  margin: 0;
 
   thead {
     tr {
@@ -53,4 +53,19 @@
 code {
   background-color: lighten($branding-color-1, 48%);
   color: darken($branding-color-1, 2%);
+  word-break: break-word;
+}
+
+@media only screen and (max-width: 768px) {
+  .table {
+     overflow-x: scroll;
+  }
+
+  .breadcrumb {
+    > li {
+      + li:before {
+        padding: 0;
+      }
+    }
+  }
 }
