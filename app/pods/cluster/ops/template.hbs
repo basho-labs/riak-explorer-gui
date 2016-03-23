@@ -16,12 +16,12 @@
             <li>
               {{#if node.available}}
                 {{#link-to 'node' model.name node.name }}
-                  <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                  <span class="ion-checkmark-circled" aria-hidden="true"></span>
                   {{node.name}}
                 {{/link-to}}
               {{else}}
                 {{#link-to 'node' model.name node.name class='danger'}}
-                  <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                  <span class="ion-alert-circled" aria-hidden="true"></span>
                   {{node.name}}
                 {{/link-to}}
               {{/if}}

@@ -5,7 +5,7 @@ import NodeConfigHelp from '../../utils/riak-help/riak_config';
 export default Ember.Component.extend({
   tagName: 'span',
 
-  classNames: ['tooltip-icon', 'node-config-tooltip', 'glyphicon', 'glyphicon-info-sign'],
+  classNames: ['tooltip-icon', 'node-config-tooltip', 'ion-information-circled'],
 
   itemKey: null,
 

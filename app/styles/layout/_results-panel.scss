@@ -19,4 +19,12 @@
   }
 }
 
+@media only screen and (max-width: 768px) {
+  .results-panel {
+    .view-header {
+      padding: 5px 10px;
+    }
+  }
+}
+
 

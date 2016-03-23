@@ -4,3 +4,9 @@
   @include flex-direction(row);
   min-width: 0;
 }
+
+@media only screen and (max-width: 768px) {
+  .wrapper-panel {
+    @include flex-direction(column);
+  }
+}

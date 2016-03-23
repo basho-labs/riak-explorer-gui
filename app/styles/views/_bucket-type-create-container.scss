@@ -1,15 +1,15 @@
 .bucket-type-create-container {
   .bucket-type-create-form {
     .name-input {
-      width: 350px;
+      max-width: 350px;
     }
 
     .type-input {
-      width: 350px;
+      max-width: 350px;
     }
 
     .property-input {
-      width: 170px;
+      max-width: 170px;
       display: inline-block;
       margin-right: 10px;
     }

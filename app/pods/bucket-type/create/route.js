@@ -25,7 +25,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     let controller = this.controllerFor('bucket-type.create');
     let btProps = controller.get('properties');
     let btType = controller.get('dataType');
-    let btName = controller.get('bucketTypeName');
+    let btName = controller.get('bucketTypeName').trim().replace(/ /g,"_");
     let bucketType = {
       name: btName,
       data: {

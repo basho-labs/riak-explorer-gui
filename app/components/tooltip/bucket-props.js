@@ -5,7 +5,7 @@ import bucketPropsHelp from '../../utils/riak-help/bucket_props';
 export default Ember.Component.extend({
   tagName: 'span',
 
-  classNames: ['tooltip-icon', 'bucket-props-tooltip', 'glyphicon', 'glyphicon-info-sign'],
+  classNames: ['tooltip-icon', 'bucket-props-tooltip', 'ion-information-circled'],
 
   itemKey: null,
 
