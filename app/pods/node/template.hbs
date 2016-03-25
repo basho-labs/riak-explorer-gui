@@ -2,11 +2,29 @@
   {{#dashboard-module.body}}
     {{#ivy-tabs}}
       {{#ivy-tab-list}}
+        {{#if model.cluster.isEnterpriseEdition}}
+          {{#ivy-tab}}Replication{{/ivy-tab}}
+        {{/if}}
         {{#ivy-tab}}Configuration{{/ivy-tab}}
         {{#ivy-tab}}Statistics{{/ivy-tab}}
         {{#ivy-tab}}Log Files{{/ivy-tab}}
         {{#ivy-tab}}Config Files{{/ivy-tab}}
       {{/ivy-tab-list}}
+
+      {{#if model.cluster.isEnterpriseEdition}}
+        {{#ivy-tab-panel}}
+          <table class="key-value-table">
+            <tbody>
+            {{#each-in model.replStatus as |statKey statValue|}}
+              <tr>
+                <td class="key">{{statKey}}</td>
+                <td class="value"><code>{{statValue}}</code></td>
+              </tr>
+            {{/each-in}}
+            </tbody>
+          </table>
+        {{/ivy-tab-panel}}
+      {{/if}}
 
       {{#ivy-tab-panel}}
         {{#if model.advancedConfig}}

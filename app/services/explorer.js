@@ -696,6 +696,34 @@ export default Ember.Service.extend({
     });
   },
 
+  getNodeReplicationStats(node) {
+    let url = `${this.apiURL}control/nodes/${node.get('name')}/status`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        let additionalNodeStats = data.status.nodes.findBy('id', node.get('name'));
+
+        delete additionalNodeStats.id;
+        delete data.status.nodes;
+
+        let nodeReplStatus = Ember.merge(data.status, additionalNodeStats);
+
+        node.set('replStatus', nodeReplStatus);
+
+        resolve(data);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
   /**
    * Gets and sets the "status" property of each node in a cluster. Status is detrmined by whether or not
    *  the node's ring file is valid.
