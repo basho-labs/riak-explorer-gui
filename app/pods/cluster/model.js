@@ -1,5 +1,6 @@
 import DS from 'ember-data';
-import config from '../../config/environment';
+import Config from '../../config/environment';
+import Replication from '../../mixins/models/cluster-replication';
 
 /**
  * Represents a Riak cluster as a whole.
@@ -9,7 +10,7 @@ import config from '../../config/environment';
  * @constructor
  * @uses BucketType
  */
-var Cluster = DS.Model.extend({
+var Cluster = DS.Model.extend(Replication, {
   /**
    * Bucket types created on the cluster
    * @property bucketTypes
@@ -149,7 +150,7 @@ var Cluster = DS.Model.extend({
    * @return {String} URL
    */
   proxyUrl: function() {
-    return `${config.baseURL}riak/clusters/${this.get('name')}`;
+    return `${Config.baseURL}riak/clusters/${this.get('name')}`;
   }.property('name'),
 
   /**

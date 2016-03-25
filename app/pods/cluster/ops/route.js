@@ -7,5 +7,13 @@ export default ClusterRoute.extend({
       preLabel: 'Cluster Ops',
       label: model.get('name')
     });
+
+    if (model.get('isEnterpriseEdition')) {
+      this.getReplicationStatistics(model);
+    }
+  },
+
+  getReplicationStatistics: function(cluster) {
+    return this.explorer.getClusterReplicationStats(cluster);
   }
 });
