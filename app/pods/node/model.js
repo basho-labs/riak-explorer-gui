@@ -1,9 +1,8 @@
 import DS from 'ember-data';
 import _ from 'lodash/lodash';
 import NodeStatsHelp from '../../utils/riak-help/riak_status';
-import Replication from '../../mixins/models/node-replication';
 
-export default DS.Model.extend(Replication, {
+export default DS.Model.extend({
   /**
    * Cluster the node belongs to.
    * @property cluster
@@ -53,6 +52,8 @@ export default DS.Model.extend(Replication, {
   config: DS.attr(),
 
   name: DS.attr('string'),
+
+  replStatus: DS.attr(),
 
   /**
    * All the nodes statistics. Stored as an Object hashmap.

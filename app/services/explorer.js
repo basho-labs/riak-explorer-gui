@@ -434,28 +434,6 @@ export default Ember.Service.extend({
       });
   },
 
-  getClusterReplicationStats(cluster) {
-    let url = `${this.apiURL}control/clusters/${cluster.get('name')}/repl-clusterstats`;
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        url: url,
-        type: 'GET'
-      });
-
-      request.done(function(data) {
-        // TODO: handle connected clusters
-        cluster.set('replicationStats', data['repl-clusterstats'].clusterstats);
-
-        resolve(data);
-      });
-
-      request.fail(function(data) {
-        reject(data);
-      });
-    });
-  },
-
   /**
    * Fetches all clusters defined in the riak_explorer.conf file
    *
@@ -718,7 +696,7 @@ export default Ember.Service.extend({
     });
   },
 
-  getNodeReplicationStats(node) {
+  getNodeReplicationStatus(node) {
     let url = `${this.apiURL}control/nodes/${node.get('name')}/status`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {

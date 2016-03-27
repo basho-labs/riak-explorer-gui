@@ -20,11 +20,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     });
 
     if (model.get('cluster').get('isEnterpriseEdition')) {
-      this.getReplicationStatistics(model);
+      return this.explorer.getNodeReplicationStatus(model);
     }
-  },
-
-  getReplicationStatistics: function(node) {
-    return this.explorer.getNodeReplicationStats(node);
   }
 });

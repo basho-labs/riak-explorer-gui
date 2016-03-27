@@ -13,7 +13,6 @@ export default Ember.Mixin.create({
   /**
    * Timestamp of when the cached list was generated on the server side
    * @property created
-   * @type String
    */
   created: DS.attr(),
 

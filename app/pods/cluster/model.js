@@ -1,6 +1,5 @@
 import DS from 'ember-data';
 import Config from '../../config/environment';
-import Replication from '../../mixins/models/cluster-replication';
 
 /**
  * Represents a Riak cluster as a whole.
@@ -10,7 +9,7 @@ import Replication from '../../mixins/models/cluster-replication';
  * @constructor
  * @uses BucketType
  */
-var Cluster = DS.Model.extend(Replication, {
+var Cluster = DS.Model.extend({
   /**
    * Bucket types created on the cluster
    * @property bucketTypes

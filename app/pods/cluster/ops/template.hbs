@@ -6,21 +6,33 @@
   {{/bs-alert}}
 {{/if}}
 
-<div class='cluster-information-container'>
+<div class='cluster-ops-container'>
   {{#if model.isEnterpriseEdition}}
     {{#dashboard-module.container class='small-width'}}
-      {{dashboard-module.header label='MDC Replication'}}
+      {{dashboard-module.header label='Multi Data Center Replication'}}
       {{#dashboard-module.body}}
-        <table class="key-value-table">
-          <tbody>
-          {{#each-in model.replicationStats as |statKey statValue|}}
-            <tr>
-              <td class="key">{{statKey}}</td>
-              <td class="value"><code>{{statValue}}</code></td>
-            </tr>
-          {{/each-in}}
-          </tbody>
-        </table>
+        <form class="mdc-repl">
+          <div class="form-group repl-action-select">
+            <label>Available Actions</label>
+            {{#power-select
+              selected=currentlySelectedAction
+              options=availableReplActions
+              searchEnabled=false
+              onchange=(action "getReplicationOutput")
+              as |replAction|}}
+              {{replAction}}
+            {{/power-select}}
+          </div>
+
+          {{#if currentReplOutput}}
+            <div>
+              <label>Output</label>
+              {{#code-highlighter language-type='json'}}
+                {{currentReplOutput}}
+              {{/code-highlighter}}
+            </div>
+          {{/if}}
+        </form>
       {{/dashboard-module.body}}
     {{/dashboard-module.container}}
   {{/if}}
