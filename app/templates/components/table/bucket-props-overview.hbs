@@ -37,8 +37,13 @@
 </tr>
 <tr>
   <td class='key'>
-    Search Index
-    {{tooltip.bucket-props itemKey='search_index'}}
+    {{model.propsWithHelp.search_index.name}}
+    {{tooltip.bucket-props
+    itemKey='search_index'
+    itemDescription=model.propsWithHelp.search_index.description
+    itemDefaultValue=model.propsWithHelp.search_index.default
+    itemIsEditable=model.propsWithHelp.search_index.editable
+    itemSchemaType=model.propsWithHelp.search_index.json_schema_type}}
   </td>
   <td class='value'>
     {{#if model.index}}

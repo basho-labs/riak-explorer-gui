@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import _ from 'lodash/lodash';
+import bucketPropsHelp from '../../utils/riak-help/bucket_props';
 
 export default Ember.Mixin.create({
   /**
@@ -364,5 +365,23 @@ export default Ember.Mixin.create({
 
       return warnings;
     }
-  }.property('props', 'cluster', 'index')
+  }.property('props', 'cluster', 'index'),
+
+  propsWithHelp: function() {
+    let props = this.get('props');
+
+    if (props) {
+      let propsValueObj = _.mapValues(props, function(val) { return { value: val }; });
+      let propsWithHelp = _.merge(propsValueObj, bucketPropsHelp);
+
+      // Remove any properties that do not have a value associated with them
+      for (var key in propsWithHelp) {
+        if (propsWithHelp.hasOwnProperty(key) && !propsWithHelp[key].value && key !== 'search_index') {
+          delete propsWithHelp[key];
+        }
+      }
+
+      return propsWithHelp;
+    }
+  }.property('props')
 });
