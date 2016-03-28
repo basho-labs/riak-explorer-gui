@@ -11,7 +11,14 @@
 
 <div class='bucket-types-container'>
   {{#dashboard-module.container class='small-width'}}
-    {{dashboard-module.header label='Bucket Type Properties'}}
+    {{#dashboard-module.header label='Bucket Type Properties'}}
+      <div class="module-actions">
+        {{#link-to 'bucket-type.edit' model.cluster.name model.name class='action-button edit'}}
+          <span class="ion-edit" aria-hidden="true"></span>
+          Edit Bucket Type
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
     {{#dashboard-module.body}}
       {{#ivy-tabs }}
         {{#ivy-tab-list}}
