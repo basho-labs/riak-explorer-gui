@@ -109,6 +109,20 @@ export default Ember.Service.extend({
     });
   },
 
+  updateBucketType(bucketType, props) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let data = { props: props };
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(data)
+    });
+  },
+
   /**
    *
    * @method getBucket

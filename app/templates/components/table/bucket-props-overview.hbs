@@ -37,13 +37,13 @@
 </tr>
 <tr>
   <td class='key'>
-    {{model.propsWithHelp.search_index.name}}
+    {{model.searchIndexHelp.name}}
     {{tooltip.bucket-props
-    itemKey='search_index'
-    itemDescription=model.propsWithHelp.search_index.description
-    itemDefaultValue=model.propsWithHelp.search_index.default
-    itemIsEditable=model.propsWithHelp.search_index.editable
-    itemSchemaType=model.propsWithHelp.search_index.json_schema_type}}
+    itemKey=model.searchIndexHelp.key
+    itemDescription=model.searchIndexHelp.description
+    itemDefaultValue=model.searchIndexHelp.default
+    itemIsEditable=model.searchIndexHelp.editable
+    itemSchemaType=model.searchIndexHelp.json_schema_type}}
   </td>
   <td class='value'>
     {{#if model.index}}

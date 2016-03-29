@@ -1,9 +1,9 @@
-{{#each-in model.propsWithHelp as |propKey prop|}}
+{{#each model.propsWithHelp as |prop|}}
   <tr>
     <td class='key'>
       {{prop.name}}
       {{tooltip.bucket-props
-      itemKey=propKey
+      itemKey=prop.key
       itemDescription=prop.description
       itemDefaultValue=prop.default
       itemIsEditable=prop.editable
@@ -11,4 +11,4 @@
     </td>
     <td class='value'><code>{{prop.value}}</code></td>
   </tr>
-{{/each-in}}
+{{/each}}

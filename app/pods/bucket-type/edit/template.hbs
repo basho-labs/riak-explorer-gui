@@ -1,13 +1,13 @@
-{{!--{{#if errors}}--}}
-  {{!--{{#bs-alert type="danger"}}--}}
-    {{!--<ul>--}}
-      {{!--<h4><span class="label label-danger">Errors</span></h4>--}}
-      {{!--{{#each errors as |error|}}--}}
-        {{!--<li>{{error}}</li>--}}
-      {{!--{{/each}}--}}
-    {{!--</ul>--}}
-  {{!--{{/bs-alert}}--}}
-{{!--{{/if}}--}}
+{{#if errors}}
+  {{#bs-alert type="danger"}}
+    <ul>
+      <h4><span class="label label-danger">Errors</span></h4>
+      {{#each errors as |error|}}
+        <li>{{error.message}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
 
 <div class="bucket-type-edit-container" xmlns="http://www.w3.org/1999/html">
   {{#dashboard-module.container class='medium-width'}}
@@ -28,10 +28,6 @@
               <td class="key">Name</td>
               <td class="value">{{model.name}}</td>
             </tr>
-            <tr>
-              <td class="key">Data Type</td>
-              <td class="value">{{model.objectType}}</td>
-            </tr>
             {{#if model.props.consistent}}
               <tr>
                 <td class="key">Consistent</td>
@@ -44,43 +40,50 @@
                 <td class="value">{{model.props.write_once}}</td>
               </tr>
             {{/if}}
+            {{#each nonEditableProps as |prop|}}
+              <tr>
+                <td class="key">
+                  {{prop.name}}
+                  {{tooltip.bucket-props
+                  itemKey=prop.key
+                  itemDescription=prop.description
+                  itemDefaultValue=prop.default
+                  itemSchemaType=prop.json_schema_type}}
+                </td>
+                <td class="value"><code>{{prop.value}}</code></td>
+              </tr>
+            {{/each}}
           </tbody>
         </table>
       </section>
 
       <section class="non-editable-props">
-        <form class="bucket-type-edit-form">
-          <div class="section-title">Editable Properties</div>
+        <div class="section-title">Editable Properties</div>
 
-          {{#each properties as |property index|}}
-            <div class="property-container">
-              <div class="form-group property-input">
-                <label>Property Key</label>
-                {{input value=property.key class='form-control'}}
-              </div>
-              <div class="form-group property-input">
-                <label>Property Value</label>
-                {{input value=property.value class='form-control'}}
-              </div>
+        <form id="some-form" {{action "updateBucketType" target on="submit"}}>
+          <table class="key-value-table">
+            <tbody>
+              {{#each editableProps as |prop|}}
+                <tr {{action 'changedValue' prop on='focusOut'}}>
+                  <td class="key">
+                    {{prop.name}}
+                    {{tooltip.bucket-props
+                    itemKey=prop.key
+                    itemDescription=prop.description
+                    itemDefaultValue=prop.default
+                    itemSchemaType=prop.json_schema_type}}
+                  </td>
+                  <td class="value">
+                    {{input value=prop.value class='form-control'}}
+                  </td>
+                </tr>
+              {{/each}}
 
-              <span class="remove-property label label-danger" {{action 'removeProperty' index}}>
-                remove
-              </span>
-            </div>
-          {{/each}}
-
-          <div class="form-group add-property">
-            <span {{action 'addNewProperty'}}>
-              <span class="ion-plus-circled" aria-hidden="true"></span>
-              Add property
-            </span>
-          </div>
-
-          <div class="form-group create-button">
-            <button class="btn btn-primary" {{action 'createBucketType'}}>
-              Update Bucket Type
-            </button>
-          </div>
+              <button type="submit" class="btn btn-primary">
+                Update Bucket Type
+              </button>
+            </tbody>
+          </table>
         </form>
       </section>
     {{/dashboard-module.body}}

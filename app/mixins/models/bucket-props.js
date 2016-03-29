@@ -237,6 +237,44 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  propsWithHelp: function() {
+    let props = this.get('props');
+
+    if (props) {
+      let propsObj = {};
+
+      // Prepare Objects for merge
+      Object.keys(props).forEach(function(key) {
+        propsObj[key] = {
+          key: key,
+          value: props[key]
+        };
+      });
+
+      // Merges the propsObj and bucketPropsHelp Objects into a single object
+      let merged = _.merge(propsObj, bucketPropsHelp);
+
+      // Then mutates object to an array
+      let toArray = _.values(merged);
+
+      // Then filters out any props that don't have values, except the search_index prop
+      let filtered = toArray.filter(function(prop) { return _.has(prop, 'value'); });
+
+      // Then sort by name
+      let sorted = _.sortBy(filtered, 'name');
+
+      return sorted;
+    }
+  }.property('props'),
+
+  searchIndexHelp: function() {
+    let searchIndexHelp = bucketPropsHelp.search_index;
+
+    searchIndexHelp.key = 'search_index';
+
+    return searchIndexHelp;
+  }.property('props'),
+
   /**
    * Returns a hash containing quorum-related settings.
    * @see http://docs.basho.com/riak/latest/dev/advanced/replication-properties/
@@ -326,6 +364,22 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  nonEditableProps: function() {
+    let propsWithHelp = this.get('propsWithHelp');
+
+    if (propsWithHelp) {
+      let nonEditable = {};
+
+      _.forOwn(propsWithHelp, function(value, key) {
+        if (!value.editable) {
+          nonEditable[key] = value;
+        }
+      });
+
+      return nonEditable;
+    }
+  }.property('props'),
+
   /**
    * Returns human-readable warnings related to this bucket's settings.
    *
@@ -365,23 +419,5 @@ export default Ember.Mixin.create({
 
       return warnings;
     }
-  }.property('props', 'cluster', 'index'),
-
-  propsWithHelp: function() {
-    let props = this.get('props');
-
-    if (props) {
-      let propsValueObj = _.mapValues(props, function(val) { return { value: val }; });
-      let propsWithHelp = _.merge(propsValueObj, bucketPropsHelp);
-
-      // Remove any properties that do not have a value associated with them
-      for (var key in propsWithHelp) {
-        if (propsWithHelp.hasOwnProperty(key) && !propsWithHelp[key].value && key !== 'search_index') {
-          delete propsWithHelp[key];
-        }
-      }
-
-      return propsWithHelp;
-    }
-  }.property('props')
+  }.property('props', 'cluster', 'index')
 });
