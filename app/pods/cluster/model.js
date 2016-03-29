@@ -1,5 +1,5 @@
 import DS from 'ember-data';
-import config from '../../config/environment';
+import Config from '../../config/environment';
 
 /**
  * Represents a Riak cluster as a whole.
@@ -149,7 +149,7 @@ var Cluster = DS.Model.extend({
    * @return {String} URL
    */
   proxyUrl: function() {
-    return `${config.baseURL}riak/clusters/${this.get('name')}`;
+    return `${Config.baseURL}riak/clusters/${this.get('name')}`;
   }.property('name'),
 
   /**
