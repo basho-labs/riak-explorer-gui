@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import _ from 'lodash/lodash';
+import bucketPropsHelp from '../../utils/riak-help/bucket_props';
 
 export default Ember.Mixin.create({
   /**
@@ -236,6 +237,44 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  propsWithHelp: function() {
+    let props = this.get('props');
+
+    if (props) {
+      let propsObj = {};
+
+      // Prepare Objects for merge
+      Object.keys(props).forEach(function(key) {
+        propsObj[key] = {
+          key: key,
+          value: props[key]
+        };
+      });
+
+      // Merges the propsObj and bucketPropsHelp Objects into a single object
+      let merged = _.merge(propsObj, bucketPropsHelp);
+
+      // Then mutates object to an array
+      let toArray = _.values(merged);
+
+      // Then filters out any props that don't have values, except the search_index prop
+      let filtered = toArray.filter(function(prop) { return _.has(prop, 'value'); });
+
+      // Then sort by name
+      let sorted = _.sortBy(filtered, 'name');
+
+      return sorted;
+    }
+  }.property('props'),
+
+  searchIndexHelp: function() {
+    let searchIndexHelp = bucketPropsHelp.search_index;
+
+    searchIndexHelp.key = 'search_index';
+
+    return searchIndexHelp;
+  }.property('props'),
+
   /**
    * Returns a hash containing quorum-related settings.
    * @see http://docs.basho.com/riak/latest/dev/advanced/replication-properties/
@@ -322,6 +361,22 @@ export default Ember.Mixin.create({
   searchIndexName: function() {
     if (this.get('props')) {
       return this.get('props').search_index;
+    }
+  }.property('props'),
+
+  nonEditableProps: function() {
+    let propsWithHelp = this.get('propsWithHelp');
+
+    if (propsWithHelp) {
+      let nonEditable = {};
+
+      _.forOwn(propsWithHelp, function(value, key) {
+        if (!value.editable) {
+          nonEditable[key] = value;
+        }
+      });
+
+      return nonEditable;
     }
   }.property('props'),
 

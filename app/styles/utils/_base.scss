@@ -5,6 +5,18 @@ body {
   font-weight: 500;
 }
 
+section {
+  margin-bottom: 20px;
+
+  .section-title {
+    font-size: 16px;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+}
+
 ul {
   list-style: none;
   margin: 0;
@@ -52,6 +64,7 @@ p {
     transform: rotate(359deg);
   }
 }
+
 @keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);

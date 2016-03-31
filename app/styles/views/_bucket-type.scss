@@ -25,3 +25,31 @@
     }
   }
 }
+
+.bucket-type-edit-container {
+  .bucket-type-edit-form {
+    .name-input {
+      max-width: 350px;
+    }
+
+    .type-input {
+      max-width: 350px;
+    }
+
+    .property-input {
+      max-width: 170px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .remove-property {
+      font-size: 9px;
+      cursor: pointer;
+    }
+
+    .add-property {
+      @extend a;
+      cursor: pointer;
+    }
+  }
+}

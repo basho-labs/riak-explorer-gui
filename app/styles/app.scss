@@ -35,7 +35,6 @@
 @import "components/tooltip";
 @import "components/ember-power-select";
 // View specific styling
-@import "views/object-counter-container";
-@import "views/bucket-type-create-container";
-@import "views/cluster-ops-container";
-
+@import "views/cluster";
+@import "views/bucket-type";
+@import "views/riak-object";
