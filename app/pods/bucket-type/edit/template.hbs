@@ -1,0 +1,91 @@
+{{#if errors}}
+  {{#bs-alert type="danger"}}
+    <ul>
+      <h4><span class="label label-danger">Errors</span></h4>
+      {{#each errors as |error|}}
+        <li>{{error.message}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
+<div class="bucket-type-edit-container" xmlns="http://www.w3.org/1999/html">
+  {{#dashboard-module.container class='medium-width'}}
+    {{#dashboard-module.header label='Edit Bucket Type'}}
+      <div class="module-actions">
+        {{#link-to 'bucket-type' model.cluster.name model.name class='action-button cancel'}}
+          <span class="ion-close-round" aria-hidden="true"></span>
+          Cancel
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      <section class="non-editable-props">
+        <div class="section-title">Non-Editable Properties</div>
+        <table class="key-value-table">
+          <tbody>
+            <tr>
+              <td class="key">Name</td>
+              <td class="value">{{model.name}}</td>
+            </tr>
+            {{#if model.props.consistent}}
+              <tr>
+                <td class="key">Consistent</td>
+                <td class="value">{{model.props.consistent}}</td>
+              </tr>
+            {{/if}}
+            {{#if model.props.write_once}}
+              <tr>
+                <td class="key">Write Once</td>
+                <td class="value">{{model.props.write_once}}</td>
+              </tr>
+            {{/if}}
+            {{#each nonEditableProps as |prop|}}
+              <tr>
+                <td class="key">
+                  {{prop.name}}
+                  {{tooltip.bucket-props
+                  itemKey=prop.key
+                  itemDescription=prop.description
+                  itemDefaultValue=prop.default
+                  itemSchemaType=prop.json_schema_type}}
+                </td>
+                <td class="value"><code>{{prop.value}}</code></td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="non-editable-props">
+        <div class="section-title">Editable Properties</div>
+
+        <form id="some-form" {{action "updateBucketType" target on="submit"}}>
+          <table class="key-value-table">
+            <tbody>
+              {{#each editableProps as |prop|}}
+                <tr {{action 'changedValue' prop on='focusOut'}}>
+                  <td class="key">
+                    {{prop.name}}
+                    {{tooltip.bucket-props
+                    itemKey=prop.key
+                    itemDescription=prop.description
+                    itemDefaultValue=prop.default
+                    itemSchemaType=prop.json_schema_type}}
+                  </td>
+                  <td class="value">
+                    {{input value=prop.value class='form-control'}}
+                  </td>
+                </tr>
+              {{/each}}
+
+              <button type="submit" class="btn btn-primary">
+                Update Bucket Type
+              </button>
+            </tbody>
+          </table>
+        </form>
+      </section>
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>

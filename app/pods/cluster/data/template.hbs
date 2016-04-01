@@ -43,26 +43,39 @@
   {{/dashboard-module.container}}
 
   {{#dashboard-module.container class='medium-width'}}
-    {{dashboard-module.header label='Active Bucket Types'}}
+    {{#dashboard-module.header label='Bucket Types'}}
+      <div class="module-actions">
+        {{#link-to 'bucket-type.create' model.name class='action-button create'}}
+          <span class="ion-plus-circled" aria-hidden="true"></span>
+          Create New Bucket Type
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{#if model.activeBucketTypes}}
-        {{table.bucket-types
-        bucketTypes=model.activeBucketTypes}}
-      {{else}}
-        <p>No bucket types have been activated</p>
-      {{/if}}
-    {{/dashboard-module.body}}
-  {{/dashboard-module.container}}
+      {{#ivy-tabs }}
+          {{#ivy-tab-list}}
+            {{#ivy-tab}}Active Bucket Types{{/ivy-tab}}
+            {{#ivy-tab}}Inactive Bucket Types{{/ivy-tab}}
+          {{/ivy-tab-list}}
 
-  {{#dashboard-module.container class='medium-width'}}
-    {{dashboard-module.header label='Inactive Bucket Types'}}
-    {{#dashboard-module.body}}
-      {{#if model.inactiveBucketTypes}}
-        {{table.bucket-types
-        bucketTypes=model.inactiveBucketTypes}}
-      {{else}}
-        <p>No inactive buckets</p>
-      {{/if}}
+          {{#ivy-tab-panel}}
+            {{#if model.activeBucketTypes}}
+              {{table.bucket-types
+              bucketTypes=model.activeBucketTypes}}
+            {{else}}
+              <p>No bucket types have been activated</p>
+            {{/if}}
+          {{/ivy-tab-panel}}
+
+          {{#ivy-tab-panel}}
+            {{#if model.inactiveBucketTypes}}
+              {{table.bucket-types
+              bucketTypes=model.inactiveBucketTypes}}
+            {{else}}
+              <p>No inactive buckets</p>
+            {{/if}}
+          {{/ivy-tab-panel}}
+      {{/ivy-tabs}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>

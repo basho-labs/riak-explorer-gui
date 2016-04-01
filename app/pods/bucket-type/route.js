@@ -15,7 +15,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       bucketType: model
     });
     this.setViewLabel({
-      preLabel: 'Bucket-Type',
+      preLabel: 'Bucket Type',
       label: model.get('name')
     });
   },

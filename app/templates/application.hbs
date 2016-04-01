@@ -12,7 +12,7 @@
       options=model
       onchange=(action 'clusterSelected')
       as |cluster|}}
-        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+        <span class="ion-ios-keypad" aria-hidden="true"></span>
         {{cluster.name}}
       {{/power-select}}
 
@@ -35,15 +35,15 @@
           </header>
           <nav class="cluster-section-links current-section-is-{{clusterSubSection}}">
             {{#link-to 'cluster.data' currentCluster.name class='data'}}
-              <span class="glyphicon glyphicon-hdd" aria-hidden="true"></span>
+              <span class="ion-ios-cloud" aria-hidden="true"></span>
               Data
             {{/link-to}}
             {{#link-to 'cluster.ops' currentCluster.name class='ops'}}
-              <span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>
+              <span class="ion-ios-pulse-strong" aria-hidden="true"></span>
               Ops
             {{/link-to}}
             {{#link-to 'cluster.query' currentCluster.name class='query'}}
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <span class="ion-ios-search-strong" aria-hidden="true"></span>
               Query
             {{/link-to}}
           </nav>

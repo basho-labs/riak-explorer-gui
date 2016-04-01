@@ -43,3 +43,24 @@
     }
   }
 }
+
+@media only screen and (max-width: 768px) {
+  $topbar-panel-height: 40px;
+
+  .topbar {
+    width: 100%;
+    height: $topbar-panel-height;
+
+    .logo {
+      margin: 5px;
+    }
+
+    .topbar-nav {
+      .topbar-nav-item {
+        a {
+          line-height: $topbar-panel-height;
+        }
+      }
+    }
+  }
+}

@@ -2,11 +2,11 @@
   {{#dashboard-module.header label='Object Details'}}
     <div class="module-actions">
       <a href="{{model.url}}" class="btn btn-sm btn-primary">
-        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        <span class="ion-eye" aria-hidden="true"></span>
         View Raw Data
       </a>
       <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
-        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        <span class="ion-trash-a" aria-hidden="true"></span>
         Delete Object
       </button>
     </div>
@@ -27,14 +27,14 @@
                   <code>{{element}}</code>
                   <button type="button" class="remove-item"
                     {{action 'removeElement' model element}}>
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span class="ion-trash-a" aria-hidden="true"></span>
                   </button>
                 </li>
               {{/each}}
               <li>
                 {{input value=elementToAdd class="input-add-item"}}
                 <button type="button" class="button-add-item" {{action 'addElement' model elementToAdd}}>
-                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                  <span class="ion-plus-round" aria-hidden="true"></span>
                   Add Item
                 </button>
               </li>

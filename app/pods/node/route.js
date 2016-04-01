@@ -18,5 +18,9 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       preLabel: 'Node Detail',
       label: model.get('name')
     });
+
+    if (model.get('cluster').get('isEnterpriseEdition')) {
+      return this.explorer.getNodeReplicationStatus(model);
+    }
   }
 });

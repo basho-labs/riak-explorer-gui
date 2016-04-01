@@ -1,0 +1,7 @@
+.ember-power-select {
+  .ember-power-select-trigger {
+    &:focus {
+      outline: none;
+    }
+  }
+}

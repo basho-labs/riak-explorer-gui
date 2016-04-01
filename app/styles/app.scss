@@ -33,6 +33,8 @@
 @import "components/object-content-list";
 @import "components/alerts";
 @import "components/tooltip";
+@import "components/ember-power-select";
 // View specific styling
-@import "views/object-counter-container";
-
+@import "views/cluster";
+@import "views/bucket-type";
+@import "views/riak-object";

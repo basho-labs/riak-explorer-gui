@@ -48,6 +48,8 @@ export default Ember.Controller.extend({
     switch(this.get('currentPath')) {
       case 'cluster.data':
       case 'bucket-type':
+      case 'bucket-type.create':
+      case 'bucket-type.edit':
       case 'bucket':
       case 'riak-object':
       case 'riak-object.edit':

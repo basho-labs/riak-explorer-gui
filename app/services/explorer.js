@@ -98,6 +98,31 @@ export default Ember.Service.extend({
     });
   },
 
+  createBucketType(clusterName, bucketType) {
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(bucketType.data)
+    });
+  },
+
+  updateBucketType(bucketType, props) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let data = { props: props };
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(data)
+    });
+  },
+
   /**
    *
    * @method getBucket
@@ -293,16 +318,12 @@ export default Ember.Service.extend({
    * @return {DS.Array} BucketType
    */
   getBucketTypes(cluster) {
-    if (Ember.isEmpty(cluster.get('bucketTypes'))) {
-      return this.store.query('bucket-type', { clusterName: cluster.get('name') })
-        .then(function(bucketTypes) {
-          cluster.set('bucketTypes', bucketTypes);
+    return this.store.query('bucket-type', { clusterName: cluster.get('name') })
+      .then(function(bucketTypes) {
+        cluster.set('bucketTypes', bucketTypes);
 
-          return cluster.get('bucketTypes');
-        });
-    } else {
-      return cluster.get('bucketTypes');
-    }
+        return cluster.get('bucketTypes');
+      });
   },
 
   /**
@@ -680,6 +701,34 @@ export default Ember.Service.extend({
       });
 
       request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  getNodeReplicationStatus(node) {
+    let url = `${this.apiURL}control/nodes/${node.get('name')}/status`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        let additionalNodeStats = data.status.nodes.findBy('id', node.get('name'));
+
+        delete additionalNodeStats.id;
+        delete data.status.nodes;
+
+        let nodeReplStatus = Ember.merge(data.status, additionalNodeStats);
+
+        node.set('replStatus', nodeReplStatus);
+
         resolve(data);
       });
 
