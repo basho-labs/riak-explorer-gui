@@ -268,7 +268,7 @@ export default Ember.Mixin.create({
   }.property('props'),
 
   searchIndexHelp: function() {
-    let searchIndexHelp = bucketPropsHelp.search_index;
+    let searchIndexHelp = _.clone(bucketPropsHelp.search_index);
 
     searchIndexHelp.key = 'search_index';
 
