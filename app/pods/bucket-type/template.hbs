@@ -20,19 +20,19 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{#ivy-tabs }}
-        {{#ivy-tab-list}}
-          {{#ivy-tab}}Overview{{/ivy-tab}}
-          {{#ivy-tab}}Advanced Properties{{/ivy-tab}}
-        {{/ivy-tab-list}}
+      {{#ivy-tabs as |tabs|}}
+        {{#tabs.tablist as |tablist|}}
+          {{#tablist.tab}}Overview{{/tablist.tab}}
+          {{#tablist.tab}}Advanced Properties{{/tablist.tab}}
+        {{/tabs.tablist}}
 
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           {{table.bucket-props-overview model=model}}
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
 
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           {{table.bucket-props-advanced model=model}}
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
       {{/ivy-tabs}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}

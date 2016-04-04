@@ -1,18 +1,18 @@
 {{#dashboard-module.container}}
   {{#dashboard-module.body}}
-    {{#ivy-tabs}}
-      {{#ivy-tab-list}}
+    {{#ivy-tabs as |tabs|}}
+      {{#tabs.tablist as |tablist|}}
         {{#if model.cluster.isEnterpriseEdition}}
-          {{#ivy-tab}}Replication Status{{/ivy-tab}}
+          {{#tablist.tab}}Replication Status{{/tablist.tab}}
         {{/if}}
-        {{#ivy-tab}}Configuration{{/ivy-tab}}
-        {{#ivy-tab}}Statistics{{/ivy-tab}}
-        {{#ivy-tab}}Log Files{{/ivy-tab}}
-        {{#ivy-tab}}Config Files{{/ivy-tab}}
-      {{/ivy-tab-list}}
+        {{#tablist.tab}}Configuration{{/tablist.tab}}
+        {{#tablist.tab}}Statistics{{/tablist.tab}}
+        {{#tablist.tab}}Log Files{{/tablist.tab}}
+        {{#tablist.tab}}Config Files{{/tablist.tab}}
+      {{/tabs.tablist}}
 
       {{#if model.cluster.isEnterpriseEdition}}
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           <table class="key-value-table">
             <tbody>
             {{#each-in model.replStatus as |statKey statValue|}}
@@ -23,10 +23,10 @@
             {{/each-in}}
             </tbody>
           </table>
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
       {{/if}}
 
-      {{#ivy-tab-panel}}
+      {{#tabs.tabpanel}}
         {{#if model.advancedConfig}}
           <h4>Advanced</h4>
           <ul class="code-list">
@@ -51,20 +51,20 @@
           {{/each-in}}
           </tbody>
         </table>
-      {{/ivy-tab-panel}}
+      {{/tabs.tabpanel}}
 
-      {{#ivy-tab-panel}}
-        {{#ivy-tabs class='vertical'}}
-          {{#ivy-tab-list class='capitalize'}}
+      {{#tabs.tabpanel}}
+        {{#ivy-tabs class='vertical' as |tabs|}}
+          {{#tabs.tablist class='capitalize' as |tablist|}}
             {{#each-in model.statsByCategory as |category stats|}}
-              {{#ivy-tab}}
+              {{#tablist.tab}}
                 {{category}}
-              {{/ivy-tab}}
+              {{/tablist.tab}}
             {{/each-in}}
-          {{/ivy-tab-list}}
+          {{/tabs.tablist}}
 
           {{#each-in model.statsByCategory as |category stats|}}
-            {{#ivy-tab-panel}}
+            {{#tabs.tabpanel}}
               <table class="key-value-table">
                 <tbody>
                 {{#each stats as |stat|}}
@@ -80,12 +80,12 @@
                 {{/each}}
                 </tbody>
               </table>
-            {{/ivy-tab-panel}}
+            {{/tabs.tabpanel}}
           {{/each-in}}
         {{/ivy-tabs}}
-      {{/ivy-tab-panel}}
+      {{/tabs.tabpanel}}
 
-      {{#ivy-tab-panel}}
+      {{#tabs.tabpanel}}
         {{#if model.logFiles}}
           <ul class="button-list">
             {{#each model.logFiles as |logFile|}}
@@ -97,9 +97,9 @@
         {{else}}
           No log files for this node
         {{/if}}
-      {{/ivy-tab-panel}}
+      {{/tabs.tabpanel}}
 
-      {{#ivy-tab-panel}}
+      {{#tabs.tabpanel}}
         {{#if model.configFiles}}
           <ul class="button-list">
             {{#each model.configFiles as |configFile|}}
@@ -111,7 +111,7 @@
         {{else}}
           No config files for this node
         {{/if}}
-      {{/ivy-tab-panel}}
+      {{/tabs.tabpanel}}
     {{/ivy-tabs}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

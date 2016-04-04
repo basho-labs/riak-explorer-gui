@@ -52,29 +52,29 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{#ivy-tabs }}
-          {{#ivy-tab-list}}
-            {{#ivy-tab}}Active Bucket Types{{/ivy-tab}}
-            {{#ivy-tab}}Inactive Bucket Types{{/ivy-tab}}
-          {{/ivy-tab-list}}
+      {{#ivy-tabs as |tabs|}}
+          {{#tabs.tablist as |tablist|}}
+            {{#tablist.tab}}Active Bucket Types{{/tablist.tab}}
+            {{#tablist.tab}}Inactive Bucket Types{{/tablist.tab}}
+          {{/tabs.tablist}}
 
-          {{#ivy-tab-panel}}
+          {{#tabs.tabpanel}}
             {{#if model.activeBucketTypes}}
               {{table.bucket-types
               bucketTypes=model.activeBucketTypes}}
             {{else}}
               <p>No bucket types have been activated</p>
             {{/if}}
-          {{/ivy-tab-panel}}
+          {{/tabs.tabpanel}}
 
-          {{#ivy-tab-panel}}
+          {{#tabs.tabpanel}}
             {{#if model.inactiveBucketTypes}}
               {{table.bucket-types
               bucketTypes=model.inactiveBucketTypes}}
             {{else}}
               <p>No inactive buckets</p>
             {{/if}}
-          {{/ivy-tab-panel}}
+          {{/tabs.tabpanel}}
       {{/ivy-tabs}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
