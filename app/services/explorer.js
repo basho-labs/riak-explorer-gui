@@ -25,7 +25,7 @@ export default Ember.Service.extend({
    * @type String
    * @default '/'
    */
-  apiURL: config.baseURL,
+  apiURL: '',
 
   name: 'explorer',
 

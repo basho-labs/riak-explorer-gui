@@ -3,7 +3,7 @@ import Ember from "ember";
 import config from '../config/environment';
 
 var ApplicationAdapter = DS.RESTAdapter.extend({
-  namespace: `${config.baseURL}explore`
+  namespace: `explore`
 });
 
 export default ApplicationAdapter;

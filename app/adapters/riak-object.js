@@ -4,7 +4,7 @@ import config from '../config/environment';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
+    return `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
   },
 
   query(store, type, query) {

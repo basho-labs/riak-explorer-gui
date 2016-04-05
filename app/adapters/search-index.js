@@ -4,7 +4,7 @@ import config from '../config/environment';
 
 var SearchIndexAdapter = DS.RESTAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}riak/clusters/${query.clusterName}/search/index`;
+    return `riak/clusters/${query.clusterName}/search/index`;
   },
 
   query(store, type, query) {
