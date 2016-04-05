@@ -3,7 +3,7 @@ import config from '../config/environment';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}explore/clusters/${query.clusterName}/bucket_types`;
+    return `explore/clusters/${query.clusterName}/bucket_types`;
   },
 
   query(store, type, query) {

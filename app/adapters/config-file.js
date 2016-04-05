@@ -3,7 +3,7 @@ import config from '../config/environment';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}explore/clusters/${query.clusterName}/nodes/${query.nodeName}/config/files`;
+    return `explore/clusters/${query.clusterName}/nodes/${query.nodeName}/config/files`;
   },
 
   query(store, type, query) {

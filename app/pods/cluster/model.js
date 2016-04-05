@@ -149,7 +149,7 @@ var Cluster = DS.Model.extend({
    * @return {String} URL
    */
   proxyUrl: function() {
-    return `${Config.baseURL}riak/clusters/${this.get('name')}`;
+    return `riak/clusters/${this.get('name')}`;
   }.property('name'),
 
   /**

@@ -4,7 +4,7 @@ import config from '../config/environment';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
-    return `${config.baseURL}explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets?start=1&rows=${config.pageSize}`;
+    return `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets?start=1&rows=${config.pageSize}`;
   },
 
   query(store, type, query) {
@@ -30,7 +30,7 @@ export default ApplicationAdapter.extend({
     let clusterName = snapshot.belongsTo('bucketType').belongsTo('cluster').id;
     let bucketTypeName = snapshot.belongsTo('bucketType').attr('name');
     let bucketName = snapshot.attr('name');
-    let url = `${config.baseURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}`;
+    let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       Ember.$.ajax({

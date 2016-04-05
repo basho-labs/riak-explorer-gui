@@ -16,6 +16,6 @@ export default ClusterRoute.extend({
 
     let clusterName = model.get('name');
 
-    controller.set('replBaseRoute', `${config.baseURL}control/clusters/${clusterName}`);
+    controller.set('replBaseRoute', `control/clusters/${clusterName}`);
   }
 });

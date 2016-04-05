@@ -5,8 +5,8 @@ module.exports = function(environment) {
     modulePrefix: 'ember-riak-explorer',
     podModulePrefix: 'ember-riak-explorer/pods',
     environment: environment,
-    baseURL: '/',
-    locationType: 'auto',
+    baseURL: null,
+    locationType: 'hash',
     pageSize: 500,
 
     contentSecurityPolicy: {
