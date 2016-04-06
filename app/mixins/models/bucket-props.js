@@ -191,6 +191,16 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  // Checks if a bucket type is time-series enabled
+  //  by determining if the ddl(data definition language) prop is present
+  isTimeSeries: function() {
+    let props = this.get('props');
+
+    if (props) {
+      return _.has(props, 'ddl');
+    }
+  }.property('props'),
+
   /**
    * Has the 'Write Once' setting been enabled for this bucket type?
    * (This feature was introduced in Riak 2.1)
@@ -202,6 +212,22 @@ export default Ember.Mixin.create({
   isWriteOnce: function() {
     if (this.get('props')) {
       return this.get('props').write_once;
+    }
+  }.property('props'),
+
+  nonEditableProps: function() {
+    let propsWithHelp = this.get('propsWithHelp');
+
+    if (propsWithHelp) {
+      let nonEditable = {};
+
+      _.forOwn(propsWithHelp, function(value, key) {
+        if (!value.editable) {
+          nonEditable[key] = value;
+        }
+      });
+
+      return nonEditable;
     }
   }.property('props'),
 
@@ -265,14 +291,6 @@ export default Ember.Mixin.create({
 
       return sorted;
     }
-  }.property('props'),
-
-  searchIndexHelp: function() {
-    let searchIndexHelp = _.clone(bucketPropsHelp.search_index);
-
-    searchIndexHelp.key = 'search_index';
-
-    return searchIndexHelp;
   }.property('props'),
 
   /**
@@ -351,6 +369,14 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  searchIndexHelp: function() {
+    let searchIndexHelp = _.clone(bucketPropsHelp.search_index);
+
+    searchIndexHelp.key = 'search_index';
+
+    return searchIndexHelp;
+  }.property('props'),
+
   /**
    * Returns the name of the Search Index set on this bucket type or bucket
    * @see http://docs.basho.com/riak/latest/dev/using/search/
@@ -364,21 +390,6 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
-  nonEditableProps: function() {
-    let propsWithHelp = this.get('propsWithHelp');
-
-    if (propsWithHelp) {
-      let nonEditable = {};
-
-      _.forOwn(propsWithHelp, function(value, key) {
-        if (!value.editable) {
-          nonEditable[key] = value;
-        }
-      });
-
-      return nonEditable;
-    }
-  }.property('props'),
 
   /**
    * Returns human-readable warnings related to this bucket's settings.

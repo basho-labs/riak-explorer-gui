@@ -20,6 +20,14 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     });
   },
 
+  renderTemplate: function(controller, model) {
+    if (model.get('isTimeSeries')) {
+      this.render('bucket-type.time-series');
+    } else {
+      this.render('bucket-type.key-value');
+    }
+  },
+
   actions: {
     //retrieveRequestedBuckets: function(startIndex) {
     //  let service = this.get('explorer');
