@@ -16,6 +16,16 @@ export default Ember.Mixin.create({
    */
   props: DS.attr(),
 
+  dataStoreType: function() {
+    if (this.get('props')) {
+      if (this.get('isTimeSeries')) {
+        return 'Time-Series';
+      } else if (this.get('isKeyValue')) {
+        return 'Key-Value';
+      }
+    }
+  }.property('props'),
+
   /**
    * Returns a capitalized name of the Riak Data Type stored in this bucket
    *    or bucket type (if this is a CRDT type bucket).
@@ -130,6 +140,14 @@ export default Ember.Mixin.create({
   isInactive: function() {
     if (this.get('props')) {
       return !this.get('props').active;
+    }
+  }.property('props'),
+
+  isKeyValue: function() {
+    let props = this.get('props');
+
+    if (props) {
+      return !(_.has(props, 'ddl'));
     }
   }.property('props'),
 
@@ -283,11 +301,18 @@ export default Ember.Mixin.create({
       // Then mutates object to an array
       let toArray = _.values(merged);
 
-      // Then filters out any props that don't have values, except the search_index prop
+      // Then filters out any props that don't have values
       let filtered = toArray.filter(function(prop) { return _.has(prop, 'value'); });
 
       // Then sort by name
       let sorted = _.sortBy(filtered, 'name');
+
+      // Remove TS specific properties we do not want to display
+      if (this.get('isTimeSeries')) {
+        sorted = sorted.filter(function(prop) {
+          return prop.key !== 'ddl';
+        });
+      }
 
       return sorted;
     }
