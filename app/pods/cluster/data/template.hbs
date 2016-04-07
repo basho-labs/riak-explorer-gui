@@ -24,15 +24,7 @@
         <td class="key">Edition Type</td>
         <td class="value">
           <code>
-          {{#if model.isEnterpriseEdition}}
-            Enterprise
-          {{else}}
-            {{#if model.isOpenSourceEdition}}
-              Open Source
-            {{else}}
-              {{model.riakType}}
-            {{/if}}
-          {{/if}}
+            {{model.riakTypeLong}}
           </code>
         </td>
       </tr>

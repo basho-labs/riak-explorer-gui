@@ -48,11 +48,13 @@ var Cluster = DS.Model.extend({
   developmentMode: DS.attr('boolean', {defaultValue: false}),
 
   /**
-   * The Riak Type: either Open Source (oss), Enterprise Edition (ee), or "unavailable"
+   * The Riak Type: either kv_oss, kv_ee, ts_oss, ts_ee, or unavailable
    * @property riakType
    * @type String
    */
-  riakType: DS.attr('string', {defaultValue: 'oss'}),
+  riakType: DS.attr('string', {defaultValue: 'kv_oss'}),
+
+  riakTypeLong: DS.attr('string', {defaultValue: 'KV Open Source'}),
 
   /**
    * Riak Version
@@ -88,7 +90,9 @@ var Cluster = DS.Model.extend({
    * @returns Boolean
    */
   hasType: function() {
-    return (this.get('riakType') && this.get('riakType') !== "unavailable");
+    let type = this.get('riakType');
+
+    return (type && type !== "unavailable");
   }.property('riakType'),
 
   /**
@@ -101,6 +105,18 @@ var Cluster = DS.Model.extend({
     return this.get('bucketTypes').filterBy('isInactive');
   }.property('bucketTypes'),
 
+  isKeyValue: function() {
+    let type = this.get('riakType');
+
+    return type === 'kv_oss' || type === 'kv_ee';
+  }.property('riakType'),
+
+  isTimeSeries: function() {
+    let type = this.get('riakType');
+
+    return type === 'ts_oss' || type === 'ts_ee';
+  }.property('riakType'),
+
   /**
    * Boolean test on if the riakType is the open source edition
    *
@@ -108,7 +124,9 @@ var Cluster = DS.Model.extend({
    * @return Boolean
    */
   isOpenSourceEdition: function() {
-    return this.get('riakType') === 'oss';
+    let type = this.get('riakType');
+
+    return type === 'kv_oss' || type === 'ts_oss';
   }.property('riakType'),
 
   /**
@@ -118,7 +136,9 @@ var Cluster = DS.Model.extend({
    * @return Boolean
    */
   isEnterpriseEdition: function() {
-    return this.get('riakType') === 'ee';
+    let type = this.get('riakType');
+
+    return type === 'kv_ee' || type === 'ts_ee';
   }.property('riakType'),
 
   /**
