@@ -12,8 +12,6 @@ export default Ember.Component.extend({
 
   isDisabled: true,
 
-  warnings: null,
-
   canSubmit: function() {
     return this.set('isDisabled', Ember.isBlank(this.get('rowsString')));
   }.observes('rowsString'),

@@ -1189,8 +1189,19 @@ export default Ember.Service.extend({
       type: 'PUT',
       url: url,
       contentType: 'application/json',
-      processData: false,
       data: JSON.stringify(data)
+    });
+  },
+
+  queryTable(bucketType, data) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let tableName = bucketType.get('name');
+    let url = `/explore/clusters/${clusterName}/tables/query`;
+
+    return Ember.$.ajax({
+      type: 'POST',
+      url: url,
+      data: data
     });
   }
 });
