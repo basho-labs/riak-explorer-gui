@@ -415,7 +415,6 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
-
   /**
    * Returns human-readable warnings related to this bucket's settings.
    *

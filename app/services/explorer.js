@@ -98,20 +98,6 @@ export default Ember.Service.extend({
     });
   },
 
-  updateBucketType(bucketType, props) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let bucketTypeName = bucketType.get('name');
-    let data = { props: props };
-    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
-
-    return Ember.$.ajax({
-      type: 'PUT',
-      url: url,
-      contentType: 'application/json',
-      data: JSON.stringify(data)
-    });
-  },
-
   /**
    *
    * @method getBucket
@@ -1127,19 +1113,17 @@ export default Ember.Service.extend({
     });
   },
 
-  /**
-   *
-   * @method updateSchema
-   * @param {DS.Model} schema
-   * @param {XML.String} data
-   */
-  updateSchema(schema, data) {
+  updateBucketType(bucketType, props) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let data = { props: props };
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
+
     return Ember.$.ajax({
       type: 'PUT',
-      url: schema.get('url'),
-      contentType: 'application/xml',
-      processData: false,
-      data: data
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(data)
     });
   },
 
@@ -1177,6 +1161,36 @@ export default Ember.Service.extend({
           reject(jqXHR);
         }
       });
+    });
+  },
+
+  /**
+   *
+   * @method updateSchema
+   * @param {DS.Model} schema
+   * @param {XML.String} data
+   */
+  updateSchema(schema, data) {
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: schema.get('url'),
+      contentType: 'application/xml',
+      processData: false,
+      data: data
+    });
+  },
+
+  updateTable(bucketType, data) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let tableName = bucketType.get('name');
+    let url = `/explore/clusters/${clusterName}/tables/${tableName}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      processData: false,
+      data: JSON.stringify(data)
     });
   }
 });

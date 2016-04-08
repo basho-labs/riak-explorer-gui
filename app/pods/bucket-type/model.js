@@ -37,7 +37,10 @@ var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
    * @property name
    * @type String
    */
-  name: DS.attr('string')
+  name: DS.attr('string'),
+
+  
+  alerts: DS.attr()
 });
 
 export default BucketType;
