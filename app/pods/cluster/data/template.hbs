@@ -36,12 +36,12 @@
   {{#if model.isTimeSeries}}
     {{#dashboard-module.container class='medium-width'}}
       {{#dashboard-module.header label='Tables'}}
-        {{!--<div class="module-actions">--}}
-          {{!--{{#link-to 'bucket-type.create' model.name class='action-button create'}}--}}
-            {{!--<span class="ion-plus-circled" aria-hidden="true"></span>--}}
-            {{!--Create New Bucket Type--}}
-          {{!--{{/link-to}}--}}
-        {{!--</div>--}}
+        <div class="module-actions">
+          {{#link-to 'table.create' model.name class='action-button create'}}
+            <span class="ion-plus-circled" aria-hidden="true"></span>
+            Create New Table
+          {{/link-to}}
+        </div>
       {{/dashboard-module.header}}
       {{#dashboard-module.body}}
         {{#if model.tables}}

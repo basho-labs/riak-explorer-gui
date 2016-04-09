@@ -12,7 +12,6 @@ Router.map(function() {
   this.route('cluster.query', {path: '/cluster/:clusterName/query'});
 
   // Cluster-Data Routes
-  this.route('table', {path: '/cluster/:clusterName/data/table/:tableName'});
   this.route('bucket-type', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName'});
   this.route('bucket-type.create', {path: '/cluster/:clusterName/data/bucket_type/create'});
   this.route('bucket-type.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/edit'});
@@ -22,6 +21,8 @@ Router.map(function() {
   this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:objectName'});
   this.route('riak-object.set', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/set/:objectName'});
   this.route('riak-object.map', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/map/:objectName'});
+  this.route('table', {path: '/cluster/:clusterName/data/table/:tableName'});
+  this.route('table.create', {path: '/cluster/:clusterName/data/table/create'});
 
   // Cluster-Ops Routes
   this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});
