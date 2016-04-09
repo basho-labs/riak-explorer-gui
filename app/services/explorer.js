@@ -404,7 +404,8 @@ export default Ember.Service.extend({
           cluster,
           self.getBucketTypes(cluster),
           self.getIndexes(cluster),
-          self.getNodes(cluster)
+          self.getNodes(cluster),
+          self.getTables(cluster)
         ]);
       })
       .then(function(PromiseArray) {
@@ -1014,6 +1015,35 @@ export default Ember.Service.extend({
         reject(data);
       });
     });
+  },
+
+  /**
+   *
+   * @method getTab;e
+   * @param {String} clusterName
+   * @param {String} tableName
+   * @return {DS.Model} Table
+   */
+  getTable(clusterName, tableName) {
+    return this.getCluster(clusterName).then(function(cluster) {
+      return cluster.get('tables').findBy('name', tableName);
+    });
+  },
+
+  /**
+   * Returns all the TS Tables that belong to the specified cluster.
+   *
+   * @method getTables
+   * @param {DS.Model} cluster
+   * @return {DS.Array} Table
+   */
+  getTables(cluster) {
+    return this.store.query('table', { clusterName: cluster.get('name') })
+      .then(function(tables) {
+        cluster.set('tables', tables);
+
+        return cluster.get('tables');
+      });
   },
 
   /**

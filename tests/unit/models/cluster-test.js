@@ -8,7 +8,8 @@ moduleForModel('cluster', 'Unit | Model | cluster', {
     'model:searchIndex',
     'model:searchSchema',
     'model:config-file',
-    'model:log-file'
+    'model:log-file',
+    'model:table'
   ]
 });
 
@@ -49,6 +50,14 @@ test('searchSchemas relationship', function(assert) {
   let relationship = Ember.get(klass, 'relationshipsByName').get('searchSchemas');
 
   assert.equal(relationship.key, 'searchSchemas');
+  assert.equal(relationship.kind, 'hasMany');
+});
+
+test('tables relationship', function(assert) {
+  let klass = this.subject({}).constructor;
+  let relationship = Ember.get(klass, 'relationshipsByName').get('tables');
+
+  assert.equal(relationship.key, 'tables');
   assert.equal(relationship.kind, 'hasMany');
 });
 

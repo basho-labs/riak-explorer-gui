@@ -16,16 +16,6 @@ export default Ember.Mixin.create({
    */
   props: DS.attr(),
 
-  dataStoreType: function() {
-    if (this.get('props')) {
-      if (this.get('isTimeSeries')) {
-        return 'Time-Series';
-      } else if (this.get('isKeyValue')) {
-        return 'Key-Value';
-      }
-    }
-  }.property('props'),
-
   /**
    * Returns a capitalized name of the Riak Data Type stored in this bucket
    *    or bucket type (if this is a CRDT type bucket).
@@ -143,14 +133,6 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
-  isKeyValue: function() {
-    let props = this.get('props');
-
-    if (props) {
-      return !(_.has(props, 'ddl'));
-    }
-  }.property('props'),
-
   /**
    * Has the 'Last Write Wins' optimization been turned on for this bucket?
    * @see http://docs.basho.com/riak/latest/dev/using/conflict-resolution/#last-write-wins
@@ -206,16 +188,6 @@ export default Ember.Mixin.create({
   isStronglyConsistent: function() {
     if (this.get('props')) {
       return this.get('props').consistent;
-    }
-  }.property('props'),
-
-  // Checks if a bucket type is time-series enabled
-  //  by determining if the ddl(data definition language) prop is present
-  isTimeSeries: function() {
-    let props = this.get('props');
-
-    if (props) {
-      return _.has(props, 'ddl');
     }
   }.property('props'),
 

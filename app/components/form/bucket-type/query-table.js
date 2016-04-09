@@ -17,14 +17,11 @@ export default Ember.Component.extend({
   }.observes('queryString'),
 
   submit() {
-    debugger;
     return this.get('explorer').queryTable(this.get('bucketType'), this.get('queryString')).then(
       function onSuccess(data) {
         console.log('success');
-        debugger;
       }, function onFail(error) {
         console.log('fail');
-        debugger;
       }
     );
   }

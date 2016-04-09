@@ -3,6 +3,7 @@ import Ember from 'ember';
 
 export default ApplicationAdapter.extend({
   buildURL(modelName, id, snapshot, requestType, query) {
+    // TS Tables use same end point as bucket types, differentiated by "ddl" property
     return `explore/clusters/${query.clusterName}/bucket_types`;
   },
 
@@ -11,15 +12,17 @@ export default ApplicationAdapter.extend({
 
     let promise = this.ajax(url, 'GET').then(function(data) {
 
-      // Remove any time series table bucket types, they are added by the table adapter.
+      // Remove any kv bucket types, they are added by the bucket-type adapter.
       // Time series tables are identified by the "ddl" property.
-      data.bucket_types = data.bucket_types.filter(function(bt) {
-        return Ember.isNone(bt.props.ddl);
+      data.tables = data.bucket_types.filter(function(bt) {
+        return Ember.isPresent(bt.props.ddl);
       });
 
-      data.bucket_types.forEach(function(bucketType) {
-        bucketType.name = bucketType.id;
-        bucketType.id = `${query.clusterName}/${bucketType.name}`;
+      delete data.bucket_types;
+
+      data.tables.forEach(function(table) {
+        table.name = table.id;
+        table.id = `${query.clusterName}/${table.name}`;
       });
 
       return data;

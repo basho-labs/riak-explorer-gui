@@ -56,6 +56,7 @@ export default Ember.Controller.extend({
       case 'riak-object.counter':
       case 'riak-object.set':
       case 'riak-object.map':
+      case 'table':
         this.set('clusterSubSection', 'data');
         break;
       case 'cluster.ops':

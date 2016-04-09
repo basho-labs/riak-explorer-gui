@@ -39,6 +39,13 @@ var Cluster = DS.Model.extend({
   searchSchemas: DS.hasMany('search-schema'),
 
   /**
+   * TS tables created on the cluster
+   * @property tables
+   * @type Array<Table>
+   */
+  tables: DS.hasMany('table'),
+
+  /**
    * Is this cluster in Dev Mode? Set in the Explorer config file.
    * Dev mode allows expensive operations like list keys, delete bucket, etc.
    * @property developmentMode
@@ -104,12 +111,6 @@ var Cluster = DS.Model.extend({
   inactiveBucketTypes: function() {
     return this.get('bucketTypes').filterBy('isInactive');
   }.property('bucketTypes'),
-
-  isKeyValue: function() {
-    let type = this.get('riakType');
-
-    return type === 'kv_oss' || type === 'kv_ee';
-  }.property('riakType'),
 
   isTimeSeries: function() {
     let type = this.get('riakType');

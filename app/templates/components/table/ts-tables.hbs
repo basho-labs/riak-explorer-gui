@@ -1,0 +1,25 @@
+<thead>
+<tr>
+  <th class="name">Name</th>
+  <th class="n-val">n_val</th>
+  <th class="res-stategy">Conflict Res. Strategy</th>
+</tr>
+</thead>
+<tbody>
+{{#each tables as |table|}}
+  <tr>
+    <td>
+      {{#link-to 'table' table.cluster.name table.name class='cluster-resource-link'}}
+        {{table.name}}
+      {{/link-to}}
+    </td>
+    <td>
+      <code>{{table.nVal}}</code>
+    </td>
+    <td>
+      <code>{{table.resolutionStrategy}}</code>
+    </td>
+  </tr>
+{{/each}}
+</tbody>
+

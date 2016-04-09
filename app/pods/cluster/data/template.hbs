@@ -28,11 +28,31 @@
           </code>
         </td>
       </tr>
-
       </tbody>
     </table>
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
+
+  {{#if model.isTimeSeries}}
+    {{#dashboard-module.container class='medium-width'}}
+      {{#dashboard-module.header label='Tables'}}
+        {{!--<div class="module-actions">--}}
+          {{!--{{#link-to 'bucket-type.create' model.name class='action-button create'}}--}}
+            {{!--<span class="ion-plus-circled" aria-hidden="true"></span>--}}
+            {{!--Create New Bucket Type--}}
+          {{!--{{/link-to}}--}}
+        {{!--</div>--}}
+      {{/dashboard-module.header}}
+      {{#dashboard-module.body}}
+        {{#if model.tables}}
+          {{table.ts-tables
+            tables=model.tables}}
+        {{else}}
+          <p>No Time Series tables have been created on this cluster</p>
+        {{/if}}
+      {{/dashboard-module.body}}
+    {{/dashboard-module.container}}
+  {{/if}}
 
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Bucket Types'}}
@@ -53,7 +73,7 @@
           {{#tabs.tabpanel}}
             {{#if model.activeBucketTypes}}
               {{table.bucket-types
-              bucketTypes=model.activeBucketTypes}}
+                bucketTypes=model.activeBucketTypes}}
             {{else}}
               <p>No bucket types have been activated</p>
             {{/if}}

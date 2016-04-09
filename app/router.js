@@ -12,6 +12,7 @@ Router.map(function() {
   this.route('cluster.query', {path: '/cluster/:clusterName/query'});
 
   // Cluster-Data Routes
+  this.route('table', {path: '/cluster/:clusterName/data/table/:tableName'});
   this.route('bucket-type', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName'});
   this.route('bucket-type.create', {path: '/cluster/:clusterName/data/bucket_type/create'});
   this.route('bucket-type.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/edit'});

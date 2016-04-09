@@ -1,28 +1,15 @@
 import DS from 'ember-data';
 import BucketProps from '../../mixins/models/bucket-props';
-import CachedListWatcher from '../../mixins/models/cached-list-watcher';
 
 /**
- * Represents a Riak Bucket Type
+ * Represents a Riak TS Table
  *
- * @class BucketType
+ * @class Table
  * @extends DS.Model
- * @constructor
- * @uses Cluster
  * @uses BucketProps
- * @uses BucketList
  */
-var BucketType = DS.Model.extend(BucketProps, CachedListWatcher, {
-  bucketList: DS.belongsTo('bucket-list'),
 
-  /**
-   * Contains the results of cached bucket lists for this bucket type,
-   * fetched from the API.
-   * @property buckets
-   * @type Bucket
-   */
-  buckets: DS.hasMany('bucket'),
-
+var BucketType = DS.Model.extend(BucketProps, {
   /**
    * Riak cluster in which this bucket type lives.
    * @property cluster
