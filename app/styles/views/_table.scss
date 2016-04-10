@@ -1,0 +1,43 @@
+.table-create-container {
+  .table-name {
+    width: 304px;
+  }
+
+  .family, .series, .table-field {
+    input {
+      width: 150px;
+    }
+
+    select {
+      width: 150px;
+    }
+  }
+
+  .quantum {
+    input, select {
+      width: 100%;
+    }
+
+    .field-name {
+      width: 150px;
+    }
+
+    .quantity {
+      width: 66px;
+    }
+
+    .unit {
+      width: 80px;
+    }
+  }
+
+  .remove-field {
+    font-size: 9px;
+    cursor: pointer;
+  }
+
+  .add-field {
+    @extend a;
+    cursor: pointer;
+  }
+}

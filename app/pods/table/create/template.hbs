@@ -1,1 +1,29 @@
-Hello World
+{{#if errors}}
+  {{#bs-alert type="danger" dismissible=false}}
+    <ul>
+      <h4><span class="label label-danger">Errors</span></h4>
+      {{#each errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
+<div class="table-create-container" xmlns="http://www.w3.org/1999/html">
+  {{#dashboard-module.container class='medium-width'}}
+    {{#dashboard-module.header label='New Table'}}
+      <div class="module-actions">
+        {{#link-to 'cluster.data' model.name class="cancel action-button"}}
+          <span class="ion-close-round" aria-hidden="true"></span>
+          Cancel
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      {{form.table.create-table
+        errors=(mut errors)
+        cluster=model
+        tableCreated='onTableCreate'}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>

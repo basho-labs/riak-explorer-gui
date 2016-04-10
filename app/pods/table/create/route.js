@@ -5,6 +5,8 @@ import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
+  errors: ['some error'],
+
   model: function(params) {
     return this.explorer.getCluster(params.clusterName);
   },
@@ -19,5 +21,13 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       preLabel: 'Create Table'
     });
     this.simulateLoad();
+  },
+
+  actions: {
+    onTableCreate: function(tableName) {
+      let cluster = this.currentModel;
+
+      this.transitionTo('table', cluster.get('name'), tableName);
+    }
   }
 });

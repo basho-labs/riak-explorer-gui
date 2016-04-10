@@ -90,6 +90,8 @@ export default Ember.Service.extend({
   createBucketType(clusterName, bucketType) {
     let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
 
+    debugger;
+
     return Ember.$.ajax({
       type: 'PUT',
       url: url,

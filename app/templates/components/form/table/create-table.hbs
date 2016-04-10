@@ -1,0 +1,126 @@
+{{#bs-alert type="info"}}
+  <h4><span class="label label-info">Notes on Table Creation</span></h4>
+  <ul>
+    <li>If field names need to contain spaces or punctuation they can be double quoted.</li>
+    <li>Quantum field name must be an existing field in the table definition of type <strong>timestamp</strong></li>
+  </ul>
+{{/bs-alert}}
+
+
+<div class="form-group table-name">
+  <label>Table Name</label>
+  {{input
+    class='form-control'
+    value=(mut name)}}
+</div>
+
+<div class="form-group family">
+  <label>Family (name, type)</label>
+
+  <div class="form-inline">
+    <div class="form-group">
+      {{input
+        class='form-control'
+        value=(mut family.name)
+        placeholder='name'}}
+    </div>
+
+    <div class="form-group">
+      <select onchange={{action (mut family.type) value="target.value"}} class='form-control'>
+        {{#each fieldTypes as |type|}}
+          <option value={{type}} selected={{eq family.type type}}>{{type}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="form-group series">
+  <label>Series (name, type)</label>
+
+  <div class="form-inline">
+    <div class="form-group">
+      {{input
+        class='form-control inline-input'
+        value=(mut series.name)
+        placeholder='name'}}
+    </div>
+
+    <div class="form-group">
+      <select onchange={{action (mut series.type) value="target.value"}} class='form-control'>
+        {{#each fieldTypes as |type|}}
+          <option value={{type}} selected={{eq series.type type}}>{{type}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+</div>
+
+{{#each fields as |field index|}}
+  <div class="form-group table-field">
+    <label>Field (name, type)</label>
+
+    <div class="form-inline">
+      <div class="form-group">
+        {{input
+          class='form-control'
+          value=(mut field.name)
+          placeholder='name'}}
+      </div>
+
+      <div class="form-group">
+        <select onchange={{action (mut field.type) value="target.value"}} class='form-control'>
+          {{#each fieldTypes as |type|}}
+            <option value={{type}} selected={{eq field.type type}}>{{type}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <span class="remove-field label label-danger" {{action 'removeField' index}}>
+        remove
+      </span>
+    </div>
+  </div>
+{{/each}}
+
+<div class="form-group add-field">
+  <span {{action 'addNewField'}}>
+    <span class="ion-plus-circled" aria-hidden="true"></span>
+    Add another table field
+  </span>
+</div>
+
+<div class="form-group quantum">
+  <label>Quantum (table field name, quantity, unit of time)</label>
+  <div class="form-inline">
+    <div class="form-group field-name">
+      {{input
+        class='form-control'
+        placeholder='field name'
+        value=(mut quantum.fieldName)}}
+    </div>
+
+    <div class="form-group quantity">
+      {{input
+        class='form-control'
+        type="number"
+        min="1"
+        placeholder='1'
+        value=(mut quantum.quantity)}}
+    </div>
+
+    <div class="form-group unit">
+      <select onchange={{action (mut quantum.unit) value="target.value"}} class='form-control'>
+        {{#each timeUnits as |unit|}}
+          <option value={{unit}} selected={{eq quantum.unit unit}}>{{unit}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="form-group create-button">
+  <button class="btn btn-primary">
+    Create Table
+  </button>
+</div>
