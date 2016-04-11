@@ -80,7 +80,7 @@ export default Ember.Component.extend(ScrollReset, {
     let notDupe = (existingTables.indexOf(name) === -1);
 
     if (!notDupe) {
-      this.get('errors').pushObject(`A table named "${name}" already exists on this cluster. Please give this table a unique name.`)
+      this.get('errors').pushObject(`A table named "${name}" already exists on this cluster. Please give this table a unique name.`);
     }
 
     return notDupe;
@@ -171,7 +171,6 @@ export default Ember.Component.extend(ScrollReset, {
       let clusterName = this.get('cluster').get('name');
       let data = this.prepareTableData();
 
-      debugger;
       this.get('explorer').createBucketType(clusterName, data).then(
         function onSuccess() {
           return self.sendAction('tableCreated', self.get('name'));
@@ -180,8 +179,7 @@ export default Ember.Component.extend(ScrollReset, {
           self.scrollToTop();
           self.get('errors').pushObject('Sorry, something went wrong. Table was not created');
           return false;
-        },
-      );
+        });
     } else {
       this.scrollToTop();
       return false;
@@ -190,7 +188,7 @@ export default Ember.Component.extend(ScrollReset, {
 
   actions: {
     addNewField: function() {
-      this.get('fields').pushObject({ name: '', type: 'varchar' })
+      this.get('fields').pushObject({ name: '', type: 'varchar' });
     },
 
     removeField: function(index) {

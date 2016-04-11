@@ -35,7 +35,7 @@
 
   {{#if model.isTimeSeries}}
     {{#dashboard-module.container class='medium-width'}}
-      {{#dashboard-module.header label='Tables'}}
+      {{#dashboard-module.header label='TS Tables'}}
         <div class="module-actions">
           {{#link-to 'table.create' model.name class='action-button create'}}
             <span class="ion-plus-circled" aria-hidden="true"></span>
@@ -55,7 +55,7 @@
   {{/if}}
 
   {{#dashboard-module.container class='medium-width'}}
-    {{#dashboard-module.header label='Bucket Types'}}
+    {{#dashboard-module.header label='KV Bucket Types'}}
       <div class="module-actions">
         {{#link-to 'bucket-type.create' model.name class='action-button create'}}
           <span class="ion-plus-circled" aria-hidden="true"></span>

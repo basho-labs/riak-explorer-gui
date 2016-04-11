@@ -58,6 +58,7 @@ export default Ember.Controller.extend({
       case 'riak-object.map':
       case 'table':
       case 'table.create':
+      case 'table.write':
         this.set('clusterSubSection', 'data');
         break;
       case 'cluster.ops':
@@ -71,6 +72,7 @@ export default Ember.Controller.extend({
       case 'search-schema':
       case 'search-schema.edit':
       case 'search-schema.create':
+      case 'table.query':
         this.set('clusterSubSection', 'query');
         break;
       default:

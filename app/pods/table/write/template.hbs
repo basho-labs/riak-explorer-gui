@@ -1,0 +1,31 @@
+{{#if errors}}
+  {{#bs-alert type="danger" dismissible=false}}
+    <h4><span class="label label-danger">ERRORS</span></h4>
+    <ul>
+      {{#each errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
+{{#if successMessage}}
+  {{#bs-alert type="success"}}
+    <h4><span class="label label-success">SUCCESS</span></h4>
+    <ul>
+      <p>{{successMessage}}</p>
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
+<div>
+  {{#dashboard-module.container class='medium-width'}}
+    {{dashboard-module.header label='Write Data to Table'}}
+    {{#dashboard-module.body}}
+      {{form.table.insert-data
+        table=model
+        errors=(mut errors)
+        successMessage=(mut successMessage)}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>

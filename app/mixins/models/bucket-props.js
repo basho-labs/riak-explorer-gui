@@ -279,13 +279,6 @@ export default Ember.Mixin.create({
       // Then sort by name
       let sorted = _.sortBy(filtered, 'name');
 
-      // Remove TS specific properties we do not want to display
-      if (this.get('isTimeSeries')) {
-        sorted = sorted.filter(function(prop) {
-          return prop.key !== 'ddl';
-        });
-      }
-
       return sorted;
     }
   }.property('props'),

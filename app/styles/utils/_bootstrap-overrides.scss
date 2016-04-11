@@ -56,6 +56,12 @@ code {
   word-break: break-word;
 }
 
+pre {
+  background: #2b2b2b;
+  border-color: #2b2b2b;
+  color: #bababa;
+}
+
 @media only screen and (max-width: 768px) {
   .table {
      overflow-x: scroll;

@@ -9,26 +9,30 @@
   {{/bs-alert}}
 {{/if}}
 
-<div class='bucket-types-container'>
+<div>
   {{#dashboard-module.container class='medium-width'}}
-    {{dashboard-module.header label='Table Information'}}
+    {{#dashboard-module.header label='Table Information'}}
+      <div class="module-actions">
+        {{#link-to 'table.write' model.cluster.name model.name class='action-button create'}}
+          <span class="ion-plus-circled" aria-hidden="true"></span>
+          Write Data
+        {{/link-to}}
+
+        {{#link-to 'table.query'
+        model.cluster.name
+        model.name
+        class='action-button create'}}
+          <span class="ion-search" aria-hidden="true"></span>
+          Query Data
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
+
     {{#dashboard-module.body}}
-      <section>
-        <label>Data Definition Langauge (DDL)</label>
-        {{#code-highlighter language-type='erlang'}}
-          {{model.props.ddl}}
-        {{/code-highlighter}}
-      </section>
-
-      <section>
-        {{form.bucket-type.add-rows
-        bucketType=model}}
-      </section>
-
-      <section>
-        {{form.bucket-type.query-table
-        bucketType=model}}
-      </section>
+      <label>Data Definition Langauge (DDL)</label>
+      {{#code-highlighter language-type='erlang'}}
+        {{model.props.ddl}}
+      {{/code-highlighter}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>

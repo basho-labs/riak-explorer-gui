@@ -31,12 +31,23 @@
       {{/if}}
     {{/if}}
 
-    {{#if data.tableCreate}}
-      <li>create table</li>
+    {{#if data.table}}
+      <li>
+        {{link-to data.table.name 'table'
+        data.cluster.name
+        data.table.name}}
+      </li>
     {{/if}}
 
     {{#if data.bucketTypeCreate}}
       <li>create bucket type</li>
+    {{/if}}
+
+    {{#if data.tableWrite}}
+      <li>write</li>
+    {{/if}}
+    {{#if data.tableCreate}}
+      <li>create table</li>
     {{/if}}
 
     {{#if data.editView}}
@@ -81,6 +92,14 @@
 
     {{#if data.schemaCreate}}
       <li>create schema</li>
+    {{/if}}
+
+    {{#if data.table}}
+      <li>
+        {{link-to data.table.name 'table'
+        data.cluster.name
+        data.table.name}}
+      </li>
     {{/if}}
   {{/if}}
 </ol>

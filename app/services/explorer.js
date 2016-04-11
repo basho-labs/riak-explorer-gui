@@ -90,8 +90,6 @@ export default Ember.Service.extend({
   createBucketType(clusterName, bucketType) {
     let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
 
-    debugger;
-
     return Ember.$.ajax({
       type: 'PUT',
       url: url,
@@ -1090,6 +1088,17 @@ export default Ember.Service.extend({
     }, 10000);
   },
 
+  queryTable(table, data) {
+    let clusterName = table.get('cluster').get('name');
+    let url = `/explore/clusters/${clusterName}/tables/query`;
+
+    return Ember.$.ajax({
+      type: 'POST',
+      url: url,
+      data: data
+    });
+  },
+
   /**
    *
    * @method refreshBucketList
@@ -1212,9 +1221,9 @@ export default Ember.Service.extend({
     });
   },
 
-  updateTable(bucketType, data) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let tableName = bucketType.get('name');
+  updateTable(table, data) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
     let url = `/explore/clusters/${clusterName}/tables/${tableName}`;
 
     return Ember.$.ajax({
@@ -1222,18 +1231,6 @@ export default Ember.Service.extend({
       url: url,
       contentType: 'application/json',
       data: JSON.stringify(data)
-    });
-  },
-
-  queryTable(bucketType, data) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let tableName = bucketType.get('name');
-    let url = `/explore/clusters/${clusterName}/tables/query`;
-
-    return Ember.$.ajax({
-      type: 'POST',
-      url: url,
-      data: data
     });
   }
 });

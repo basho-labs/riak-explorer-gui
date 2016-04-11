@@ -1,0 +1,22 @@
+{{#bs-alert type='info'}}
+  <h4><span class="label label-info">Notes on Writing Data</span></h4>
+  <ul>
+    <li>The textfield expects an array of arrays, each sub-array representing a row to be inserted.</li>
+    <li>All rows will be validated server side before writing occurs. If any of the rows fails validation then none of the rows will be written.</li>
+    <li>For more information on writing data to a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/writingdata/" target="_blank">Basho Docs</a>.</li>
+  </ul>
+{{/bs-alert}}
+
+<div class="form-group">
+  <div class="help-block">
+    <small>Example: <code>[["somefamily", "someseries", "somefield", "anotherfield"]]</code></small>
+  </div>
+  {{textarea
+  value=(mut rowsString)
+  class="form-control"
+  rows="4"}}
+</div>
+
+<button type="submit" class="btn btn-primary" disabled={{isDisabled}}>
+  Insert Rows
+</button>

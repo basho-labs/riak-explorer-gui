@@ -1,0 +1,48 @@
+{{#bs-alert type='info'}}
+  <h4><span class="label label-info">Notes on Querying</span></h4>
+  <ul>
+    <li>Fields may not be compared against other fields in the query.</li>
+    <li>All elements of the compound primary key must be present.</li>
+    <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
+    <li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>
+  </ul>
+{{/bs-alert}}
+
+<div class="query-module">
+  <div class="split-panel">
+    <div class="left-panel">
+      <div class="form-group">
+        <label>Query Statement</label>
+        <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}}>
+          Run Query
+        </button>
+        {{textarea
+        value=(mut queryString)
+        class="form-control"
+        rows="4"}}
+        <span class="help-block">
+        <small>Example: <code>{{example}}</code></small>
+      </span>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <label>Result</label>
+      <section class="query-result-container">
+        {{!--TODO: Get code highlighter to repopulate dynamically--}}
+        {{!--{{#code-highlighter--}}
+          {{!--language-type='js'}}--}}
+          {{!--{queryResult}}--}}
+        {{!--{{/code-highlighter}}--}}
+
+        {{!--pre tags render funny if whitespace(indented) present--}}
+        <pre>{{#if (is-array queryResult)}}{{#each queryResult as |row index|}}<div><code>{{index}}: [{{row}}]</code></div>{{/each}}{{else}}{{queryResult}}{{/if}}</pre>
+      </section>
+    </div>
+  </div>
+</div>
+
+
+
+
+

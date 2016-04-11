@@ -41,3 +41,38 @@
     cursor: pointer;
   }
 }
+
+.table-query-container {
+  .query-module {
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+
+  .split-panel {
+    $panel-height: 125px;
+
+    @include flexbox;
+    @include flex-direction(row);
+
+    .left-panel {
+      @include flex(1);
+
+      button {
+        float: right;
+      }
+
+      textarea.form-control {
+        min-height: $panel-height;
+      }
+    }
+
+    .right-panel {
+      @include flex(1);
+      padding-left: 15px;
+
+      pre {
+        min-height: $panel-height;
+      }
+    }
+  }
+}
