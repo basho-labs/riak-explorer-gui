@@ -6,8 +6,6 @@ export default Ember.Component.extend({
 
   classNames: ['code-highlighter'],
 
-  content: null,
-
   didInsertElement() {
     let codeBlock = this.$().find('code')[0];
 

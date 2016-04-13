@@ -1,0 +1,57 @@
+<tr>
+  <td class='key'>Table Name</td>
+  <td class='value'>{{table.name}}</td>
+</tr>
+
+<tr>
+  <td class='key'>Activated</td>
+  <td class='value'>
+    {{#if table.isActive}}
+      <span class="label label-success">Active</span>
+    {{else}}
+      <span class="label label-default">Inactive</span>
+    {{/if}}
+  </td>
+</tr>
+
+<tr>
+  <td class='key'>Partition Key</td>
+  <td class='value'><code>[{{table.partitionKey}}]</code></td>
+</tr>
+
+<tr>
+  <td class='key'>Local Key</td>
+  <td class='value'><code>[{{table.localKey}}]</code></td>
+</tr>
+
+<tr>
+  <td class='key'>Quantum</td>
+  <td class='value'><code>{{table.quantum}}</code></td>
+</tr>
+
+<tr class="table-in-kv-table">
+  <td class='key'>Fields</td>
+  <td class='value'>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>position</th>
+        <th>optional</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{#each-in table.fields as |name prop|}}
+        <tr>
+          <td><code>{{name}}</code></td>
+          <td><code>{{prop.type}}</code></td>
+          <td><code>{{prop.position}}</code></td>
+          <td><code>{{prop.optional}}</code></td>
+        </tr>
+      {{/each-in}}
+      </tbody>
+    </table>
+  </td>
+</tr>
+

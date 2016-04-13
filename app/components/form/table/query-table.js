@@ -16,13 +16,28 @@ export default Ember.Component.extend({
 
   isDisabled: true,
 
-  example: "select weather, temperature from SomeTable where time > 1234560 and time < 1234569 and myfamily = 'family1' and myseries = 'series1'",
+  example: "",
 
   successMessage: '',
+
+  setExampleMessage: function() {
+    let table = this.get('table');
+    let tableName = table.get('name');
+    let familyName = table.get('familyField').name;
+    let seriesName = table.get('seriesField').name;
+    let quantumName = table.get('quantumField').name;
+    let example = `select * from ${tableName} where ${quantumName} > 1 and ${quantumName} < 100 and ${familyName} = 'foo' and ${seriesName} = 'bar'`;
+
+    return this.set('example', example);
+  },
 
   canSubmit: function() {
     return this.set('isDisabled', Ember.isBlank(this.get('queryString')));
   }.observes('queryString'),
+
+  didReceiveAttrs: function() {
+    this.setExampleMessage();
+  },
 
   submit() {
     let self = this;

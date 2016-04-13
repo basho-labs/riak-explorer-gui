@@ -1,3 +1,12 @@
+{{#bs-alert type="info"}}
+  <h4><span class="label label-info">Notes on Table Creation</span></h4>
+  <ul>
+    <li>If field names need to contain spaces they can be double quoted.</li>
+    <li>Quantum field name must be an existing field in the table definition of type <strong>timestamp</strong></li>
+    <li>For more information on planning and creating a time series table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/planning/" target="_blank">Basho Docs</a>.</li>
+  </ul>
+{{/bs-alert}}
+
 {{#if errors}}
   {{#bs-alert type="danger" dismissible=false}}
     <ul>

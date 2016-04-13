@@ -1,3 +1,13 @@
+{{#bs-alert type='info'}}
+  <h4><span class="label label-info">Notes on Querying</span></h4>
+  <ul>
+    <li>Fields may not be compared against other fields in the query.</li>
+    <li>All elements of the compound primary key must be present.</li>
+    <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
+    <li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>
+  </ul>
+{{/bs-alert}}
+
 {{#if errors}}
   {{#bs-alert type="danger" dismissible=false}}
     <h4><span class="label label-danger">ERRORS</span></h4>
@@ -20,7 +30,14 @@
 
 <div class='bucket-types-container'>
   {{#dashboard-module.container class='table-query-container'}}
-    {{dashboard-module.header label='Query Table'}}
+    {{#dashboard-module.header label='Query Table'}}
+      <div class="module-actions">
+        {{#link-to 'table' model.cluster.name model.name class="cancel action-button"}}
+          <span class="ion-close-round" aria-hidden="true"></span>
+          Cancel
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
 
     {{#dashboard-module.body}}
       {{form.table.query-table
@@ -30,3 +47,5 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+

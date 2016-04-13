@@ -9,6 +9,16 @@
     padding-right: 20px;
   }
 
+  .table-in-kv-table {
+    thead th {
+      padding-top: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+
   &.bucket-props-overview {
     .key {
       min-width: 175px;
@@ -20,4 +30,5 @@
       min-width: 225px;
     }
   }
+
 }

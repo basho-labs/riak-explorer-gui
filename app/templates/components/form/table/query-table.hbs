@@ -1,18 +1,27 @@
-{{#bs-alert type='info'}}
-  <h4><span class="label label-info">Notes on Querying</span></h4>
-  <ul>
-    <li>Fields may not be compared against other fields in the query.</li>
-    <li>All elements of the compound primary key must be present.</li>
-    <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
-    <li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>
-  </ul>
-{{/bs-alert}}
+<section class="table-ref">
+  <div class="section-title">Table Reference</div>
+  <table class="key-value-table">
+    <tbody>
+    <tr>
+      <td class="key">Primary Key</td>
+      <td class="value"><code>[{{table.partitionKey}}]</code></td>
+    </tr>
+    <tr>
+      <td class="key">Table Fields</td>
+      <td class="value">
+        <code class="comma-list">[{{#each-in table.fields as |key prop|}}<span class="item">{{key}}({{prop.type}})</span>{{/each-in}}]</code>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
 
-<div class="query-module">
+<section class="query-module">
+  <div class="section-title">Query Editor</div>
   <div class="split-panel">
     <div class="left-panel">
       <div class="form-group">
-        <label>Query Statement</label>
+        <label>Statement</label>
         <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}}>
           Run Query
         </button>
@@ -21,7 +30,10 @@
         class="form-control"
         rows="4"}}
         <span class="help-block">
-        <small>Example: <code>{{example}}</code></small>
+        <small>
+          example statement:<br/>
+          <code>{{example}}</code>
+        </small>
       </span>
       </div>
     </div>
@@ -40,7 +52,7 @@
       </section>
     </div>
   </div>
-</div>
+</section>
 
 
 

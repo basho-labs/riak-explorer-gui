@@ -18,5 +18,12 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       preLabel: 'Table',
       label: model.get('name')
     });
+  },
+
+  setupController: function(controller, model) {
+    this._super(controller, model);
+    
+    controller.set('errors', []);
+    controller.set('successMessage', '');
   }
 });
