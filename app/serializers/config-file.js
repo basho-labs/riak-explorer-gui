@@ -1,5 +1,4 @@
 import ApplicationSerializer from './application';
-import Ember from 'ember';
 
 export default ApplicationSerializer.extend({
   normalizeResponse: function(store, primaryModelClass, payload, id, requestType) {

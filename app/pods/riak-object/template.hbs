@@ -53,24 +53,24 @@
 {{#dashboard-module.container class='medium-width'}}
   {{dashboard-module.header label='Object Metadata'}}
   {{#dashboard-module.body}}
-    {{#ivy-tabs}}
-        {{#ivy-tab-list}}
-          {{#ivy-tab}}General{{/ivy-tab}}
-          {{#ivy-tab}}Secondary Indexes{{/ivy-tab}}
-          {{#ivy-tab}}Custom Headers{{/ivy-tab}}
-        {{/ivy-tab-list}}
+    {{#ivy-tabs as |tabs|}}
+        {{#tabs.tablist as |tablist|}}
+          {{#tablist.tab}}General{{/tablist.tab}}
+          {{#tablist.tab}}Secondary Indexes{{/tablist.tab}}
+          {{#tablist.tab}}Custom Headers{{/tablist.tab}}
+        {{/tabs.tablist}}
 
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           {{table.object-version object=model}}
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
 
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           {{table.object-headers headers=model.indexes}}
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
 
-        {{#ivy-tab-panel}}
+        {{#tabs.tabpanel}}
           {{table.object-headers headers=model.headersCustom}}
-        {{/ivy-tab-panel}}
+        {{/tabs.tabpanel}}
       {{/ivy-tabs}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

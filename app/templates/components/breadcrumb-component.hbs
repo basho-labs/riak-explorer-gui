@@ -10,29 +10,44 @@
         data.cluster.name
         data.bucketType.name}}
       </li>
+
+      {{#if data.bucket}}
+        <li>
+          {{link-to data.bucket.name 'bucket'
+          data.cluster.name
+          data.bucketType.name
+          data.bucket.name}}
+        </li>
+      {{/if}}
+
+      {{#if data.riakObject}}
+        <li>
+          {{link-to data.riakObject.name 'riak-object'
+          data.cluster.name
+          data.bucketType.name
+          data.bucket.name
+          data.riakObject.name}}
+        </li>
+      {{/if}}
     {{/if}}
 
-    {{#if data.bucket}}
+    {{#if data.table}}
       <li>
-        {{link-to data.bucket.name 'bucket'
+        {{link-to data.table.name 'table'
         data.cluster.name
-        data.bucketType.name
-        data.bucket.name}}
-      </li>
-    {{/if}}
-
-    {{#if data.riakObject}}
-      <li>
-        {{link-to data.riakObject.name 'riak-object'
-        data.cluster.name
-        data.bucketType.name
-        data.bucket.name
-        data.riakObject.name}}
+        data.table.name}}
       </li>
     {{/if}}
 
     {{#if data.bucketTypeCreate}}
       <li>create bucket type</li>
+    {{/if}}
+
+    {{#if data.tableWrite}}
+      <li>write</li>
+    {{/if}}
+    {{#if data.tableCreate}}
+      <li>create table</li>
     {{/if}}
 
     {{#if data.editView}}
@@ -77,6 +92,14 @@
 
     {{#if data.schemaCreate}}
       <li>create schema</li>
+    {{/if}}
+
+    {{#if data.table}}
+      <li>
+        {{link-to data.table.name 'table'
+        data.cluster.name
+        data.table.name}}
+      </li>
     {{/if}}
   {{/if}}
 </ol>

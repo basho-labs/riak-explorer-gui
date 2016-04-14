@@ -21,6 +21,10 @@ Router.map(function() {
   this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:objectName'});
   this.route('riak-object.set', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/set/:objectName'});
   this.route('riak-object.map', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/map/:objectName'});
+  this.route('table', {path: '/cluster/:clusterName/data/table/:tableName'});
+  this.route('table.query', {path: '/cluster/:clusterName/data/table/:tableName/query'});
+  this.route('table.write', {path: '/cluster/:clusterName/data/table/:tableName/write'});
+  this.route('table.create', {path: '/cluster/:clusterName/data/table/create'});
 
   // Cluster-Ops Routes
   this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});

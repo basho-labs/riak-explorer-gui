@@ -1,0 +1,60 @@
+<section class="table-ref">
+  <div class="section-title">Table Reference</div>
+  <table class="key-value-table">
+    <tbody>
+    <tr>
+      <td class="key">Primary Key</td>
+      <td class="value"><code>[{{table.partitionKey}}]</code></td>
+    </tr>
+    <tr>
+      <td class="key">Table Fields</td>
+      <td class="value">
+        <code class="comma-list">[{{#each-in table.fields as |key prop|}}<span class="item">{{key}}({{prop.type}})</span>{{/each-in}}]</code>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="query-module">
+  <div class="section-title">Query Editor</div>
+  <div class="split-panel">
+    <div class="left-panel">
+      <div class="form-group">
+        <label>Statement</label>
+        <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}}>
+          Run Query
+        </button>
+        {{textarea
+        value=(mut queryString)
+        class="form-control"
+        rows="4"}}
+        <span class="help-block">
+        <small>
+          example statement:<br/>
+          <code>{{example}}</code>
+        </small>
+      </span>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <label>Result</label>
+      <section class="query-result-container">
+        {{!--TODO: Get code highlighter to repopulate dynamically--}}
+        {{!--{{#code-highlighter--}}
+          {{!--language-type='js'}}--}}
+          {{!--{queryResult}}--}}
+        {{!--{{/code-highlighter}}--}}
+
+        {{!--pre tags render funny if whitespace(indented) present--}}
+        <pre>{{#if (is-array queryResult)}}{{#each queryResult as |row index|}}<div><code>{{index}}: [{{row}}]</code></div>{{/each}}{{else}}{{queryResult}}{{/if}}</pre>
+      </section>
+    </div>
+  </div>
+</section>
+
+
+
+
+

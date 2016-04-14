@@ -3,6 +3,19 @@
     border-radius: 0;
     padding-left: 40px;
     padding-right: 20px;
+    margin-bottom: 0;
+
+    &:last-of-type {
+      margin-bottom: 20px;
+    }
+  }
+
+  .dashboard-module {
+    .alert {
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
   }
 }
 

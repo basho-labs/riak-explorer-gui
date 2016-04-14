@@ -1,0 +1,25 @@
+<thead>
+<tr>
+  <th class="name">Name</th>
+  <th class="n-val">n_val</th>
+  <th class="partition-key">Partition Key</th>
+</tr>
+</thead>
+<tbody>
+{{#each tables as |table|}}
+  <tr>
+    <td>
+      {{#link-to 'table' table.cluster.name table.name class='cluster-resource-link'}}
+        {{table.name}}
+      {{/link-to}}
+    </td>
+    <td>
+      <code>{{table.nVal}}</code>
+    </td>
+    <td>
+      <code>[{{table.partitionKey}}]</code>
+    </td>
+  </tr>
+{{/each}}
+</tbody>
+

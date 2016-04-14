@@ -1,0 +1,45 @@
+{{#if model.warnings}}
+  {{#bs-alert type="warning" dismissible=false}}
+    <h4><span class="label label-warning">WARNINGS</span></h4>
+    <ul>
+      {{#each model.warnings as |warning|}}
+        <li>{{warning}}</li>
+      {{/each}}
+    </ul>
+  {{/bs-alert}}
+{{/if}}
+
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Table Properties'}}
+    <div class="module-actions">
+      {{#link-to 'table.write' model.cluster.name model.name class='action-button create'}}
+        <span class="ion-plus-circled" aria-hidden="true"></span>
+        Write Data
+      {{/link-to}}
+
+      {{#link-to 'table.query'
+      model.cluster.name
+      model.name
+      class='action-button create'}}
+        <span class="ion-search" aria-hidden="true"></span>
+        Query Data
+      {{/link-to}}
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#ivy-tabs as |tabs|}}
+      {{#tabs.tablist as |tablist|}}
+        {{#tablist.tab}}Overview{{/tablist.tab}}
+        {{#tablist.tab}}Advanced Properties{{/tablist.tab}}
+      {{/tabs.tablist}}
+
+      {{#tabs.tabpanel}}
+        {{table.table-overview table=model}}
+      {{/tabs.tabpanel}}
+
+      {{#tabs.tabpanel}}
+        {{table.bucket-props-advanced model=model}}
+      {{/tabs.tabpanel}}
+    {{/ivy-tabs}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

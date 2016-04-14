@@ -2,10 +2,33 @@
   th, td {
     padding-bottom: 10px;
     vertical-align: top;
+  }
 
-    &.key {
-      font-weight: bold;
-      padding-right: 20px;
+  .key {
+    font-weight: bold;
+    padding-right: 20px;
+  }
+
+  .table-in-kv-table {
+    thead th {
+      padding-top: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
     }
   }
+
+  &.bucket-props-overview {
+    .key {
+      min-width: 175px;
+    }
+  }
+
+  &.bucket-props-advanced {
+    .key {
+      min-width: 225px;
+    }
+  }
+
 }

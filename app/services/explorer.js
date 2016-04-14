@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import config from '../config/environment';
+import Config from '../config/environment';
 import parseHeader from '../utils/parse-header';
 
 /**
@@ -16,17 +16,6 @@ import parseHeader from '../utils/parse-header';
  * @uses ObjectMetadata
  */
 export default Ember.Service.extend({
-  /**
-   * User-configurable URL prefix for the Explorer GUI.
-   * (Also the URL prefix for the Explorer API).
-   * Currently, the options are: '/' or '/admin/'.
-   *
-   * @property apiURL
-   * @type String
-   * @default '/'
-   */
-  apiURL: '',
-
   name: 'explorer',
 
   availableIn: ['controllers', 'routes'],
@@ -39,7 +28,7 @@ export default Ember.Service.extend({
    * @type Integer
    * @default 500
    */
-  pageSize: config.pageSize,
+  pageSize: Config.pageSize,
 
   /**
    *
@@ -106,20 +95,6 @@ export default Ember.Service.extend({
       url: url,
       contentType: 'application/json',
       data: JSON.stringify(bucketType.data)
-    });
-  },
-
-  updateBucketType(bucketType, props) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let bucketTypeName = bucketType.get('name');
-    let data = { props: props };
-    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
-
-    return Ember.$.ajax({
-      type: 'PUT',
-      url: url,
-      contentType: 'application/json',
-      data: JSON.stringify(data)
     });
   },
 
@@ -386,7 +361,7 @@ export default Ember.Service.extend({
     let clusterName = config.get('node').get('cluster').get('name');
     let nodeName    = config.get('node').get('name');
     let configName  = config.get('name');
-    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/config/files/${configName}`;
+    let url  = `explore/clusters/${clusterName}/nodes/${nodeName}/config/files/${configName}`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -429,7 +404,8 @@ export default Ember.Service.extend({
           cluster,
           self.getBucketTypes(cluster),
           self.getIndexes(cluster),
-          self.getNodes(cluster)
+          self.getNodes(cluster),
+          self.getTables(cluster)
         ]);
       })
       .then(function(PromiseArray) {
@@ -559,7 +535,7 @@ export default Ember.Service.extend({
     let clusterName = log.get('node').get('cluster').get('name');
     let nodeName    = log.get('node').get('name');
     let logName     = log.get('name');
-    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}?rows=${this.pageSize}`;
+    let url  = `explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}?rows=${this.pageSize}`;
     let self = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -595,7 +571,7 @@ export default Ember.Service.extend({
     let clusterName = log.get('node').get('cluster').get('name');
     let nodeName    = log.get('node').get('name');
     let logName     = log.get('name');
-    let url  = `${this.apiURL}explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}`;
+    let url  = `explore/clusters/${clusterName}/nodes/${nodeName}/log/files/${logName}`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -658,7 +634,7 @@ export default Ember.Service.extend({
    * @return {Object} result of the AJAX call
    */
   getNodeConfig(node) {
-    let url = `${this.apiURL}explore/nodes/${node.get('name')}/config`;
+    let url = `explore/nodes/${node.get('name')}/config`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -692,7 +668,7 @@ export default Ember.Service.extend({
    * @return {Object} result of the AJAX call
    */
   getNodePing(nodeName) {
-    let url = `${this.apiURL}riak/nodes/${nodeName}/ping`;
+    let url = `riak/nodes/${nodeName}/ping`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -711,7 +687,7 @@ export default Ember.Service.extend({
   },
 
   getNodeReplicationStatus(node) {
-    let url = `${this.apiURL}control/nodes/${node.get('name')}/status`;
+    let url = `control/nodes/${node.get('name')}/status`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -747,7 +723,7 @@ export default Ember.Service.extend({
    * @return {Object} result of the AJAX call
    */
   getNodesStatus(cluster) {
-    let url = `${this.apiURL}control/clusters/${cluster.get('name')}/status`;
+    let url = `control/clusters/${cluster.get('name')}/status`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -801,7 +777,7 @@ export default Ember.Service.extend({
    * @return {DS.Model} Node
    */
   getNodeStats(node) {
-    let url = `${this.apiURL}riak/nodes/${node.get('name')}/stats`;
+    let url = `riak/nodes/${node.get('name')}/stats`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -846,7 +822,7 @@ export default Ember.Service.extend({
   // TODO: This can probably be ported over to be used the adapter findRecord
   //        method once moved over to ED 2.0 using the 'include' object
   //        Ref: https://github.com/emberjs/data/pull/3976
-  getObjectContents(object) {
+  getObjectContents(object)   {
     let clusterUrl = object.get('cluster').get('proxyUrl');
     let bucketTypeName = object.get('bucketType').get('name');
     let bucketName = object.get('bucket').get('name');
@@ -1042,6 +1018,35 @@ export default Ember.Service.extend({
   },
 
   /**
+   *
+   * @method getTab;e
+   * @param {String} clusterName
+   * @param {String} tableName
+   * @return {DS.Model} Table
+   */
+  getTable(clusterName, tableName) {
+    return this.getCluster(clusterName).then(function(cluster) {
+      return cluster.get('tables').findBy('name', tableName);
+    });
+  },
+
+  /**
+   * Returns all the TS Tables that belong to the specified cluster.
+   *
+   * @method getTables
+   * @param {DS.Model} cluster
+   * @return {DS.Array} Table
+   */
+  getTables(cluster) {
+    return this.store.query('table', { clusterName: cluster.get('name') })
+      .then(function(tables) {
+        cluster.set('tables', tables);
+
+        return cluster.get('tables');
+      });
+  },
+
+  /**
    * Pings all nodes in a given cluster and sets the nodes status
    *
    * @method getNodes
@@ -1083,6 +1088,17 @@ export default Ember.Service.extend({
     }, 10000);
   },
 
+  queryTable(table, data) {
+    let clusterName = table.get('cluster').get('name');
+    let url = `/explore/clusters/${clusterName}/tables/query`;
+
+    return Ember.$.ajax({
+      type: 'POST',
+      url: url,
+      data: data
+    });
+  },
+
   /**
    *
    * @method refreshBucketList
@@ -1091,7 +1107,7 @@ export default Ember.Service.extend({
   refreshBucketList(bucketType) {
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
-    let url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/refresh_buckets/source/riak_kv`;
+    let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/refresh_buckets/source/riak_kv`;
     let self = this;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -1116,7 +1132,7 @@ export default Ember.Service.extend({
     let clusterName = bucket.get('cluster').get('name');
     let bucketTypeName = bucket.get('bucketType').get('name');
     let bucketName = bucket.get('name');
-    let url = `${this.apiURL}explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
+    let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1138,19 +1154,17 @@ export default Ember.Service.extend({
     });
   },
 
-  /**
-   *
-   * @method updateSchema
-   * @param {DS.Model} schema
-   * @param {XML.String} data
-   */
-  updateSchema(schema, data) {
+  updateBucketType(bucketType, props) {
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
+    let data = { props: props };
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
+
     return Ember.$.ajax({
       type: 'PUT',
-      url: schema.get('url'),
-      contentType: 'application/xml',
-      processData: false,
-      data: data
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(data)
     });
   },
 
@@ -1188,6 +1202,35 @@ export default Ember.Service.extend({
           reject(jqXHR);
         }
       });
+    });
+  },
+
+  /**
+   *
+   * @method updateSchema
+   * @param {DS.Model} schema
+   * @param {XML.String} data
+   */
+  updateSchema(schema, data) {
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: schema.get('url'),
+      contentType: 'application/xml',
+      processData: false,
+      data: data
+    });
+  },
+
+  updateTable(table, data) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+    let url = `/explore/clusters/${clusterName}/tables/${tableName}`;
+
+    return Ember.$.ajax({
+      type: 'PUT',
+      url: url,
+      contentType: 'application/json',
+      data: JSON.stringify(data)
     });
   }
 });

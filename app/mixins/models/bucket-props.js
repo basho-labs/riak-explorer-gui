@@ -205,6 +205,22 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  nonEditableProps: function() {
+    let propsWithHelp = this.get('propsWithHelp');
+
+    if (propsWithHelp) {
+      let nonEditable = {};
+
+      _.forOwn(propsWithHelp, function(value, key) {
+        if (!value.editable) {
+          nonEditable[key] = value;
+        }
+      });
+
+      return nonEditable;
+    }
+  }.property('props'),
+
   /**
    * Returns the N value (number of object replicas) setting for this bucket type.
    * (Default is 3).
@@ -257,7 +273,7 @@ export default Ember.Mixin.create({
       // Then mutates object to an array
       let toArray = _.values(merged);
 
-      // Then filters out any props that don't have values, except the search_index prop
+      // Then filters out any props that don't have values
       let filtered = toArray.filter(function(prop) { return _.has(prop, 'value'); });
 
       // Then sort by name
@@ -265,14 +281,6 @@ export default Ember.Mixin.create({
 
       return sorted;
     }
-  }.property('props'),
-
-  searchIndexHelp: function() {
-    let searchIndexHelp = bucketPropsHelp.search_index;
-
-    searchIndexHelp.key = 'search_index';
-
-    return searchIndexHelp;
   }.property('props'),
 
   /**
@@ -351,6 +359,14 @@ export default Ember.Mixin.create({
     }
   }.property('props'),
 
+  searchIndexHelp: function() {
+    let searchIndexHelp = _.clone(bucketPropsHelp.search_index);
+
+    searchIndexHelp.key = 'search_index';
+
+    return searchIndexHelp;
+  }.property('props'),
+
   /**
    * Returns the name of the Search Index set on this bucket type or bucket
    * @see http://docs.basho.com/riak/latest/dev/using/search/
@@ -361,22 +377,6 @@ export default Ember.Mixin.create({
   searchIndexName: function() {
     if (this.get('props')) {
       return this.get('props').search_index;
-    }
-  }.property('props'),
-
-  nonEditableProps: function() {
-    let propsWithHelp = this.get('propsWithHelp');
-
-    if (propsWithHelp) {
-      let nonEditable = {};
-
-      _.forOwn(propsWithHelp, function(value, key) {
-        if (!value.editable) {
-          nonEditable[key] = value;
-        }
-      });
-
-      return nonEditable;
     }
   }.property('props'),
 

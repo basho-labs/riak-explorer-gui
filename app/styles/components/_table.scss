@@ -1,0 +1,7 @@
+.table {
+  &.cluster-table {
+    .riak-type {
+      min-width: 125px;
+    }
+  }
+}
