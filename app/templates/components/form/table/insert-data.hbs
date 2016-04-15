@@ -4,7 +4,9 @@
     <tbody>
     <tr>
       <td class="key">Primary Key</td>
-      <td class="value"><code>[{{table.partitionKey}}]</code></td>
+      <td class="value">
+        <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
+      </td>
     </tr>
     <tr>
       <td class="key">Table Fields</td>

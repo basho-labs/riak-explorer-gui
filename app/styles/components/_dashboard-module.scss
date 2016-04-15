@@ -26,7 +26,7 @@
     @include flex-direction(row);
     @include justify-content(space-between);
 
-    padding: 10px 20px;
+    padding: 20px;
     border-bottom: 1px solid $grayscale-color-x-light;
 
     .module-label {

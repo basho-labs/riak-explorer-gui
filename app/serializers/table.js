@@ -15,6 +15,10 @@ export default ApplicationSerializer.extend({
       table.partition_key= ddl.partition_key;
       table.quantum = _.last(ddl.partition_key).replace('quantum', '');
 
+      // Add space after comma on quantum lists
+      table.partition_key[2] = table.partition_key[2].split(',').join(', ');
+      table.quantum = table.quantum.split(',').join(', ');
+
       delete table.props.ddl;
     });
 
