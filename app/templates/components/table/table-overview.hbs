@@ -16,12 +16,16 @@
 
 <tr>
   <td class='key'>Partition Key</td>
-  <td class='value'><code>[{{table.partitionKey}}]</code></td>
+  <td class='value'>
+    <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
+  </td>
 </tr>
 
 <tr>
   <td class='key'>Local Key</td>
-  <td class='value'><code>[{{table.localKey}}]</code></td>
+  <td class='value'>
+    <code class="comma-list">[{{#each table.localKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
+  </td>
 </tr>
 
 <tr>

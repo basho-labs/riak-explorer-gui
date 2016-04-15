@@ -164,7 +164,7 @@ export default Ember.Mixin.create({
    */
   isSearchIndexed: function() {
     if (this.get('props')) {
-      return !!this.get('props').search_index;
+      return Ember.isPresent(this.get('props').search_index) && Ember.isPresent(this.get('index'));
     }
   }.property('props'),
 
