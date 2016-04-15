@@ -7,34 +7,37 @@
 {{/if}}
 
 <div class='cluster-ops-container'>
-  {{#if model.isEnterpriseEdition}}
-    {{#dashboard-module.container class='small-width'}}
-      {{dashboard-module.header label='Multi Data Center Replication'}}
-      {{#dashboard-module.body}}
-        <form class="mdc-repl">
-          <div class="form-group repl-action-select">
-            <label>Available Actions</label>
-            {{#power-select
+
+  {{#if model.developmentMode}}
+    {{#if model.isEnterpriseEdition}}
+      {{#dashboard-module.container class='small-width'}}
+        {{dashboard-module.header label='Multi Data Center Replication'}}
+        {{#dashboard-module.body}}
+          <form class="mdc-repl">
+            <div class="form-group repl-action-select">
+              <label>Available Actions</label>
+              {{#power-select
               selected=currentlySelectedAction
               options=availableReplActions
               searchEnabled=false
               onchange=(action "getReplicationOutput")
               as |replAction|}}
-              {{replAction}}
-            {{/power-select}}
-          </div>
-
-          {{#if currentReplOutput}}
-            <div>
-              <label>Output</label>
-              {{#code-highlighter language-type='json'}}
-                {{currentReplOutput}}
-              {{/code-highlighter}}
+                {{replAction}}
+              {{/power-select}}
             </div>
-          {{/if}}
-        </form>
-      {{/dashboard-module.body}}
-    {{/dashboard-module.container}}
+
+            {{#if currentReplOutput}}
+              <div>
+                <label>Output</label>
+                {{#code-highlighter language-type='json'}}
+                  {{currentReplOutput}}
+                {{/code-highlighter}}
+              </div>
+            {{/if}}
+          </form>
+        {{/dashboard-module.body}}
+      {{/dashboard-module.container}}
+    {{/if}}
   {{/if}}
 
   {{#dashboard-module.container class='small-width'}}
