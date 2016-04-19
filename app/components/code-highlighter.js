@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     var code = this.get('code');
 
     if (!lang) { throw new Error('highlight-js lang property must be set'); }
-    if (!code) { return 'No content'; }
+    if (!code) { return ''; } // Set empty content
 
     if (lang === 'auto') {
       return hljs.highlightAuto(code).value;

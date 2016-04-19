@@ -27,6 +27,7 @@
         <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}}>
           Run Query
         </button>
+
         {{textarea
         value=(mut queryString)
         class="form-control"
@@ -41,7 +42,17 @@
     </div>
 
     <div class="right-panel">
-      <label>Result</label>
+      <label>
+        Result
+        {{#if queryResultLength}}
+          <small>({{queryResultLength}} rows)</small>
+        {{/if}}
+      </label>
+
+      {{#if showClear}}
+        <span class="clear-statement" {{action 'clear'}}>clear</span>
+      {{/if}}
+
       <section class="query-result-container">
         {{code-highlighter
           lang='js'

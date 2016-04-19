@@ -57,7 +57,7 @@
     .left-panel {
       @include flex(1);
 
-      button {
+      .btn {
         float: right;
       }
 
@@ -69,6 +69,13 @@
     .right-panel {
       @include flex(1);
       padding-left: 15px;
+
+      .clear-statement {
+        @extend a;
+        cursor: pointer;
+        font-size: 10px;
+        margin-right: 5px;
+      }
 
       pre {
         min-height: $panel-height;
