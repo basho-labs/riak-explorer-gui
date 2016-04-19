@@ -14,7 +14,7 @@ export default ApplicationAdapter.extend({
         // assign id to file id
         file.name = file.id;
         // Then create a composite id for the file
-        file.id = `${query.clusterId}/${query.nodeId}/${file.name}`;
+        file.id = `${query.clusterName}/${query.nodeName}/${file.name}`;
       });
 
       return data;
