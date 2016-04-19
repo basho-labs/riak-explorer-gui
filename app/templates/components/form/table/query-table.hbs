@@ -43,14 +43,9 @@
     <div class="right-panel">
       <label>Result</label>
       <section class="query-result-container">
-        {{!--TODO: Get code highlighter to repopulate dynamically--}}
-        {{!--{{#code-highlighter--}}
-          {{!--language-type='js'}}--}}
-          {{!--{queryResult}}--}}
-        {{!--{{/code-highlighter}}--}}
-
-        {{!--pre tags render funny if whitespace(indented) present--}}
-        <pre>{{#if (is-array queryResult)}}{{#each queryResult as |row index|}}<div><code>{{index}}: [{{row}}]</code></div>{{/each}}{{else}}{{queryResult}}{{/if}}</pre>
+        {{code-highlighter
+          lang='js'
+          code=queryResult}}
       </section>
     </div>
   </div>

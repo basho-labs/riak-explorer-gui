@@ -29,9 +29,9 @@
             {{#if currentReplOutput}}
               <div>
                 <label>Output</label>
-                {{#code-highlighter language-type='json'}}
-                  {{currentReplOutput}}
-                {{/code-highlighter}}
+                {{code-highlighter
+				  lang='json'
+				  code=currentReplOutput}}
               </div>
             {{/if}}
           </form>

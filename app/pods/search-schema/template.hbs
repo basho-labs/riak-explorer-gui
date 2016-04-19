@@ -15,9 +15,9 @@
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
     {{#if model.content}}
-      {{#code-highlighter language-type='XML'}}
-        {{model.content}}
-      {{/code-highlighter}}
+      {{code-highlighter
+        lang='XML'
+        code=model.content}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

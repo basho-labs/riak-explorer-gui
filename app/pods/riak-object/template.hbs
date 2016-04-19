@@ -38,9 +38,9 @@
           <tr>
             <td class="key">Content</td>
             <td class="value">
-              {{#code-highlighter language-type=model.contentTypeLanguage}}
-                {{model.contents}}
-              {{/code-highlighter}}
+              {{code-highlighter
+                lang=model.contentTypeLanguage
+                code=model.contents}}
             </td>
           </tr>
         {{/if}}

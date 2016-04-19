@@ -12,7 +12,7 @@ export default Ember.Component.extend({
 
   queryString: '',
 
-  queryResult: null,
+  queryResult: 'testing 123',
 
   isDisabled: true,
 
@@ -41,16 +41,16 @@ export default Ember.Component.extend({
 
   submit() {
     let self = this;
+    let stringifiedData = JSON.stringify({one: "foo", two: "bar"});
 
     return this.get('explorer').queryTable(this.get('table'), this.get('queryString')).then(
       function onSuccess(data) {
         if (Ember.isEmpty(data.query.rows)) {
           self.set('queryResult', 'No rows found');
         } else {
-          // TODO: Use when code highlighter is updated
-          // let stringifiedData = JSON.stringify(data.query.rows);
+          let stringifiedData = JSON.stringify(data.query.rows);
 
-          self.set('queryResult', data.query.rows);
+          self.set('queryResult', stringifiedData);
         }
       }, function onFail(error) {
         self.get('errors').pushObject('Sorry but your request was not processed correctly.');

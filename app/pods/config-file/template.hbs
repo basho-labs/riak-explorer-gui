@@ -1,8 +1,14 @@
 {{#dashboard-module.container}}
   {{dashboard-module.header label='File output'}}
   {{#dashboard-module.body}}
-    {{#code-highlighter language-type='js'}}
-      {{model.content}}
-    {{/code-highlighter}}
+    {{#if model.content}}
+      {{code-highlighter
+        lang='erlang'
+        code=model.content}}
+    {{else}}
+      {{#bs-alert type="info"}}
+        <p><strong>File contains no contents.</strong></p>
+      {{/bs-alert}}
+    {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
