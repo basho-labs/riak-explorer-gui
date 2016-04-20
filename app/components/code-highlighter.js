@@ -4,14 +4,23 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   tagName: 'pre',
 
-  classNames: ['code-highlighter'],
+  classNames: ['code-highlighter', 'hljs'],
 
-  didInsertElement() {
-    let codeBlock = this.$().find('code')[0];
+  lang: null,
 
-    hljs.highlightBlock(codeBlock);
+  code: null,
 
-    // Highlight JS is pre-pending whitespace for some reason. This removes it.
-    Ember.$('.hljs').html(Ember.$.trim(Ember.$('.hljs').html()));
-  }
+  highlight: Ember.computed('code', 'lang', function() {
+    var lang = this.get('lang');
+    var code = this.get('code');
+
+    if (!lang) { throw new Error('highlight-js lang property must be set'); }
+    if (!code) { return ''; } // Set empty content
+
+    if (lang === 'auto') {
+      return hljs.highlightAuto(code).value;
+    } else {
+      return hljs.highlight(lang, code).value;
+    }
+  }).readOnly()
 });

@@ -27,6 +27,7 @@
         <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}}>
           Run Query
         </button>
+
         {{textarea
         value=(mut queryString)
         class="form-control"
@@ -41,16 +42,21 @@
     </div>
 
     <div class="right-panel">
-      <label>Result</label>
-      <section class="query-result-container">
-        {{!--TODO: Get code highlighter to repopulate dynamically--}}
-        {{!--{{#code-highlighter--}}
-          {{!--language-type='js'}}--}}
-          {{!--{queryResult}}--}}
-        {{!--{{/code-highlighter}}--}}
+      <label>
+        Result
+        {{#if queryResultLength}}
+          <small>({{queryResultLength}} rows)</small>
+        {{/if}}
+      </label>
 
-        {{!--pre tags render funny if whitespace(indented) present--}}
-        <pre>{{#if (is-array queryResult)}}{{#each queryResult as |row index|}}<div><code>{{index}}: [{{row}}]</code></div>{{/each}}{{else}}{{queryResult}}{{/if}}</pre>
+      {{#if showClear}}
+        <span class="clear-statement" {{action 'clear'}}>clear</span>
+      {{/if}}
+
+      <section class="query-result-container">
+        {{code-highlighter
+          lang='js'
+          code=queryResult}}
       </section>
     </div>
   </div>

@@ -8,17 +8,6 @@
   </ul>
 {{/bs-alert}}
 
-{{#if errors}}
-  {{#bs-alert type="danger" dismissible=false}}
-    <h4><span class="label label-danger">ERRORS</span></h4>
-    <ul>
-      {{#each errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
-  {{/bs-alert}}
-{{/if}}
-
 {{#if successMessage}}
   {{#bs-alert type="success" dismissible=false}}
     <h4><span class="label label-success">SUCCESS</span></h4>
@@ -41,9 +30,7 @@
 
     {{#dashboard-module.body}}
       {{form.table.query-table
-        table=model
-        errors=(mut errors)
-        successMessage=(mut successMessage)}}
+        table=model}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
