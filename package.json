@@ -42,7 +42,8 @@
     "ember-lodash": "0.0.6",
     "ember-tooltips": "0.5.8",
     "ember-truth-helpers": "1.2.0",
-    "ember-validations": "0.0.0"
+    "ember-validations": "0.0.0",
+    "ivy-tabs": "2.0.0"
   },
   "dependencies": {
     "ember-load-initializers": "^0.5.0",
@@ -51,7 +52,6 @@
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
     "ember-power-select": "0.7.2",
-    "highlightjs": "^8.7.0",
-    "ivy-tabs": "ivyapp/ivy-tabs"
+    "highlightjs": "^8.7.0"
   }
 }
