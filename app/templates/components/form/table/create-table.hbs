@@ -1,117 +1,149 @@
-<div class="form-group table-name">
-  <label>Table Name</label>
-  {{input
-    class='form-control'
-    value=(mut name)}}
-</div>
-
-<div class="form-group family">
-  <label>Partition Key Field One (name, type)</label>
-
-  <div class="form-inline">
-    <div class="form-group">
-      {{input
-        class='form-control'
-        value=(mut family.name)
-        placeholder='name'}}
-    </div>
-
-    <div class="form-group">
-      <select onchange={{action (mut family.type) value="target.value"}} class='form-control'>
-        {{#each fieldTypes as |type|}}
-          <option value={{type}} selected={{eq family.type type}}>{{type}}</option>
-        {{/each}}
-      </select>
-    </div>
+<section class="form-section table-name">
+  <div class="form-group">
+    <label>Table Name</label>
+    {{input
+      class='form-control'
+      value=(mut table.name)}}
   </div>
-</div>
+</section>
 
-<div class="form-group series">
-  <label>Partition Key Field Two (name, type)</label>
+<section class="form-section table-fields">
+  <label>Fields (name, type)</label>
 
-  <div class="form-inline">
-    <div class="form-group">
-      {{input
-        class='form-control inline-input'
-        value=(mut series.name)
-        placeholder='name'}}
-    </div>
-
-    <div class="form-group">
-      <select onchange={{action (mut series.type) value="target.value"}} class='form-control'>
-        {{#each fieldTypes as |type|}}
-          <option value={{type}} selected={{eq series.type type}}>{{type}}</option>
-        {{/each}}
-      </select>
-    </div>
-  </div>
-</div>
-
-{{#each fields as |field index|}}
-  <div class="form-group table-field">
-    <label>Field (name, type)</label>
-
-    <div class="form-inline">
-      <div class="form-group">
-        {{input
-          class='form-control'
-          value=(mut field.name)
-          placeholder='name'}}
+  {{#each table.fields as |field index|}}
+    <div class="form-group table-field">
+      <div class="form-inline">
+        <div class="form-group">
+          {{input
+            class='form-control'
+            value=(mut field.name)
+            placeholder='name'}}
+        </div>
+        <div class="form-group">
+          <select onchange={{action (mut field.type) value="target.value"}} class='form-control'>
+            {{#each availableFieldTypes as |type|}}
+              <option value={{type}} selected={{eq field.type type}}>{{type}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <span class="remove-field label label-danger" {{action 'removeField' 'tableField' index}}>
+          remove
+        </span>
       </div>
+    </div>
+  {{/each}}
 
-      <div class="form-group">
-        <select onchange={{action (mut field.type) value="target.value"}} class='form-control'>
-          {{#each fieldTypes as |type|}}
-            <option value={{type}} selected={{eq field.type type}}>{{type}}</option>
-          {{/each}}
-        </select>
+  <div class="form-group add-field">
+    <span {{action 'addField' 'tableField'}}>
+      <span class="ion-plus-circled" aria-hidden="true"></span>
+      Add table field
+    </span>
+  </div>
+</section>
+
+<section class="form-section partition-key">
+  <label>Partition Key</label>
+  <div class="form-group">
+    {{#each table.partitionKey as |field index|}}
+      <div class="form-group table-field">
+        <div class="form-inline">
+          {{#if field.quantum}}
+
+
+            <div class="form-group quantum">
+              <label>Quantum (table field name, quantity, unit of time)</label>
+              <div class="form-inline">
+                <div class="form-group field-name">
+                  <select onchange={{action (mut quantum.name) value="target.value"}} class='form-control'>
+                    {{#each table.possiblePartitionKeyQuantum as |option|}}
+                      <option value={{option}} selected={{eq option quantum.name}}>{{option}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+
+                <div class="form-group quantity">
+                  {{input
+                  class='form-control'
+                  type="number"
+                  min="1"
+                  placeholder='1'
+                  value=(mut quantum.quantity)}}
+                </div>
+
+                <div class="form-group unit">
+                  <select onchange={{action (mut quantum.unit) value="target.value"}} class='form-control'>
+                    {{#each availableTimeUnits as |unit|}}
+                      <option value={{unit}} selected={{eq unit quantum.unit}}>{{unit}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+
+          {{else}}
+            <div class="form-group partition-key-field">
+              <select onchange={{action (mut field.name) value="target.value"}} class='form-control'>
+                {{#each table.possiblePartitionKeys as |option|}}
+                  <option value={{option}} selected={{eq option field.name}}>{{option}}</option>
+                {{/each}}
+              </select>
+            </div>
+          {{/if}}
+
+          <span class="remove-field label label-danger" {{action 'removeField' 'partitionKey' index}}>
+            remove
+          </span>
+        </div>
       </div>
+    {{/each}}
 
-      <span class="remove-field label label-danger" {{action 'removeField' index}}>
-        remove
-      </span>
-    </div>
+    {{#if table.suggestedPartitionKey}}
+      <div class="form-group add-field">
+        <span {{action 'addField' 'partitionKeyField'}}>
+          <span class="ion-plus-circled" aria-hidden="true"></span>
+          Add partition key field
+        </span>
+      </div>
+    {{/if}}
+
+    {{#if table.possiblePartitionKeyQuantum}}
+      <div class="form-group add-field">
+        <span {{action 'addField' 'partitionKeyQuantum'}}>
+          <span class="ion-plus-circled" aria-hidden="true"></span>
+          Add partition key quanta
+        </span>
+      </div>
+    {{/if}}
   </div>
-{{/each}}
+</section>
 
-<div class="form-group add-field">
-  <span {{action 'addNewField'}}>
-    <span class="ion-plus-circled" aria-hidden="true"></span>
-    Add another table field
-  </span>
-</div>
-
-<div class="form-group quantum">
-  <label>Quantum (table field name, quantity, unit of time)</label>
-  <div class="form-inline">
-    <div class="form-group field-name">
-      {{input
-        class='form-control'
-        placeholder='field name'
-        value=(mut quantum.fieldName)}}
-    </div>
-
-    <div class="form-group quantity">
-      {{input
-        class='form-control'
-        type="number"
-        min="1"
-        placeholder='1'
-        value=(mut quantum.quantity)}}
-    </div>
-
-    <div class="form-group unit">
-      <select onchange={{action (mut quantum.unit) value="target.value"}} class='form-control'>
-        {{#each timeUnits as |unit|}}
-          <option value={{unit}} selected={{eq quantum.unit unit}}>{{unit}}</option>
-        {{/each}}
-      </select>
-    </div>
-  </div>
-</div>
+{{!--<section class="form-section">--}}
+  {{!--<label>Local Key</label>--}}
+  {{!--{{#each localKeyFields as |field index|}}--}}
+    {{!--<div class="form-group table-field">--}}
+      {{!--<div class="form-inline">--}}
+        {{!--<div class="form-group local-key-field">--}}
+          {{!--<select onchange={{action (mut field.value) value="target.value"}} class='form-control'>--}}
+            {{!--{{#each availablePrimaryKeyFields as |fieldOption|}}--}}
+              {{!--<option value={{fieldOption}} selected={{eq fieldOption field.value}}>{{fieldOption}}</option>--}}
+            {{!--{{/each}}--}}
+          {{!--</select>--}}
+        {{!--</div>--}}
+        {{!--<span class="remove-field label label-danger" {{action 'removeField' 'localKey' index}}>--}}
+          {{!--remove--}}
+        {{!--</span>--}}
+      {{!--</div>--}}
+    {{!--</div>--}}
+  {{!--{{/each}}--}}
+  {{!--<div class="form-group add-field">--}}
+      {{!--<span {{action 'addNewLocalKeyField'}}>--}}
+        {{!--<span class="ion-plus-circled" aria-hidden="true"></span>--}}
+        {{!--Add additional fields to local key--}}
+      {{!--</span>--}}
+  {{!--</div>--}}
+{{!--</section>--}}
 
 <div class="form-group create-button">
-  <button class="btn btn-primary">
-    Create Table
-  </button>
+  <button class="btn btn-primary">Create Table</button>
 </div>

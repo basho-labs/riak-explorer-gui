@@ -33,7 +33,9 @@
       {{form.table.create-table
         errors=(mut errors)
         table=model
-        tableCreated='onTableCreate'}}
+        addField='addField'
+        removeField='removeField'
+        createTable='createTable'}}
 
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}

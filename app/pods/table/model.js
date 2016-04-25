@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 import BucketProps from '../../mixins/models/bucket-props';
 import _ from 'lodash/lodash';
@@ -31,7 +32,39 @@ var Table = DS.Model.extend(BucketProps, {
    */
   name: DS.attr('string'),
 
-  partitionKey: DS.attr()
+  partitionKey: DS.attr(),
+
+  possiblePartitionKeys: function() {
+    let fieldNames = this.get('fields').mapBy('name');
+
+    return fieldNames.filter(function(field) {
+      return Ember.isPresent(field);
+    });
+  }.property('fields.@each.name'),
+
+  possiblePartitionKeyQuantum: function() {
+    return this.get('fields').filterBy('type', 'timestamp').mapBy('name');
+  }.property('fields.@each.type'),
+
+  // returns first possible partition key that isn't being used already
+  suggestedPartitionKey: function() {
+    let possibleKeys = this.get('possiblePartitionKeys');
+    let partitionKeyNames = this.get('partitionKey').mapBy('name');
+
+    return _.head(possibleKeys.filter(function(fieldName) {
+      return partitionKeyNames.indexOf(fieldName) === -1;
+    }));
+  }.property('possiblePartitionKeys', 'partitionKey.@each.name'),
+
+  // returns first possible partition key that isn't being used already
+  suggestedPartitionKeyQuantum: function() {
+    let possibleKeys = this.get('possiblePartitionKeyQuantum');
+    let partitionKeyNames = this.get('partitionKey').mapBy('name');
+
+    return _.head(possibleKeys.filter(function(fieldName) {
+      return partitionKeyNames.indexOf(fieldName) === -1;
+    }));
+  }.property('possiblePartitionKeyQuantum', 'partitionKey.@each.name')
 });
 
 export default Table;

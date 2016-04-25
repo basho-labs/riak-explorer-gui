@@ -10,16 +10,30 @@ export default ApplicationSerializer.extend({
     payload.tables.forEach(function(table) {
       let ddl = table.props.ddl;
 
-      table.fields = ddl.fields;
-      table.local_key = ddl.local_key;
-      table.partition_key = ddl.partition_key;
-
-      // Reformat quantum to have spaces after commas
-      table.partition_key.forEach(function(item, index) {
-        if (item.indexOf('quantum') > -1) {
-          table.partition_key[index] = item.split(',').join(', ');
-        }
+      // Assign table fields
+      table.fields = [];
+      Object.keys(ddl.fields).forEach(function(fieldName) {
+        table.fields.push(_.extend({name: fieldName}, ddl.fields[fieldName]));
       });
+
+      // Assign partition key
+      table.partition_key = [];
+      Object.keys(ddl.partition_key).forEach(function(pk) {
+        let isQuanta = pk.indexOf('quantum') > -1;
+
+        // Reformat quantum to have spaces after commas
+        if (isQuanta) {
+          pk = pk.split(',').join(', ');
+        }
+
+        table.partition_key.push({
+          name: pk,
+          quantum: isQuanta
+        });
+      });
+
+      // Assign local key
+      table.local_key = ddl.local_key;
 
       delete table.props.ddl;
     });
