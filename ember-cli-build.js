@@ -7,6 +7,10 @@ module.exports = function(defaults) {
     'ember-bootstrap': {
       'importBootstrapCSS': false,
       'importBootstrapFont': false
+    },
+    codemirror: {
+      modes: ['javascript'],
+      themes: ['solarized']
     }
   });
 

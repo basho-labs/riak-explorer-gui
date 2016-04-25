@@ -42,7 +42,6 @@
     "ember-load-initializers": "^0.5.0",
     "ember-resolver": "^2.0.3",
     "loader.js": "^4.0.0",
-
     "ember-bootstrap": "0.6.0",
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
@@ -52,6 +51,7 @@
     "ember-truth-helpers": "1.2.0",
     "ember-validations": "0.0.0",
     "highlightjs": "^8.7.0",
+    "ivy-codemirror": "1.4.0",
     "ivy-tabs": "2.0.0"
   }
 }
