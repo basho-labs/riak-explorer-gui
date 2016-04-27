@@ -29,10 +29,12 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
+
       {{form.table.create-table
         errors=(mut errors)
         cluster=model
         tableCreated='onTableCreate'}}
+
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
