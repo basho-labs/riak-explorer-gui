@@ -64,8 +64,8 @@ export default Ember.Component.extend(ScrollReset, {
     let self = this;
 
     if (isValid)  {
-      return this.get('explorer').updateTable(this.get('table'), data).then(
-        function onSuccess() {
+      this.get('explorer').updateTable(this.get('table'), data).then(
+        function onSuccess(data) {
           let tableName = self.get('table').get('name');
 
           self.set('successMessage', `Your data was saved to the ${tableName} table.`);
@@ -78,5 +78,7 @@ export default Ember.Component.extend(ScrollReset, {
         }
       );
     }
+
+    return false;
   }
 });

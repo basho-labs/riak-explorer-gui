@@ -59,7 +59,7 @@ export default Ember.Component.extend({
     this.set('queryResult', this.get('loadingMessage'));
 
     // Execute Query
-    return this.get('explorer').queryTable(this.get('table'), this.get('queryString')).then(
+    this.get('explorer').queryTable(this.get('table'), this.get('queryString')).then(
       function onSuccess(data) {
         enforceMinDelay.then(function() {
           if (Ember.isEmpty(data.query.rows)) {
@@ -84,6 +84,8 @@ export default Ember.Component.extend({
         self.set('queryResult', `${error.status} ${error.statusText} trying to execute statement: \n\n${self.get('queryString')}`);
       }
     );
+
+    return false;
   },
 
   actions: {
