@@ -6,7 +6,7 @@ export default Ember.Component.extend(ScrollReset, {
 
   explorer: Ember.inject.service(),
 
-  cluster: null,
+  table: null,
 
   name: '',
 

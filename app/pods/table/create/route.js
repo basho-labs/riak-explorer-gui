@@ -6,13 +6,17 @@ import WrapperState from '../../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
   model: function(params) {
-    return this.explorer.getCluster(params.clusterName);
+    let self = this;
+
+    return this.explorer.getCluster(params.clusterName).then(function(cluster) {
+      return self.store.createRecord('table', { cluster: cluster });
+    });
   },
 
   afterModel: function(model, transition) {
     this.setSidebarCluster(model);
     this.setBreadCrumbs({
-      cluster: model,
+      cluster: model.get('cluster'),
       tableCreate: true
     });
     this.setViewLabel({

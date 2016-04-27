@@ -22,7 +22,7 @@
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='New Table'}}
       <div class="module-actions">
-        {{#link-to 'cluster.data' model.name class="cancel action-button"}}
+        {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel
         {{/link-to}}
@@ -32,7 +32,7 @@
 
       {{form.table.create-table
         errors=(mut errors)
-        cluster=model
+        table=model
         tableCreated='onTableCreate'}}
 
     {{/dashboard-module.body}}
