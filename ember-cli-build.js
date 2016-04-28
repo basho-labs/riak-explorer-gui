@@ -9,7 +9,7 @@ module.exports = function(defaults) {
       'importBootstrapFont': false
     },
     codemirror: {
-      modes: ['javascript', 'SQL'],
+      modes: ['javascript', 'sql'],
       themes: ['material']
     }
   });
