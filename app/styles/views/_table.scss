@@ -1,44 +1,63 @@
 .table-create-container {
-  .table-name {
-    width: 354px;
-  }
+  //.table-name {
+  //  width: 354px;
+  //}
+  //
+  //.family, .series, .table-field {
+  //  input {
+  //    width: 175px;
+  //  }
+  //
+  //  select {
+  //    width: 175px;
+  //  }
+  //}
+  //
+  //.quantum {
+  //  input, select {
+  //    width: 100%;
+  //  }
+  //
+  //  .field-name {
+  //    width: 175px;
+  //  }
+  //
+  //  .quantity {
+  //    width: 66px;
+  //  }
+  //
+  //  .unit {
+  //    width: 105px;
+  //  }
+  //}
+  //
+  //.remove-field {
+  //  font-size: 9px;
+  //  cursor: pointer;
+  //}
+  //
+  //.add-field {
+  //  @extend a;
+  //  cursor: pointer;
+  //}
 
-  .family, .series, .table-field {
-    input {
-      width: 175px;
+
+  .manually-create {
+
+    .help-link {
+      @extend a;
+      text-transform: uppercase;
+      font-size: 8px;
+      cursor: pointer;
     }
 
-    select {
-      width: 175px;
-    }
-  }
-
-  .quantum {
-    input, select {
-      width: 100%;
+    .CodeMirror {
+      height: 257px;
     }
 
-    .field-name {
-      width: 175px;
+    .create-button {
+      margin-top: 20px;
     }
-
-    .quantity {
-      width: 66px;
-    }
-
-    .unit {
-      width: 105px;
-    }
-  }
-
-  .remove-field {
-    font-size: 9px;
-    cursor: pointer;
-  }
-
-  .add-field {
-    @extend a;
-    cursor: pointer;
   }
 }
 

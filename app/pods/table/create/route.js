@@ -3,6 +3,7 @@ import Alerts from '../../../mixins/routes/alerts';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
+import _ from 'lodash/lodash';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
   model: function(params) {
@@ -38,13 +39,49 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this._super(controller, model);
 
     controller.set('errors', []);
+    controller.set('statement', controller.get('exampleTemplate'));
   },
 
   actions: {
-    createTable: function(tableName) {
-      let cluster = this.currentModel;
+    willTransition: function() {
+      let table = this.currentModel;
 
-      this.transitionTo('table', cluster.get('name'), tableName);
+      // Destroy in memory model. If the table is successfully created, it will be saved through the normal Ember Data flow.
+      table.destroyRecord();
+    },
+
+    createTable: function(tableName) {
+      // let cluster = this.currentModel;
+      //
+      // this.transitionTo('table', cluster.get('name'), tableName);
+    },
+
+    createTableManually: function() {
+      let self = this;
+      let controller = this.controller;
+      let clusterName = this.currentModel.get('cluster').get('name');
+      let statement = controller.get('statement');
+
+      let formatted = _.trim(statement.replace(/\s\s+/g, ' ')         // reduces multiple whitespaces into one
+                                      .replace(/(\r\n|\n|\r)/gm, ' ') // removes any leftover newlines
+                                      .replace(/\( /g, '(')           // removes any spacing following left parenthesis
+                                      .replace(/ \)/g, ')'));         // removes any spacing preceding right parenthesis
+
+      let tableName = formatted.split(' ')[2]; // Table name should always come after CREATE TABLE
+
+      let data = {
+        name: tableName,
+        data: { props: { table_def: formatted } }
+      };
+
+      this.explorer.createBucketType(clusterName, data).then(
+        function onSuccess() {
+          self.transitionTo('table',clusterName, tableName);
+        },
+        function onFail(error) {
+          self.scrollToTop();
+          controller.get('errors').pushObject('Sorry, something went wrong. Table was not created');
+        });
     },
 
     addField: function(type) {

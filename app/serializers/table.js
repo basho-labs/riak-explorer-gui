@@ -18,7 +18,7 @@ export default ApplicationSerializer.extend({
 
       // Assign partition key
       table.partition_key = [];
-      Object.keys(ddl.partition_key).forEach(function(pk) {
+      ddl.partition_key.forEach(function(pk) {
         let isQuanta = pk.indexOf('quantum') > -1;
 
         // Reformat quantum to have spaces after commas
