@@ -1,12 +1,12 @@
 {{#if errors}}
-  {{#bs-alert type="danger"}}
+  {{#alert-component type="danger"}}
     <ul>
       <h4><span class="label label-danger">Errors</span></h4>
       {{#each errors as |error|}}
         <li>{{error.message}}</li>
       {{/each}}
     </ul>
-  {{/bs-alert}}
+  {{/alert-component}}
 {{/if}}
 
 <div class="bucket-type-edit-container" xmlns="http://www.w3.org/1999/html">

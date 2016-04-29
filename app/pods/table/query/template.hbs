@@ -1,4 +1,4 @@
-{{#bs-alert type='info'}}
+{{#alert-component type='info'}}
   <h4><span class="label label-info">Notes on Querying</span></h4>
   <ul>
     <li>Your query must include all fields defined in the partition key.</li>
@@ -7,15 +7,15 @@
     <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
     <li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>
   </ul>
-{{/bs-alert}}
+{{/alert-component}}
 
 {{#if successMessage}}
-  {{#bs-alert type="success" dismissible=false}}
+  {{#alert-component type="success" dismissible=false}}
     <h4><span class="label label-success">SUCCESS</span></h4>
     <ul>
       <p>{{successMessage}}</p>
     </ul>
-  {{/bs-alert}}
+  {{/alert-component}}
 {{/if}}
 
 <div class='bucket-types-container'>

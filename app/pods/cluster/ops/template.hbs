@@ -1,9 +1,9 @@
 {{#if model.warnings.insufficientNodes}}
-  {{#bs-alert type="warning"}}
+  {{#alert-component type="warning"}}
     <h4><span class="label label-warning">WARNING: Insufficient Nodes</span></h4>
     <p>{{model.warnings.insufficientNodes}}</p>
     <p>Reference: <a href="http://docs.basho.com/riak/latest/ops/building/planning/cluster/#Number-of-Nodes" target="_blank">Cluster Planning</a></p>
-  {{/bs-alert}}
+  {{/alert-component}}
 {{/if}}
 
 <div class='cluster-ops-container'>

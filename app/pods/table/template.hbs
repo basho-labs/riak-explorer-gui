@@ -1,12 +1,12 @@
 {{#if model.warnings}}
-  {{#bs-alert type="warning" dismissible=false}}
+  {{#alert-component type="warning" dismissible=false}}
     <h4><span class="label label-warning">WARNINGS</span></h4>
     <ul>
       {{#each model.warnings as |warning|}}
         <li>{{warning}}</li>
       {{/each}}
     </ul>
-  {{/bs-alert}}
+  {{/alert-component}}
 {{/if}}
 
 {{#dashboard-module.container class='medium-width'}}
