@@ -1,8 +1,9 @@
 {{#bs-alert type='info'}}
   <h4><span class="label label-info">Notes on Querying</span></h4>
   <ul>
+    <li>Your query must include all fields defined in the partition key.</li>
+    <li>Fields in the local key must be compared using strict equality against literal values, ranges are not allowed</li>
     <li>Fields may not be compared against other fields in the query.</li>
-    <li>All elements of the compound primary key must be present.</li>
     <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
     <li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>
   </ul>

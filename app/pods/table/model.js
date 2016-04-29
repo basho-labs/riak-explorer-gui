@@ -34,13 +34,26 @@ var Table = DS.Model.extend(BucketProps, {
 
   partitionKey: DS.attr(),
 
+  hasQuantum: function() {
+    return Ember.isPresent(this.get('partitionKey').filterBy('quantum'));
+  }.property('partitionKey.@each.quantum'),
+
+  quantumFieldName: function() {
+    if (this.get('hasQuantum')) {
+      let quantumField = _.head(this.get('partitionKey').filterBy('quantum'));
+      let quantumFieldName = _.head(quantumField.name.replace('quantum(', '').slice(0, - 1).split(','));
+
+      return quantumFieldName;
+    }
+  }.property('hasQuantum'),
+
   possiblePartitionKeys: function() {
     let fieldNames = this.get('fields').mapBy('name');
 
     return fieldNames.filter(function(field) {
       return Ember.isPresent(field);
     });
-  }.property('fields.@each.name'),
+  }.property('partitionKey.@each.quantum'),
 
   possiblePartitionKeyQuantum: function() {
     return this.get('fields').filterBy('type', 'timestamp').mapBy('name');
