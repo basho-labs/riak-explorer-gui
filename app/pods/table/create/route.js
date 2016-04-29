@@ -62,6 +62,9 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       let clusterName = this.currentModel.get('cluster').get('name');
       let statement = controller.get('statement');
 
+      controller.set('errors', []);
+      controller.set('showSpinner', true);
+
       let formatted = _.trim(statement.replace(/\s\s+/g, ' ')         // reduces multiple whitespaces into one
                                       .replace(/(\r\n|\n|\r)/gm, ' ') // removes any leftover newlines
                                       .replace(/\( /g, '(')           // removes any spacing following left parenthesis
@@ -81,6 +84,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         function onFail(error) {
           self.scrollToTop();
           controller.get('errors').pushObject('Sorry, something went wrong. Table was not created');
+          controller.set('showSpinner', false);
         });
     },
 

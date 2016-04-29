@@ -29,31 +29,32 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
+      {{#if showSpinner}}
+        {{loading-spinner statusMessage=model.statusMessage}}
+      {{else}}
+        <div class="manually-create">
+          <label>Schema Editor</label>
+          <div class="help-block">
+            Use the editor below to define your table. A sample template has been inserted to get you started.
+          </div>
 
-      <div class="manually-create">
-        <label>Schema Editor</label>
-        <div class="help-block">
-          Use the editor below to define your table. A sample template has been inserted to get you started.
-        </div>
-        {{ivy-codemirror
+          {{ivy-codemirror
           mode='sql'
           theme='material'
           autofocus=true
           value=statement}}
 
-        <div class="form-group create-button">
-          <button class="btn btn-primary" {{action 'createTableManually'}}>Create Table</button>
+          <div class="form-group create-button">
+            <button class="btn btn-primary" {{action 'createTableManually'}}>Create Table</button>
+          </div>
+          {{!--{{form.table.create-table--}}
+          {{!--errors=(mut errors)--}}
+          {{!--table=model--}}
+          {{!--addField='addField'--}}
+          {{!--removeField='removeField'--}}
+          {{!--createTable='createTable'}}--}}
         </div>
-      </div>
-
-
-      {{!--{{form.table.create-table--}}
-        {{!--errors=(mut errors)--}}
-        {{!--table=model--}}
-        {{!--addField='addField'--}}
-        {{!--removeField='removeField'--}}
-        {{!--createTable='createTable'}}--}}
-
+      {{/if}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
