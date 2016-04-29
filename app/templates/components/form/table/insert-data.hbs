@@ -1,21 +1,6 @@
 <section class="table-ref">
   <div class="section-title">Table Reference</div>
-  <table class="key-value-table">
-    <tbody>
-    <tr>
-      <td class="key">Primary Key</td>
-      <td class="value">
-        <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
-      </td>
-    </tr>
-    <tr>
-      <td class="key">Table Fields</td>
-      <td class="value">
-        <code class="comma-list">[{{#each-in table.fields as |key prop|}}<span class="item">{{key}}({{prop.type}})</span>{{/each-in}}]</code>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  {{table.ts-table-reference table=table}}
 </section>
 
 <section class="table-write">
@@ -26,9 +11,9 @@
       <small>Example: <code>[["somefamily", "someseries", "somefield", "anotherfield"]]</code></small>
     </div>
     {{textarea
-    value=(mut rowsString)
-    class="form-control"
-    rows="4"}}
+      value=(mut rowsString)
+      class="form-control"
+      rows="4"}}
   </div>
 
   <button type="submit" class="btn btn-primary" disabled={{isDisabled}}>

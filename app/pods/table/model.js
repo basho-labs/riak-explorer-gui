@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 import BucketProps from '../../mixins/models/bucket-props';
 import _ from 'lodash/lodash';
@@ -33,49 +34,50 @@ var Table = DS.Model.extend(BucketProps, {
 
   partitionKey: DS.attr(),
 
-  quantum: DS.attr('string'),
+  hasQuantum: function() {
+    return Ember.isPresent(this.get('partitionKey').filterBy('quantum'));
+  }.property('partitionKey.@each.quantum'),
 
-  familyField: function() {
-    let fields = this.get('fields');
-    let familyField = null;
+  quantumFieldName: function() {
+    if (this.get('hasQuantum')) {
+      let quantumField = _.head(this.get('partitionKey').filterBy('quantum'));
+      let quantumFieldName = _.head(quantumField.name.replace('quantum(', '').slice(0, - 1).split(','));
 
-    Object.keys(fields).forEach(function(key) {
-      if (fields[key].position === 1) {
-        familyField = _.extend({name: key}, fields[key]);
-      }
+      return quantumFieldName;
+    }
+  }.property('hasQuantum'),
+
+  possiblePartitionKeys: function() {
+    let fieldNames = this.get('fields').mapBy('name');
+
+    return fieldNames.filter(function(field) {
+      return Ember.isPresent(field);
     });
+  }.property('partitionKey.@each.quantum'),
 
-    return familyField;
-  }.property('fields'),
+  possiblePartitionKeyQuantum: function() {
+    return this.get('fields').filterBy('type', 'timestamp').mapBy('name');
+  }.property('fields.@each.type'),
 
-  seriesField: function() {
-    let fields = this.get('fields');
-    let seriesField = null;
+  // returns first possible partition key that isn't being used already
+  suggestedPartitionKey: function() {
+    let possibleKeys = this.get('possiblePartitionKeys');
+    let partitionKeyNames = this.get('partitionKey').mapBy('name');
 
-    Object.keys(fields).forEach(function(key) {
-      if (fields[key].position === 2) {
-        seriesField = _.extend({name: key}, fields[key]);
-      }
-    });
+    return _.head(possibleKeys.filter(function(fieldName) {
+      return partitionKeyNames.indexOf(fieldName) === -1;
+    }));
+  }.property('possiblePartitionKeys', 'partitionKey.@each.name'),
 
-    return seriesField;
-  }.property('fields'),
+  // returns first possible partition key that isn't being used already
+  suggestedPartitionKeyQuantum: function() {
+    let possibleKeys = this.get('possiblePartitionKeyQuantum');
+    let partitionKeyNames = this.get('partitionKey').mapBy('name');
 
-  quantumField: function() {
-    let quantumField = null;
-    let fields = this.get('fields');
-    let quantumString = this.get('quantum');
-    // Removes parenthesis, splits on comma into array, and grabs first item
-    let quantumFieldName = quantumString.replace(/[()]/g, '').split(',')[0];
-
-    quantumField = _.extend({name: quantumFieldName}, fields[quantumFieldName]);
-
-    return quantumField;
-  }.property('fields'),
-
-  stringifiedFields: function() {
-    return JSON.stringify(this.get('fields'), null, ' ');
-  }.property('fields')
+    return _.head(possibleKeys.filter(function(fieldName) {
+      return partitionKeyNames.indexOf(fieldName) === -1;
+    }));
+  }.property('possiblePartitionKeyQuantum', 'partitionKey.@each.name')
 });
 
 export default Table;

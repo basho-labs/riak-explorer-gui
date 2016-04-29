@@ -17,7 +17,7 @@
       <code>{{table.nVal}}</code>
     </td>
     <td>
-      <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
+      <code class="comma-list">[{{#each table.partitionKey as |field|}}<span class="item">{{field.name}}</span>{{/each}}]</code>
     </td>
   </tr>
 {{/each}}

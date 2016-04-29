@@ -17,7 +17,7 @@
 <tr>
   <td class='key'>Partition Key</td>
   <td class='value'>
-    <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
+    <code class="comma-list">[{{#each table.partitionKey as |key|}}<span class="item">{{key.name}}</span>{{/each}}]</code>
   </td>
 </tr>
 
@@ -26,11 +26,6 @@
   <td class='value'>
     <code class="comma-list">[{{#each table.localKey as |key|}}<span class="item">{{key}}</span>{{/each}}]</code>
   </td>
-</tr>
-
-<tr>
-  <td class='key'>Quantum</td>
-  <td class='value'><code>{{table.quantum}}</code></td>
 </tr>
 
 <tr class="table-in-kv-table">
@@ -46,14 +41,14 @@
       </tr>
       </thead>
       <tbody>
-      {{#each-in table.fields as |name prop|}}
+      {{#each table.fields as |field|}}
         <tr>
-          <td><code>{{name}}</code></td>
-          <td><code>{{prop.type}}</code></td>
-          <td><code>{{prop.position}}</code></td>
-          <td><code>{{prop.optional}}</code></td>
+          <td><code>{{field.name}}</code></td>
+          <td><code>{{field.type}}</code></td>
+          <td><code>{{field.position}}</code></td>
+          <td><code>{{field.optional}}</code></td>
         </tr>
-      {{/each-in}}
+      {{/each}}
       </tbody>
     </table>
   </td>

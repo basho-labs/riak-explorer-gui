@@ -1,6 +1,6 @@
 {{#dashboard-module.container}}
   {{#dashboard-module.body}}
-    {{#ivy-tabs as |tabs|}}
+    {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
       {{#tabs.tablist as |tablist|}}
         {{#if model.cluster.isEnterpriseEdition}}
           {{#tablist.tab}}Replication Status{{/tablist.tab}}
@@ -54,7 +54,7 @@
       {{/tabs.tabpanel}}
 
       {{#tabs.tabpanel}}
-        {{#ivy-tabs class='vertical' as |tabs|}}
+        {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex class='vertical' as |tabs|}}
           {{#tabs.tablist class='capitalize' as |tablist|}}
             {{#each-in model.statsByCategory as |category stats|}}
               {{#tablist.tab}}

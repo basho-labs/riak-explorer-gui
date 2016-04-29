@@ -22,17 +22,38 @@
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='New Table'}}
       <div class="module-actions">
-        {{#link-to 'cluster.data' model.name class="cancel action-button"}}
+        {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel
         {{/link-to}}
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{form.table.create-table
-        errors=(mut errors)
-        cluster=model
-        tableCreated='onTableCreate'}}
+
+      <div class="manually-create">
+        <label>Schema Editor</label>
+        <div class="help-block">
+          Use the editor below to define your table. A sample template has been inserted to get you started.
+        </div>
+        {{ivy-codemirror
+          mode='sql'
+          theme='material'
+          autofocus=true
+          value=statement}}
+
+        <div class="form-group create-button">
+          <button class="btn btn-primary" {{action 'createTableManually'}}>Create Table</button>
+        </div>
+      </div>
+
+
+      {{!--{{form.table.create-table--}}
+        {{!--errors=(mut errors)--}}
+        {{!--table=model--}}
+        {{!--addField='addField'--}}
+        {{!--removeField='removeField'--}}
+        {{!--createTable='createTable'}}--}}
+
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
