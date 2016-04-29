@@ -1,3 +1,11 @@
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+    label='Some Label'
+    visible=showHelp}}
+    Some content
+  {{/side-drawer}}
+{{/ember-wormhole}}
+
 {{#alert-component type="info"}}
   <h4><span class="label label-info">Notes on Table Creation</span></h4>
   <ul>
@@ -22,6 +30,7 @@
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='New Table'}}
       <div class="module-actions">
+        <button class="btn btn-primary" {{action 'showHelp'}}>SHOW HELP</button>
         {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel

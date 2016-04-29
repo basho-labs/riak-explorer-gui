@@ -7,5 +7,13 @@ export default Ember.Controller.extend({
 
   statement: '',
 
-  showSpinner: false
+  showSpinner: false,
+
+  showHelp: false,
+
+  actions: {
+    showHelp: function() {
+      this.set('showHelp', true);
+    }
+  }
 });
