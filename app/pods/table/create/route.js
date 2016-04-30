@@ -38,8 +38,8 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    controller.set('errors', []);
-    controller.set('statement', controller.get('exampleTemplate'));
+    controller.set('errors', null);
+    controller.set('statement', '');
   },
 
   actions: {
@@ -62,7 +62,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       let clusterName = this.currentModel.get('cluster').get('name');
       let statement = controller.get('statement');
 
-      controller.set('errors', []);
+      controller.set('errors', null);
       controller.set('showSpinner', true);
 
       let formatted = _.trim(statement.replace(/\s\s+/g, ' ')         // reduces multiple whitespaces into one
@@ -83,7 +83,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         },
         function onFail(error) {
           self.scrollToTop();
-          controller.get('errors').pushObject('Sorry, something went wrong. Table was not created');
+          controller.set('errors', 'Sorry, something went wrong. Your table was not created');
           controller.set('showSpinner', false);
         });
     },

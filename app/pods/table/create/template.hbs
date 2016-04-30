@@ -1,36 +1,24 @@
-{{#ember-wormhole to="side-drawer-container"}}
-  {{#side-drawer
-    label='Some Label'
-    visible=showHelp}}
-    Some content
-  {{/side-drawer}}
-{{/ember-wormhole}}
-
-{{#alert-component type="info"}}
-  <h4><span class="label label-info">Notes on Table Creation</span></h4>
-  <ul>
-    <li>If field names need to contain spaces they can be double quoted.</li>
-    <li>Quantum field name must be an existing field in the table definition of type <strong>timestamp</strong></li>
-    <li>For more information on planning and creating a time series table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/planning/" target="_blank">Basho Docs</a>.</li>
-  </ul>
-{{/alert-component}}
-
 {{#if errors}}
   {{#alert-component type="danger" dismissible=false}}
-    <ul>
-      <h4><span class="label label-danger">Errors</span></h4>
-      {{#each errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
+    {{#if (is-array errors)}}
+      <ul>
+        <h4><span class="label label-danger">Errors</span></h4>
+        {{#each errors as |error|}}
+          <li>{{error}}</li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <h4><span class="label label-danger">Error</span></h4>
+      <p>{{errors}}</p>
+    {{/if}}
   {{/alert-component}}
 {{/if}}
 
-<div class="table-create-container" xmlns="http://www.w3.org/1999/html">
+<div class="table-create-container">
   {{#dashboard-module.container class='medium-width'}}
-    {{#dashboard-module.header label='New Table'}}
+    {{#dashboard-module.header label='Table Schema Editor'}}
       <div class="module-actions">
-        <button class="btn btn-primary" {{action 'showHelp'}}>SHOW HELP</button>
+        {{!--<button class="btn btn-primary" {{action 'showHelp'}}>SHOW HELP</button>--}}
         {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel
@@ -42,10 +30,16 @@
         {{loading-spinner statusMessage=model.statusMessage}}
       {{else}}
         <div class="manually-create">
-          <label>Schema Editor</label>
-          <div class="help-block">
-            Use the editor below to define your table. A sample template has been inserted to get you started.
-          </div>
+          <label>
+            Use the editor below to define your table
+            <span class="btn btn-xs btn-info" {{action 'insertTemplate'}}>Insert Sample Template</span>
+
+            {{#if helpVisibile}}
+              <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Schema Gudelines</span>
+            {{else}}
+              <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Schema Gudelines</span>
+            {{/if}}
+          </label>
 
           {{ivy-codemirror
           mode='sql'
@@ -67,3 +61,16 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+  label='Schema Guidelines'
+  visible=helpVisibile}}
+    {{!--<ul>--}}
+      {{!--<li>If field names need to contain spaces they can be double quoted.</li>--}}
+      {{!--<li>Quantum field name must be an existing field in the table definition of type <strong>timestamp</strong></li>--}}
+      {{!--<li>For more information on planning and creating a time series table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/planning/" target="_blank">Basho Docs</a>.</li>--}}
+    {{!--</ul>--}}
+    {{render 'partials.schema-anatomy'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}

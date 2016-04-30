@@ -44,11 +44,15 @@
 
   .manually-create {
 
-    .help-link {
-      @extend a;
-      text-transform: uppercase;
-      font-size: 8px;
-      cursor: pointer;
+    //.help-link {
+    //  @extend a;
+    //  text-transform: uppercase;
+    //  font-size: 8px;
+    //  cursor: pointer;
+    //}
+
+    label {
+      margin-bottom: 10px;
     }
 
     .CodeMirror {
