@@ -65,6 +65,23 @@
   }
 }
 
+.table-write-container {
+  .CodeMirror {
+    height: 257px;
+  }
+
+  .table-editor {
+    ul {
+      @extend .help-block;
+      list-style: disc;
+      font-size: 12px;
+      padding-left: 20px;
+      margin-top: 0px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
 .table-query-container {
   .query-module {
     margin-top: 10px;

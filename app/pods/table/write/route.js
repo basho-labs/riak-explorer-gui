@@ -30,8 +30,9 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
 
   prepareData: function(stringData) {
     let data;
+    let transformed = `[${stringData.replace(/'/g, '"')}]`; // Wraps the comma separated strings in an array, and replaces any single quotes with double
 
-    try { data = JSON.parse(stringData.replace(/'/g, '"')); } catch(e) {}
+    try { data = JSON.parse(transformed); } catch(e) {}
 
     return data;
   },

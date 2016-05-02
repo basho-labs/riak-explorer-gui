@@ -1,0 +1,37 @@
+<div class="alert alert-info">
+  For more information on writing data to tables, check out our <a href="https://github.com/basho/private_basho_docs/blob/riakts/1.3.0/source/languages/en/riakts/using/writingdata.md" target="_blank">docs</a>.
+</div>
+
+<h4>Table Write Editor</h4>
+<ul>
+  <li>Each row you wish to insert should be represented as an array of field values, separated by a comma</li>
+  <li>Row field values must be in the same order as defined in the table. Refer to the table fields in the above table
+    reference for order.
+  </li>
+</ul>
+
+<h4>General Guidelines</h4>
+<ul>
+  <li>Batches should not be too large. In our testing, 100 rows per write is a sweet spot, but you should expect
+    different results depending on your hardware and schema.
+  </li>
+  <li>Writes will assume that columns are in the same order they've been declared in the table.</li>
+  <li>Timestamps should be in Unix epoch/UTC milliseconds.</li>
+</ul>
+
+<h4>Tuning batches</h4>
+<p>
+  Batches of data from a single write are packaged for delivery to each destination server as a performance
+  optimization. For Enterprise customers using MDC, those batches are sent to the remote cluster via realtime sync.
+</p>
+
+<p>
+  It is possible to specify an approximate largest-batch size for tuning purposes. By default, batches have a soft cap
+  size of 1MB of data, which we've found to be a reasonable size to avoid network congestion.
+</p>
+
+<p>
+  If you want to adjust that value, the configuration parameter <code>timeseries_max_batch_size</code> under <code>riak_kv</code>
+  in <a href="https://github.com/basho/private_basho_docs/blob/riakts/1.3.0/riak/kv/2.1.3/configuring/reference/#Adanvanced-Configuration" target="_blank">advanced.config</a> can be defined. The value is in bytes.
+</p>
+

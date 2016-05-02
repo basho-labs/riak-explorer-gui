@@ -33,8 +33,8 @@
   {{/alert-component}}
 {{/if}}
 
-<div>
-  {{#dashboard-module.container}}
+<div class="table-write-container">
+  {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Table Write Editor'}}
       <div class="module-actions">
         {{#link-to 'table' model.cluster.name model.name class="cancel action-button"}}
@@ -50,17 +50,23 @@
         {{table.ts-table-reference table=model}}
       </section>
 
-      <section class="table-write">
-        <div class="section-title">Table Editor</div>
-
+      <section class="table-editor">
         <div class="form-group">
-          <div class="help-block">
-            <small>Example: <code>[["somefamily", "someseries", "somefield", "anotherfield"]]</code></small>
-          </div>
-          {{textarea
-            value=(mut dataToBeInserted)
-            class="form-control"
-            rows="4"}}
+          <label>
+            Use the editor below to write rows to your table.
+            <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example</span>
+            {{#if helpVisibile}}
+              <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Write Guidelines</span>
+            {{else}}
+              <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Write Guidelines</span>
+            {{/if}}
+          </label>
+
+          {{ivy-codemirror
+            mode='javascript'
+            theme='material'
+            autofocus=true
+            value=(mut dataToBeInserted)}}
         </div>
 
         <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model dataToBeInserted}}>
@@ -70,3 +76,11 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+    label='Write Guidelines'
+    visible=helpVisibile}}
+    {{render 'partials.ts-table-write-guidelines'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}
