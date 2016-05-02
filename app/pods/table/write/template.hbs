@@ -1,38 +1,41 @@
-{{#alert-component type='info'}}
-  <h4><span class="label label-info">Notes on Writing Data</span></h4>
+{{!--{{#alert-component type='info'}}--}}
+  {{!--<h4><span class="label label-info">Notes on Writing Data</span></h4>--}}
 
-  <ul>
-    <li>Writes will assume that columns are in the same order they've been declared in the table.</li>
-    <li>Timestamps should be in Unix epoch/UTC milliseconds.</li>
-    <li>The textfield expects an array of arrays, each sub-array representing a row to be inserted.</li>
-    <li>All rows will be validated server side before writing occurs. If any of the rows fails validation then none of the rows will be written.</li>
-    <li>For more information on writing data to a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/writingdata/" target="_blank">Basho Docs</a>.</li>
-  </ul>
-{{/alert-component}}
+  {{!--<ul>--}}
+    {{!--<li>Writes will assume that columns are in the same order they've been declared in the table.</li>--}}
+    {{!--<li>Timestamps should be in Unix epoch/UTC milliseconds.</li>--}}
+    {{!--<li>The textfield expects an array of arrays, each sub-array representing a row to be inserted.</li>--}}
+    {{!--<li>All rows will be validated server side before writing occurs. If any of the rows fails validation then none of the rows will be written.</li>--}}
+    {{!--<li>For more information on writing data to a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/writingdata/" target="_blank">Basho Docs</a>.</li>--}}
+  {{!--</ul>--}}
+{{!--{{/alert-component}}--}}
 
 {{#if errors}}
   {{#alert-component type="danger" dismissible=false}}
-    <h4><span class="label label-danger">ERRORS</span></h4>
-    <ul>
-      {{#each errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
+    {{#if (is-array errors)}}
+      <h4><span class="label label-danger">Errors</span></h4>
+      <ul>
+        {{#each errors as |error|}}
+          <li>{{error}}</li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <h4><span class="label label-danger">Error</span></h4>
+      <p>{{errors}}</p>
+    {{/if}}
   {{/alert-component}}
 {{/if}}
 
 {{#if successMessage}}
   {{#alert-component type="success"}}
     <h4><span class="label label-success">SUCCESS</span></h4>
-    <ul>
-      <p>{{successMessage}}</p>
-    </ul>
+    <p>{{successMessage}}</p>
   {{/alert-component}}
 {{/if}}
 
 <div>
   {{#dashboard-module.container}}
-    {{#dashboard-module.header label='Write Data to Table'}}
+    {{#dashboard-module.header label='Table Write Editor'}}
       <div class="module-actions">
         {{#link-to 'table' model.cluster.name model.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
@@ -41,10 +44,29 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{form.table.insert-data
-        table=model
-        errors=(mut errors)
-        successMessage=(mut successMessage)}}
+
+      <section class="table-ref">
+        <div class="section-title">Table Reference</div>
+        {{table.ts-table-reference table=model}}
+      </section>
+
+      <section class="table-write">
+        <div class="section-title">Table Editor</div>
+
+        <div class="form-group">
+          <div class="help-block">
+            <small>Example: <code>[["somefamily", "someseries", "somefield", "anotherfield"]]</code></small>
+          </div>
+          {{textarea
+            value=(mut dataToBeInserted)
+            class="form-control"
+            rows="4"}}
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model dataToBeInserted}}>
+          Insert Rows
+        </button>
+      </section>
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>

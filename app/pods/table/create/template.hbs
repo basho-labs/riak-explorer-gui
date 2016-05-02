@@ -1,8 +1,8 @@
 {{#if errors}}
   {{#alert-component type="danger" dismissible=false}}
     {{#if (is-array errors)}}
+      <h4><span class="label label-danger">Errors</span></h4>
       <ul>
-        <h4><span class="label label-danger">Errors</span></h4>
         {{#each errors as |error|}}
           <li>{{error}}</li>
         {{/each}}

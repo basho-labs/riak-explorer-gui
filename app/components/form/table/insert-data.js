@@ -13,13 +13,13 @@ export default Ember.Component.extend(ScrollReset, {
 
   successMessage: '',
 
-  rowsString: '',
+  dataToBeInserted: '',
 
   isDisabled: true,
 
   canSubmit: function() {
-    return this.set('isDisabled', Ember.isBlank(this.get('rowsString')));
-  }.observes('rowsString'),
+    return this.set('isDisabled', Ember.isBlank(this.get('dataToBeInserted')));
+  }.observes('dataToBeInserted'),
 
   clearErrors: function() {
     return this.set('errors', []);
@@ -28,13 +28,13 @@ export default Ember.Component.extend(ScrollReset, {
   resetState: function() {
     this.clearErrors();
 
-    return this.set('rowsString', '');
+    return this.set('dataToBeInserted', '');
   },
 
   prepareData: function() {
     let data;
 
-    try { data = JSON.parse(this.get('rowsString').replace(/'/g, '"')); } catch(e) {}
+    try { data = JSON.parse(this.get('dataToBeInserted').replace(/'/g, '"')); } catch(e) {}
 
     return data;
   },
