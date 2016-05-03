@@ -11,6 +11,17 @@ export default Ember.Controller.extend({
 
   helpVisibile: false,
 
+  isDisabled: true,
+
+  canSubmit: function() {
+    return this.set('isDisabled', Ember.isBlank(this.get('statement')));
+  }.observes('statement'),
+
+  resetState: function() {
+    this.set('errors', null);
+    this.set('statement', '');
+  },
+
   actions: {
     removeHelp: function() {
       this.set('helpVisibile', false);

@@ -1,15 +1,3 @@
-{{!--{{#alert-component type='info'}}--}}
-  {{!--<h4><span class="label label-info">Notes on Writing Data</span></h4>--}}
-
-  {{!--<ul>--}}
-    {{!--<li>Writes will assume that columns are in the same order they've been declared in the table.</li>--}}
-    {{!--<li>Timestamps should be in Unix epoch/UTC milliseconds.</li>--}}
-    {{!--<li>The textfield expects an array of arrays, each sub-array representing a row to be inserted.</li>--}}
-    {{!--<li>All rows will be validated server side before writing occurs. If any of the rows fails validation then none of the rows will be written.</li>--}}
-    {{!--<li>For more information on writing data to a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/writingdata/" target="_blank">Basho Docs</a>.</li>--}}
-  {{!--</ul>--}}
-{{!--{{/alert-component}}--}}
-
 {{#if errors}}
   {{#alert-component type="danger" dismissible=false}}
     {{#if (is-array errors)}}
@@ -25,7 +13,6 @@
     {{/if}}
   {{/alert-component}}
 {{/if}}
-
 {{#if successMessage}}
   {{#alert-component type="success"}}
     <h4><span class="label label-success">SUCCESS</span></h4>
@@ -33,7 +20,7 @@
   {{/alert-component}}
 {{/if}}
 
-<div class="table-write-container">
+<div class="ts-table-container table-write-container">
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Table Write Editor'}}
       <div class="module-actions">
@@ -46,32 +33,32 @@
     {{#dashboard-module.body}}
 
       <section class="table-ref">
-        <div class="section-title">Table Reference</div>
+        <div class="section-title">{{model.name}}</div>
         {{table.ts-table-reference table=model}}
       </section>
 
       <section class="table-editor">
-        <div class="form-group">
-          <label>
-            Use the editor below to write rows to your table.
-            <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example</span>
-            {{#if helpVisibile}}
-              <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Write Guidelines</span>
-            {{else}}
-              <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Write Guidelines</span>
-            {{/if}}
-          </label>
+        <label>
+          Use the editor below to write rows to your table
+          <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example</span>
+          {{#if helpVisibile}}
+            <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Write Guidelines</span>
+          {{else}}
+            <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Write Guidelines</span>
+          {{/if}}
+        </label>
 
-          {{ivy-codemirror
-            mode='javascript'
-            theme='material'
-            autofocus=true
-            value=(mut dataToBeInserted)}}
+        {{ivy-codemirror
+          mode='javascript'
+          theme='material'
+          lineWrapping=true
+          value=(mut dataToBeInserted)}}
+
+        <div class="submit-button-container">
+          <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model dataToBeInserted}}>
+            Insert Rows
+          </button>
         </div>
-
-        <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model dataToBeInserted}}>
-          Insert Rows
-        </button>
       </section>
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}

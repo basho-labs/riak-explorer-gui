@@ -1,25 +1,5 @@
-{{!--{{#alert-component type='info'}}--}}
-  {{!--<h4><span class="label label-info">Notes on Querying</span></h4>--}}
-  {{!--<ul>--}}
-    {{!--<li>Your query must include all fields defined in the partition key.</li>--}}
-    {{!--<li>Fields in the local key must be compared using strict equality against literal values, ranges are not allowed</li>--}}
-    {{!--<li>Fields may not be compared against other fields in the query.</li>--}}
-    {{!--<li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>--}}
-    {{!--<li>For more information on querying a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/querying/" target="_blank">Basho Docs</a>.</li>--}}
-  {{!--</ul>--}}
-{{!--{{/alert-component}}--}}
-
-{{#if successMessage}}
-  {{#alert-component type="success" dismissible=false}}
-    <h4><span class="label label-success">SUCCESS</span></h4>
-    <ul>
-      <p>{{successMessage}}</p>
-    </ul>
-  {{/alert-component}}
-{{/if}}
-
-<div class='bucket-types-container'>
-  {{#dashboard-module.container class='table-query-container'}}
+<div class='ts-table-container table-query-container'>
+  {{#dashboard-module.container}}
     {{#dashboard-module.header label='Query Table'}}
       <div class="module-actions">
         {{#link-to 'table' model.cluster.name model.name class="cancel action-button"}}
@@ -31,54 +11,62 @@
 
     {{#dashboard-module.body}}
 
-      <section class="table-ref">
-        <div class="section-title">Table Reference</div>
+      <section>
+        <div class="section-title">{{model.name}}</div>
         {{table.ts-table-reference table=model}}
       </section>
 
-      <section class="query-module">
-        <span class="section-title">Query Editor</span>
-        <div class="split-panel">
+      <section>
+        <label>
+          Use the editor on the left to query against the table
+          {{#if example}}
+            <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example Query</span>
+          {{/if}}
+          {{#if helpVisibile}}
+            <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Query Guidelines</span>
+          {{else}}
+            <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Query Guidelines</span>
+          {{/if}}
+        </label>
 
+        <div class="split-panel">
           <div class="left-panel">
-            <div class="form-group">
-              <label>Statement</label>
-              <button type="submit" class="btn btn-xs btn-primary" disabled={{isDisabled}} {{action 'runQuery' model query}}>
+            <div class="help-block">Query</div>
+
+            {{ivy-codemirror
+              mode='javascript'
+              theme='material'
+              lineWrapping=true
+              autofocus=true
+              tabindex=1
+              value=(mut query)}}
+
+            <div class="submit-button-container">
+              <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'runQuery' model query}}>
                 Run Query
               </button>
-
-              {{textarea
-              value=(mut query)
-              class="form-control"
-              rows="4"}}
-              <span class="help-block">
-                <small>
-                  example statement:<br/>
-                  <code>{{example}}</code>
-                </small>
-              </span>
             </div>
           </div>
 
           <div class="right-panel">
-            <label>
+            <div class="help-block">
               Result
               {{#if resultLength}}
                 <small>({{resultLength}} rows)</small>
               {{/if}}
-            </label>
 
-            {{#if showClear}}
-              <span class="clear-statement" {{action 'clear'}}>clear</span>
-            {{/if}}
+              {{#if showClear}}
+                <span class="clear-statement" {{action 'clear'}}>clear</span>
+              {{/if}}
+            </div>
 
-            <section class="query-result-container">
-              {{code-highlighter
-                lang='js'
-                code=result}}
-            </section>
+            {{ivy-codemirror
+              mode='javascript'
+              theme='material'
+              readOnly='nocursor'
+              lineWrapping=true
+              value=result}}
           </div>
-
         </div>
       </section>
 
@@ -86,4 +74,11 @@
   {{/dashboard-module.container}}
 </div>
 
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+  label='Query Guidelines'
+  visible=helpVisibile}}
+    {{render 'partials.ts-query-guidelines'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}
 

@@ -55,6 +55,16 @@
         margin-bottom: 20px;
         list-style: disc;
       }
+
+      table {
+        @extend .table;
+        @extend .table-striped;
+        margin-bottom: 20px;
+
+        code {
+          background: none;
+        }
+      }
     }
 
     @media only screen and (min-device-width: 769px) and (max-width: 1175px) {

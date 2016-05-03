@@ -1,0 +1,217 @@
+<div class="alert alert-info">
+  For more information on querying, check out our <a target="_blank" href="https://github.com/basho/private_basho_docs/blob/riakts/1.3.0/source/languages/en/riakts/using/querying.md" target="_blank">docs</a>.
+</div>
+
+<h3>Basic Querying</h3>
+
+<p>When querying your data via fields, there are three categories of fields, each with a different set of rules for valid queries.</p>
+
+<pre>CREATE TABLE GeoCheckin
+(
+  region       varchar   not null,
+  state        varchar   not null,
+  time         timestamp not null,
+  weather      varchar not null,
+  temperature  double,
+  PRIMARY KEY (
+    (region, state, quantum(time, 15, 'm')), /* &lt;-- PARTITION KEY */
+    region, state, time /* &lt;-- LOCAL KEY */
+  )
+)</pre>
+
+<h4>Partition Key</h4>
+
+<p>All queries must cover the partition key.</p>
+
+<p>If the parition key has a quantum, then the query must use greater than and less than (>, >=, &lt;, &lt;=).</p>
+
+<p>If the partition key does not have a quantum, the query must have an equals filter (=).  In other words, if there is no quantum, the partition key must be specified exactly in the query.</p>
+
+<p>The timestamp in the partition key is an integer (in milliseconds) that must be compared either as a fully-enclosed range or as an exact match.</p>
+
+<ul>
+  <li>Valid: <code>time &gt; 1449864277000 and time &lt; 1449864290000</code></li>
+  <li>Invalid: <code>time &gt; 1449864277000</code></li>
+  <li>Invalid: <code>time &gt; 1449864277000 or time &lt; 1449864290000</code></li>
+</ul>
+
+<h4>Local Key</h4>
+
+<p>Fields that are in the local key but not in the partition key are not required for the query.</p>
+
+<pre>PRIMARY KEY  ((region, state, quantum(time, 1, 's')), ...)</pre>
+
+<p>Here 'c' is in the local key only so does not have to be in the query.</p>
+
+<p>Fields in the local key must be compared using strict equality against literal values. No ranges are permitted, <code>!=</code> must not be used, and <code>or</code> will not work.</p>
+
+<ul>
+  <li>Valid: <code>country_code = 'uk'</code></li>
+  <li>Invalid: <code>(country_code = 'uk' or country_code = 'de')</code></li>
+  <li>Invalid: <code>country_code != 'se'</code></li>
+  <li>Invalid: <code>temperature &lt; 85.0</code></li>
+</ul>
+
+<h4>Columns</h4>
+
+<p>These fields may be queried with unbounded ranges, <code>!=</code>, and <code>or</code> comparisons.</p>
+
+<h4>General Guidelines</h4>
+
+<p>Before you begin querying, there are some guidelines to keep in mind.</p>
+
+<ul>
+  <li>Fields may not be compared against other fields in the query.</li>
+  <li>When using <code>or</code>, you must surround the expression with parentheses or your query will return an error.</li>
+</ul>
+
+<p>Basic queries return the full range of values between two given times for the provided partition key values. To demonstrate, we'll use the same example table:</p>
+
+<pre>CREATE TABLE GeoCheckin
+(
+  region       varchar   not null,
+  state        varchar   not null,
+  time         timestamp not null,
+  weather      varchar not null,
+  temperature  double,
+  PRIMARY KEY (
+    (region, state, quantum(time, 15, 'm')),
+   region, state, time
+  )
+)</pre>
+
+<p>Your query must include all components of the partition key. If any part of the partition key is missing, you will get an error.</p>
+
+<h3>Advanced Querying By Field</h3>
+
+<h4>Select Query</h4>
+
+<p>You can select particular fields from the data to query:</p>
+
+<pre>select weather, temperature from GeoCheckin where time &gt; 1234560 and time &lt; 1234569 and region = 'South Atlantic' and state = 'South Carolina'</pre>
+
+<h4>Extended Query</h4>
+
+<p>You can extend the query beyond the primary key and use secondary columns to filter results. In this example, we are extending our query to filter based on the <code>temperature</code> column:</p>
+
+<pre>select weather, temperature from GeoCheckin where time &gt; 1234560 and time &lt; 1234569 and region = 'South Atlantic' and state = 'South Carolina' and temperature &gt; 27.0</pre>
+
+<p>You can also use <code>or</code> when querying against column values, such as <code>temperature</code> in our example. Note that the parentheses are required:</p>
+
+<pre>select weather, temperature from GeoCheckin where time &gt; 1234560 and time &lt; 1234569 and region = 'South Atlantic' and state = 'South Carolina' and (temperature &gt; 27.0 or temperature &lt; 0.0)</pre>
+
+<p>You cannot use <code>or</code> between two complete clauses, since keys cannot be specified twice.</p>
+
+<h4>SQL Injection</h4>
+
+<p>When querying with user-supplied data, it is essential that you protect against SQL injection. Please verify the user-supplied data before constructing queries.</p>
+
+<h4>SQL Support</h4>
+
+<p>A small subset of SQL is supported. All columns are of the format:</p>
+
+<pre>Field    Operator   Constant</pre>
+
+<p>The following operators are supported for each data type:</p>
+
+<table>
+  <thead>
+    <tr>
+      <td></td>
+      <td><code>=</code></td>
+      <td><code>!=</code></td>
+      <td><code>&lt;</code></td>
+      <td><code>&lt;=</code></td>
+      <td><code>>=</code></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>varchar</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code></code></td>
+      <td><code></code></td>
+      <td><code></code></td>
+    </tr>
+    <tr>
+      <td><code>boolean</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code></code></td>
+      <td><code></code></td>
+      <td><code></code></td>
+    </tr>
+    <tr>
+      <td><code>sint64</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+    </tr>
+    <tr>
+      <td><code>double</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+    </tr>
+    <tr>
+      <td><code>timestamp</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+      <td><code>x</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Limitations</h4>
+
+<ul>
+  <li>Column to column comparisons are not currently supported.</li>
+  <li>Secondary indexing (2i) will not work with Riak TS.</li>
+  <li>Riak search will not work with Riak TS.</li>
+  <li>Queries are limited by the number of quanta they can span when specifying the time limits.</li>
+</ul>
+
+<h4>Quanta query range</h4>
+
+<p>A query covering more than a certain number of quanta (5 by default) will generate too many sub-queries and the query system will refuse to run it. Assuming a default quanta of 15 minutes, the maximum query time range is 75 minutes.</p>
+
+<p>In the below example we set a quanta of 15s:</p>
+
+<pre>CREATE TABLE GeoCheckin
+  (geohash varchar not null,
+   location varchar not null,
+   user varchar not null,
+   time timestamp not null,
+   weather varchar not null,
+   temperature varchar,
+   PRIMARY KEY((location, user, quantum(time, 15, 's')),
+                location, user, time))</pre>
+
+<p>The maximum time range we can query is 60s, anything beyond will fail.</p>
+
+<p>See the Data Modeling section in <a target="_blank" href="https://docs.basho.com/riakts/1.2.0/learn-about/advancedplanning">Advanced Planning</a> for more information.</p>
+
+<h4>Leap seconds and quantum boundaries</h4>
+
+<p>Periodically <a target="_blank" href="https://en.wikipedia.org/wiki/Leap_second">leap seconds</a> are announced. These are inserted at the end of one day (in UTC).</p>
+
+<p>UNIX treats them as one double-length second. For example, at the end of 1998 a second was added:</p>
+
+<pre>Date         Time of day   UNIX time
+1998-12-31   23:59:58      915148798
+1998-12-31   23:59:59      915148799
+1998-12-31   23:59:60      915148800     &lt;== Artificial leap second
+1999-01-01   00:00:00      915148800</pre>
+
+<p>Effectively, there is no way in the UNIX time scheme to differentiate an event that occurred during the extra second at the end of 1998 to something that occurred the first second of 1999.</p>
+
+<p>Similarly, Riak TS would treat <code>915148800</code> as the start of a new time quantum, and any data points which a client added for that second would be considered to be in the first time quantum in 1999.</p>
+
+<p>The data is not lost, but a query against 1998 time quanta will not produce those data points despite the fact that some of the events flagged as <code>915148800</code> technically occurred in 1998.</p>

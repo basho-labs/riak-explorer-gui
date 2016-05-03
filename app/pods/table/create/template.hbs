@@ -14,11 +14,10 @@
   {{/alert-component}}
 {{/if}}
 
-<div class="table-create-container">
+<div class="ts-table-container table-create-container">
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Table Schema Editor'}}
       <div class="module-actions">
-        {{!--<button class="btn btn-primary" {{action 'showHelp'}}>SHOW HELP</button>--}}
         {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel
@@ -42,14 +41,20 @@
           </label>
 
           {{ivy-codemirror
-          mode='sql'
-          theme='material'
-          autofocus=true
-          value=statement}}
+            mode='sql'
+            theme='material'
+            lineWrapping=true
+            autofocus=true
+            value=(mut statement)}}
 
-          <div class="form-group create-button">
-            <button class="btn btn-primary" {{action 'createTableManually'}}>Create Table</button>
+
+          <div class="submit-button-container">
+            <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'createTableManually' model statement}}>
+              Create Table
+            </button>
           </div>
+
+          {{!--TODO: Implement Form Wizard--}}
           {{!--{{form.table.create-table--}}
           {{!--errors=(mut errors)--}}
           {{!--table=model--}}
@@ -66,11 +71,6 @@
   {{#side-drawer
   label='Schema Guidelines'
   visible=helpVisibile}}
-    {{!--<ul>--}}
-      {{!--<li>If field names need to contain spaces they can be double quoted.</li>--}}
-      {{!--<li>Quantum field name must be an existing field in the table definition of type <strong>timestamp</strong></li>--}}
-      {{!--<li>For more information on planning and creating a time series table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/planning/" target="_blank">Basho Docs</a>.</li>--}}
-    {{!--</ul>--}}
     {{render 'partials.schema-anatomy'}}
   {{/side-drawer}}
 {{/ember-wormhole}}

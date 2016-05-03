@@ -23,8 +23,77 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    controller.setExampleMessage();
+    this.setExampleMessageIfPossible();
     controller.resetState();
+  },
+
+  setExampleMessageIfPossible: function() {
+    let table = this.currentModel;
+
+    if (table.get('hasQuantum')) {
+      let controller = this.controller;
+      let tableName = table.get('name');
+      let partitionKey = table.get('partitionKey');
+      let quantumName = table.get('quantumFieldName');
+      let sampleNames = [
+        "Lorem",
+        "ipsum",
+        "dolor",
+        "sit",
+        "amet",
+        "consectetur",
+        "adipiscing",
+        "elit",
+        "Aliquam",
+        "sit",
+        "amet",
+        "tincidunt",
+        "felis",
+        "Curabitur",
+        "at",
+        "gravida",
+        "est",
+        "Quisque",
+        "vehicula",
+        "mi",
+        "sed",
+        "libero",
+        "hendrerit",
+        "vel",
+        "mollis",
+        "lorem",
+        "euismod",
+        "Donec",
+        "fringilla",
+        "iaculis",
+        "sem",
+        "vitae",
+        "tincidunt",
+        "lacus",
+        "consectetur",
+        "vitae",
+        "Aliquam",
+        "felis",
+        "magna",
+        "pellentesque",
+        "vitae",
+        "felis"
+      ];
+      let example = '';
+
+      // Set Query Base
+      example = `select * from ${tableName} where ${quantumName} > 1 and ${quantumName} < 9999`;
+
+      // Add a comparison for each partition key field that isn't the quantum field
+      partitionKey
+        .filter(function(field) { return !field.quantum; })
+        .mapBy('name')
+        .forEach(function(fieldName, index) {
+          example += ` and ${fieldName} = '${sampleNames[index]}'`;
+        });
+
+      controller.set('example', example);
+    }
   },
 
   actions: {
@@ -33,10 +102,6 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
 
       // Set intermediate state
       controller.set('isLoading', true);
-
-      // TODO: Make this function a mixin, could be used elsewhere
-      // Make sure the query call takes at least a second, creates a nicer UI experience
-      //let minDelayPromise = new Ember.RSVP.Promise(function(resolve) { window.setTimeout(resolve, 5000); });
 
       // Execute Query
       this.explorer.queryTable(table, query).then(

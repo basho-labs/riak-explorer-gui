@@ -38,8 +38,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    controller.set('errors', null);
-    controller.set('statement', '');
+    controller.resetState();
   },
 
   actions: {
@@ -56,11 +55,10 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       // this.transitionTo('table', cluster.get('name'), tableName);
     },
 
-    createTableManually: function() {
+    createTableManually: function(table, statement) {
       let self = this;
       let controller = this.controller;
-      let clusterName = this.currentModel.get('cluster').get('name');
-      let statement = controller.get('statement');
+      let clusterName = table.get('cluster').get('name');
 
       controller.set('errors', null);
       controller.set('showSpinner', true);
@@ -79,12 +77,14 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
       this.explorer.createBucketType(clusterName, data).then(
         function onSuccess() {
-          self.transitionTo('table',clusterName, tableName);
+          self.transitionTo('table',clusterName, tableName).then(function() {
+            controller.set('showSpinner', false);
+          });
         },
         function onFail(error) {
           self.scrollToTop();
-          controller.set('errors', 'Sorry, something went wrong. Your table was not created');
           controller.set('showSpinner', false);
+          controller.set('errors', 'Sorry, something went wrong. Your table was not created');
         });
     },
 

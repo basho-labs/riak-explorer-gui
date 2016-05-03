@@ -9,6 +9,8 @@ export default Ember.Controller.extend({
 
   resultLength: null,
 
+  helpVisibile: false,
+
   isDisabled: true,
 
   isLoading: false,
@@ -47,28 +49,21 @@ export default Ember.Controller.extend({
     this.resetResult();
   },
 
-  // TODO: Come back and make the example dynamic
-  setExampleMessage: function() {
-    // let table = this.get('table');
-    // let tableName = table.get('name');
-    // let example = '';
-    //
-    //
-    // if (table.get('hasQuantum')) {
-    //   let quantumName = table.get('quantumName');
-    //   example = `select * from ${tableName} where ${quantumName} > 1 and ${quantumName} < 100`;
-    // } else {
-    // }
-
-    let temporaryExample = "select weather, temperature from GeoCheckin where time > 1234560 and time < 1234569 and region = 'South Atlantic' and state = 'South Carolina'";
-
-
-    return this.set('example', temporaryExample);
-  },
-
   actions: {
     clear: function() {
       this.resetState();
+    },
+
+    insertExample: function() {
+      this.set('query', this.get('example'));
+    },
+
+    removeHelp: function() {
+      this.set('helpVisibile', false);
+    },
+
+    showHelp: function() {
+      this.set('helpVisibile', true);
     }
   }
 });
