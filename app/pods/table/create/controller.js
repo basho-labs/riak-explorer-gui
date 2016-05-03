@@ -13,15 +13,15 @@ export default Ember.Controller.extend({
 
   actions: {
     removeHelp: function() {
-      return this.set('helpVisibile', false);
+      this.set('helpVisibile', false);
     },
 
     showHelp: function() {
-      return this.set('helpVisibile', true);
+      this.set('helpVisibile', true);
     },
 
     insertTemplate: function() {
-      return this.set('statement', this.get('exampleTemplate'));
+      this.set('statement', this.get('exampleTemplate'));
     }
   }
 });

@@ -18,15 +18,15 @@ export default Ember.Controller.extend({
   }.observes('dataToBeInserted'),
 
   clearErrors: function() {
-    return this.set('errors', '');
+    this.set('errors', '');
   },
 
   clearSuccessMessage: function() {
-    return this.set('successMessage', '');
+    this.set('successMessage', '');
   },
 
   clearDataToBeInserted: function() {
-    return this.set('dataToBeInserted', '');
+    this.set('dataToBeInserted', '');
   },
 
   resetState: function() {
@@ -37,15 +37,15 @@ export default Ember.Controller.extend({
 
   actions: {
     removeHelp: function() {
-      return this.set('helpVisibile', false);
+      this.set('helpVisibile', false);
     },
 
     showHelp: function() {
-      return this.set('helpVisibile', true);
+      this.set('helpVisibile', true);
     },
 
     insertExample: function() {
-      return this.set('dataToBeInserted', this.get('example'));
+      this.set('dataToBeInserted', this.get('example'));
     }
   }
 });
