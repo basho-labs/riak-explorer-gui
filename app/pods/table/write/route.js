@@ -69,7 +69,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
             let tableName = table.get('name');
 
             self.controller.clearErrors();
-            self.controller.clearDataToBeInserted();
+            self.controller.clearWriteData();
             self.controller.set('successMessage', `Your data was saved to the ${tableName} table.`);
             self.scrollToTop();
           },

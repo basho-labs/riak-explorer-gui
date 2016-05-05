@@ -52,10 +52,10 @@
           mode='javascript'
           theme='material'
           lineWrapping=true
-          value=(mut dataToBeInserted)}}
+          value=(mut writeData)}}
 
         <div class="submit-button-container">
-          <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model dataToBeInserted}}>
+          <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model writeData}}>
             Insert Rows
           </button>
         </div>

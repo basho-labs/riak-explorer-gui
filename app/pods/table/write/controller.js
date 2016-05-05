@@ -5,7 +5,7 @@ export default Ember.Controller.extend({
 
   example: `["foo", "bar", 10], ["foo", "bar", 11], ["foo", "bar", 12]`,
 
-  dataToBeInserted: '',
+  writeData: '',
 
   helpVisibile: false,
 
@@ -14,8 +14,8 @@ export default Ember.Controller.extend({
   successMessage: '',
 
   canSubmit: function() {
-    return this.set('isDisabled', Ember.isBlank(this.get('dataToBeInserted')));
-  }.observes('dataToBeInserted'),
+    return this.set('isDisabled', Ember.isBlank(this.get('writeData')));
+  }.observes('writeData'),
 
   clearErrors: function() {
     this.set('errors', '');
@@ -25,14 +25,14 @@ export default Ember.Controller.extend({
     this.set('successMessage', '');
   },
 
-  clearDataToBeInserted: function() {
-    this.set('dataToBeInserted', '');
+  clearWriteData: function() {
+    this.set('writeData', '');
   },
 
   resetState: function() {
     this.clearErrors();
     this.clearSuccessMessage();
-    this.clearDataToBeInserted();
+    this.clearWriteData();
   },
 
   actions: {
@@ -45,7 +45,7 @@ export default Ember.Controller.extend({
     },
 
     insertExample: function() {
-      this.set('dataToBeInserted', this.get('example'));
+      this.set('writeData', this.get('example'));
     }
   }
 });
