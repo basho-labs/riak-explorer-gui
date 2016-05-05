@@ -1,12 +1,12 @@
 {{#if model.warnings}}
-  {{#bs-alert type="warning"}}
+  {{#alert-component type="warning"}}
     <ul>
       <h4><span class="label label-warning">WARNINGS</span></h4>
       {{#each model.warnings as |warning|}}
         <li>{{warning}}</li>
       {{/each}}
     </ul>
-  {{/bs-alert}}
+  {{/alert-component}}
 {{/if}}
 
 <div class='bucket-types-container'>

@@ -1,3 +1,22 @@
+.ts-table-container {
+  label {
+    margin-bottom: 10px;
+  }
+
+  .CodeMirror {
+    height: 250px;
+  }
+
+  .submit-button-container {
+    @include clearfix;
+
+    .btn {
+      float: right;
+      margin-top: 10px;
+    }
+  }
+}
+
 .table-create-container {
   //.table-name {
   //  width: 354px;
@@ -40,64 +59,31 @@
   //  @extend a;
   //  cursor: pointer;
   //}
-
-
-  .manually-create {
-
-    .help-link {
-      @extend a;
-      text-transform: uppercase;
-      font-size: 8px;
-      cursor: pointer;
-    }
-
-    .CodeMirror {
-      height: 257px;
-    }
-
-    .create-button {
-      margin-top: 20px;
-    }
-  }
 }
 
+.table-write-container {}
+
 .table-query-container {
-  .query-module {
-    margin-top: 10px;
-    margin-bottom: 30px;
-  }
-
   .split-panel {
-    $panel-height: 125px;
-
     @include flexbox;
     @include flex-direction(row);
 
     .left-panel {
       @include flex(1);
-
-      .btn {
-        float: right;
-      }
-
-      textarea.form-control {
-        min-height: $panel-height;
-      }
+      max-width: 50%;
+      padding-right: 10px;
     }
 
     .right-panel {
       @include flex(1);
-      padding-left: 15px;
+      max-width: 50%;
+      padding-left: 10px;
 
       .clear-statement {
         @extend a;
         cursor: pointer;
         font-size: 10px;
         margin-right: 5px;
-      }
-
-      pre {
-        min-height: $panel-height;
       }
     }
   }

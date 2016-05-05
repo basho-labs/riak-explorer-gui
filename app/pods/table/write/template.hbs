@@ -1,38 +1,28 @@
-{{#bs-alert type='info'}}
-  <h4><span class="label label-info">Notes on Writing Data</span></h4>
-
-  <ul>
-    <li>Writes will assume that columns are in the same order they've been declared in the table.</li>
-    <li>Timestamps should be in Unix epoch/UTC milliseconds.</li>
-    <li>The textfield expects an array of arrays, each sub-array representing a row to be inserted.</li>
-    <li>All rows will be validated server side before writing occurs. If any of the rows fails validation then none of the rows will be written.</li>
-    <li>For more information on writing data to a table, visit the <a href="http://docs.basho.com/riak/ts/1.2.0/using/writingdata/" target="_blank">Basho Docs</a>.</li>
-  </ul>
-{{/bs-alert}}
-
 {{#if errors}}
-  {{#bs-alert type="danger" dismissible=false}}
-    <h4><span class="label label-danger">ERRORS</span></h4>
-    <ul>
-      {{#each errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
-  {{/bs-alert}}
+  {{#alert-component type="danger" dismissible=false}}
+    {{#if (is-array errors)}}
+      <h4><span class="label label-danger">Errors</span></h4>
+      <ul>
+        {{#each errors as |error|}}
+          <li>{{error}}</li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <h4><span class="label label-danger">Error</span></h4>
+      <p>{{errors}}</p>
+    {{/if}}
+  {{/alert-component}}
 {{/if}}
-
 {{#if successMessage}}
-  {{#bs-alert type="success"}}
+  {{#alert-component type="success"}}
     <h4><span class="label label-success">SUCCESS</span></h4>
-    <ul>
-      <p>{{successMessage}}</p>
-    </ul>
-  {{/bs-alert}}
+    <p>{{successMessage}}</p>
+  {{/alert-component}}
 {{/if}}
 
-<div>
-  {{#dashboard-module.container}}
-    {{#dashboard-module.header label='Write Data to Table'}}
+<div class="ts-table-container table-write-container">
+  {{#dashboard-module.container class='medium-width'}}
+    {{#dashboard-module.header label='Table Write Editor'}}
       <div class="module-actions">
         {{#link-to 'table' model.cluster.name model.name class="cancel action-button"}}
           <span class="ion-close-round" aria-hidden="true"></span>
@@ -41,10 +31,43 @@
       </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{form.table.insert-data
-        table=model
-        errors=(mut errors)
-        successMessage=(mut successMessage)}}
+
+      <section class="table-ref">
+        <div class="section-title">{{model.name}}</div>
+        {{table.ts-table-reference table=model}}
+      </section>
+
+      <section class="table-editor">
+        <label>
+          Use the editor below to write rows to your table
+          <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example</span>
+          {{#if helpVisibile}}
+            <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Write Guidelines</span>
+          {{else}}
+            <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Write Guidelines</span>
+          {{/if}}
+        </label>
+
+        {{ivy-codemirror
+          mode='javascript'
+          theme='material'
+          lineWrapping=true
+          value=(mut writeData)}}
+
+        <div class="submit-button-container">
+          <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'writeDataToTable' model writeData}}>
+            Insert Rows
+          </button>
+        </div>
+      </section>
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+    label='Write Guidelines'
+    visible=helpVisibile}}
+    {{render 'partials.ts-table-write-guidelines'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}

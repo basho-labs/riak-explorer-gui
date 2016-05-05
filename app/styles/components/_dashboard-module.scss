@@ -12,6 +12,10 @@
     max-width: 800px;
   }
 
+  &.large-width {
+    max-width: 1000px;
+  }
+
   &.no-border {
     border: none;
     background: none;
@@ -25,7 +29,6 @@
     @include flexbox;
     @include flex-direction(row);
     @include justify-content(space-between);
-
     padding: 20px;
     border-bottom: 1px solid $grayscale-color-x-light;
 
