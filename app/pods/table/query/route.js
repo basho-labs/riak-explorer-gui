@@ -36,6 +36,8 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       let partitionKey = table.get('partitionKey');
       let quantumName = table.get('quantumFieldName');
       let sampleNames = [
+        "foo",
+        "bar",
         "Lorem",
         "ipsum",
         "dolor",
