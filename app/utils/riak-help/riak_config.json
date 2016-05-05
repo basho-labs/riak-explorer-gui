@@ -1,4 +1,4 @@
-let RiakConfigHelp = {
+{
   "anti_entropy": {
     "default": "active",
     "description": "How Riak will repair out-of-sync keys. Some features require\nthis to be set to 'active', including search.\n* active: out-of-sync keys will be repaired in the background\n* passive: out-of-sync keys are only repaired on read\n* active-debug: like active, but outputs verbose debugging\ninformation",
@@ -1080,6 +1080,4 @@ let RiakConfigHelp = {
     "internal_key": "riak_core.vnode_management_timer",
     "valid": "a time duration with units, e.g. '10s' for 10 seconds"
   }
-};
-
-export default RiakConfigHelp;
+}
