@@ -1,5 +1,4 @@
 /* globals blanket, module */
-
 var options = {
   modulePrefix: 'ember-riak-explorer',
   filter: '//.*ember-riak-explorer/.*/',

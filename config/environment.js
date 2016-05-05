@@ -9,11 +9,6 @@ module.exports = function(environment) {
     locationType: 'hash',
     pageSize: 500,
 
-    contentSecurityPolicy: {
-      'font-src': "'self' data: code.ionicframework.com",
-      'style-src': "'self' 'unsafe-inline' code.ionicframework.com"
-    },
-
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

@@ -1,4 +1,4 @@
-let BucketPropsHelp = {
+{
   "active": {
     "default": true,
     "description": "Has this bucket type been activated?",
@@ -58,9 +58,18 @@ let BucketPropsHelp = {
     "json_schema_type": "string",
     "name": "Data Type (CRDT)",
     "valid_options": [
-      ["counter", "Counter"],
-      ["map", "Map"],
-      ["set", "Set"]
+      [
+        "counter",
+        "Counter"
+      ],
+      [
+        "map",
+        "Map"
+      ],
+      [
+        "set",
+        "Set"
+      ]
     ]
   },
   "dvv_enabled": {
@@ -87,7 +96,7 @@ let BucketPropsHelp = {
   "linkfun": {
     "default": {
       "fun": "mapreduce_linkfun",
-      "mod": "riak_kv_wm_link_walker",
+      "mod": "riak_kv_wm_link_walker"
     },
     "description": "(Deprecated) Link walking function",
     "editable": false,
@@ -164,10 +173,22 @@ let BucketPropsHelp = {
     "json_schema_type": "boolean|string",
     "name": "Per-Bucket MDC Replication",
     "valid_options": [
-      [true, "Both Realtime and Fullsync"],
-      [false, "Not replicated"],
-      ["fullsync", "Fullsync Only"],
-      ["realtime", "Realtime Only"]
+      [
+        true,
+        "Both Realtime and Fullsync"
+      ],
+      [
+        false,
+        "Not replicated"
+      ],
+      [
+        "fullsync",
+        "Fullsync Only"
+      ],
+      [
+        "realtime",
+        "Realtime Only"
+      ]
     ]
   },
   "rw": {
@@ -219,6 +240,4 @@ let BucketPropsHelp = {
     "json_schema_type": "integer",
     "name": "Young VClock Pruning"
   }
-};
-
-export default BucketPropsHelp;
+}

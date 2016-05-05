@@ -1,4 +1,4 @@
-let RiakStatusHelp = {
+{
   "asn1_version": {
     "category": "versions",
     "concern": "config",
@@ -4991,6 +4991,4 @@ let RiakStatusHelp = {
     "scope": "config",
     "units": "n/a"
   }
-};
-
-export default RiakStatusHelp;
+}
