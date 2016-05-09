@@ -90,8 +90,6 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
     if (contentType) {
       switch (contentType) {
         case 'application/json':
-          language = 'json';
-          break;
         case 'application/javascript':
           language = 'javascript';
           break;
@@ -99,6 +97,7 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
           language = 'xml';
           break;
         default:
+          language = 'javascript';
           break;
       }
     }
