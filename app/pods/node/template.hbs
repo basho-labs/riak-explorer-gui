@@ -40,7 +40,7 @@
 
         <table class="key-value-table">
           <tbody>
-          {{#each-in model.alphaSortedConfig as |name value|}}
+          {{#each-in model.config as |name value|}}
             <tr>
               <td class='key'>
                 {{name}}
@@ -54,7 +54,7 @@
       {{/tabs.tabpanel}}
 
       {{#tabs.tabpanel}}
-        {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex class='vertical' as |tabs|}}
+        {{#ivy-tabs on-select=(action (mut nestedSelectedIndex)) selected-index=nestedSelectedIndex class='vertical' as |tabs|}}
           {{#tabs.tablist class='capitalize' as |tablist|}}
             {{#each-in model.statsByCategory as |category stats|}}
               {{#tablist.tab}}
