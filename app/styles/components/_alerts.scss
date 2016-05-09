@@ -1,11 +1,11 @@
 .view-body {
   .alert {
+    border-left: none;
     border-radius: 0;
+    border-right: none;
+    margin-bottom: 0;
     padding-left: 40px;
     padding-right: 20px;
-    margin-bottom: 0;
-    border-left: none;
-    border-right: none;
 
     &:last-of-type {
       margin-bottom: 20px;
@@ -14,9 +14,9 @@
 
   .dashboard-module {
     .alert {
-      padding: 15px;
       border-radius: 4px;
       margin-bottom: 20px;
+      padding: 15px;
     }
   }
 }

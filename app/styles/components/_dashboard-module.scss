@@ -1,8 +1,8 @@
 .dashboard-module {
-  margin: 20px 20px 30px 40px;
   background: #FFF;
   border: 1px solid $grayscale-color-x-light;
   border-top: 3px solid $grayscale-color-x-light;
+  margin: 20px 20px 30px 40px;
 
   &.small-width {
     max-width: 600px;
@@ -17,8 +17,8 @@
   }
 
   &.no-border {
-    border: none;
     background: none;
+    border: none;
 
     .module-body {
       padding: 0;
@@ -29,8 +29,8 @@
     @include flexbox;
     @include flex-direction(row);
     @include justify-content(space-between);
-    padding: 20px;
     border-bottom: 1px solid $grayscale-color-x-light;
+    padding: 20px;
 
     .module-label {
       font-size: 18px;
@@ -84,8 +84,8 @@
 
     .module-edit-group {
       .group-header {
-        padding: 10px 0;
         font-size: 18px;
+        padding: 10px 0;
       }
 
       .key {

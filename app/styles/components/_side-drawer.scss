@@ -8,9 +8,9 @@
   }
 
   .side-drawer {
-    width: 400px;
     background: #FFF;
     overflow: scroll;
+    width: 400px;
 
     &.open {
       display: block;
@@ -21,19 +21,19 @@
     }
 
     .drawer-header {
+      border-bottom: 1px solid $grayscale-color-x-light;
       font-size: 24px;
       font-weight: 500;
-      border-bottom: 1px solid $grayscale-color-x-light;
 
       .drawer-label {
-        width: 340px;
         display: inline-block;
         padding: 43px 20px 19px 20px;
+        width: 340px;
       }
 
       .close-container {
-        float: right;
         cursor: pointer;
+        float: right;
         padding: 43px 20px 19px 20px;
       }
     }
@@ -50,9 +50,9 @@
       }
 
       ul {
-        margin-left: 20px;
-        margin-bottom: 20px;
         list-style: disc;
+        margin-bottom: 20px;
+        margin-left: 20px;
       }
 
       table {

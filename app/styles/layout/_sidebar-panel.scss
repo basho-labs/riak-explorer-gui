@@ -1,17 +1,17 @@
 .sidebar-panel {
   @include flex(none);
-  width: $sidebar-panel-width;
   background-color: lighten($grayscale-color-dark, 10%);
   border-right: 1px solid darken($grayscale-color-dark, $color-accent-percentage-small);
   overflow-y: auto;
+  width: $sidebar-panel-width;
 
   .cluster-selector {
-    width: 100%;
-    padding: 5px;
+    background-color: lighten($grayscale-color-dark, 2%);
     border: none;
     border-bottom: 1px solid $grayscale-color-x-dark;
     border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
-    background-color: lighten($grayscale-color-dark, 2%);
+    padding: 5px;
+    width: 100%;
 
     .ember-power-select-trigger {
       &:focus {
@@ -27,22 +27,22 @@
   .current-cluster {
     header {
       @include dark-background-font;
+      background-color: lighten($grayscale-color-dark, 2%);
       border-bottom: 1px solid $grayscale-color-x-dark;
       border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
-      background-color: lighten($grayscale-color-dark, 2%);
       padding: 10px;
       position: relative;
 
       .title {
-        font-size: 18px;
         display: block;
+        font-size: 18px;
         margin-right: 20px;
         word-break: break-all;
       }
 
       .meta {
-        text-transform: uppercase;
         font-size: 9px;
+        text-transform: uppercase;
 
         li {
           &:after {
@@ -62,17 +62,17 @@
       }
 
       .cluster-status-circle {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        display: inline-block;
-        width: 16px;
-        height: 16px;
         border-radius: 8px;
-        margin-top: -8px;
-        -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .75);
-        -moz-box-shadow:    0px 0px 10px 0px rgba(0, 0, 0, .75);
         box-shadow:         0px 0px 10px 0px rgba(0, 0, 0, .75);
+        -moz-box-shadow:    0px 0px 10px 0px rgba(0, 0, 0, .75);
+        -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .75);
+        display: inline-block;
+        height: 16px;
+        margin-top: -8px;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        width: 16px;
 
         &.ok {
           background: darken(#5cb85c, 10);
@@ -91,29 +91,29 @@
     .cluster-section-links {
       %current-link-style {
         &:after {
+          background: lighten($grayscale-color-light, $color-accent-percentage-large);
+          border-radius: 4px;
           content: "";
+          display: inline-block;
+          height: 8px;
+          left: 8px;
+          margin-top: -4px;
           position: absolute;
           top: 50%;
-          left: 8px;
-          display: inline-block;
           width: 8px;
-          height: 8px;
-          border-radius: 4px;
-          margin-top: -4px;
-          background: lighten($grayscale-color-light, $color-accent-percentage-large);
         }
       }
 
       a {
         @include dark-background-font;
-        display: block;
+        background-color: lighten($grayscale-color-dark, 5%);
         border-bottom: 1px solid $grayscale-color-x-dark;
         border-top: 1px solid lighten($grayscale-color-dark, $color-accent-percentage-small);
-        background-color: lighten($grayscale-color-dark, 5%);
-        padding: 10px 10px 10px 25px;
+        display: block;
         font-size: 16px;
-        text-transform: uppercase;
+        padding: 10px 10px 10px 25px;
         position: relative;
+        text-transform: uppercase;
 
         &:hover {
           background-color: $grayscale-color-dark;

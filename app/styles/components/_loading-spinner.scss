@@ -5,56 +5,59 @@ $spinner-size: 48px !default;
   @include flexbox;
   @include align-items(center);
   @include justify-content(center);
-  min-height: 200px;
   background: rgba(0, 0, 0, 0.03);
   margin: -20px;
+  min-height: 200px;
 
   &.entire-page {
-    margin: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
+    background: none;
     bottom: 0;
     left: 0;
-    background: none;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 }
 
 .loading-container {
-  max-width: 50%;
   background: white;
   border: 1px solid $grayscale-color-x-light;
   border-radius: 3px;
+  margin: 0 auto;
+  max-width: 50%;
   padding: 30px;
   text-align: center;
-  margin: 0 auto;
   .status-message {
     margin-bottom: 20px;
   }
   .spinner {
-    font-size: $spinner-size;
-    position: relative;
     display: inline-block;
-    width: 1em;
+    font-size: $spinner-size;
     height: 1em;
+    position: relative;
+    width: 1em;
     .spinner-blade {
-      position: absolute;
-      left: 0.4629em;
-      bottom: 0;
-      width: 0.074em;
-      height: 0.2777em;
-      border-radius: 0.0555em;
-      background-color: transparent;
-      transform-origin: center -0.2222em;
-      animation: spinner-fade 1s infinite linear;
       $animation-delay: 0s;
       $blade-rotation: 0deg;
+
+      animation: spinner-fade 1s infinite linear;
+      background-color: transparent;
+      border-radius: 0.0555em;
+      bottom: 0;
+      height: 0.2777em;
+      left: 0.4629em;
+      position: absolute;
+      transform-origin: center -0.2222em;
+      width: 0.074em;
+
       @for $i from 1 through 12 {
         &:nth-child(#{$i}) {
-          animation-delay: $animation-delay;
-          transform: rotate($blade-rotation);
           $blade-rotation: $blade-rotation + 30;
           $animation-delay: $animation-delay + 0.083;
+
+          animation-delay: $animation-delay;
+          transform: rotate($blade-rotation);
         }
       }
     }

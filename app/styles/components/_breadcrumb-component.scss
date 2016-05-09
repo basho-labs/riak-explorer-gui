@@ -4,10 +4,10 @@
   min-height: 17px;
 
   .breadcrumb {
-    margin: 0;
-    padding: 0;
     background-color: inherit;
     font-size: 12px;
+    margin: 0;
+    padding: 0;
 
     li {
       color: lighten($grayscale-color-dark, $color-accent-percentage-large);
@@ -15,8 +15,8 @@
 
       &:last-child {
         a {
-          cursor: default;
           color: lighten($grayscale-color-dark, $color-accent-percentage-large);
+          cursor: default;
         }
       }
     }

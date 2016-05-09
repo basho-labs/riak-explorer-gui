@@ -14,15 +14,15 @@
   }
 
   .loading {
-    padding-top: 3em;
     padding-bottom: 3em;
+    padding-top: 3em;
   }
 
   .cluster-resource-header {
-    border: 1px solid #CCC;
     background-color: #3c948b;
-    color: white;
+    border: 1px solid #CCC;
     border-radius: 4px;
+    color: white;
     display: inline-block;
     font-size: 14px;
     font-weight: normal;
@@ -53,8 +53,8 @@
   }
 
   .key {
-    padding-top: 3em;
     padding-bottom: 3em;
+    padding-top: 3em;
   }
 
   .spinner {
@@ -63,18 +63,18 @@
 
   .property-header {
     background-color: #DDD;
-    padding: 0.5em 3px;
     margin-bottom: 1em;
+    padding: 0.5em 3px;
   }
 
   .bucket-properties {
-    margin-top: 2em;
-    margin-bottom: 2em;
-    margin-left: 0px auto;
-    margin-right: 0px auto;
-
     border: 1px solid gray;
     box-sizing: border-box;
+    margin-bottom: 2em;
+    margin-left: 0px auto;
+
+    margin-right: 0px auto;
+    margin-top: 2em;
   }
 
   .property-row {
@@ -86,8 +86,8 @@
     border-radius: 3px;
     margin-bottom: 15px;
     margin-top: 20px;
-    width: 95%;
     position: relative;
+    width: 95%;
   }
 
   .object-contents-header {
@@ -95,8 +95,8 @@
     border-bottom: 1px solid #d8d8d8;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
-    padding: 5px 10px;
     line-height: 30px;
+    padding: 5px 10px;
   }
 
   .object-contents-header::before {
@@ -128,13 +128,13 @@
 
   .object-contents-footer {
     background-color: #e7ecee;
-    border-top: 1px solid #d8d8d8;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
-    padding: 5px 10px;
-    line-height: 30px;
+    border-top: 1px solid #d8d8d8;
     font-family: Consolas, "Liberation Mono", Courier, monospace;
     font-size: 11px;
+    line-height: 30px;
+    padding: 5px 10px;
   }
 
   .value-counter {
@@ -142,11 +142,11 @@
   }
 
   .set-contents-list {
-    width: 100%;
     border-left: 1px solid #ddd;
-    border-top: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
     margin-bottom: 1.5em;
+    width: 100%;
   }
   .set-contents-list div.set-element-row:nth-child(even) {
     background-color: #eee;
@@ -160,8 +160,8 @@
   }
 
   .field-label {
-    text-align: right;
     font-weight: bold;
+    text-align: right;
   }
 
   .map-composite-field-name {
@@ -169,8 +169,8 @@
   }
 
   .form-inline .input-increment {
-    width: 5em;
     vertical-align: middle;
+    width: 5em;
   }
 
   .divider {
