@@ -41,12 +41,27 @@
     .drawer-body {
       padding: 20px;
 
+      h2 {
+        font-size: 24px;
+        border-bottom: 1px solid $grayscale-color-x-light;
+        padding: 10px 0;
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      h4 {
+        font-size: 16px;
+      }
+
       p {
         margin-bottom: 20px;
       }
 
       pre {
         margin-bottom: 20px;
+        font-size: 11px;
       }
 
       ul {
