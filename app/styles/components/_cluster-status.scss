@@ -1,7 +1,6 @@
 .cluster-status {
   &.cluster-status-label {
     @extend .label;
-
     text-transform: uppercase;
 
     &.ok {

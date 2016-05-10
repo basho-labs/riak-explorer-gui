@@ -1,8 +1,8 @@
 .ember-application {
   .tooltip-icon {
-    font-size: 10px;
     color: #777;
     cursor: help;
+    font-size: 10px;
   }
 
   .tooltip {
@@ -38,8 +38,8 @@
       }
 
       .small {
-        font-style: italic;
         font-size: 12px;
+        font-style: italic;
         word-break: break-word;
       }
     }

@@ -38,9 +38,12 @@
           <tr>
             <td class="key">Content</td>
             <td class="value">
-              {{code-highlighter
-                lang=model.contentTypeLanguage
-                code=model.contents}}
+              {{ivy-codemirror
+                mode=model.contentTypeLanguage
+                theme='material'
+                lineWrapping=true
+                readOnly=true
+                value=model.contents}}
             </td>
           </tr>
         {{/if}}

@@ -15,9 +15,12 @@
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
     {{#if model.content}}
-      {{code-highlighter
-        lang='XML'
-        code=model.content}}
+      {{ivy-codemirror
+        mode='xml'
+        theme='material'
+        lineWrapping=true
+        readOnly=true
+        value=model.content}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

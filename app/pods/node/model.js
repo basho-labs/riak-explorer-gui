@@ -41,8 +41,6 @@ export default DS.Model.extend({
    */
   advancedConfig: DS.attr(),
 
-  alphaSortedConfig: DS.attr(),
-
   /**
    * All the nodes configuration settings. Stored as an Object hashmap.
    *
@@ -84,26 +82,11 @@ export default DS.Model.extend({
     return !!(this.get('available') && this.get('status') === 'valid');
   }.property('available', 'status'),
 
-  setAlphaSortedConfig: function() {
-    if (!this.get('alphaSortedConfig')) {
-      let config = _.cloneDeep(this.get('config'));
-      let sortedKeys = Object.keys(config).sort();
-      let alphaSortedConfig = {};
-
-      sortedKeys.forEach(function(key) {
-        alphaSortedConfig[key] = config[key];
-      });
-
-      return this.set('alphaSortedConfig', alphaSortedConfig);
-    }
-  }.observes('config'),
-
   setStatsByCategory: function() {
     if (!this.get('statsByCategory')) {
       let stats = this.get('stats');
 
       // Removes any key in NodeStatsHelp that is not found in stats
-      //debugger;
       let pruned = _.pick(NodeStatsHelp, Object.keys(stats));
 
       // Adds Current Value from stats and merges it with the appropriate key in StatsHelp

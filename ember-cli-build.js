@@ -5,7 +5,7 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     codemirror: {
-      modes: ['javascript', 'sql'],
+      modes: ['javascript', 'sql', 'erlang', 'xml'],
       themes: ['material']
     }
   });
@@ -22,8 +22,6 @@ module.exports = function(defaults) {
   // modules that you would like to import into your application
   // please specify an object with the list of modules as keys
   // along with the exports of each module as its value.
-  app.import('bower_components/highlightjs/highlight.pack.js');
-  app.import('bower_components/highlightjs/styles/darkula.css');
 
   return app.toTree();
 };

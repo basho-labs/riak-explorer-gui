@@ -1,32 +1,40 @@
 import Ember from 'ember';
-import schemaRoute from '../route';
 import Alerts from '../../../mixins/routes/alerts';
+import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
+import WrapperState from '../../../mixins/routes/wrapper-state';
 
-export default schemaRoute.extend(Alerts, ScrollReset, {
-  afterModel(model, transition) {
-    this.simulateLoad();
-
-    return this._super(model, transition);
+export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
+  model(params) {
+    return this.explorer.getSearchSchema(params.clusterName, params.searchSchemaName);
   },
 
-  setupController (controller, model) {
-    this._super(controller, model);
-    let currentContent = model.get('content');
+  afterModel(model, transition) {
+    this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      searchSchema: model,
+      crudAction: 'edit'
+    });
+    this.setViewLabel({
+      preLabel: 'Search Schema',
+      label: model.get('name')
+    });
 
-    controller.set('editableContent', currentContent);
+    this.simulateLoad();
   },
 
   actions: {
     updateSchema: function(schema) {
-      let xmlString = this.controller.get('editableContent');
-      let xmlDoc = null;
       let clusterName = schema.get('cluster').get('name');
       let schemaName = schema.get('name');
+      let schemaContent = schema.get('content');
+
+      let xmlDoc = null;
       let self = this;
 
       try {
-        xmlDoc = Ember.$.parseXML(xmlString);
+        xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
         this.render('alerts.error-invalid-xml', {
           into: 'application',

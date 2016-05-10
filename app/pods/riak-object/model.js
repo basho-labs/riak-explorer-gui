@@ -21,7 +21,7 @@ import MapObject from '../../mixins/models/map-object';
  * @param [rawUrl] {String}
  * @param [contents] {Object} Object value/payload
  */
-var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
+export default DS.Model.extend(ObjectHeaders, MapObject, {
   /**
    * Riak Bucket in which this object lives.
    * @property bucket
@@ -90,8 +90,6 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
     if (contentType) {
       switch (contentType) {
         case 'application/json':
-          language = 'json';
-          break;
         case 'application/javascript':
           language = 'javascript';
           break;
@@ -99,6 +97,7 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
           language = 'xml';
           break;
         default:
+          language = 'javascript';
           break;
       }
     }
@@ -128,5 +127,3 @@ var RiakObject = DS.Model.extend(ObjectHeaders, MapObject, {
     return routePath;
   }.property('bucket')
 });
-
-export default RiakObject;

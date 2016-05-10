@@ -19,7 +19,6 @@
 @import "components/button-list";
 @import "components/cluster-resource-link";
 @import "components/cluster-status";
-@import "components/code-highlighter";
 @import "components/code-list";
 @import "components/code-mirror";
 @import "components/content-editable";
@@ -41,4 +40,5 @@
 @import "views/bucket-type";
 @import "views/cluster";
 @import "views/riak-object";
+@import "views/search-schema";
 @import "views/table";

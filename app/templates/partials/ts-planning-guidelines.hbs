@@ -1,0 +1,184 @@
+<div class="alert alert-info">The information below is pulled from "Planning Your Riak TS Table" in the <a href="http://docs.basho.com/riak/ts/1.3.0/using/planning/" target="_blank">Basho Docs</a></div>
+
+<p>This page provides a basic overview of what you’ll need and some guidelines/limitations. For a deeper dive into planning and designing Riak TS tables, check out <a target='_blank' href="http://docs.basho.com/riak/ts/1.3.0/learn-about/tablearchitecture/">Table Architecture</a>.</p>
+
+<p>Riak TS tables are closely tied to SQL tables. If you are unfamiliar with SQL or would like to know more about how Riak TS integrates SQL, check out <a target='_blank' href="http://docs.basho.com/riak/ts/1.3.0/learn-about/sqlriakts/">SQL for Riak TS</a>.</p>
+
+<h2>Anatomy of a Schema</h2>
+
+<p>In order to create a working Riak TS table, you'll need to plan your table out. Once created, your table cannot be changed. Here is an example Riak TS <code>CREATE TABLE</code> statement (broken across many lines for clarity):</p>
+
+<pre>CREATE TABLE GeoCheckin
+(
+   region       VARCHAR   not null,
+   state        VARCHAR   not null,
+   time         TIMESTAMP not null,
+   weather      VARCHAR   not null,
+   temperature  DOUBLE,
+   PRIMARY KEY (
+     (region, state, QUANTUM(time, 15, 'm')),
+     region, state, time
+   )
+)</pre>
+
+<p>While the keywords appear in all uppercase letters here, they can be specified using lowercase or uppercase letters as they are not case sensitive.</p>
+
+<h4>Column Definitions</h4>
+
+<p>Column definitions are the lines preceding the <code>PRIMARY KEY</code> in the example. Column definitions define the structure of the data. They are comprised of three parts: a column name, a data type, and (optionally) an inline constraint.</p>
+
+<pre>column_name data_type [NOT NULL],</pre>
+
+<p>Column names (<code>region</code>, <code>state</code>, etc) must be ASCII strings, in addition to having the correct case. If column names need to contain spaces or punctuation they can be double quoted.</p>
+
+<p>Any column names specified as part of the primary key must be defined as <code>NOT NULL</code>.</p>
+
+<p>The column definitions for the keys can be specified in any order in the <code>CREATE TABLE</code> statement. For instance both are correct:</p>
+
+<p><strong>A.</strong></p>
+<pre>CREATE TABLE GeoCheckin
+(
+  region       VARCHAR   NOT NULL,
+  state        VARCHAR   NOT NULL,
+  time         TIMESTAMP NOT NULL,
+  weather      VARCHAR   NOT NULL,
+  temperature  DOUBLE,
+  PRIMARY KEY (
+    (region, state, QUANTUM(time, 15, 'm')),
+    region, state, time
+  )
+)</pre>
+
+<p><strong>B.</strong></p>
+<pre>CREATE TABLE GeoCheckin
+(
+  time         TIMESTAMP NOT NULL,
+  state        VARCHAR   NOT NULL,
+  weather      VARCHAR   NOT NULL,
+  region       VARCHAR   NOT NULL,
+  temperature  DOUBLE,
+  PRIMARY KEY (
+    (region, state, QUANTUM(time, 15, 'm')),
+    region, state, time
+  )
+)</pre>
+
+<p>The data types in column definitions are limited. Valid types are:</p>
+
+<ul>
+  <li><code>VARCHAR</code> - Any string content is valid, including Unicode. Can only be compared using strict equality, and will not be typecast (e.g., to an integer) for comparison purposes. Use single quotes to delimit varchar strings.</li>
+  <li><code>BOOLEAN</code> - <code>true</code> or <code>false</code> (any case)</li>
+  <li><code>TIMESTAMP</code> - Timestamps are integer values expressing [UNIX epoch time in UTC][epoch] in milliseconds. Zero is not a valid timestamp.</li>
+  <li><code>SINT64</code> - Signed 64-bit integer</li>
+  <li><code>DOUBLE</code> - This type does not comply with its IEEE specification: <code>NaN</code> (not a number) and <code>INF</code> (infinity) cannot be used.</li>
+</ul>
+
+<h3>Primary Key</h3>
+
+<p>The <code>PRIMARY KEY</code> describes both the partition key and local key. The partition key is a prefix of the local key, consisting of one or more column names. The local key must begin with the same column names as the partition key, but may also contain additional column names.</p>
+
+<pre>CREATE TABLE GeoCheckin
+(
+  region       VARCHAR   NOT NULL,
+  state        VARCHAR   NOT NULL,
+  time         TIMESTAMP NOT NULL,
+  weather      VARCHAR   NOT NULL,
+  temperature  DOUBLE,
+  PRIMARY KEY (
+    (region, state, QUANTUM(time, 15, 'm')), &lt;-- PARTITION KEY
+    region, state, time &lt;-- LOCAL KEY
+  )
+)</pre>
+
+<p>The field definitions for the <code>PRIMARY KEY</code> can be specified in any order in the <code>CREATE TABLE</code> statement. For instance both are correct:</p>
+
+<p><strong>A.</strong></p>
+<pre>CREATE TABLE GeoCheckin
+(
+  region       VARCHAR   NOT NULL,
+  state        VARCHAR   NOT NULL,
+  time         TIMESTAMP NOT NULL,
+  weather      VARCHAR   NOT NULL,
+  temperature  DOUBLE,
+  PRIMARY KEY (
+    (region, state, QUANTUM(time, 15, 'm')),
+    region, state, time
+  )
+)</pre>
+
+<p><strong>B.</strong></p>
+<pre>CREATE TABLE GeoCheckin
+(
+  region       VARCHAR   NOT NULL,
+  state        VARCHAR   NOT NULL,
+  time         TIMESTAMP NOT NULL,
+  weather      VARCHAR   NOT NULL,
+  temperature  DOUBLE,
+  PRIMARY KEY (
+    (state, region, QUANTUM(time, 15, 'm')),
+    state, region, time
+  )
+)</pre>
+
+<h4>Partition Key</h4>
+
+<p>The partition key is the first element of the primary key, and is defined as a list of  column names and quantum in parentheses. The partition key must have at least one column name and a quantum.</p>
+
+<p>The quantum is used to colocate data on one of the partition key's timestamp fields:</p>
+
+<pre>PRIMARY KEY (
+  (region, state, QUANTUM(time, 1, 's')),
+  ...
+)</pre>
+
+<p>Only one quantum function may be specified and it must be the last element of the partition key.</p>
+
+<p>The quantum function takes 3 parameters:</p>
+
+<ul>
+  <li>the name of a field in the table definition of type <code>TIMESTAMP</code></li>
+  <li>a quantity as a positive integer, greater than zero.</li>
+  <li>a unit of time:
+    <ul>
+      <li><code>'d'</code> - days</li>
+      <li><code>'h'</code> - hours</li>
+      <li><code>'m'</code> - minutes</li>
+      <li><code>'s'</code> - seconds</li>
+    </ul>
+  </li>
+</ul>
+
+<p>A general guideline to get you started if you are not sure how best to structure your partition key is to first choose a column name that represents a class or type of data, and then choose a  second column name represents is a more specific instance(s) of the class/type.</p>
+
+<h4>Local Key</h4>
+
+<p>The local key comes after the partition key. It must first contain the same column names in the same order as the partition key. This ensures that the same column names determining your data's partition also dictate the sorting of the data within that partition.</p>
+
+<p>The local key may also contain additional column names so long as they come after the column names present in the partition key. For example:</p>
+
+<pre>PRIMARY KEY (
+  (region, state, QUANTUM(time, 15, 'm')),
+  region, state, time, weather, temperature
+)</pre>
+
+<h2>Schema Discovery</h2>
+
+<p>After creating a table, its schema can be discovered with the <code>DESCRIBE</code> statement:</p>
+
+<pre>DESCRIBE GeoCheckin</pre>
+
+<p>The <code>DESCRIBE</code> statement will return the following:</p>
+
+<ul>
+  <li><strong>Column</strong>, column name;</li>
+  <li><strong>Type</strong>, data type;</li>
+  <li><strong>Is Null</strong>, <em>true</em> if the field is optional, <em>false</em> otherwise;</li>
+  <li><strong>Primary Key</strong>, position of this field in the primary key, or blank if it does not appear in the key;</li>
+  <li><strong>Local Key</strong>, position of this field in the local key, or blank if it does not appear in the key.</li>
+</ul>
+
+<h2>More information</h2>
+
+<p>Still unsure how best to structure your Riak TS table? Check out our <a href="http://docs.basho.com/riak/ts/1.3.0/learn-about/bestpractices/" target="_blank">best practice recommendations</a>.</p>
+
+<p>Confused about column definition, primary key, etc? Check out <a href="http://docs.basho.com/riak/ts/1.3.0/learn-about/tablearchitecture/" target="_blank">Table Architecture</a> for an in-depth explanation of TS tables.</p>

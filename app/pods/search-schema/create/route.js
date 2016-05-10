@@ -6,14 +6,18 @@ import WrapperState from '../../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
   model(params) {
-    return this.explorer.getCluster(params.clusterName);
+    let self = this;
+
+    return this.explorer.getCluster(params.clusterName).then(function(cluster) {
+      return self.store.createRecord('search-schema', { cluster: cluster });
+    });
   },
 
   afterModel(model, transition) {
-    this.setSidebarCluster(model);
+    this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
-      cluster: model,
-      schemaCreate: true
+      cluster: model.get('cluster'),
+      crudAction: 'create schema'
     });
     this.setViewLabel({
       preLabel: 'Create Schema'
@@ -21,6 +25,12 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   },
 
   actions: {
+    willTransition: function() {
+      let schema = this.currentModel;
+
+      schema.destroyRecord();
+    },
+
     createSchema: function(clusterName, schemaName, schemaContent) {
       let self = this;
       let xmlDoc = null;

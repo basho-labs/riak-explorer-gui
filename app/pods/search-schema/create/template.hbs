@@ -1,29 +1,38 @@
-{{#dashboard-module.container}}
-  {{#dashboard-module.header label='New Schema'}}
-    <div class="module-actions">
-      <span class="create action-button" {{action 'createSchema' model.name schemaName schemaContent}}>
-        <span class="ion-edit" aria-hidden="true"></span>
-        Create Schema
-      </span>
-
-      {{#link-to 'cluster.query' model.name class='cancel action-button' }}
-        <span class="ion-close-round" aria-hidden="true"></span>
-        Cancel
-      {{/link-to}}
-    </div>
-  {{/dashboard-module.header}}
-
-  {{#dashboard-module.body}}
-    <form>
-      <div class="form-group">
-        <label>Schema Name</label>
-        {{input value=schemaName class='form-control'}}
+<div class="search-schema-container search-schema-create-container">
+  {{#dashboard-module.container}}
+    {{#dashboard-module.header label='New Schema'}}
+      <div class="module-actions">
+        {{#link-to 'cluster.query' model.name class='cancel action-button' }}
+          <span class="ion-close-round" aria-hidden="true"></span>
+          Cancel
+        {{/link-to}}
       </div>
+    {{/dashboard-module.header}}
 
-      <div class="form-group">
-        <label>Schema XML</label>
-        {{textarea value=schemaContent rows=10 class='form-control'}}
-      </div>
-    </form>
-  {{/dashboard-module.body}}
-{{/dashboard-module.container}}
+    {{#dashboard-module.body}}
+      <form>
+        <div class="form-group schema-name">
+          <label>Schema Name</label>
+          {{input tabIndex=1 value=(mut model.name) class='form-control'}}
+        </div>
+
+        <div class="form-group schema-content">
+          <label>Schema XML</label>
+          {{ivy-codemirror
+            mode='xml'
+            theme='material'
+            lineWrapping=true
+            autofocus=true
+            tabIndex=2
+            value=(mut model.content)}}
+        </div>
+
+        <div class="submit-button-container">
+          <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'createSchema' model.cluster.name model.name model.content}}>
+            Create Table
+          </button>
+        </div>
+      </form>
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>

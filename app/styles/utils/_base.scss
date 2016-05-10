@@ -1,19 +1,19 @@
 body {
   background-color: #FFF;
+  font-weight: 500;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  font-weight: 500;
 }
 
 section {
   margin-bottom: 20px;
 
   .section-title {
-    font-size: 16px;
     border-bottom: 1px solid #CCC;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
     display: inline-block;
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
   }
 
   &.form-section {
@@ -47,8 +47,8 @@ a {
 
   &:focus {
     color: $branding-color-1;
-    text-decoration: none;
     outline: none;
+    text-decoration: none;
   }
 }
 

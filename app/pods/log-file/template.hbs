@@ -19,9 +19,12 @@
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
     {{#if model.content}}
-      {{code-highlighter
-      lang='erlang'
-      code=model.content}}
+      {{ivy-codemirror
+        mode='erlang'
+        theme='material'
+        lineWrapping=true
+        readOnly=true
+        value=model.content}}
     {{else}}
       {{#alert-component type="info"}}
         <p><strong>File contains no contents.</strong></p>

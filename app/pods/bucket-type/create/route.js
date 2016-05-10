@@ -13,7 +13,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.setSidebarCluster(model);
     this.setBreadCrumbs({
       cluster: model,
-      bucketTypeCreate: true
+      crudAction: 'create bucket type'
     });
     this.setViewLabel({
       preLabel: 'Create Bucket Type'

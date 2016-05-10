@@ -1,0 +1,18 @@
+.search-schema-container {
+
+  .schema-name {
+    max-width: 350px;
+  }
+
+  .CodeMirror {
+    height: 300px;
+  }
+
+  .submit-button-container {
+    @include clearfix;
+
+    .btn {
+      margin-top: 10px;
+    }
+  }
+}

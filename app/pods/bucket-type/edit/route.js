@@ -15,7 +15,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
       bucketType: model,
-      editView: true
+      crudAction: 'edit'
     });
     this.setViewLabel({
       preLabel: 'Edit Bucket Type',

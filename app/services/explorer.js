@@ -644,11 +644,23 @@ export default Ember.Service.extend({
 
       request.done(function(data) {
         if (data.config.advanced_config) {
-          node.set('advancedConfig', data.config.advanced_config);
+          let alphaSortedAdvancedConfig = {};
+
+          Object.keys(data.config.advanced_config).sort().forEach(function(key) {
+            alphaSortedAdvancedConfig[key] = data.config.advanced_config[key];
+          });
+
+          node.set('advancedConfig', alphaSortedAdvancedConfig);
         }
 
         if (data.config.config) {
-          node.set('config', data.config.config);
+          let alphaSortedConfig = {};
+
+          Object.keys(data.config.config).sort().forEach(function(key) {
+            alphaSortedConfig[key] = data.config.config[key];
+          });
+
+          node.set('config', alphaSortedConfig);
         }
 
         resolve(data);

@@ -29,9 +29,12 @@
             {{#if currentReplOutput}}
               <div>
                 <label>Output</label>
-                {{code-highlighter
-				  lang='json'
-				  code=currentReplOutput}}
+                {{ivy-codemirror
+                  mode='javascript'
+                  theme='material'
+                  lineWrapping=true
+                  readOnly=true
+                  value=currentReplOutput}}
               </div>
             {{/if}}
           </form>
