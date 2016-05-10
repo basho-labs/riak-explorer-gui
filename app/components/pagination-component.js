@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 /**
- * A server side pagination UI component. Determines how many links to show, handling click actions on those links,
+ * A pagination UI component. Determines how many links to show, handling click actions on those links,
  * sending data "up" to be acted upon, and updating selected state.
  *
  * @class pagination-component
@@ -15,6 +15,14 @@ export default Ember.Component.extend({
    * @type Array
    */
   classNames: ['pagination-component-container'],
+
+  classNameBindings: ['visibleClass'],
+
+  /** Bridge between classToApplyIfVisible and classNameBindings, set in the 'shouldShowPaginationLinks' method **/
+  visibleClass: null,
+
+  /** Conditional class to apply if the pagination links are visible **/
+  classToApplyIfVisible: null,
 
   /**
    * Stores the number of pagination links the UI could potentially display
@@ -63,45 +71,6 @@ export default Ember.Component.extend({
   totalSize: 0,
 
   /**
-   * All actions that the pagination component handles. Upon receiving an action, it updates the state of the component
-   * and sends the event "up" for higher level work that it is not aware of.
-   *
-   * @property actions
-   * @type Object
-   */
-  actions: {
-    numberLinkClick: function(link) {
-      let chunk = link;
-      let requestedRange = this.calculateRequestedRange(chunk);
-
-      this.set('currentChunk', chunk);
-      this.sendAction('sectionRequest', requestedRange.low);
-    },
-
-    prevLinkClick: function() {
-      if (!this.get('shouldPrevBeDisabled')) {
-        let currentChunk = this.get('currentChunk');
-        let newChunk = currentChunk - 1;
-        let requestedRange = this.calculateRequestedRange(newChunk);
-
-        this.set('currentChunk', newChunk);
-        this.sendAction('sectionRequest', requestedRange.low);
-      }
-    },
-
-    nextLinkClick: function() {
-      if (!this.get('shouldNextBeDisabled')) {
-        let currentChunk = this.get('currentChunk');
-        let newChunk = currentChunk + 1;
-        let requestedRange = this.calculateRequestedRange(newChunk);
-
-        this.set('currentChunk', newChunk);
-        this.sendAction('sectionRequest', requestedRange.low);
-      }
-    }
-  },
-
-  /**
    * Lifecycle method. This is called only once upon instantiation and is not called when data has changed forcing a component
    * re-render. Because we are using a cached list, it only has to calculate the amount of potential pagination links once.
    *
@@ -125,7 +94,8 @@ export default Ember.Component.extend({
 
   /**
    * Figures out what the item range for a given chunk based on the chunk size.
-   * If current chunk is 3 and paginating every ten items, the object returns the range 31-40
+   * If current chunk is 1 and paginating every ten items, the object returns the range 0-9
+   * If current chunk is 3 and paginating every ten items, the object returns the range 30-39
    *
    * @method calculateRequestedRange
    * @private
@@ -136,8 +106,8 @@ export default Ember.Component.extend({
     let chunkSize = this.get('chunkSize');
 
     return {
-      low: (chunk * chunkSize - chunkSize) + 1,
-      high: (chunk * chunkSize)
+      lowIndex: (chunk * chunkSize - chunkSize),
+      highIndex: (chunk * chunkSize) -1
     };
   },
 
@@ -205,7 +175,13 @@ export default Ember.Component.extend({
    * @return {Boolean}
    */
   shouldShowPaginationLinks: function() {
-    return this.get('numberLinksCount') > 1;
+    let shouldShow = this.get('numberLinksCount') > 1;
+
+    if (shouldShow && this.get('classToApplyIfVisible')) {
+      this.set('visibleClass', this.get('classToApplyIfVisible'));
+    }
+
+    return shouldShow;
   }.property('numberLinksCount'),
 
   /**
@@ -228,5 +204,44 @@ export default Ember.Component.extend({
    */
   shouldNextBeDisabled: function() {
     return this.numberLinks.length === this.get('currentChunk');
-  }.property('currentChunk')
+  }.property('currentChunk'),
+
+  /**
+   * All actions that the pagination component handles. Upon receiving an action, it updates the state of the component
+   * and sends the event "up" for higher level work that it is not aware of.
+   *
+   * @property actions
+   * @type Object
+   */
+  actions: {
+    numberLinkClick: function(link) {
+      let chunk = link;
+      let requestedRange = this.calculateRequestedRange(chunk);
+
+      this.set('currentChunk', chunk);
+      this.sendAction('sectionRequest', requestedRange.lowIndex, requestedRange.highIndex);
+    },
+
+    prevLinkClick: function() {
+      if (!this.get('shouldPrevBeDisabled')) {
+        let currentChunk = this.get('currentChunk');
+        let newChunk = currentChunk - 1;
+        let requestedRange = this.calculateRequestedRange(newChunk);
+
+        this.set('currentChunk', newChunk);
+        this.sendAction('sectionRequest', requestedRange.lowIndex, requestedRange.highIndex);
+      }
+    },
+
+    nextLinkClick: function() {
+      if (!this.get('shouldNextBeDisabled')) {
+        let currentChunk = this.get('currentChunk');
+        let newChunk = currentChunk + 1;
+        let requestedRange = this.calculateRequestedRange(newChunk);
+
+        this.set('currentChunk', newChunk);
+        this.sendAction('sectionRequest', requestedRange.lowIndex, requestedRange.highIndex);
+      }
+    }
+  },
 });
