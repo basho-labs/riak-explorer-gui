@@ -8,7 +8,7 @@ export default RiakObjectRoute.extend({
       bucketType: model.get('bucketType'),
       bucket: model.get('bucket'),
       riakObject: model,
-      editView: true
+      crudAction: 'edit'
     });
     this.setViewLabel({
       preLabel: 'Object',

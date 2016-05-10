@@ -1,13 +1,27 @@
 import Ember from 'ember';
-import schemaRoute from '../route';
 import Alerts from '../../../mixins/routes/alerts';
+import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
+import WrapperState from '../../../mixins/routes/wrapper-state';
 
-export default schemaRoute.extend(Alerts, ScrollReset, {
+export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
+  model(params) {
+    return this.explorer.getSearchSchema(params.clusterName, params.searchSchemaName);
+  },
+
   afterModel(model, transition) {
-    this.simulateLoad();
+    this.setSidebarCluster(model.get('cluster'));
+    this.setBreadCrumbs({
+      cluster: model.get('cluster'),
+      searchSchema: model,
+      crudAction: 'edit'
+    });
+    this.setViewLabel({
+      preLabel: 'Search Schema',
+      label: model.get('name')
+    });
 
-    return this._super(model, transition);
+    this.simulateLoad();
   },
 
   setupController (controller, model) {

@@ -27,7 +27,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
-      tableCreate: true
+      crudAction: 'create table'
     });
     this.setViewLabel({
       preLabel: 'Create Table'

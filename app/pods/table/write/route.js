@@ -14,7 +14,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
       table: model,
-      tableWrite: true
+      crudAction: 'write to table'
     });
     this.setViewLabel({
       preLabel: 'Table',

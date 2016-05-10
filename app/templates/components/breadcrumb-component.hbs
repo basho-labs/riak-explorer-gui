@@ -6,52 +6,44 @@
 
     {{#if data.bucketType}}
       <li>
-        {{link-to data.bucketType.name 'bucket-type'
-        data.cluster.name
-        data.bucketType.name}}
+        {{link-to data.bucketType.name 'bucket-type' data.cluster.name data.bucketType.name}}
       </li>
 
       {{#if data.bucket}}
         <li>
-          {{link-to data.bucket.name 'bucket'
-          data.cluster.name
-          data.bucketType.name
-          data.bucket.name}}
+          {{link-to data.bucket.name 'bucket' data.cluster.name data.bucketType.name data.bucket.name}}
         </li>
       {{/if}}
 
       {{#if data.riakObject}}
-        <li>
-          {{link-to data.riakObject.name 'riak-object'
-          data.cluster.name
-          data.bucketType.name
-          data.bucket.name
-          data.riakObject.name}}
-        </li>
+        {{#if (eq data.riakObject.type 'counter')}}
+          <li>
+            {{link-to data.riakObject.name 'riak-object.counter' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
+          </li>
+        {{else if (eq data.riakObject.type 'set')}}
+          <li>
+            {{link-to data.riakObject.name 'riak-object.set' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
+          </li>
+        {{else if (eq data.riakObject.type 'map')}}
+          <li>
+            {{link-to data.riakObject.name 'riak-object.map' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
+          </li>
+        {{else}}
+          <li>
+            {{link-to data.riakObject.name 'riak-object' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
+          </li>
+        {{/if}}
       {{/if}}
     {{/if}}
 
     {{#if data.table}}
       <li>
-        {{link-to data.table.name 'table'
-        data.cluster.name
-        data.table.name}}
+        {{link-to data.table.name 'table' data.cluster.name data.table.name}}
       </li>
     {{/if}}
 
-    {{#if data.bucketTypeCreate}}
-      <li>create bucket type</li>
-    {{/if}}
-
-    {{#if data.tableWrite}}
-      <li>write</li>
-    {{/if}}
-    {{#if data.tableCreate}}
-      <li>create table</li>
-    {{/if}}
-
-    {{#if data.editView}}
-      <li>edit</li>
+    {{#if data.crudAction}}
+      <li>{{data.crudAction}}</li>
     {{/if}}
   {{/if}}
 
@@ -62,18 +54,24 @@
 
     {{#if data.node}}
       <li>
-        {{link-to data.node.name 'node'
-        data.cluster.name
-        data.node.name}}
+        {{link-to data.node.name 'node' data.cluster.name data.node.name}}
       </li>
     {{/if}}
 
     {{#if data.logFile}}
-      <li>{{data.logFile.name}}</li>
+      <li>
+        {{link-to data.logFile.name 'log-file' data.cluster.name data.node.name data.logFile.name}}
+      </li>
     {{/if}}
 
     {{#if data.configFile}}
-      <li>{{data.configFile.name}}</li>
+      <li>
+        {{link-to data.configFile.name 'config-file' data.cluster.name data.node.name data.configFile.name}}
+      </li>
+    {{/if}}
+
+    {{#if data.crudAction}}
+      <li>{{data.crudAction}}</li>
     {{/if}}
   {{/if}}
 
@@ -82,24 +80,22 @@
       <li>{{link-to 'query' 'cluster.query' data.cluster.name}}</li>
     {{/if}}
 
-    {{#if data.searchSchema}}
-      <li>{{data.searchSchema.name}}</li>
-    {{/if}}
-
     {{#if data.searchIndex}}
-      <li>{{data.searchIndex.name}}</li>
+      <li>{{link-to data.searchIndex.name 'search-index' data.cluster.name data.searchIndex.name}}</li>
     {{/if}}
 
-    {{#if data.schemaCreate}}
-      <li>create schema</li>
+    {{#if data.searchSchema}}
+      <li>{{link-to data.searchSchema.name 'search-schema' data.cluster.name data.searchSchema.name}}</li>
     {{/if}}
 
     {{#if data.table}}
       <li>
-        {{link-to data.table.name 'table'
-        data.cluster.name
-        data.table.name}}
+        {{link-to data.table.name 'table' data.cluster.name data.table.name}}
       </li>
+    {{/if}}
+
+    {{#if data.crudAction}}
+      <li>{{data.crudAction}}</li>
     {{/if}}
   {{/if}}
 </ol>
