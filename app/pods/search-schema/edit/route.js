@@ -24,23 +24,17 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.simulateLoad();
   },
 
-  setupController (controller, model) {
-    this._super(controller, model);
-    let currentContent = model.get('content');
-
-    controller.set('editableContent', currentContent);
-  },
-
   actions: {
     updateSchema: function(schema) {
-      let xmlString = this.controller.get('editableContent');
-      let xmlDoc = null;
       let clusterName = schema.get('cluster').get('name');
       let schemaName = schema.get('name');
+      let schemaContent = schema.get('content');
+
+      let xmlDoc = null;
       let self = this;
 
       try {
-        xmlDoc = Ember.$.parseXML(xmlString);
+        xmlDoc = Ember.$.parseXML(schemaContent);
       } catch (error) {
         this.render('alerts.error-invalid-xml', {
           into: 'application',
