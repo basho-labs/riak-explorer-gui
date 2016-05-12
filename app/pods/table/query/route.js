@@ -34,7 +34,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       let controller = this.controller;
       let tableName = table.get('name');
       let partitionKey = table.get('partitionKey');
-      let quantumName = table.get('quantumFieldName');
+      let quantumName = table.get('quantumColumnName');
       let sampleNames = [
         "foo",
         "bar",
@@ -86,12 +86,12 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       // Set Query Base
       example = `select * from ${tableName} where ${quantumName} > 1 and ${quantumName} < 9999`;
 
-      // Add a comparison for each partition key field that isn't the quantum field
+      // Add a comparison for each partition key column that isn't the quantum column
       partitionKey
-        .filter(function(field) { return !field.quantum; })
+        .filter(function(column) { return !column.quantum; })
         .mapBy('name')
-        .forEach(function(fieldName, index) {
-          example += ` and ${fieldName} = '${sampleNames[index]}'`;
+        .forEach(function(columnName, index) {
+          example += ` and ${columnName} = '${sampleNames[index]}'`;
         });
 
       controller.set('example', example);

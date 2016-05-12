@@ -47,6 +47,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     }
 
     if (!isValid) {
+      // TODO: Update
       this.controller.set('errors', 'Submitted Data is not valid. The textfield expects an array of arrays, each sub-array representing a row to be inserted. View the example for valid input.');
       this.scrollToTop();
     }

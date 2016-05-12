@@ -29,7 +29,7 @@
 </tr>
 
 <tr class="table-in-kv-table">
-  <td class='key'>Fields</td>
+  <td class='key'>Columns</td>
   <td class='value'>
     <table class="table">
       <thead>
@@ -41,12 +41,12 @@
       </tr>
       </thead>
       <tbody>
-      {{#each table.fields as |field|}}
+      {{#each table.columns as |column|}}
         <tr>
-          <td><code>{{field.name}}</code></td>
-          <td><code>{{field.type}}</code></td>
-          <td><code>{{field.position}}</code></td>
-          <td><code>{{field.optional}}</code></td>
+          <td><code>{{column.name}}</code></td>
+          <td><code>{{column.type}}</code></td>
+          <td><code>{{column.position}}</code></td>
+          <td><code>{{column.optional}}</code></td>
         </tr>
       {{/each}}
       </tbody>

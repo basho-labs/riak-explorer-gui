@@ -6,8 +6,8 @@
 
 <h4>Table Write Editor</h4>
 <ul>
-  <li>Each row you wish to insert should be represented as an array of field values, separated by a comma</li>
-  <li>Row field values must be in the same order as defined in the table. Refer to the table fields in the above table
+  <li>Each row you wish to insert should be represented as an array of column values, separated by a comma</li>
+  <li>Row column values must be in the same order as defined in the table. Refer to the table columns in the above table
     reference for order.
   </li>
 </ul>
@@ -17,7 +17,7 @@
   <li>Batches should not be too large. Our testing revealed 100 rows per write as a sweet spot, but you should expect
     different results depending on your hardware and schema.
   </li>
-  <li>Writes will assume that fields are in the same order as they’ve been declared in the table.</li>
+  <li>Writes will assume that columns are in the same order as they’ve been declared in the table.</li>
   <li>Timestamps should be in Unix epoch/UTC milliseconds.</li>
 </ul>
 

@@ -12,7 +12,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     return this.explorer.getCluster(params.clusterName).then(function(cluster) {
       return self.store.createRecord('table', {
         cluster: cluster,
-        fields: [
+        columns: [
           { name: '', type: 'varchar' },
           { name: '', type: 'varchar' },
           { name: '', type: 'varchar' }
@@ -113,14 +113,14 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       }
     },
 
-    addField: function(type) {
+    addColumn: function(type) {
       switch(type) {
-        case 'tableField':
-          this.currentModel.get('fields').pushObject({ name: '', type: 'varchar' });
+        case 'tableColumn':
+          this.currentModel.get('columns').pushObject({ name: '', type: 'varchar' });
           break;
-        case 'partitionKeyField':
-          let suggestedPartitionKeyField = this.currentModel.get('suggestedPartitionKey');
-          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyField, quantum: false });
+        case 'partitionKeyColumn':
+          let suggestedPartitionKeyColumn = this.currentModel.get('suggestedPartitionKey');
+          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyColumn, quantum: false });
           break;
         case 'partitionKeyQuantum':
           let suggestedPartitionKeyQuantum = this.currentModel.get('suggestedPartitionKeyQuantum');
@@ -132,12 +132,12 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       }
     },
 
-    removeField: function(group, index) {
+    removeColumn: function(group, index) {
       let table = this.currentModel;
 
       switch(group) {
-        case 'tableField':
-          table.get('fields').removeAt(index);
+        case 'tableColumn':
+          table.get('columns').removeAt(index);
           break;
         case 'partitionKey':
           table.get('partitionKey').removeAt(index);
