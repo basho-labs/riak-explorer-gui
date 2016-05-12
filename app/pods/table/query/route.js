@@ -126,7 +126,16 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
             controller.set('result', formattedStringForEditor);
           }
         }, function onFail(error) {
-          controller.set('result', `${error.status} ${error.statusText} trying to execute statement: \n\n${query}`);
+          try {
+            let serverResponse = JSON.parse(error.responseText).error
+              .replace(/\s\s+/g, ' ') // reduces multiple whitespaces into one
+              .replace(/<<"/g, '')    // removes erlang starting brackets
+              .replace(/">>/g, '');  // removes erlang ending brackets
+
+            controller.set('result', `${error.status} ${error.statusText} trying to execute query \n\nServer error: ${serverResponse}`);
+          } catch(err) {
+            controller.set('result', `${error.status} ${error.statusText} trying to execute query: \n\n${query}`);
+          }
         }
       );
 
