@@ -41,6 +41,19 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     controller.resetState();
   },
 
+  validateTableClientSide: function(tableName, tableData) {
+    let isValid = true;
+    let controller = this.controller;
+
+    // Check if table name already exists
+    if (this.currentModel.get('cluster').get('tables').filterBy('name', tableName).length) {
+      isValid = false;
+      controller.set('errors', `A table named '${tableName}' already exits on the '${this.currentModel.get('cluster').get('name')}' cluster. Please use a unique name for your table.`);
+    }
+
+    return isValid;
+  },
+
   actions: {
     willTransition: function() {
       let table = this.currentModel;
@@ -75,17 +88,29 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         data: { props: { table_def: formatted } }
       };
 
-      this.explorer.createBucketType(clusterName, data).then(
-        function onSuccess() {
-          self.transitionTo('table',clusterName, tableName).then(function() {
+      if (this.validateTableClientSide(tableName, data)) {
+        this.explorer.createBucketType(clusterName, data).then(
+          function onSuccess() {
+            self.transitionTo('table',clusterName, tableName).then(function() {
+              controller.set('showSpinner', false);
+            });
+          },
+          function onFail(error) {
+            self.scrollToTop();
             controller.set('showSpinner', false);
+
+            try {
+              controller.set('errors', JSON.parse(error.responseText).error
+                .replace(/\s\s+/g, ' ') // reduces multiple whitespaces into one
+                .replace(/<<"/g, '')    // removes erlang starting brackets
+                .replace(/">>/g, ''));  // removes erlang ending brackets
+            } catch(err) {
+              controller.set('errors', 'Sorry, something went wrong. Your table was not created');
+            }
           });
-        },
-        function onFail(error) {
-          self.scrollToTop();
-          controller.set('showSpinner', false);
-          controller.set('errors', 'Sorry, something went wrong. Your table was not created');
-        });
+      } else {
+        controller.set('showSpinner', false);
+      }
     },
 
     addField: function(type) {
