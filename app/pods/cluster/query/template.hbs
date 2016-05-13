@@ -11,8 +11,13 @@
       {{/dashboard-module.header}}
       {{#dashboard-module.body}}
         {{#if model.tables}}
-          {{table.ts-tables
-          tables=model.tables}}
+          {{#pagination-component
+          chunkSize=pageSize
+          totalSize=model.tables.length
+          sectionRequest='tablePageRequest'
+          classToApplyIfVisible='paginated-table'}}
+            {{table.ts-tables tables=currentPageTables}}
+          {{/pagination-component}}
         {{else}}
           <p>No Time Series tables have been created on this cluster</p>
         {{/if}}
@@ -31,7 +36,15 @@
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
       {{#if model.searchIndexes}}
-        {{table.search-indexes indexes=model.searchIndexes}}
+
+        {{#pagination-component
+        chunkSize=pageSize
+        totalSize=model.searchIndexes.length
+        sectionRequest='indexPageRequest'
+        classToApplyIfVisible='paginated-table'}}
+          {{table.search-indexes indexes=currentPageIndexes}}
+        {{/pagination-component}}
+
       {{else}}
         <p>No search indexes found</p>
       {{/if}}

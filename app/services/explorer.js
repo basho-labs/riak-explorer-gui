@@ -411,14 +411,18 @@ export default Ember.Service.extend({
       .then(function(PromiseArray) {
         let cluster = PromiseArray[0].value;
 
-        // Create search-schemas from index references
-        self.associateSchemasWithIndexes(cluster);
+        if (!cluster.hasBeenInitialized) {
+          // Create search-schemas from index references
+          self.associateSchemasWithIndexes(cluster);
 
-        // Check on node health of the cluster
-        self.checkNodes(cluster);
+          // Check on node health of the cluster
+          self.checkNodes(cluster);
 
-        // Continue to check on node health
-        self.pollNodes(cluster);
+          // Continue to check on node health
+          self.pollNodes(cluster);
+        }
+
+        cluster.hasBeenInitialized = true;
 
         return cluster;
       });

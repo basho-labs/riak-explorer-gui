@@ -1,0 +1,16 @@
+.paginated-table {
+  .pagination-content {
+    min-height: 310px;
+
+    table {
+      td:first-child {
+        min-width: 160px; // Set a baseline to try and add consistency
+      }
+    }
+  }
+
+  .pagination-links-container {
+    min-height: 30px;
+    padding: 0 15px;
+  }
+}

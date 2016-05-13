@@ -10,10 +10,11 @@ export default ApplicationSerializer.extend({
     payload.tables.forEach(function(table) {
       let ddl = table.props.ddl;
 
-      // Assign table fields
-      table.fields = [];
-      Object.keys(ddl.fields).forEach(function(fieldName) {
-        table.fields.push(_.extend({name: fieldName}, ddl.fields[fieldName]));
+      // Assign table columns
+      // *** Note: They are called 'fields' instead of 'columns' in the response. Docs use 'columns', so that is what we will use
+      table.columns = [];
+      Object.keys(ddl.fields).forEach(function(columnName) {
+        table.columns.push(_.extend({name: columnName}, ddl.fields[columnName]));
       });
 
       // Assign partition key

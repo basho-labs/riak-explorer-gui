@@ -90,7 +90,7 @@
   )
 )</pre>
 
-<p>The field definitions for the <code>PRIMARY KEY</code> can be specified in any order in the <code>CREATE TABLE</code> statement. For instance both are correct:</p>
+<p>The column definitions for the <code>PRIMARY KEY</code> can be specified in any order in the <code>CREATE TABLE</code> statement. For instance both are correct:</p>
 
 <p><strong>A.</strong></p>
 <pre>CREATE TABLE GeoCheckin
@@ -124,7 +124,7 @@
 
 <p>The partition key is the first element of the primary key, and is defined as a list of  column names and quantum in parentheses. The partition key must have at least one column name and a quantum.</p>
 
-<p>The quantum is used to colocate data on one of the partition key's timestamp fields:</p>
+<p>The quantum is used to colocate data on one of the partition key's timestamp columns:</p>
 
 <pre>PRIMARY KEY (
   (region, state, QUANTUM(time, 1, 's')),
@@ -136,7 +136,7 @@
 <p>The quantum function takes 3 parameters:</p>
 
 <ul>
-  <li>the name of a field in the table definition of type <code>TIMESTAMP</code></li>
+  <li>the name of a column in the table definition of type <code>TIMESTAMP</code></li>
   <li>a quantity as a positive integer, greater than zero.</li>
   <li>a unit of time:
     <ul>
@@ -172,9 +172,9 @@
 <ul>
   <li><strong>Column</strong>, column name;</li>
   <li><strong>Type</strong>, data type;</li>
-  <li><strong>Is Null</strong>, <em>true</em> if the field is optional, <em>false</em> otherwise;</li>
-  <li><strong>Primary Key</strong>, position of this field in the primary key, or blank if it does not appear in the key;</li>
-  <li><strong>Local Key</strong>, position of this field in the local key, or blank if it does not appear in the key.</li>
+  <li><strong>Is Null</strong>, <em>true</em> if the column is optional, <em>false</em> otherwise;</li>
+  <li><strong>Primary Key</strong>, position of this column in the primary key, or blank if it does not appear in the key;</li>
+  <li><strong>Local Key</strong>, position of this column in the local key, or blank if it does not appear in the key.</li>
 </ul>
 
 <h2>More information</h2>

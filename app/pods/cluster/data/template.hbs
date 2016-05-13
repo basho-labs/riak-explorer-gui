@@ -45,8 +45,13 @@
       {{/dashboard-module.header}}
       {{#dashboard-module.body}}
         {{#if model.tables}}
-          {{table.ts-tables
-            tables=model.tables}}
+          {{#pagination-component
+          chunkSize=pageSize
+          totalSize=model.tables.length
+          sectionRequest='tablePageRequest'
+          classToApplyIfVisible='paginated-table'}}
+            {{table.ts-tables tables=currentPageTables}}
+          {{/pagination-component}}
         {{else}}
           <p>No Time Series tables have been created on this cluster</p>
         {{/if}}
@@ -72,8 +77,13 @@
 
           {{#tabs.tabpanel}}
             {{#if model.activeBucketTypes}}
-              {{table.bucket-types
-                bucketTypes=model.activeBucketTypes}}
+              {{#pagination-component
+              chunkSize=pageSize
+              totalSize=model.activeBucketTypes.length
+              sectionRequest='activeBucketTypesPageRequest'
+              classToApplyIfVisible='paginated-table'}}
+                {{table.bucket-types bucketTypes=currentPageActiveBucketTypes}}
+              {{/pagination-component}}
             {{else}}
               <p>No bucket types have been activated</p>
             {{/if}}
@@ -81,8 +91,13 @@
 
           {{#tabs.tabpanel}}
             {{#if model.inactiveBucketTypes}}
-              {{table.bucket-types
-              bucketTypes=model.inactiveBucketTypes}}
+              {{#pagination-component
+              chunkSize=pageSize
+              totalSize=model.inactiveBucketTypes.length
+              sectionRequest='inactiveBucketTypesPageRequest'
+              classToApplyIfVisible='paginated-table'}}
+                {{table.bucket-types bucketTypes=currentPageInactiveBucketTypes}}
+              {{/pagination-component}}
             {{else}}
               <p>No inactive buckets</p>
             {{/if}}

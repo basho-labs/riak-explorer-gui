@@ -2,19 +2,19 @@
   <tr>
     <td class="key">Primary Key</td>
     <td class="value">
-      <code class="comma-list">[{{#each table.partitionKey as |field|}}<span class="item">{{field.name}}</span>{{/each}}]</code>
+      <code class="comma-list">[{{#each table.partitionKey as |column|}}<span class="item">{{column.name}}</span>{{/each}}]</code>
     </td>
   </tr>
   <tr>
     <td class="key">Local Key</td>
     <td class="value">
-      <code class="comma-list">[{{#each table.localKey as |field|}}<span class="item">{{field}}</span>{{/each}}]</code>
+      <code class="comma-list">[{{#each table.localKey as |column|}}<span class="item">{{column}}</span>{{/each}}]</code>
     </td>
   </tr>
   <tr>
-    <td class="key">Table Fields</td>
+    <td class="key">Table Columns</td>
     <td class="value">
-      <code class="comma-list">[{{#each table.fields as |field|}}<span class="item">{{field.name}}({{field.type}})</span>{{/each}}]</code>
+      <code class="comma-list">[{{#each table.columns as |column|}}<span class="item">{{column.name}}({{column.type}})</span>{{/each}}]</code>
     </td>
   </tr>
 </tbody>

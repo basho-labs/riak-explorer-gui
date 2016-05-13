@@ -12,7 +12,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     return this.explorer.getCluster(params.clusterName).then(function(cluster) {
       return self.store.createRecord('table', {
         cluster: cluster,
-        fields: [
+        columns: [
           { name: '', type: 'varchar' },
           { name: '', type: 'varchar' },
           { name: '', type: 'varchar' }
@@ -39,6 +39,19 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this._super(controller, model);
 
     controller.resetState();
+  },
+
+  validateTableClientSide: function(tableName, tableData) {
+    let isValid = true;
+    let controller = this.controller;
+
+    // Check if table name already exists
+    if (this.currentModel.get('cluster').get('tables').filterBy('name', tableName).length) {
+      isValid = false;
+      controller.set('errors', `A table named '${tableName}' already exits on the '${this.currentModel.get('cluster').get('name')}' cluster. Please use a unique name for your table.`);
+    }
+
+    return isValid;
   },
 
   actions: {
@@ -75,27 +88,39 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         data: { props: { table_def: formatted } }
       };
 
-      this.explorer.createBucketType(clusterName, data).then(
-        function onSuccess() {
-          self.transitionTo('table',clusterName, tableName).then(function() {
+      if (this.validateTableClientSide(tableName, data)) {
+        this.explorer.createBucketType(clusterName, data).then(
+          function onSuccess() {
+            self.transitionTo('table',clusterName, tableName).then(function() {
+              controller.set('showSpinner', false);
+            });
+          },
+          function onFail(error) {
+            self.scrollToTop();
             controller.set('showSpinner', false);
+
+            try {
+              controller.set('errors', JSON.parse(error.responseText).error
+                .replace(/\s\s+/g, ' ') // reduces multiple whitespaces into one
+                .replace(/<<"/g, '')    // removes erlang starting brackets
+                .replace(/">>/g, ''));  // removes erlang ending brackets
+            } catch(err) {
+              controller.set('errors', 'Sorry, something went wrong. Your table was not created');
+            }
           });
-        },
-        function onFail(error) {
-          self.scrollToTop();
-          controller.set('showSpinner', false);
-          controller.set('errors', 'Sorry, something went wrong. Your table was not created');
-        });
+      } else {
+        controller.set('showSpinner', false);
+      }
     },
 
-    addField: function(type) {
+    addColumn: function(type) {
       switch(type) {
-        case 'tableField':
-          this.currentModel.get('fields').pushObject({ name: '', type: 'varchar' });
+        case 'tableColumn':
+          this.currentModel.get('columns').pushObject({ name: '', type: 'varchar' });
           break;
-        case 'partitionKeyField':
-          let suggestedPartitionKeyField = this.currentModel.get('suggestedPartitionKey');
-          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyField, quantum: false });
+        case 'partitionKeyColumn':
+          let suggestedPartitionKeyColumn = this.currentModel.get('suggestedPartitionKey');
+          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyColumn, quantum: false });
           break;
         case 'partitionKeyQuantum':
           let suggestedPartitionKeyQuantum = this.currentModel.get('suggestedPartitionKeyQuantum');
@@ -107,12 +132,12 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       }
     },
 
-    removeField: function(group, index) {
+    removeColumn: function(group, index) {
       let table = this.currentModel;
 
       switch(group) {
-        case 'tableField':
-          table.get('fields').removeAt(index);
+        case 'tableColumn':
+          table.get('columns').removeAt(index);
           break;
         case 'partitionKey':
           table.get('partitionKey').removeAt(index);
