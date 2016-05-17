@@ -12,6 +12,15 @@ export default Ember.Mixin.create({
   isListLoaded: DS.attr('boolean', {defaultValue: false}),
 
   /**
+   * Has the cached list been requested to be created on the server?
+   *
+   * @property isListLoaded
+   * @type Boolean
+   * @default false
+   */
+  hasListBeenRequested: DS.attr('boolean', {defaultValue: false}),
+
+  /**
    * Status message to display to the user. Relevant for long-running
    * server operations such as loading large lists or refreshing cached lists.
    * Sample messages:

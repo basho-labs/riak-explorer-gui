@@ -18,5 +18,23 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       preLabel: 'Table',
       label: model.get('name')
     });
+  },
+
+  fetchTableRows: function(table) {
+    let self = this;
+
+    return this.explorer.getTableRows(table).then(
+      function onSuccess(rows) {
+
+        return rows;
+      },
+      function onFail(errorObj) {
+        
+      }
+    );
+  },
+
+  createRowsCacheList: function() {
+
   }
 });

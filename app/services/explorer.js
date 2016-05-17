@@ -1041,9 +1041,59 @@ export default Ember.Service.extend({
    * @return {DS.Model} Table
    */
   getTable(clusterName, tableName) {
-    return this.getCluster(clusterName).then(function(cluster) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
       return cluster.get('tables').findBy('name', tableName);
+    }).then(function(table) {
+      return Ember.RSVP.allSettled([
+        table,
+        self.getTableRows(table),
+        self.getTableRowsList(table)
+      ]);
+    }).then(function(PromiseArray) {
+      let table = PromiseArray[0].value;
+
+      return table;
     });
+  },
+
+  getTableRows(table) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+
+    return this.store.query('row', { clusterName: clusterName, tableName: tableName})
+      .then(function(rows) {
+        table.set('rows', rows);
+
+        return table.get('rows');
+      });
+  },
+
+  getTableRowsList(table) {
+    let self = this;
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+
+    return this.store.queryRecord('row-list', { clusterName: clusterName, tableName: tableName})
+      .then(
+        function onSuccess(list) {
+          table.set('isListLoaded', true);
+          table.set('rowsList', list);
+
+          return table.get('rowsList');
+        },
+        function onFail(data) {
+          // If error code 404 is present in the error object, attempt to create a cache list
+          if (data.errors && data.errors.filter(function(error) { return error.status === '404'; }).length) {
+            self.refreshTableRows(table).then(function() {
+              table.set('hasListBeenRequested', true);
+              // TODO: What to do here? Poll or educate user;
+            });
+          }
+        }
+      );
   },
 
   /**
@@ -1170,6 +1220,31 @@ export default Ember.Service.extend({
     });
   },
 
+  refreshTableRows(table) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+    let url = `explore/clusters/${clusterName}/tables/${tableName}/refresh_keys/source/riak_kv`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'POST'
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 202) {
+          resolve(jqXHR.status);
+        } else {
+          reject(jqXHR);
+        }
+      });
+    });
+  },
+
   updateBucketType(bucketType, props) {
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
@@ -1250,5 +1325,3 @@ export default Ember.Service.extend({
     });
   }
 });
-
-

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import BucketProps from '../../mixins/models/bucket-props';
+import CachedListWatcher from '../../mixins/models/cached-list-watcher';
 import _ from 'lodash/lodash';
 
 /**
@@ -9,9 +10,9 @@ import _ from 'lodash/lodash';
  * @class Table
  * @extends DS.Model
  * @uses BucketProps
+ * @uses CachedListWatcher
  */
-
-var Table = DS.Model.extend(BucketProps, {
+var Table = DS.Model.extend(BucketProps, CachedListWatcher, {
   /**
    * Riak cluster in which this Table lives.
    * @property cluster
@@ -19,6 +20,10 @@ var Table = DS.Model.extend(BucketProps, {
    * @writeOnce
    */
   cluster: DS.belongsTo('cluster'),
+
+  rows: DS.hasMany('row'),
+
+  rowsList: DS.belongsTo('row-list'),
 
   columns: DS.attr(),
 
