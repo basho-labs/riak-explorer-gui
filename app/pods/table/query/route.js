@@ -12,7 +12,8 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
-      table: model
+      table: model,
+      crudAction: 'query table'
     });
     this.setViewLabel({
       preLabel: 'Table',
