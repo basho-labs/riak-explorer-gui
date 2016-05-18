@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-  errors: '',
+  errors: [],
 
   example: `["foo", "bar", 10], ["foo", "bar", 11], ["foo", "bar", 12]`,
 
@@ -18,7 +18,7 @@ export default Ember.Controller.extend({
   }.observes('writeData'),
 
   clearErrors: function() {
-    this.set('errors', '');
+    this.set('errors', []);
   },
 
   clearSuccessMessage: function() {
