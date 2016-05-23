@@ -14,7 +14,9 @@
   <tr>
     <td class="key">Table Columns</td>
     <td class="value">
-      <code class="comma-list">[{{#each table.columns as |column|}}<span class="item">{{column.name}}({{column.type}})</span>{{/each}}]</code>
+      <code class="comma-list">
+        [{{#each table.columns as |column|}}<span class="item">{{column.name}}(<em>{{column.type}}{{#if column.optional}}, optional{{/if}}</em>)</span>{{/each}}]
+      </code>
     </td>
   </tr>
 </tbody>

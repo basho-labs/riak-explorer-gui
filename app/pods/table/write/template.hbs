@@ -4,7 +4,7 @@
       <h4><span class="label label-danger">Errors</span></h4>
       <ul>
         {{#each errors as |error|}}
-          <li>{{error}}</li>
+          <li>{{{error}}}</li>
         {{/each}}
       </ul>
     {{else}}
@@ -40,7 +40,7 @@
       <section class="table-editor">
         <label>
           Use the editor below to write rows to your table
-          <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example</span>
+          <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example Write</span>
           {{#if helpVisibile}}
             <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Write Guidelines</span>
           {{else}}

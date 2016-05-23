@@ -12,7 +12,8 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
-      table: model
+      table: model,
+      crudAction: 'query table'
     });
     this.setViewLabel({
       preLabel: 'Table',
@@ -23,11 +24,11 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    this.setExampleMessageIfPossible();
+    this.setExample();
     controller.resetState();
   },
 
-  setExampleMessageIfPossible: function() {
+  setExample: function() {
     let table = this.currentModel;
 
     if (table.get('hasQuantum')) {
