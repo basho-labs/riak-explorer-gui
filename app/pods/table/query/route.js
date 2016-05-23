@@ -24,11 +24,11 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    this.setExampleMessageIfPossible();
+    this.setExample();
     controller.resetState();
   },
 
-  setExampleMessageIfPossible: function() {
+  setExample: function() {
     let table = this.currentModel;
 
     if (table.get('hasQuantum')) {

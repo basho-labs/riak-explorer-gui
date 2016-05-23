@@ -27,6 +27,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   setupController: function(controller, model) {
     this._super(controller, model);
 
+    this.setExample();
     controller.resetState();
   },
 
@@ -58,6 +59,71 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     }
 
     return data;
+  },
+
+  runValidations: function(data) {
+    return this.validateWriteCoversAllColumns(data) &&
+      this.validateWriteUsesCorrectDataTypes(data);
+  },
+
+  setExample: function() {
+    // HERE BE DRAGONS: I apologize for the extremely complicated code, the point of this function is to dynamically
+    //  generate 3 sample writes for the user. We have to create a giant string that looks a group of arrays, and type
+    //  conversion in js in not ideal. All complicated parts are commented to help clarify
+
+    // Eventual string that will be inserted into the code editor
+    let exampleWrite = '';
+
+    // Each column type with ten possibilies, 3 times. This ensures no matter what how many columns, we can use modulo 10
+    // and generate a relatively unique array input for the given example
+    let exampleTypeMatrix = {
+      boolean: [
+        [true, false, true, false, true, false, true, false, true, false],
+        [true, false, true, false, true, false, true, false, true, false],
+        [true, false, true, false, true, false, true, false, true, false]
+      ],
+      double: [
+        [10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 10.0],
+        [20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 20.0],
+        [30.1, 30.2, 30.3, 30.4, 30.5, 30.6, 30.7, 30.8, 30.9, 30.0]
+      ],
+      sint64: [
+        [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+      ],
+      timestamp: [
+        [1464024810, 1464024811, 1464024812, 1464024813, 1464024814, 1464024815, 1464024816, 1464024817, 1464024818, 1464024819],
+        [1464024820, 1464024821, 1464024822, 1464024823, 1464024824, 1464024825, 1464024826, 1464024827, 1464024828, 1464024829],
+        [1464024830, 1464024831, 1464024832, 1464024833, 1464024834, 1464024835, 1464024836, 1464024837, 1464024838, 1464024839]
+      ],
+      varchar: [
+        [`'foo'`, `'bar'`, `'Lorem'`, `'ipsum'`, `'dolor'`, `'sit'`, `'amet'`, `'consectetur'`, `'adipiscing'`, `'elit'`],
+        [`'Aliquam'`, `'sit'`, `'amet'`, `'tincidunt'`, `'felis'`, `'Curabitur'`, `'at;`, `'gravida'`, `'est'`, `'Quisque'`],
+        [`'vehicula'`, `'mi'`, `'sed'`, `'libero'`, `'hendrerit'`, `'vel'`, `'mollis'`, `'lorem'`, `'euismod'`, `'Donec'`]
+      ]
+    };
+    let columns = this.currentModel.get('columns');
+
+    // Creates three sample writes by going through each column and using a sample of that columns type
+    _.times(3, function(timesIndex) {
+      let example = [];
+
+      columns.forEach(function(column, columnIndex) {
+        example.push(exampleTypeMatrix[column.type][timesIndex][columnIndex % 10]);
+      });
+
+      // convert example array to string, gives us the desired formatting and spacing
+      example = example.join(', ');
+
+      if (timesIndex === 0) {
+        exampleWrite = `[${example}]`;
+      } else {
+        exampleWrite += `, [${example}]`;
+      }
+    });
+
+    this.controller.set('example', exampleWrite);
   },
 
   validateWriteCoversAllColumns: function(data) {
@@ -130,11 +196,6 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     }).length);
 
     return isValid;
-  },
-
-  runValidations: function(data) {
-    return this.validateWriteCoversAllColumns(data) &&
-           this.validateWriteUsesCorrectDataTypes(data);
   },
 
   actions: {
