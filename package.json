@@ -48,7 +48,7 @@
     "ember-content-editable": "0.7.0",
     "ember-lodash": "0.0.6",
     "ember-power-select": "0.7.2",
-    "ember-tooltips": "0.5.8",
+    "ember-tooltips": "0.7.0",
     "ember-truth-helpers": "1.2.0",
     "ember-validations": "0.0.0",
     "ember-wormhole": "^0.3.5",
