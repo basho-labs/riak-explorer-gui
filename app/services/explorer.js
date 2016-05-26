@@ -1063,7 +1063,6 @@ export default Ember.Service.extend({
 
     return this.store.query('row', { clusterName: clusterName, tableName: tableName})
       .then(function(rows) {
-        debugger;
         table.set('rows', rows);
 
         return table.get('rows');

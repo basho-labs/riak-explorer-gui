@@ -35,7 +35,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
 
     this.explorer.getTableRowsList(table)
       .then(function() {
-        return self.explorer.getTableRows(table)
+        return self.explorer.getTableRows(table);
       })
       .then(function() {
         return Ember.run.cancel(self.get('timer'));
