@@ -46,58 +46,51 @@
 
 {{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Table Rows'}}
-    {{#if model.rowsList}}
-      <div class="module-actions">
-        {{#if model.cluster.developmentMode}}
-          <button type="button" class="action-button refresh" {{action 'refreshRows' model}}>
-            <span class="ion-refresh" aria-hidden="true"></span>
-            Refresh Rows List Cache
-          </button>
-        {{/if}}
-      </div>
-    {{/if}}
+    <div class="module-actions">
+      <button type="button" class="action-button refresh" {{action 'refreshRowsList' model}}>
+        <span class="ion-refresh" aria-hidden="true"></span>
+        Refresh Rows List Cache
+      </button>
+    </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    {{#if model.isListLoaded}}
-      {{#if model.rowsList}}
-        <table class="key-value-table">
-          <tbody>
-          <tr>
-            <td class="key">Rows List Cache Created:</td>
-            <td class="value">{{model.rowsList.created}}</td>
-          </tr>
-
-          <tr>
-            <td class="key">Rows List Cache</td>
-            <td class="value">
-              {{#if model.rowsList.count}}
-                {{#if model.rowsList.multipleListItems}}
-                  <p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out
-                    of {{model.rowsList.total}}</p>
-                {{else}}
-                  <p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>
-                {{/if}}
-
-                <ul class='button-list'>
-                  {{#each model.rows as |row|}}
-                    <li>
-                      <code>{{row.value}}</code>
-                    </li>
-                  {{/each}}
-                </ul>
-              {{else}}
-                No rows found
-              {{/if}}
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      {{else}}
-        <p>Cached rows list not available.</p>
-        <p>This cluster is in Production mode, and so no cache refresh is possible.</p>
-      {{/if}}
-    {{else}}
+    {{#if (and (not model.hasListBeenRequested) (not model.isListLoaded))}}
+      No cache list exists
+    {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
       {{loading-spinner statusMessage=model.statusMessage}}
+    {{else}}
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Rows List Cache Created:</td>
+          <td class="value">{{model.rowsList.created}}</td>
+        </tr>
+
+        <tr>
+          <td class="key">Rows List Cache</td>
+          <td class="value">
+            {{#if model.rowsList.count}}
+              {{#if model.rowsList.multipleListItems}}
+                <p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out
+                  of {{model.rowsList.total}}</p>
+              {{else}}
+                <p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>
+              {{/if}}
+
+              <ul class="code-list">
+                {{#each model.rows as |row|}}
+                  <li>
+                    <code>{{row.value}}</code>
+                  </li>
+                {{/each}}
+              </ul>
+            {{else}}
+              No rows found in table
+            {{/if}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

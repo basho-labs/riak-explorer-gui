@@ -648,13 +648,11 @@ export default Ember.Service.extend({
 
       request.done(function(data) {
         if (data.config.advanced_config) {
-          let alphaSortedAdvancedConfig = {};
-
-          Object.keys(data.config.advanced_config).sort().forEach(function(key) {
-            alphaSortedAdvancedConfig[key] = data.config.advanced_config[key];
+          let advancedConfig = data.config.advanced_config.map(function(configString) {
+              return configString.split(',').join(', ');
           });
 
-          node.set('advancedConfig', alphaSortedAdvancedConfig);
+          node.set('advancedConfig', advancedConfig);
         }
 
         if (data.config.config) {
@@ -1065,6 +1063,7 @@ export default Ember.Service.extend({
 
     return this.store.query('row', { clusterName: clusterName, tableName: tableName})
       .then(function(rows) {
+        debugger;
         table.set('rows', rows);
 
         return table.get('rows');
@@ -1073,6 +1072,7 @@ export default Ember.Service.extend({
 
   getTableRowsList(table) {
     let self = this;
+    let cluster = table.get('cluster');
     let clusterName = table.get('cluster').get('name');
     let tableName = table.get('name');
 
@@ -1085,12 +1085,11 @@ export default Ember.Service.extend({
           return table.get('rowsList');
         },
         function onFail(data) {
-          // If error code 404 is present in the error object, attempt to create a cache list
-          if (data.errors && data.errors.filter(function(error) { return error.status === '404'; }).length) {
-            self.refreshTableRows(table).then(function() {
-              table.set('hasListBeenRequested', true);
-              // TODO: What to do here? Poll or educate user;
-            });
+          // If dev mode cluster and error code 404 is present in the error object, kick off request for cache list
+          if (cluster.get('developmentMode') &&
+              data.errors &&
+              data.errors.filter(function(error) { return error.status === '404'; }).length) {
+            self.refreshTableRows(table);
           }
         }
       );
@@ -1220,10 +1219,13 @@ export default Ember.Service.extend({
     });
   },
 
-  refreshTableRows(table) {
+  refreshTableRowsList(table) {
     let clusterName = table.get('cluster').get('name');
     let tableName = table.get('name');
     let url = `explore/clusters/${clusterName}/tables/${tableName}/refresh_keys/source/riak_kv`;
+
+    // TODO: Should the list be destroyed instead??? deleteRecord...
+    table.set('isListLoaded', false);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1232,11 +1234,13 @@ export default Ember.Service.extend({
       });
 
       request.done(function(data) {
+        table.set('hasListBeenRequested', true);
         resolve(data);
       });
 
       request.fail(function(jqXHR) {
         if (jqXHR.status === 202) {
+          table.set('hasListBeenRequested', true);
           resolve(jqXHR.status);
         } else {
           reject(jqXHR);

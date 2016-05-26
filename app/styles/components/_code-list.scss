@@ -2,6 +2,14 @@
   margin-bottom: 20px;
 
   li {
-    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid $grayscale-color-x-light;
+    margin-bottom: 3px;
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+      margin-bottom: 0;
+    }
   }
 }
