@@ -59,23 +59,36 @@
     {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
       {{loading-spinner statusMessage=model.statusMessage}}
     {{else}}
+
+      {{#alert-component dismissible=false}}
+        Table rows are read from a cached list and may not represent the current state of the table.
+        <br/>
+        {{#if helpVisibile}}
+          <span class="more-info" {{action 'removeHelp'}}>Hide info on explorer cached lists</span>
+        {{else}}
+          <span class="more-info" {{action 'showHelp'}}>More info on explorer cached lists</span>
+        {{/if}}
+      {{/alert-component}}
+
       <table class="key-value-table">
         <tbody>
         <tr>
-          <td class="key">Rows List Cache Created:</td>
-          <td class="value">{{model.rowsList.created}}</td>
+          <td class="key">Cached List Created:</td>
+          <td class="value">
+            {{model.rowsList.created}}
+          </td>
         </tr>
 
         <tr>
-          <td class="key">Rows List Cache</td>
+          <td class="key">Table Rows</td>
           <td class="value">
             {{#if model.rowsList.count}}
-              {{#if model.rowsList.multipleListItems}}
-                <p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out
-                  of {{model.rowsList.total}}</p>
-              {{else}}
-                <p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>
-              {{/if}}
+              {{!--{{#if model.rowsList.multipleListItems}}--}}
+                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out--}}
+                  {{!--of {{model.rowsList.total}}</p>--}}
+              {{!--{{else}}--}}
+                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>--}}
+              {{!--{{/if}}--}}
 
               <ul class="code-list">
                 {{#each model.rows as |row|}}
@@ -94,3 +107,11 @@
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
+
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+  label='Explorer Cached Lists'
+  visible=helpVisibile}}
+    {{render 'partials.cached-lists'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}

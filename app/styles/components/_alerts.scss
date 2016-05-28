@@ -19,6 +19,17 @@
       padding: 15px;
     }
   }
+
+  .close {
+    padding-left: 10px;
+  }
+
+  .more-info {
+    color: #474747; // TODO: Make one for each type of alert, right now styled for .info-alert
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+  }
 }
 
 .alert {

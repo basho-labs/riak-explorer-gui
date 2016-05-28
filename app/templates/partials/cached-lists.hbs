@@ -1,0 +1,29 @@
+<h3>What are these?</h3>
+
+<div class="alert alert-info">
+  <ul>
+    <li>
+      Cached lists are files saved to disk that represent all items at the time that list was created.
+    </li>
+    <li>
+      Creating these lists are extremely expensive operations, and are only allowed in development mode.
+    </li>
+    <li>
+      Because these lists are cached, they may not reflect the current state of the cluster.
+    </li>
+  </ul>
+</div>
+
+<p>
+  Listing all instances of a resource (i.e all buckets, keys, table rows, etc.) in Riak requires making a streaming
+  call, with multiple response messages sent for each request. Anytime a streaming call is made in Explorer, that
+  response is saved to disk and time-stamped. Explorer then reads from the most current copy to
+  populate these collections.
+</p>
+
+<p>
+  Streaming calls are expensive operations, and in some cases have the ability to bring a node(s) down. Due to this,
+  cached
+  lists can only be created when a cluster is in develoment mode. Even in development mode, proceed with caution when
+  requesting a new list.
+</p>
