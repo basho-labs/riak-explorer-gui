@@ -47,6 +47,7 @@
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
     "ember-lodash": "0.0.6",
+    "ember-modal-dialog": "0.8.4",
     "ember-power-select": "0.7.2",
     "ember-tooltips": "0.7.0",
     "ember-truth-helpers": "1.2.0",

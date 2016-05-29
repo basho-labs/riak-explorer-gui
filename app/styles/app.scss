@@ -1,6 +1,8 @@
 // Vendor
 @import "../../vendor/bootstrap-sass/stylesheets/bootstrap";
 @import "ember-power-select";
+@import "ember-modal-dialog/ember-modal-structure";
+@import "ember-modal-dialog/ember-modal-appearance";
 // Utils (order matters on how these are declared)
 @import "utils/variables";
 @import "utils/mixins";
