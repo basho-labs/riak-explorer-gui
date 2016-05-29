@@ -1223,8 +1223,9 @@ export default Ember.Service.extend({
     let tableName = table.get('name');
     let url = `explore/clusters/${clusterName}/tables/${tableName}/refresh_keys/source/riak_kv`;
 
-    // TODO: Should the list be destroyed instead??? deleteRecord...
+    // Setup state from request
     table.set('isListLoaded', false);
+    table.set('hasListBeenRequested', true);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1233,15 +1234,14 @@ export default Ember.Service.extend({
       });
 
       request.done(function(data) {
-        table.set('hasListBeenRequested', true);
         resolve(data);
       });
 
       request.fail(function(jqXHR) {
         if (jqXHR.status === 202) {
-          table.set('hasListBeenRequested', true);
           resolve(jqXHR.status);
         } else {
+          table.set('hasListBeenRequested', false); // Since the request failed, set value to false
           reject(jqXHR);
         }
       });
