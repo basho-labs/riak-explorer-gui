@@ -46,6 +46,8 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     refreshRowsList: function(table) {
       let self = this;
 
+      this.controller.set('modalVisible', false);
+
       return this.explorer.refreshTableRowsList(table).then(function() {
         self.startPollingForNewRowsList();
       });

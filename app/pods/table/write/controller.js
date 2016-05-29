@@ -36,7 +36,7 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    removeHelp: function() {
+    hideHelp: function() {
       this.set('helpVisibile', false);
     },
 

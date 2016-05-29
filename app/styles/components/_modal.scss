@@ -1,0 +1,25 @@
+.ember-modal-overlay.translucent {
+  background-color: rgba(#000, .65);
+}
+
+.ember-modal-dialog {
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 15px #222;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-content-container {
+  padding: 10px;
+  margin: 10px;
+  max-width: 400px;
+
+  .modal-header {
+    margin-bottom: 20px;
+  }
+
+  .modal-footer {
+    margin-top: 20px;
+  }
+}
