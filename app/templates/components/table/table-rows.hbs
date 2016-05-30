@@ -1,0 +1,43 @@
+<tbody>
+<tr>
+    <td class="key">Cached List Created:</td>
+    <td class="value">
+      {{table.rowsList.created}}
+    </td>
+</tr>
+<tr>
+    <td class="key">Table Rows</td>
+    <td class="value">
+        <!--TODO: Reimplement this if needed-->
+      {{#if table.rowsList.count}}
+      {{!--{{#if model.rowsList.multipleListItems}}--}}
+      {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out--}}
+      {{!--of {{model.rowsList.total}}</p>--}}
+      {{!--{{else}}--}}
+      {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>--}}
+      {{!--{{/if}}--}}
+      {{else}}
+          <!--No rows found in table-->
+      {{/if}}
+
+        <table class="table-in-kv-table table">
+            <thead>
+            <tr>
+              {{#each table.columns as |column|}}
+                  <th>{{column.name}}</th>
+              {{/each}}
+            </tr>
+            </thead>
+            <tbody>
+            {{#each table.rows as |row|}}
+                <tr>
+                  {{#each row.parsedValue as |value|}}
+                      <td><code>{{value}}</code></td>
+                  {{/each}}
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </td>
+</tr>
+</tbody>
