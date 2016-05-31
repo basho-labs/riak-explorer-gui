@@ -1,10 +1,15 @@
 import Ember from 'ember';
 import LoadingSlider from '../../mixins/routes/loading-slider';
+import Polling from '../../mixins/routes/polling';
 import ScrollReset from '../../mixins/routes/scroll-reset';
 import WrapperState from '../../mixins/routes/wrapper-state';
 
-export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
-  pageSize: 10,
+export default Ember.Route.extend(LoadingSlider, Polling, ScrollReset, WrapperState, {
+  rowsPaging: {
+    size: 10,
+    initialLow: 0,
+    initialHigh: 9
+  },
 
   model: function(params) {
     return this.explorer.getTable(params.clusterName, params.tableName);
@@ -23,12 +28,11 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   },
 
   setupController: function(controller, model) {
-    let lowIndex = 0;
-    let highIndex = this.get('pageSize') - 1;
+    let page = this.get('rowsPaging');
 
     this._super(controller, model);
-    this.controller.set('pageSize', this.get('pageSize'));
-    this.controller.set('currentTableRows', this.rowsFromRange(lowIndex, highIndex));
+    this.controller.set('pageSize', page.size);
+    this.controller.set('currentTableRows', this.rowsFromRange(page.initialLow, page.initialHigh));
   },
 
   rowsFromRange: function(startIndex, endIndex) {
@@ -37,28 +41,18 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     });
   },
 
-  startPollingForNewRowsList: function() {
-    let self = this;
-
-    this.set('timer', Ember.run.later(this, function() {
-      self.lookForNewRowsList();
-    }, 1000));
-  },
-
   lookForNewRowsList: function() {
     let self = this;
     let table = this.currentModel;
+    let page = this.get('rowsPaging');
 
     this.explorer.getTableRowsList(table)
       .then(function() {
         return self.explorer.getTableRows(table);
       })
       .then(function() {
-        let lowIndex = 0;
-        let highIndex = self.get('pageSize') - 1;
-
-        self.controller.set('currentTableRows', this.rowsFromRange(lowIndex, highIndex));
-        return Ember.run.cancel(self.get('timer'));
+        self.controller.set('currentTableRows', self.rowsFromRange(page.initialLow, page.initialHigh));
+        self.stopPolling();
     });
   },
 
@@ -69,7 +63,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       this.controller.set('modalVisible', false);
 
       return this.explorer.refreshTableRowsList(table).then(function() {
-        self.startPollingForNewRowsList();
+        self.startPolling(self.lookForNewRowsList.bind(self));
       });
     },
 
