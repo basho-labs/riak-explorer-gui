@@ -1,20 +1,9 @@
 import Ember from 'ember';
 import SideDrawer from '../../mixins/controller/side-drawer';
+import Modal from '../../mixins/controller/modal';
 
-export default Ember.Controller.extend(SideDrawer, {
+export default Ember.Controller.extend(SideDrawer, Modal, {
   pageSize: null,
 
-  currentTableRows: null,
-
-  modalVisible: false,
-
-  actions: {
-    hideModal: function() {
-      this.set('modalVisible', false);
-    },
-
-    showModal: function() {
-      this.set('modalVisible', true);
-    }
-  }
+  currentTableRows: null
 });
