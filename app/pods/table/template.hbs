@@ -68,34 +68,89 @@
               <span class="more-info" {{action 'showHelp'}}>More info on explorer cached lists</span>
           {{/if}}
       {{/alert-component}}
-      {{table.table-rows table=model}}
+
+      <table class="key-value-table">
+          <tbody>
+          <tr>
+              <td class="key">Cached List Created:</td>
+              <td class="value">
+                {{model.rowsList.created}}
+              </td>
+          </tr>
+          <tr>
+              <td class="key">Table Rows</td>
+              <td class="value">
+                  <!--TODO: Reimplement this if needed-->
+                {{!--{{#if model.rowsList.multipleListItems}}--}}
+                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out--}}
+                {{!--of {{model.rowsList.total}}</p>--}}
+                {{!--{{else}}--}}
+                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>--}}
+                {{!--{{/if}}--}}
+
+                {{#if model.rows.length}}
+                  {{#pagination-component
+                  chunkSize=pageSize
+                  totalSize=model.rows.length
+                  sectionRequest='rowsPageRequest'}}
+                      <table class="table-in-kv-table table">
+                          <thead>
+                          <tr>
+                            {{#each model.columns as |column|}}
+                                <th>{{column.name}}</th>
+                            {{/each}}
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {{#each currentTableRows as |row|}}
+                              <tr>
+                                {{#each row.parsedValue as |value|}}
+                                    <td><code>{{value}}</code></td>
+                                {{/each}}
+                              </tr>
+                          {{/each}}
+                          </tbody>
+                      </table>
+                  {{/pagination-component}}
+                {{else}}
+                    No rows found in table
+                {{/if}}
+              </td>
+          </tr>
+          </tbody>
+      </table>
+
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
 
+{{!-- Modal Template --}}
 {{#if modalVisible}}
   {{#modal-dialog
   close='hideModal'
   translucentOverlay=true}}
-    <div class="modal-content-container">
-        <header class="modal-header">
-            <h3><span class="label label-danger"><i class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
-            </h3>
-        </header>
+      <div class="modal-content-container">
+          <header class="modal-header">
+              <h3><span class="label label-danger"><i
+                      class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
+              </h3>
+          </header>
 
-        <section class="modal-body">
-            Creating a new cache list requires making a streaming call, with multiple response messages sent for each
-            request. This can be an expensive operation, and is not recommended if the node is in active use. To continue please click the confirm button.
-        </section>
+          <section class="modal-body">
+              Creating a new cache list requires making a streaming call, with multiple response messages sent for each
+              request. This can be an expensive operation, and is not recommended if the node is in active use. To
+              continue please click the confirm button.
+          </section>
 
-        <footer class="modal-footer">
-            <button class="btn btn-default" {{action 'hideModal'}}>Cancel</button>
-            <button class="btn btn-primary" {{action 'refreshRowsList' model}}>Confirm</button>
-        </footer>
-    </div>
+          <footer class="modal-footer">
+              <button class="btn btn-default" {{action 'hideModal'}}>Cancel</button>
+              <button class="btn btn-primary" {{action 'refreshRowsList' model}}>Confirm</button>
+          </footer>
+      </div>
   {{/modal-dialog}}
 {{/if}}
 
+{{!-- Side Drawer Template --}}
 {{#ember-wormhole to="side-drawer-container"}}
   {{#side-drawer
   label='Explorer Cached Lists'

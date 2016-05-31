@@ -1,6 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  pageSize: null,
+
+  currentTableRows: null,
+
   helpVisibile: false,
 
   modalVisible: false,

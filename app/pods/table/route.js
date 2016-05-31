@@ -4,6 +4,7 @@ import ScrollReset from '../../mixins/routes/scroll-reset';
 import WrapperState from '../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
+  pageSize: 10,
 
   model: function(params) {
     return this.explorer.getTable(params.clusterName, params.tableName);
@@ -18,6 +19,21 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     this.setViewLabel({
       preLabel: 'Table',
       label: model.get('name')
+    });
+  },
+
+  setupController: function(controller, model) {
+    let lowIndex = 0;
+    let highIndex = this.get('pageSize') - 1;
+
+    this._super(controller, model);
+    this.controller.set('pageSize', this.get('pageSize'));
+    this.controller.set('currentTableRows', this.rowsFromRange(lowIndex, highIndex));
+  },
+
+  rowsFromRange: function(startIndex, endIndex) {
+    return this.currentModel.get('rowsSortedByQuantumValues').filter(function(row, index) {
+      return index >= startIndex && index <= endIndex;
     });
   },
 
@@ -38,6 +54,10 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
         return self.explorer.getTableRows(table);
       })
       .then(function() {
+        let lowIndex = 0;
+        let highIndex = self.get('pageSize') - 1;
+
+        self.controller.set('currentTableRows', this.rowsFromRange(lowIndex, highIndex));
         return Ember.run.cancel(self.get('timer'));
     });
   },
@@ -51,6 +71,10 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       return this.explorer.refreshTableRowsList(table).then(function() {
         self.startPollingForNewRowsList();
       });
+    },
+
+    rowsPageRequest: function(lowIndex, highIndex) {
+      this.controller.set('currentTableRows', this.rowsFromRange(lowIndex, highIndex));
     }
   }
 });
