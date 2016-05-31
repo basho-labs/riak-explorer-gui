@@ -648,13 +648,11 @@ export default Ember.Service.extend({
 
       request.done(function(data) {
         if (data.config.advanced_config) {
-          let alphaSortedAdvancedConfig = {};
-
-          Object.keys(data.config.advanced_config).sort().forEach(function(key) {
-            alphaSortedAdvancedConfig[key] = data.config.advanced_config[key];
+          let advancedConfig = data.config.advanced_config.map(function(configString) {
+              return configString.split(',').join(', ');
           });
 
-          node.set('advancedConfig', alphaSortedAdvancedConfig);
+          node.set('advancedConfig', advancedConfig);
         }
 
         if (data.config.config) {
@@ -1041,9 +1039,59 @@ export default Ember.Service.extend({
    * @return {DS.Model} Table
    */
   getTable(clusterName, tableName) {
-    return this.getCluster(clusterName).then(function(cluster) {
+    let self = this;
+
+    return this.getCluster(clusterName)
+      .then(function(cluster) {
       return cluster.get('tables').findBy('name', tableName);
+    }).then(function(table) {
+      return Ember.RSVP.allSettled([
+        table,
+        self.getTableRows(table),
+        self.getTableRowsList(table)
+      ]);
+    }).then(function(PromiseArray) {
+      let table = PromiseArray[0].value;
+
+      return table;
     });
+  },
+
+  getTableRows(table) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+
+    return this.store.query('row', { clusterName: clusterName, tableName: tableName})
+      .then(function(rows) {
+        table.set('rows', rows);
+
+        return table.get('rows');
+      });
+  },
+
+  getTableRowsList(table) {
+    let self = this;
+    let cluster = table.get('cluster');
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+
+    return this.store.queryRecord('row-list', { clusterName: clusterName, tableName: tableName})
+      .then(
+        function onSuccess(list) {
+          table.set('isListLoaded', true);
+          table.set('rowsList', list);
+
+          return table.get('rowsList');
+        },
+        function onFail(data) {
+          // If dev mode cluster and error code 404 is present in the error object, kick off request for cache list
+          if (cluster.get('developmentMode') &&
+              data.errors &&
+              data.errors.filter(function(error) { return error.status === '404'; }).length) {
+            self.refreshTableRows(table);
+          }
+        }
+      );
   },
 
   /**
@@ -1170,6 +1218,36 @@ export default Ember.Service.extend({
     });
   },
 
+  refreshTableRowsList(table) {
+    let clusterName = table.get('cluster').get('name');
+    let tableName = table.get('name');
+    let url = `explore/clusters/${clusterName}/tables/${tableName}/refresh_keys/source/riak_kv`;
+
+    // Setup state from request
+    table.set('isListLoaded', false);
+    table.set('hasListBeenRequested', true);
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'POST'
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 202) {
+          resolve(jqXHR.status);
+        } else {
+          table.set('hasListBeenRequested', false); // Since the request failed, set value to false
+          reject(jqXHR);
+        }
+      });
+    });
+  },
+
   updateBucketType(bucketType, props) {
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
@@ -1250,5 +1328,3 @@ export default Ember.Service.extend({
     });
   }
 });
-
-

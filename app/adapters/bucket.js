@@ -23,6 +23,7 @@ export default ApplicationAdapter.extend({
       return data;
     });
 
+
     return promise;
   },
 

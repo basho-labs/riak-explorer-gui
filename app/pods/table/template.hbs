@@ -1,30 +1,30 @@
 {{#if model.warnings}}
   {{#alert-component type="warning" dismissible=false}}
-    <h4><span class="label label-warning">WARNINGS</span></h4>
-    <ul>
-      {{#each model.warnings as |warning|}}
-        <li>{{warning}}</li>
-      {{/each}}
-    </ul>
+      <h4><span class="label label-warning">WARNINGS</span></h4>
+      <ul>
+        {{#each model.warnings as |warning|}}
+            <li>{{warning}}</li>
+        {{/each}}
+      </ul>
   {{/alert-component}}
 {{/if}}
 
 {{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Table Properties'}}
-    <div class="module-actions">
-      {{#link-to 'table.write' model.cluster.name model.name class='action-button create'}}
-        <span class="ion-plus-circled" aria-hidden="true"></span>
-        Write Data
-      {{/link-to}}
+      <div class="module-actions">
+        {{#link-to 'table.write' model.cluster.name model.name class='action-button create'}}
+            <span class="ion-plus-circled" aria-hidden="true"></span>
+            Write Data
+        {{/link-to}}
 
-      {{#link-to 'table.query'
-      model.cluster.name
-      model.name
-      class='action-button create'}}
-        <span class="ion-search" aria-hidden="true"></span>
-        Query Data
-      {{/link-to}}
-    </div>
+        {{#link-to 'table.query'
+        model.cluster.name
+        model.name
+        class='action-button create'}}
+            <span class="ion-search" aria-hidden="true"></span>
+            Query Data
+        {{/link-to}}
+      </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
     {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
@@ -43,3 +43,121 @@
     {{/ivy-tabs}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
+
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Table Rows'}}
+      <div class="module-actions">
+          <button type="button" class="action-button refresh" {{action 'showModal'}}>
+              <span class="ion-refresh" aria-hidden="true"></span>
+              Refresh Rows List Cache
+          </button>
+      </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#if (and (not model.hasListBeenRequested) (not model.isListLoaded))}}
+        No cache list exists
+    {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
+      {{loading-spinner statusMessage=model.statusMessage}}
+    {{else}}
+
+      {{#if showCachedListWarning}}
+        {{#alert-component}}
+            Table rows are read from a cached list and may not represent the current state of the table.
+            <br/>
+            {{#if isSideDrawerVisible}}
+                <span class="more-info" {{action 'hideSideDrawer'}}>Hide info on explorer cached lists</span>
+            {{else}}
+                <span class="more-info" {{action 'showSideDrawer'}}>More info on explorer cached lists</span>
+            {{/if}}
+        {{/alert-component}}
+      {{/if}}
+
+      <table class="key-value-table">
+          <tbody>
+          <tr>
+              <td class="key">Cached List Created</td>
+              <td class="value">{{model.rowsList.created}}</td>
+          </tr>
+
+          {{#if model.rows.length}}
+              <tr>
+                  <td class="key">Total Rows</td>
+                  <td class="value">{{model.rows.length}}</td>
+              </tr>
+          {{/if}}
+
+          <tr>
+              <td class="key">Table Rows</td>
+              <td class="value">
+                {{#if model.rows.length}}
+                  {{#pagination-component
+                  chunkSize=pageSize
+                  totalSize=model.rows.length
+                  sectionRequest='rowsPageRequest'}}
+                      <table class="table-in-kv-table table">
+                          <thead>
+                          <tr>
+                            {{#each model.columns as |column|}}
+                                <th>{{column.name}}</th>
+                            {{/each}}
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {{#each currentTableRows as |row|}}
+                              <tr>
+                                {{#each row.parsedValue as |value|}}
+                                    <td><code>{{value}}</code></td>
+                                {{/each}}
+                              </tr>
+                          {{/each}}
+                          </tbody>
+                      </table>
+                  {{/pagination-component}}
+                {{else}}
+                    No rows found in table
+                {{/if}}
+              </td>
+          </tr>
+          </tbody>
+      </table>
+
+    {{/if}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
+
+{{!-- Modal Template --}}
+{{#if modalVisible}}
+  {{#modal-dialog
+  close='hideModal'
+  translucentOverlay=true}}
+      <div class="modal-content-container">
+          <header class="modal-header">
+              <h3><span class="label label-danger"><i
+                      class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
+              </h3>
+          </header>
+
+          <section class="modal-body">
+              <p>Creating a new cache list requires making a streaming call, with multiple response messages sent for each
+              request.</p>
+
+              <p>This can be an expensive operation, and is not recommended if the node is in active use. To
+              continue please click the confirm button.</p>
+          </section>
+
+          <footer class="modal-footer">
+              <button class="btn btn-default" {{action 'hideModal'}}>Cancel</button>
+              <button class="btn btn-primary" {{action 'refreshRowsList' model}}>Confirm</button>
+          </footer>
+      </div>
+  {{/modal-dialog}}
+{{/if}}
+
+{{!-- Side Drawer Template --}}
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+  label='Explorer Cached Lists'
+  visible=isSideDrawerVisible}}
+    {{render 'partials.cached-lists'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}

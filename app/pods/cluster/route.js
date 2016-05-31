@@ -22,7 +22,6 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     let highIndex = this.get('pageSize') - 1;
 
     this._super(controller, model);
-
     this.controller.set('pageSize', this.get('pageSize'));
     this.controller.set('currentPageTables', this.tablesFromRange(lowIndex, highIndex));
     this.controller.set('currentPageActiveBucketTypes', this.bucketTypesFromRange('active', lowIndex, highIndex));
@@ -49,7 +48,6 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
       return index >= startIndex && index <= endIndex;
     });
   },
-
 
   actions: {
     tablePageRequest: function(lowIndex, highIndex) {

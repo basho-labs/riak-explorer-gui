@@ -22,10 +22,10 @@
           {{#if example}}
             <span class="btn btn-xs btn-info" {{action 'insertExample'}}>Insert Example Query</span>
           {{/if}}
-          {{#if helpVisibile}}
-            <span class="btn btn-xs btn-info" {{action 'removeHelp'}}>Hide Query Guidelines</span>
+          {{#if isSideDrawerVisible}}
+            <span class="btn btn-xs btn-info" {{action 'hideSideDrawer'}}>Hide Query Guidelines</span>
           {{else}}
-            <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Show Query Guidelines</span>
+            <span class="btn btn-xs btn-info" {{action 'showSideDrawer'}}>Show Query Guidelines</span>
           {{/if}}
         </label>
 
@@ -77,7 +77,7 @@
 {{#ember-wormhole to="side-drawer-container"}}
   {{#side-drawer
   label='Query Guidelines'
-  visible=helpVisibile}}
+  visible=isSideDrawerVisible}}
     {{render 'partials.ts-query-guidelines'}}
   {{/side-drawer}}
 {{/ember-wormhole}}

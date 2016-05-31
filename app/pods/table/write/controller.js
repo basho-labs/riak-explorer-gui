@@ -1,13 +1,12 @@
 import Ember from 'ember';
+import SideDrawer from '../../../mixins/controller/side-drawer';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(SideDrawer, {
   errors: [],
 
   example: '',
 
   writeData: '',
-
-  helpVisibile: false,
 
   isDisabled: true,
 
@@ -36,14 +35,6 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    removeHelp: function() {
-      this.set('helpVisibile', false);
-    },
-
-    showHelp: function() {
-      this.set('helpVisibile', true);
-    },
-
     insertExample: function() {
       this.set('writeData', this.get('example'));
     }

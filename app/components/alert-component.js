@@ -18,6 +18,8 @@ import Ember from 'ember';
 export default Ember.Component.extend({
   classNameBindings: ['alert'],
 
+  type: 'info',
+
   /**
    * A dismissible alert will have a close button in the upper right corner, that the user can click to dismiss
    * the alert.

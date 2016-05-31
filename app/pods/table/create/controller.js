@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import SideDrawer from '../../../mixins/controller/side-drawer';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(SideDrawer, {
   errors: null,
 
   exampleTemplate: `CREATE TABLE GeoCheckin\n(\n  region       varchar   not null,\n  state        varchar   not null,\n  time         timestamp not null,\n  PRIMARY KEY (\n    (region, state, quantum(time, 15, 'm')),\n    region, state, time\n  )\n)`,
@@ -8,8 +9,6 @@ export default Ember.Controller.extend({
   statement: '',
 
   showSpinner: false,
-
-  helpVisibile: false,
 
   isDisabled: true,
 
@@ -23,14 +22,6 @@ export default Ember.Controller.extend({
   },
 
   actions: {
-    removeHelp: function() {
-      this.set('helpVisibile', false);
-    },
-
-    showHelp: function() {
-      this.set('helpVisibile', true);
-    },
-
     insertTemplate: function() {
       this.set('statement', this.get('exampleTemplate'));
     }

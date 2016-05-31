@@ -12,6 +12,16 @@
   .table-in-kv-table {
     thead th {
       padding-top: 0;
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+
+    tbody td {
+      &:first-child {
+        padding-left: 0;
+      }
     }
 
     li {
