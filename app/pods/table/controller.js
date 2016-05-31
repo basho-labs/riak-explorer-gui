@@ -1,23 +1,14 @@
 import Ember from 'ember';
+import SideDrawer from '../../mixins/controller/side-drawer';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(SideDrawer, {
   pageSize: null,
 
   currentTableRows: null,
 
-  helpVisibile: false,
-
   modalVisible: false,
 
   actions: {
-    hideHelp: function() {
-      this.set('helpVisibile', false);
-    },
-
-    showHelp: function() {
-      this.set('helpVisibile', true);
-    },
-
     hideModal: function() {
       this.set('modalVisible', false);
     },

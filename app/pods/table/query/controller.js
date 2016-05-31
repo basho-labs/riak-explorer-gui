@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import SideDrawer from '../../../mixins/controller/side-drawer';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(SideDrawer, {
   example: "",
 
   query: '',
@@ -8,8 +9,6 @@ export default Ember.Controller.extend({
   result: '',
 
   resultLength: null,
-
-  helpVisibile: false,
 
   isDisabled: true,
 
@@ -56,14 +55,6 @@ export default Ember.Controller.extend({
 
     insertExample: function() {
       this.set('query', this.get('example'));
-    },
-
-    hideHelp: function() {
-      this.set('helpVisibile', false);
-    },
-
-    showHelp: function() {
-      this.set('helpVisibile', true);
     }
   }
 });

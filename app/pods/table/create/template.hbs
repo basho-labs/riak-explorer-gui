@@ -33,10 +33,10 @@
             Use the editor below to define your table
             <span class="btn btn-xs btn-info" {{action 'insertTemplate'}}>Insert Sample Template</span>
 
-            {{#if helpVisibile}}
-              <span class="btn btn-xs btn-info" {{action 'hideHelp'}}>Hide Schema Guidelines</span>
+            {{#if isSideDrawerVisible}}
+              <span class="btn btn-xs btn-info" {{action 'hideSideDrawer'}}>Hide Schema Guidelines</span>
             {{else}}
-              <span class="btn btn-xs btn-info" {{action 'showHelp'}}>Schema Guidelines</span>
+              <span class="btn btn-xs btn-info" {{action 'showSideDrawer'}}>Schema Guidelines</span>
             {{/if}}
           </label>
 
@@ -70,7 +70,7 @@
 {{#ember-wormhole to="side-drawer-container"}}
   {{#side-drawer
   label='Schema Guidelines'
-  visible=helpVisibile}}
+  visible=isSideDrawerVisible}}
     {{render 'partials.ts-planning-guidelines'}}
   {{/side-drawer}}
 {{/ember-wormhole}}
