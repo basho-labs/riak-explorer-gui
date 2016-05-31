@@ -59,35 +59,36 @@
     {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
       {{loading-spinner statusMessage=model.statusMessage}}
     {{else}}
-      {{#alert-component dismissible=false}}
-          Table rows are read from a cached list and may not represent the current state of the table.
-          <br/>
-          {{#if isSideDrawerVisible}}
-              <span class="more-info" {{action 'hideSideDrawer'}}>Hide info on explorer cached lists</span>
-          {{else}}
-              <span class="more-info" {{action 'showSideDrawer'}}>More info on explorer cached lists</span>
-          {{/if}}
-      {{/alert-component}}
+
+      {{#if showCachedListWarning}}
+        {{#alert-component}}
+            Table rows are read from a cached list and may not represent the current state of the table.
+            <br/>
+            {{#if isSideDrawerVisible}}
+                <span class="more-info" {{action 'hideSideDrawer'}}>Hide info on explorer cached lists</span>
+            {{else}}
+                <span class="more-info" {{action 'showSideDrawer'}}>More info on explorer cached lists</span>
+            {{/if}}
+        {{/alert-component}}
+      {{/if}}
 
       <table class="key-value-table">
           <tbody>
           <tr>
-              <td class="key">Cached List Created:</td>
-              <td class="value">
-                {{model.rowsList.created}}
-              </td>
+              <td class="key">Cached List Created</td>
+              <td class="value">{{model.rowsList.created}}</td>
           </tr>
+
+          {{#if model.rows.length}}
+              <tr>
+                  <td class="key">Total Rows</td>
+                  <td class="value">{{model.rows.length}}</td>
+              </tr>
+          {{/if}}
+
           <tr>
               <td class="key">Table Rows</td>
               <td class="value">
-                  <!--TODO: Reimplement this if needed-->
-                {{!--{{#if model.rowsList.multipleListItems}}--}}
-                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}}-{{model.rowsList.lastItemIndex}} out--}}
-                {{!--of {{model.rowsList.total}}</p>--}}
-                {{!--{{else}}--}}
-                {{!--<p>Displaying rows {{model.rowsList.firstItemIndex}} out of {{model.rowsList.total}}</p>--}}
-                {{!--{{/if}}--}}
-
                 {{#if model.rows.length}}
                   {{#pagination-component
                   chunkSize=pageSize
@@ -137,9 +138,11 @@
           </header>
 
           <section class="modal-body">
-              Creating a new cache list requires making a streaming call, with multiple response messages sent for each
-              request. This can be an expensive operation, and is not recommended if the node is in active use. To
-              continue please click the confirm button.
+              <p>Creating a new cache list requires making a streaming call, with multiple response messages sent for each
+              request.</p>
+
+              <p>This can be an expensive operation, and is not recommended if the node is in active use. To
+              continue please click the confirm button.</p>
           </section>
 
           <footer class="modal-footer">

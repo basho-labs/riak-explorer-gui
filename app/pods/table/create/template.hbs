@@ -26,7 +26,7 @@
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
       {{#if showSpinner}}
-        {{loading-spinner statusMessage=model.statusMessage}}
+        {{loading-spinner statusMessage='Attempting to create table...'}}
       {{else}}
         <div class="manually-create">
           <label>

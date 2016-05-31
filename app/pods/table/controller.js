@@ -5,5 +5,7 @@ import Modal from '../../mixins/controller/modal';
 export default Ember.Controller.extend(SideDrawer, Modal, {
   pageSize: null,
 
-  currentTableRows: null
+  currentTableRows: null,
+
+  showCachedListWarning: true
 });
