@@ -144,27 +144,14 @@ export default Ember.Service.extend({
   getBucketList(bucketType) {
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
-    let queryTries = 0;
-    let self = this;
 
     return this.store.queryRecord('bucket-list', { clusterName: clusterName, bucketTypeName: bucketTypeName })
       .then(
         function onSuccess(bucketList) {
-          bucketType.set('bucketList', bucketList);
           bucketType.set('isListLoaded', true);
+          bucketType.set('bucketList', bucketList);
 
           return bucketType.get('bucketList');
-        },
-        function onFail() {
-          if (bucketType.get('cluster').get('developmentMode') && queryTries < 3) {
-            // kick off a cache refresh if in development mode and retry
-            queryTries++;
-            bucketType.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
-            self.refreshBucketList(bucketType);
-          } else {
-            // Let the UI know that the response has been completed
-            bucketType.set('isListLoaded', true);
-          }
         }
       );
   },
@@ -206,55 +193,15 @@ export default Ember.Service.extend({
    * @return {DS.Array} Bucket
    */
   getBuckets(bucketType) {
-    if (Ember.isEmpty(bucketType.get('buckets'))) {
-      let clusterName = bucketType.get('cluster').get('name');
-      let bucketTypeName = bucketType.get('name');
+    let clusterName = bucketType.get('cluster').get('name');
+    let bucketTypeName = bucketType.get('name');
 
-      return this.store.query('bucket', { clusterName: clusterName, bucketTypeName: bucketTypeName })
-        .then(function(buckets) {
-          bucketType.set('buckets', buckets);
+    return this.store.query('bucket', { clusterName: clusterName, bucketTypeName: bucketTypeName })
+      .then(function(buckets) {
+        bucketType.set('buckets', buckets);
 
-          return bucketType.get('buckets');
-        });
-    } else {
-      return bucketType.get('buckets');
-    }
-
-    //return new Ember.RSVP.Promise(function(resolve, reject) {
-    //  var xhrConfig = {
-    //    url: url,
-    //    dataType: 'json',
-    //    type: 'GET',
-    //    success: function(data) {
-    //      bucketType.set('isBucketListLoaded', true);
-    //      resolve(explorer.createBucketList(data, cluster, bucketType, start));
-    //    },
-    //    _error_old: function(jqXHR, textStatus) {
-    //      // Fail (likely a 404, cache not yet created)
-    //      if (jqXHR.status === 404) {
-    //        // Return an empty (Loading..) list. Controller will poll to
-    //        // refresh it, later
-    //        let data = null;
-    //        let emptyList = explorer.createBucketList(data, cluster, bucketType);
-    //        if (cluster.get('developmentMode')) {
-    //          bucketType.set('isBucketListLoaded', false);
-    //          emptyList.set('statusMessage', 'Cache not found. Refreshing from a streaming list buckets call...');
-    //          // Kick off a Cache Refresh
-    //          explorer.bucketCacheRefresh(clusterId, bucketTypeId);
-    //        } else {
-    //          bucketType.set('isBucketListLoaded', true);
-    //          // In Production mode, no cache refresh will happen
-    //          emptyList.set('cachePresent', false);
-    //        }
-    //        Ember.run(null, resolve, emptyList);
-    //      } else {
-    //        Ember.run(null, reject, textStatus);
-    //      }
-    //    }
-    //  };
-    //
-    //  Ember.$.ajax(xhrConfig);
-    //});
+        return bucketType.get('buckets');
+      });
   },
 
   /**
@@ -274,8 +221,8 @@ export default Ember.Service.extend({
       .then(function(bucketType) {
         return Ember.RSVP.allSettled([
           bucketType,
-          self.getBucketList(bucketType),
-          self.getBuckets(bucketType)
+          self.getBuckets(bucketType),
+          self.getBucketList(bucketType)
         ]);
       })
       .then(function(PromiseArray) {
@@ -1070,7 +1017,6 @@ export default Ember.Service.extend({
   },
 
   getTableRowsList(table) {
-    let self = this;
     let cluster = table.get('cluster');
     let clusterName = table.get('cluster').get('name');
     let tableName = table.get('name');
@@ -1082,14 +1028,6 @@ export default Ember.Service.extend({
           table.set('rowsList', list);
 
           return table.get('rowsList');
-        },
-        function onFail(data) {
-          // If dev mode cluster and error code 404 is present in the error object, kick off request for cache list
-          if (cluster.get('developmentMode') &&
-              data.errors &&
-              data.errors.filter(function(error) { return error.status === '404'; }).length) {
-            self.refreshTableRows(table);
-          }
         }
       );
   },
@@ -1172,7 +1110,10 @@ export default Ember.Service.extend({
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
     let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/refresh_buckets/source/riak_kv`;
-    let self = this;
+
+    // Setup state from request
+    bucketType.set('isListLoaded', false);
+    bucketType.set('hasListBeenRequested', true);
 
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
@@ -1180,9 +1121,17 @@ export default Ember.Service.extend({
         type: 'POST'
       });
 
-      request.complete(function(data) {
-        self.getBucketList(bucketType);
-        self.getBuckets(bucketType);
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 202) {
+          resolve(jqXHR.status);
+        } else {
+          bucketType.set('hasListBeenRequested', false); // Since the request failed, set value to false
+          reject(jqXHR);
+        }
       });
     });
   },
