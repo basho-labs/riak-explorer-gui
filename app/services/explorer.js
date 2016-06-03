@@ -116,16 +116,9 @@ export default Ember.Service.extend({
       .then(function(bucket) {
         return Ember.RSVP.allSettled([
           bucket,
-          self.getBucketProps(bucket)
-        ]);
-      })
-      .then(function(PromiseArray) {
-        let bucket = PromiseArray[0].value;
-
-        return Ember.RSVP.allSettled([
-          bucket,
-          self.getObjectList(bucket),
-          self.getObjects(bucket)
+          self.getBucketProps(bucket),
+          self.getObjects(bucket),
+          self.getObjectList(bucket)
         ]);
       })
       .then(function(PromiseArray) {
@@ -878,23 +871,10 @@ export default Ember.Service.extend({
     return this.store.queryRecord('object-list', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
       .then(
         function onSuccess(objectList) {
-          bucket.set('objectList', objectList);
           bucket.set('isListLoaded', true);
+          bucket.set('objectList', objectList);
 
           return bucket.get('objectList');
-        },
-        function onFail() {
-          if (bucket.get('cluster').get('developmentMode')) {
-            // kick off a cache refresh if in development mode and retry
-            bucket.set('statusMessage', 'Cache not found. Refreshing from a streaming list keys call...');
-
-            self.refreshObjectList(bucket).then(function() {
-              self.getObjectList(bucket);
-            });
-          } else {
-            // Let the UI know that the response has been completed
-            bucket.set('isListLoaded', true);
-          }
         }
       );
   },
@@ -906,20 +886,16 @@ export default Ember.Service.extend({
    * @return {DS.Array} RiakObject
    */
   getObjects(bucket) {
-    if (Ember.isEmpty(bucket.get('objects'))) {
-      let clusterName = bucket.get('cluster').get('name');
-      let bucketTypeName = bucket.get('bucketType').get('name');
-      let bucketName = bucket.get('name');
+    let clusterName = bucket.get('cluster').get('name');
+    let bucketTypeName = bucket.get('bucketType').get('name');
+    let bucketName = bucket.get('name');
 
-      return this.store.query('riak-object', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName})
-        .then(function(objects) {
-          bucket.set('objects', objects);
+    return this.store.query('riak-object', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName})
+      .then(function(objects) {
+        bucket.set('objects', objects);
 
-          return bucket.get('objects');
-        });
-    } else {
-      return bucket.get('objects');
-    }
+        return bucket.get('objects');
+      });
   },
 
   /**
@@ -1147,6 +1123,10 @@ export default Ember.Service.extend({
     let bucketName = bucket.get('name');
     let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
 
+    // Setup state from request
+    bucket.set('isListLoaded', false);
+    bucket.set('hasListBeenRequested', true);
+
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
         url: url,
@@ -1161,6 +1141,7 @@ export default Ember.Service.extend({
         if (jqXHR.status === 202) {
           resolve(jqXHR.status);
         } else {
+          bucket.set('hasListBeenRequested', false); // Since the request failed, set value to false
           reject(jqXHR);
         }
       });
