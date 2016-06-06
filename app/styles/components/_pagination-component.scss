@@ -4,6 +4,7 @@
       @extend .btn;
       @extend .btn-xs;
       @extend .btn-default;
+      margin-bottom: 5px;
 
       &.selected {
         @extend .btn-primary;

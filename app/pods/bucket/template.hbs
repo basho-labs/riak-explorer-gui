@@ -42,16 +42,14 @@
 
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Objects'}}
-      {{#if model.objectList}}
-        <div class="module-actions">
-          {{#if model.cluster.developmentMode}}
-            <button type="button" class="action-button refresh" {{action 'showModal'}}>
+      <div class="module-actions">
+        {{#if model.cluster.developmentMode}}
+          <button type="button" class="action-button refresh" {{action 'showModal'}}>
               <span class="ion-refresh" aria-hidden="true"></span>
               Refresh Object List Cache
             </button>
-          {{/if}}
-        </div>
-      {{/if}}
+        {{/if}}
+      </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
       {{#if (and (not model.hasListBeenRequested) (not model.isListLoaded))}}
