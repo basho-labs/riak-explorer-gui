@@ -70,15 +70,9 @@ export default Ember.Component.extend({
    */
   totalSize: 0,
 
-  /**
-   * Lifecycle method. This is called only once upon instantiation and is not called when data has changed forcing a component
-   * re-render. Because we are using a cached list, it only has to calculate the amount of potential pagination links once.
-   *
-   * @method init
-   */
-  init: function() {
-    this._super();
-    this.createPaginationLinks();
+  didReceiveAttrs: function() {
+    this.setNumberLinksCount();
+    this.setNumberLinks();
   },
 
   /**
@@ -114,33 +108,23 @@ export default Ember.Component.extend({
   /**
    * Determines the total number of links needed to be created given the total length and chunk size.
    *
-   * @method calculateNumberLinksCount
+   * @method setNumberLinksCount
    * @private
    * @return {Integer}
    */
-  calculateNumberLinksCount: function() {
+  setNumberLinksCount: function() {
     let linkCount = Math.ceil(this.get('totalSize') / this.get('chunkSize'));
 
     return this.set('numberLinksCount', linkCount);
   },
 
-  /**
-   * Operational method that hydrates the numberLinks array.
-   *
-   * @method createPaginationLinks
-   * @private
-   */
-  createPaginationLinks: function() {
-    this.calculateNumberLinksCount();
+  setNumberLinks: function() {
+    // reset numberLinks array
+    this.set('numberLinks', []);
 
-    if (this.get('shouldShowPaginationLinks')) {
-      // reset numberLinks array
-      this.set('numberLinks', []);
-
-      // We want the loop to be 1 indexed, not 0
-      for (var i = 1; i < this.get('numberLinksCount') + 1; i++) {
-        this.numberLinks.push(i);
-      }
+    // We want the loop to be 1 indexed, not 0
+    for (var i = 1; i < this.get('numberLinksCount') + 1; i++) {
+      this.numberLinks.push(i);
     }
   },
 
@@ -243,5 +227,5 @@ export default Ember.Component.extend({
         this.sendAction('sectionRequest', requestedRange.lowIndex, requestedRange.highIndex);
       }
     }
-  },
+  }
 });

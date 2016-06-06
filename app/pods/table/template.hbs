@@ -47,10 +47,12 @@
 {{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Table Rows'}}
       <div class="module-actions">
+        {{#if model.cluster.developmentMode}}
           <button type="button" class="action-button refresh" {{action 'showModal'}}>
               <span class="ion-refresh" aria-hidden="true"></span>
               Refresh Rows List Cache
           </button>
+        {{/if}}
       </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
@@ -59,7 +61,6 @@
     {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
       {{loading-spinner statusMessage=model.statusMessage}}
     {{else}}
-
       {{#if showCachedListWarning}}
         {{#alert-component}}
             Table rows are read from a cached list and may not represent the current state of the table.

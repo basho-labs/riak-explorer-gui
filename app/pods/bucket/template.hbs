@@ -10,7 +10,7 @@
 {{/if}}
 
 <div class='bucket-types-container'>
-  {{#dashboard-module.container class='small-width'}}
+  {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Bucket Properties'}}
       <div class="module-actions">
         {{#if model.allowDelete}}
@@ -40,41 +40,59 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 
-  {{#dashboard-module.container class='small-width'}}
+  {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Objects'}}
-      {{#if model.objectList}}
-        <div class="module-actions">
-          {{#if model.cluster.developmentMode}}
-            <button type="button" class="action-button refresh" {{action 'refreshObjects' model}}>
+      <div class="module-actions">
+        {{#if model.cluster.developmentMode}}
+          <button type="button" class="action-button refresh" {{action 'showModal'}}>
               <span class="ion-refresh" aria-hidden="true"></span>
               Refresh Object List Cache
             </button>
-          {{/if}}
-        </div>
-      {{/if}}
+        {{/if}}
+      </div>
     {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{#if model.isListLoaded}}
-        {{#if model.objectList}}
-          <table class="key-value-table">
-            <tbody>
-            <tr>
-              <td class="key">Object List Cache Created:</td>
-              <td class="value">{{model.objectList.created}}</td>
-            </tr>
-            <tr>
-              <td class="key">Object List Cache</td>
-              <td class="value">
-                {{#if model.objectList.count}}
-                  {{#if model.objectList.hasMultipleListItems}}
-                    <p>Displaying keys {{model.objectList.firstItemIndex}}-{{model.objectList.lastItemIndex}} out
-                      of {{model.objectList.total}} total keys</p>
-                  {{else}}
-                    <p>Displaying bucket {{model.objectList.firstItemIndex}} out of {{model.objectList.total}} total keys</p>
-                  {{/if}}
+      {{#if (and (not model.hasListBeenRequested) (not model.isListLoaded))}}
+        No cache list exists
+      {{else if (and model.hasListBeenRequested (not model.isListLoaded))}}
+        {{loading-spinner statusMessage=model.statusMessage}}
+      {{else}}
+        {{#if showCachedListWarning}}
+          {{#alert-component}}
+            Objects are read from a cached list and may not represent the current state of the bucket type.
+            <br/>
+            {{#if isSideDrawerVisible}}
+              <span class="more-info" {{action 'hideSideDrawer'}}>Hide info on explorer cached lists</span>
+            {{else}}
+              <span class="more-info" {{action 'showSideDrawer'}}>More info on explorer cached lists</span>
+            {{/if}}
+          {{/alert-component}}
+        {{/if}}
 
+        <table class="key-value-table">
+          <tbody>
+          <tr>
+            <td class="key">Cached List Created</td>
+            <td class="value">{{model.objectList.created}}</td>
+          </tr>
+
+          {{#if model.objects.length}}
+            <tr>
+              <td class="key">Total Objects</td>
+              <td class="value">{{model.objects.length}}</td>
+            </tr>
+          {{/if}}
+
+          <tr>
+            <td class="key">Objects</td>
+            <td class="value">
+              {{#if model.objects.length}}
+                {{#pagination-component
+                chunkSize=pageSize
+                totalSize=model.objects.length
+                sectionRequest='objectsPageRequest'}}
                   <ul class='button-list'>
-                    {{#each model.objects as |object|}}
+                    {{#each currentObjects as |object|}}
                       <li>
                         {{#link-to object.routePath
                         object.bucket.bucketType.cluster.name
@@ -86,20 +104,53 @@
                       </li>
                     {{/each}}
                   </ul>
-                {{else}}
-                  No keys found
-                {{/if}}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        {{else}}
-          <p>Cached key list not available.</p>
-          <p>This cluster is in Production mode, and so no cache refresh is possible.</p>
-        {{/if}}
-      {{else}}
-        {{loading-spinner statusMessage=model.statusMessage}}
+                {{/pagination-component}}
+              {{else}}
+                No objects found in bucket
+              {{/if}}
+            </td>
+          </tr>
+          </tbody>
+        </table>
       {{/if}}
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+
+{{!-- Modal Template --}}
+{{#if modalVisible}}
+  {{#modal-dialog
+  close='hideModal'
+  translucentOverlay=true}}
+    <div class="modal-content-container">
+      <header class="modal-header">
+        <h3><span class="label label-danger"><i
+          class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
+        </h3>
+      </header>
+
+      <section class="modal-body">
+        <p>Creating a new cache list requires making a streaming call, with multiple response messages sent for each
+          request.</p>
+
+        <p>This can be an expensive operation, and is not recommended if the node is in active use. To
+          continue please click the confirm button.</p>
+      </section>
+
+      <footer class="modal-footer">
+        <button class="btn btn-default" {{action 'hideModal'}}>Cancel</button>
+        <button class="btn btn-primary" {{action 'refreshObjectList' model}}>Confirm</button>
+      </footer>
+    </div>
+  {{/modal-dialog}}
+{{/if}}
+
+{{!-- Side Drawer Template --}}
+{{#ember-wormhole to="side-drawer-container"}}
+  {{#side-drawer
+  label='Explorer Cached Lists'
+  visible=isSideDrawerVisible}}
+    {{render 'partials.cached-lists'}}
+  {{/side-drawer}}
+{{/ember-wormhole}}
