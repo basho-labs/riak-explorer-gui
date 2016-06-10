@@ -8,6 +8,10 @@
     </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    {{map-object.contents sortedMap=model.contentsSortedBySubType}}
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
+      {{map-object.contents sortedMap=model.contentsSortedBySubType}}
+    {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
