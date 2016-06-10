@@ -14,8 +14,7 @@
           {{#pagination-component
           chunkSize=pageSize
           totalSize=model.tables.length
-          sectionRequest='tablePageRequest'
-          classToApplyIfVisible='paginated-table'}}
+          sectionRequest='tablePageRequest'}}
             {{table.ts-tables tables=currentPageTables}}
           {{/pagination-component}}
         {{else}}
@@ -40,8 +39,7 @@
         {{#pagination-component
         chunkSize=pageSize
         totalSize=model.searchIndexes.length
-        sectionRequest='indexPageRequest'
-        classToApplyIfVisible='paginated-table'}}
+        sectionRequest='indexPageRequest'}}
           {{table.search-indexes indexes=currentPageIndexes}}
         {{/pagination-component}}
 

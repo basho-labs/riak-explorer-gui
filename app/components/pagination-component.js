@@ -16,14 +16,6 @@ export default Ember.Component.extend({
    */
   classNames: ['pagination-component-container'],
 
-  classNameBindings: ['visibleClass'],
-
-  /** Bridge between classToApplyIfVisible and classNameBindings, set in the 'shouldShowPaginationLinks' method **/
-  visibleClass: null,
-
-  /** Conditional class to apply if the pagination links are visible **/
-  classToApplyIfVisible: null,
-
   /**
    * Stores the number of pagination links the UI could potentially display
    *
@@ -159,13 +151,7 @@ export default Ember.Component.extend({
    * @return {Boolean}
    */
   shouldShowPaginationLinks: function() {
-    let shouldShow = this.get('numberLinksCount') > 1;
-
-    if (shouldShow && this.get('classToApplyIfVisible')) {
-      this.set('visibleClass', this.get('classToApplyIfVisible'));
-    }
-
-    return shouldShow;
+    return this.get('numberLinksCount') > 1;
   }.property('numberLinksCount'),
 
   /**

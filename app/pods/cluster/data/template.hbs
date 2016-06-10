@@ -48,8 +48,7 @@
           {{#pagination-component
           chunkSize=pageSize
           totalSize=model.tables.length
-          sectionRequest='tablePageRequest'
-          classToApplyIfVisible='paginated-table'}}
+          sectionRequest='tablePageRequest'}}
             {{table.ts-tables tables=currentPageTables}}
           {{/pagination-component}}
         {{else}}
@@ -80,8 +79,7 @@
               {{#pagination-component
               chunkSize=pageSize
               totalSize=model.activeBucketTypes.length
-              sectionRequest='activeBucketTypesPageRequest'
-              classToApplyIfVisible='paginated-table'}}
+              sectionRequest='activeBucketTypesPageRequest'}}
                 {{table.bucket-types bucketTypes=currentPageActiveBucketTypes}}
               {{/pagination-component}}
             {{else}}
@@ -94,8 +92,7 @@
               {{#pagination-component
               chunkSize=pageSize
               totalSize=model.inactiveBucketTypes.length
-              sectionRequest='inactiveBucketTypesPageRequest'
-              classToApplyIfVisible='paginated-table'}}
+              sectionRequest='inactiveBucketTypesPageRequest'}}
                 {{table.bucket-types bucketTypes=currentPageInactiveBucketTypes}}
               {{/pagination-component}}
             {{else}}

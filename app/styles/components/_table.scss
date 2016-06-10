@@ -1,4 +1,18 @@
 .table {
+  thead th {
+    padding-top: 0;
+
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+
+  tbody td {
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+
   &.cluster-table {
     .object-type {
       min-width: 125px;
