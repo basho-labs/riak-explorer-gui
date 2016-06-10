@@ -9,7 +9,6 @@ export default Ember.Controller.extend({
     }
   },
 
-
   /**
    * Current Cluster selected. Used to track sidebar state. Null if no sidebar.
    *
@@ -56,6 +55,7 @@ export default Ember.Controller.extend({
       case 'riak-object.counter':
       case 'riak-object.set':
       case 'riak-object.map':
+      case 'riak-object.map.edit':
       case 'table':
       case 'table.create':
       case 'table.write':

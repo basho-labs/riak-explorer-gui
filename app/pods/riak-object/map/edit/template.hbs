@@ -1,0 +1,27 @@
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Edit Map'}}
+    <div class="module-actions">
+      <button type="button" class="action-button save" {{action 'updateMap' model}}>
+        <span class="ion-edit" aria-hidden="true"></span>
+        Update Map
+      </button>
+
+      {{#link-to 'riak-object.map'
+      model.cluster.name
+      model.bucketType.name
+      model.bucket.name
+      model.name
+      class='action-button cancel'}}
+        <span class="ion-close-round" aria-hidden="true"></span>
+        Cancel
+      {{/link-to}}
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{ivy-codemirror
+      mode='javascript'
+      theme='material'
+      lineWrapping=true
+      value=(mut codeString)}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

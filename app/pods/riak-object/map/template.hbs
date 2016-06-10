@@ -1,6 +1,16 @@
-{{#dashboard-module.container}}
+{{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Object Details'}}
     <div class="module-actions">
+      {{#link-to 'riak-object.map.edit'
+        model.cluster.name
+        model.bucketType.name
+        model.bucket.name
+        model.name
+        classNames='action-button edit' }}
+        <span class="ion-edit" aria-hidden="true"></span>
+        Edit Map
+      {{/link-to}}
+
       <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
         <span class="ion-trash-a" aria-hidden="true"></span>
         Delete Map
