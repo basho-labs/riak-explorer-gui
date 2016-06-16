@@ -62,13 +62,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       table.destroyRecord();
     },
 
-    createTable: function(tableName) {
-      // let cluster = this.currentModel;
-      //
-      // this.transitionTo('table', cluster.get('name'), tableName);
-    },
-
-    createTableManually: function(table, statement) {
+    createTable: function(table, statement) {
       let self = this;
       let controller = this.controller;
       let clusterName = table.get('cluster').get('name');
@@ -110,43 +104,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
           });
       } else {
         controller.set('showSpinner', false);
-      }
-    },
-
-    addColumn: function(type) {
-      switch(type) {
-        case 'tableColumn':
-          this.currentModel.get('columns').pushObject({ name: '', type: 'varchar' });
-          break;
-        case 'partitionKeyColumn':
-          let suggestedPartitionKeyColumn = this.currentModel.get('suggestedPartitionKey');
-          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyColumn, quantum: false });
-          break;
-        case 'partitionKeyQuantum':
-          let suggestedPartitionKeyQuantum = this.currentModel.get('suggestedPartitionKeyQuantum');
-          this.currentModel.get('partitionKey').pushObject({ name: suggestedPartitionKeyQuantum, quantum: true });
-          break;
-        case 'localKey':
-          this.currentModel.get('localKey').pushObject('');
-          break;
-      }
-    },
-
-    removeColumn: function(group, index) {
-      let table = this.currentModel;
-
-      switch(group) {
-        case 'tableColumn':
-          table.get('columns').removeAt(index);
-          break;
-        case 'partitionKey':
-          table.get('partitionKey').removeAt(index);
-          break;
-        case 'localKey':
-          table.get('localKey').removeAt(index);
-          break;
-        default:
-          break;
       }
     }
   }

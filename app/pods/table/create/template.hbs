@@ -47,20 +47,11 @@
             autofocus=true
             value=(mut statement)}}
 
-
           <div class="submit-button-container">
-            <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'createTableManually' model statement}}>
+            <button type="submit" class="btn btn-primary" disabled={{isDisabled}} {{action 'createTable' model statement}}>
               Create Table
             </button>
           </div>
-
-          {{!--TODO: Implement Form Wizard--}}
-          {{!--{{form.table.create-table--}}
-          {{!--errors=(mut errors)--}}
-          {{!--table=model--}}
-          {{!--addField='addField'--}}
-          {{!--removeField='removeField'--}}
-          {{!--createTable='createTable'}}--}}
         </div>
       {{/if}}
     {{/dashboard-module.body}}
