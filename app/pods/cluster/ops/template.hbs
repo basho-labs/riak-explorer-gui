@@ -8,39 +8,37 @@
 
 <div class='cluster-ops-container'>
 
-  {{#if model.developmentMode}}
-    {{#if model.isEnterpriseEdition}}
-      {{#dashboard-module.container class='small-width'}}
-        {{dashboard-module.header label='Multi Data Center Replication'}}
-        {{#dashboard-module.body}}
-          <form class="mdc-repl">
-            <div class="form-group repl-action-select">
-              <label>Available Actions</label>
-              {{#power-select
-              selected=currentlySelectedAction
-              options=availableReplActions
-              searchEnabled=false
-              onchange=(action "getReplicationOutput")
-              as |replAction|}}
-                {{replAction}}
-              {{/power-select}}
-            </div>
+  {{#if (and model.developmentMode model.isEnterpriseEdition)}}
+    {{#dashboard-module.container class='small-width'}}
+      {{dashboard-module.header label='Multi Data Center Replication'}}
+      {{#dashboard-module.body}}
+        <form class="mdc-repl">
+          <div class="form-group repl-action-select">
+            <label>Available Actions</label>
+            {{#power-select
+            selected=currentlySelectedAction
+            options=availableReplActions
+            searchEnabled=false
+            onchange=(action "warnReplAction")
+            as |replAction|}}
+              {{replAction}}
+            {{/power-select}}
+          </div>
 
-            {{#if currentReplOutput}}
-              <div>
-                <label>Output</label>
-                {{ivy-codemirror
-                  mode='javascript'
-                  theme='material'
-                  lineWrapping=true
-                  readOnly=true
-                  value=currentReplOutput}}
-              </div>
-            {{/if}}
-          </form>
-        {{/dashboard-module.body}}
-      {{/dashboard-module.container}}
-    {{/if}}
+          {{#if currentReplOutput}}
+            <div>
+              <label>Output</label>
+              {{ivy-codemirror
+                mode='javascript'
+                theme='material'
+                lineWrapping=true
+                readOnly=true
+                value=currentReplOutput}}
+            </div>
+          {{/if}}
+        </form>
+      {{/dashboard-module.body}}
+    {{/dashboard-module.container}}
   {{/if}}
 
   {{#dashboard-module.container class='small-width'}}
@@ -70,5 +68,30 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
+
+{{!-- Modal Template --}}
+{{#if modalVisible}}
+  {{#modal-dialog
+  close='cancelReplAction'
+  translucentOverlay=true}}
+    <div class="modal-content-container">
+      <header class="modal-header">
+        <h3><span class="label label-danger"><i
+          class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
+        </h3>
+      </header>
+
+      <section class="modal-body">
+        <p>Are you sure you want to perform a <strong>{{currentlySelectedAction}}</strong> operation?</p>
+        <p>MDC replication operations can effect cluster performance and should only be done by a cluster administrator.</p>
+      </section>
+
+      <footer class="modal-footer">
+        <button class="btn btn-default" {{action 'cancelReplAction'}}>Cancel</button>
+        <button class="btn btn-primary" {{action 'confirmReplAction' model}}>Confirm</button>
+      </footer>
+    </div>
+  {{/modal-dialog}}
+{{/if}}
 
 
