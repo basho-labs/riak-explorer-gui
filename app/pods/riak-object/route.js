@@ -23,6 +23,14 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
+  setupController: function(controller, model) {
+    this._super(controller, model);
+
+    if (model.get('contentTypeLanguage') === 'javascript') {
+      controller.set('stringifiedContents', JSON.stringify(model.get('contents'), null, ' '));
+    }
+  },
+
   actions: {
     deleteObject: function(object) {
       let self = this;

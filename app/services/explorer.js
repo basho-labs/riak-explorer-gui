@@ -756,8 +756,6 @@ export default Ember.Service.extend({
 
     return this.getBucket(clusterName, bucketTypeName, bucketName)
       .then(function(bucket) {
-        let isCRDT = !!(bucket.get('isCRDT'));
-
         return bucket.get('objects').findBy('name', objectName);
       })
       .then(function(riakObject) {
@@ -799,7 +797,7 @@ export default Ember.Service.extend({
       request.done(function(data, textStatus, jqXHR) {
         let headerObj = parseHeader(jqXHR.getAllResponseHeaders());
         let type    = (isCRDT) ? data.type : 'default';
-        let content = (isCRDT) ? data.value : jqXHR.responseText;
+        let content = (isCRDT) ? data.value : data;
 
         object.set('headers', headerObj);
         object.set('type', type);

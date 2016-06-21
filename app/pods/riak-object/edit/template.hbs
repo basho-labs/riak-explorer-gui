@@ -1,11 +1,6 @@
-{{#dashboard-module.container class='medium-width'}}
+{{#dashboard-module.container class='small-width'}}
   {{#dashboard-module.header label='Object Edit'}}
     <div class="module-actions">
-      <button type="button" class="action-button save" {{action 'saveObject' model}}>
-        <span class="ion-edit" aria-hidden="true"></span>
-        Update Object
-      </button>
-
       {{#link-to 'riak-object'
       model.cluster.name
       model.bucketType.name
@@ -19,59 +14,48 @@
   {{/dashboard-module.header}}
 
   {{#dashboard-module.body}}
-    <div class="module-edit-group">
-        <table class="key-value-table">
-          <tbody>
-          <tr>
-            <td class="key group-header">Object Contents</td>
-            <td class="value"></td>
-          </tr>
-          <tr>
-            <td class="key">Content Type:</td>
-            <td class="value">
-              {{input value=model.contentType
-              id='metadata.contentType'
-              class="form-control"}}
-            </td>
-          </tr>
-          <tr>
-            <td class="key">Content:</td>
-            <td class="value">
-              {{textarea
-              class="form-control"
-              value=model.contents
-              rows=8
-              autofocus=true}}
-            </td>
-          </tr>
-
-          <tr>
-            <td class="key group-header">Secondary Indexes</td>
-            <td class="value"></td>
-          </tr>
-          {{#each model.indexes as |header|}}
-            <tr>
-              <td class="key">{{header.key}}</td>
-              <td class="value">
-                {{input value=header.value id=header.key class="form-control"}}
-              </td>
-            </tr>
-          {{/each}}
-
-          <tr>
-            <td class="key group-header">Custom Headers</td>
-            <td class="value"></td>
-          </tr>
-          {{#each model.headersCustom as |header|}}
-            <tr>
-              <td class="key">{{header.key}}</td>
-              <td class="value">
-                {{input value=header.value id=header.key class="form-control"}}
-              </td>
-            </tr>
-          {{/each}}
-          </tbody>
-        </table>
-      </div>
+    <div class="update-object-form">
+      <section class="object-contents">
+        <div class="section-title">Object Contents</div>
+        <div class="form-group content-type">
+          <label>Content Type</label>
+          {{input value=model.contentType
+          id='metadata.contentType'
+          class="form-control"}}
+        </div>
+        <div class="form-group content">
+          <label>Content</label>
+          {{ivy-codemirror
+          mode='javascript'
+          theme='material'
+          lineWrapping=true
+          value=(mut stringifiedContents)}}
+        </div>
+      </section>
+      <section class="secondary-indexes">
+        <div class="section-title">Secondary Indexes</div>
+        {{#each model.indexes as |header|}}
+          <div class="form-group content-type">
+            <label>{{header.key}}</label>
+            {{input value=header.value id=header.key class="form-control"}}
+          </div>
+        {{/each}}
+      </section>
+      <section class="custom-headers">
+        <div class="section-title">Custom Headers</div>
+        {{#each model.headersCustom as |header|}}
+          <div class="form-group content-type">
+            <label>{{header.key}}</label>
+            {{input value=header.value id=header.key class="form-control"}}
+          </div>
+        {{/each}}
+      </section>
+      <section class="update-object">
+        <button type="button" class="btn btn-primary" {{action 'saveObject' model}}>
+          <span class="ion-edit" aria-hidden="true"></span>
+          Update Object
+        </button>
+      </section>
+    </div>
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

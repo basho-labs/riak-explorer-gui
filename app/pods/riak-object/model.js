@@ -46,6 +46,8 @@ export default DS.Model.extend(ObjectHeaders, MapObject, {
 
   type: DS.attr('string'),
 
+  stringifiedContents: DS.attr('string'),
+
   /**
    * The URL to fetch the raw contents of the object directly from server.
    * Used with the 'View Raw' button.
@@ -125,5 +127,7 @@ export default DS.Model.extend(ObjectHeaders, MapObject, {
     }
 
     return routePath;
-  }.property('bucket')
+  }.property('bucket'),
+
+  
 });

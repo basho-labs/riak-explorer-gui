@@ -87,7 +87,7 @@ export default ApplicationAdapter.extend({
       contentType: object.get('contentType'),
       url: url,
       headers: headers,
-      data: object.get('contents')
+      data: JSON.stringify(object.get('contents'))
     });
   }
 });
