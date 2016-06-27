@@ -5,17 +5,5 @@ export default Ember.Controller.extend({
 
   showLoadingSpinner: false,
 
-  stringifiedContents: '',
-
-  updateStringifiedContents: function() {
-    if (this.get('contentTypeLanguage') === 'javascript') {
-      return this.set('stringifiedContents', JSON.stringify(this.get('contents'), null, ' '));
-    }
-  }.observes('contents'),
-
-  updateContents: function() {
-    if (this.get('contentTypeLanguage') === 'javascript') {
-      return this.set('contents', JSON.parse(this.get('stringifiedContents')));
-    }
-  }.observes('stringifiedContents')
+  stringifiedContents: ''
 });

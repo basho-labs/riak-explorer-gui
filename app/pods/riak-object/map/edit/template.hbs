@@ -18,10 +18,14 @@
     </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    {{ivy-codemirror
-      mode='javascript'
-      theme='material'
-      lineWrapping=true
-      value=(mut codeString)}}
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
+      {{ivy-codemirror
+        mode='javascript'
+        theme='material'
+        lineWrapping=true
+        value=(mut stringifiedContents)}}
+    {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

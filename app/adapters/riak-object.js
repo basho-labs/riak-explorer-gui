@@ -65,8 +65,8 @@ export default ApplicationAdapter.extend({
     let bucketName = object.get('bucket').get('name');
     let objectName = object.get('name');
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/keys/${objectName}`;
-
     let headers = {};
+
     if (object.get('causalContext')) {
       headers['X-Riak-Vclock'] = object.get('causalContext');
     }
@@ -82,7 +82,7 @@ export default ApplicationAdapter.extend({
     }
 
     return Ember.$.ajax({
-      type: "PUT",
+      type: 'PUT',
       processData: false,
       contentType: object.get('contentType'),
       url: url,

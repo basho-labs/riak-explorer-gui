@@ -25,6 +25,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
   setupController: function(controller, model) {
     this._super(controller, model);
+    controller.set('showLoadingSpinner', false);
 
     if (model.get('contentTypeLanguage') === 'javascript') {
       controller.set('stringifiedContents', JSON.stringify(model.get('contents'), null, ' '));
@@ -45,11 +46,9 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
       object.destroyRecord().then(
         function onSuccess() {
-          self.transitionTo('bucket', clusterName, bucketTypeName, bucketName).then(function() {
-            controller.set('showLoadingSpinner', false);
-          });
+          self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
         },
-        function onError() {
+        function onFail() {
           controller.set('showLoadingSpinner', false);
           self.showAlert('alerts.error-request-was-not-processed');
         }

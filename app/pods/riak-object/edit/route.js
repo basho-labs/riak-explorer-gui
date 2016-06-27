@@ -17,7 +17,7 @@ export default RiakObjectRoute.extend({
   },
 
   actions: {
-    saveObject: function(object) {
+    updateObject: function(object) {
       let self = this;
       let controller = this.controller;
       let clusterName = object.get('cluster').get('name');

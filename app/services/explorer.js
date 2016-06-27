@@ -837,47 +837,6 @@ export default Ember.Service.extend({
         reject(data);
       });
     });
-
-    //return new Ember.RSVP.Promise(function(resolve, reject) {
-    //
-    //  if (bucket.get('props').get('isCRDT')) {
-    //    ajaxHash.success = function(data, textStatus, jqXHR) {
-    //
-    //      headerString = jqXHR.getAllResponseHeaders();
-    //      contents = data;  // Parsed json
-    //
-    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-    //        contents, url));
-    //    };
-    //  } else {
-    //    ajaxHash.success = function(data, textStatus, jqXHR) {
-    //
-    //      headerString = jqXHR.getAllResponseHeaders();
-    //      contents = jqXHR.responseText;  // Unparsed payload
-    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-    //        contents, url));
-    //    };
-    //  }
-    //
-    //  ajaxHash._error_old = function(jqXHR, textStatus) {
-    //    if (jqXHR.status === 200 && textStatus === 'parsererror') {
-    //      // jQuery tries to parse JSON objects, and throws
-    //      // parse errors when they're invalid. Suppress this.
-    //      headerString = jqXHR.getAllResponseHeaders();
-    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-    //        jqXHR.responseText, url));
-    //    }
-    //    if (jqXHR.status === 300) {
-    //      // Handle 300 Multiple Choices case for siblings
-    //      headerString = jqXHR.getAllResponseHeaders();
-    //      resolve(explorer.createObjectFromAjax(key, bucket, headerString,
-    //        jqXHR.responseText, url));
-    //    } else {
-    //      reject(jqXHR);
-    //    }
-    //  };
-    //  Ember.$.ajax(ajaxHash);
-    //});
   },
 
   /**
