@@ -98,6 +98,32 @@ export default Ember.Service.extend({
     });
   },
 
+  createCRDT(clusterName, bucketTypeName, bucketName, objectName, data) {
+    let url = `riak/clusters/${clusterName}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        contentType: 'application/json',
+        type: 'POST',
+        dataType: 'json',
+        url: url,
+        data: JSON.stringify(data)
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 204) {
+          resolve(jqXHR.status);
+        } else {
+          reject(jqXHR);
+        }
+      });
+    });
+  },
+
   /**
    *
    * @method getBucket
@@ -1197,7 +1223,7 @@ export default Ember.Service.extend({
    * @param {DS.Model} object
    * @param {String} operation
    */
-  updateObject(object, operation) {
+  updateCRDT(object, operation) {
     let clusterUrl = object.get('cluster').get('proxyUrl');
     let bucketTypeName = object.get('bucketType').get('name');
     let bucketName = object.get('bucket').get('name');

@@ -16,7 +16,7 @@ export default RiakObjectRoute.extend({
         setItems.indexOf(itemToBeSubmitted) === -1) {
 
         setItems.pushObject(itemToBeSubmitted);
-        this.explorer.updateObject(set, { add: itemToBeSubmitted });
+        this.explorer.updateCRDT(set, { add: itemToBeSubmitted });
 
         // Empty out any lingering warnings on success
         this.removeAlert();
@@ -37,7 +37,7 @@ export default RiakObjectRoute.extend({
 
       if (indexOfItem > -1) {
         setItems.removeAt(indexOfItem, 1);
-        this.explorer.updateObject(set, { remove: item });
+        this.explorer.updateCRDT(set, { remove: item });
       }
     }
   }
