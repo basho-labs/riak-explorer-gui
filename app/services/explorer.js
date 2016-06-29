@@ -182,7 +182,6 @@ export default Ember.Service.extend({
    * @return {Object} Bucket.props
    */
   getBucketProps(bucket) {
-    debugger;
     let clusterUrl = bucket.get('bucketType').get('cluster').get('proxyUrl');
     let bucketTypeName = bucket.get('bucketType').get('name');
     let bucketName = bucket.get('name');

@@ -38,10 +38,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     willTransition: function() {
       let bucketType = this.currentModel;
       bucketType.destroyRecord();
-    },
-
-    createBucketType: function() {
-      alert('button clicked');
     }
   }
 

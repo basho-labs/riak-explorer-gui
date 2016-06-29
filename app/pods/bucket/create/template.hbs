@@ -1,43 +1,21 @@
-{{#if errors}}
-  {{#alert-component type="danger"}}
-    <h4><span class="label label-danger">Errors</span></h4>
-    <ul>
-      {{#each errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
-  {{/alert-component}}
-{{/if}}
+{{alert.error-alert errors=errors}}
 
-<div class="bucket-create-container">
-  {{#dashboard-module.container class='medium-width'}}
-    {{#dashboard-module.header label='Create Bucket Form'}}
-      <div class="module-actions">
-        {{#link-to 'bucket-type' model.cluster.name model.name class="cancel action-button"}}
-          <span class="ion-close-round" aria-hidden="true"></span>
-          Cancel
-        {{/link-to}}
-      </div>
-    {{/dashboard-module.header}}
-    {{#dashboard-module.body}}
-      {{#if showSpinner}}
-        {{loading-spinner statusMessage=spinnerMessage}}
-      {{else}}
-        <form class="bucket-create-form">
-          <div class="form-group name-input">
-            <label>Name</label>
-            {{input value=(mut model.name) class='form-control'}}
-          </div>
-
-          {{add-custom-properties properties=properties}}
-
-          <div class="form-group create-button">
-            <button class="btn btn-primary" {{action 'createBucketType'}}>
-              Create Bucket
-            </button>
-          </div>
-        </form>
-      {{/if}}
-    {{/dashboard-module.body}}
-  {{/dashboard-module.container}}
-</div>
+{{#dashboard-module.container class='medium-width bucket-create-container'}}
+  {{#dashboard-module.header label='Create Bucket Form'}}
+    <div class="module-actions">
+      {{#link.explorer-resource resourceType='bucket-type' resourceObj=model.bucketType linkClass="cancel action-button"}}
+        <span class="ion-close-round" aria-hidden="true"></span>
+        Cancel
+      {{/link.explorer-resource}}
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#if showSpinner}}
+      {{loading-spinner statusMessage=spinnerMessage}}
+    {{else}}
+      {{form.explorer-input label='Name' value=model.name}}
+      {{form.add-custom-properties properties=properties}}
+      {{form.explorer-button label='Create Bucket' onButtonClick=(action 'createBucketType')}}
+    {{/if}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}

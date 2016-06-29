@@ -13,5 +13,11 @@ export default Ember.Controller.extend({
     this.set('showSpinner', false);
     this.set('properties', []);
     this.set('errors', []);
+  },
+
+  actions: {
+    createBucketType: function() {
+      alert('button clicked');
+    }
   }
 });

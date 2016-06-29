@@ -1,0 +1,9 @@
+{{#if (eq resourceType 'bucket-type')}}
+  {{#link-to 'bucket-type' resourceObj.cluster.name resourceObj.name class=linkClass}}
+    {{yield}}
+  {{/link-to}}
+{{/if}}
+
+
+
+

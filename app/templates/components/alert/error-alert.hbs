@@ -1,0 +1,10 @@
+{{#if errors}}
+  {{#alert.base-alert type="danger"}}
+    <h4><span class="label label-danger">Errors</span></h4>
+    <ul>
+      {{#each errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+  {{/alert.base-alert}}
+{{/if}}
