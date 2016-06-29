@@ -21,42 +21,51 @@
     </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    <div class="object-contents">
-      <table class="key-value-table">
-        <tbody>
-        <tr>
-          <td class="key">Content-Type</td>
-          <td class="value">
-            {{#if model.contentType}}
-              <code>{{model.contentType}}</code>
-            {{else}}
-              <code>Undefined</code>
-            {{/if}}
-          </td>
-        </tr>
-        {{#if model.showContents}}
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
+      <div class="object-contents">
+        <table class="key-value-table">
+          <tbody>
           <tr>
-            <td class="key">Content</td>
+            <td class="key">Content-Type</td>
             <td class="value">
-              {{ivy-codemirror
-                mode=model.contentTypeLanguage
-                theme='material'
-                lineWrapping=true
-                readOnly=true
-                value=model.contents}}
+              {{#if model.contentType}}
+                <code>{{model.contentType}}</code>
+              {{else}}
+                <code>Undefined</code>
+              {{/if}}
             </td>
           </tr>
-        {{/if}}
-        </tbody>
-      </table>
-    </div>
+          {{#if model.showContents}}
+            <tr>
+              <td class="key">Content</td>
+              <td class="value">
+                {{#if stringifiedContents}}
+                  {{ivy-codemirror
+                  mode=model.contentTypeLanguage
+                  theme='material'
+                  lineWrapping=true
+                  readOnly=true
+                  value=stringifiedContents}}
+                {{else}}
+                  <code>{{model.contents}}</code>
+                {{/if}}
+              </td>
+            </tr>
+          {{/if}}
+          </tbody>
+        </table>
+      </div>
+    {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
 
-{{#dashboard-module.container class='medium-width'}}
-  {{dashboard-module.header label='Object Metadata'}}
-  {{#dashboard-module.body}}
-    {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
+{{#if (not showLoadingSpinner)}}
+  {{#dashboard-module.container class='medium-width'}}
+    {{dashboard-module.header label='Object Metadata'}}
+    {{#dashboard-module.body}}
+      {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
         {{#tabs.tablist as |tablist|}}
           {{#tablist.tab}}General{{/tablist.tab}}
           {{#tablist.tab}}Secondary Indexes{{/tablist.tab}}
@@ -75,7 +84,9 @@
           {{table.object-headers headers=model.headersCustom}}
         {{/tabs.tabpanel}}
       {{/ivy-tabs}}
-  {{/dashboard-module.body}}
-{{/dashboard-module.container}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+{{/if}}
+
 
 

@@ -12,7 +12,7 @@ export default Ember.Mixin.create({
       maps: {}
     };
 
-    Ember.$.each(content, function( key, value ) {
+    Ember.$.each(content, function(key, value) {
       if (key.endsWith('_counter')) { sorted.counters[key] = value; }
 
       if (key.endsWith('_flag')) { sorted.flags[key] = value; }

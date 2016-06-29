@@ -11,7 +11,9 @@
     {{/if}}
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    {{#if model.isLoaded}}
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
       <table class="key-value-table">
         <tbody>
         <tr>
@@ -35,8 +37,6 @@
         </tr>
         </tbody>
       </table>
-    {{else}}
-      {{loading-spinner}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

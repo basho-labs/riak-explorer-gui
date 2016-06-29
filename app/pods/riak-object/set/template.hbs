@@ -12,7 +12,10 @@
     </div>
   {{/dashboard-module.header}}
   {{#dashboard-module.body}}
-    <table class="key-value-table">
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
+      <table class="key-value-table">
         <tbody>
         <tr>
           <td class="key">Set Length</td>
@@ -43,5 +46,6 @@
         </tr>
         </tbody>
       </table>
+    {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

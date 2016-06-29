@@ -56,11 +56,15 @@ export default DS.Model.extend(ObjectHeaders, MapObject, {
   url: DS.attr('string'),
 
   bucketType: function() {
-    return this.get('bucket').get('bucketType');
+    try {
+      return this.get('bucket').get('bucketType');
+    } catch(e) { return undefined; }
   }.property('bucket'),
 
   cluster: function() {
-    return this.get('bucket').get('bucketType').get('cluster');
+    try {
+      return this.get('bucket').get('bucketType').get('cluster');
+    } catch(e) { return undefined; }
   }.property('bucket'),
 
   /**

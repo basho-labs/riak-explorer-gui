@@ -21,7 +21,7 @@ export default RiakObjectRoute.extend({
       let newValue = currentValue + 1;
 
       counter.set('contents', newValue);
-      this.explorer.updateObject(counter, { increment: 1 });
+      this.explorer.updateCRDT(counter, { increment: 1 });
     },
 
     decrement: function(counter) {
@@ -29,7 +29,7 @@ export default RiakObjectRoute.extend({
       let newValue = currentValue - 1;
 
       counter.set('contents', newValue);
-      this.explorer.updateObject(counter, { decrement: 1 });
+      this.explorer.updateCRDT(counter, { decrement: 1 });
     }
   }
 });

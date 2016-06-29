@@ -23,20 +23,34 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
+  setupController: function(controller, model) {
+    this._super(controller, model);
+    controller.set('showLoadingSpinner', false);
+
+    if (model.get('contentTypeLanguage') === 'javascript') {
+      controller.set('stringifiedContents', JSON.stringify(model.get('contents'), null, ' '));
+    }
+  },
+
   actions: {
     deleteObject: function(object) {
+      let self = this;
+      let controller = this.controller;
       let clusterName = object.get('cluster').get('name');
       let bucketTypeName = object.get('bucketType').get('name');
       let bucketName = object.get('bucket').get('name');
       let objectList = object.get('bucket').get('objectList');
-      let self = this;
+
+      controller.set('loadingMessage', 'Deleting Object ...');
+      controller.set('showLoadingSpinner', true);
 
       object.destroyRecord().then(
         function onSuccess() {
           self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
         },
-        function onError() {
-          this.showAlert('alerts.error-request-was-not-processed');
+        function onFail() {
+          controller.set('showLoadingSpinner', false);
+          self.showAlert('alerts.error-request-was-not-processed');
         }
       );
     }
