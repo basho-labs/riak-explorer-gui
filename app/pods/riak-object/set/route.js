@@ -4,25 +4,17 @@ export default RiakObjectRoute.extend({
   actions: {
     /**
      * Adds an element to the set.
-     * @event addElement
-     * @param {DS.Model} set
-     * @param {String} newItem
+     * @event addSetElement
+     * @param {String} item
      */
-    addElement: function(set, newItem) {
-      let itemToBeSubmitted = newItem.trim();
-      let setItems = set.get('contents');
+    addSetElement: function(item) {
+      let set = this.currentModel;
 
-      if (itemToBeSubmitted.length &&
-        setItems.indexOf(itemToBeSubmitted) === -1) {
+      set.get('contents').pushObject(item);
+      this.explorer.updateCRDT(set, { add: item });
 
-        setItems.pushObject(itemToBeSubmitted);
-        this.explorer.updateCRDT(set, { add: itemToBeSubmitted });
-
-        // Empty out any lingering warnings on success
-        this.removeAlert();
-      } else {
-        this.showAlert('alerts.error-set-items-unique');
-      }
+      // Empty out any lingering warnings on success
+      this.removeAlert();
     },
 
     /**
@@ -31,7 +23,7 @@ export default RiakObjectRoute.extend({
      * @param {DS.Model} set
      * @param {String} item
      */
-    removeElement: function(set, item) {
+    removeSetElement: function(item) {
       let setItems = set.get('contents');
       let indexOfItem = setItems.indexOf(item);
 
@@ -39,6 +31,10 @@ export default RiakObjectRoute.extend({
         setItems.removeAt(indexOfItem, 1);
         this.explorer.updateCRDT(set, { remove: item });
       }
+    },
+
+    nonUniqueSetElement: function() {
+      this.showAlert('alerts.error-set-items-unique');
     }
   }
 });

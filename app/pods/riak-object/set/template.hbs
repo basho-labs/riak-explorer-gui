@@ -1,7 +1,7 @@
 {{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Object Details'}}
     <div class="module-actions">
-      <a href="{{model.url}}" class="btn btn-sm btn-primary">
+      <a href="{{model.url}}" class="action-button raw">
         <span class="ion-eye" aria-hidden="true"></span>
         View Raw Data
       </a>
@@ -24,24 +24,11 @@
         <tr>
           <td class="key">Set Items</td>
           <td class="value">
-            <ul class="object-content-list">
-              {{#each model.contents as |element|}}
-                <li>
-                  <code>{{element}}</code>
-                  <button type="button" class="remove-item"
-                    {{action 'removeElement' model element}}>
-                    <span class="ion-trash-a" aria-hidden="true"></span>
-                  </button>
-                </li>
-              {{/each}}
-              <li>
-                {{input value=elementToAdd class="input-add-item"}}
-                <button type="button" class="button-add-item" {{action 'addElement' model elementToAdd}}>
-                  <span class="ion-plus-round" aria-hidden="true"></span>
-                  Add Item
-                </button>
-              </li>
-            </ul>
+            {{set-editor
+            contents=model.contents
+            addSetElement='addSetElement'
+            removeSetElement='removeSetElement'
+            nonUniqueSetElement='nonUniqueSetElement'}}
           </td>
         </tr>
         </tbody>
