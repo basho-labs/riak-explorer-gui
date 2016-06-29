@@ -1,0 +1,28 @@
+{{#if (eq object.type 'Default')}}
+  {{form.explorer-input label='Content Type' value=object.contentType}}
+{{/if}}
+
+{{form.explorer-input label='Key' value=object.key}}
+
+{{#if (eq object.type 'Counter')}}
+  {{form.explorer-input type='number' label='Value' value=object.value}}
+{{else if (eq object.type 'Set')}}
+  <p>Some set stuff goes here</p>
+{{else if (eq object.type 'Map')}}
+  <label>Value</label>
+  {{ivy-codemirror
+  mode='javascript'
+  theme='material'
+  lineWrapping=true
+  value=(mut object.value)}}
+  <p class="help-block">Map must be formatted as valid json.</p>
+{{else}}
+  <label>Value</label>
+  {{ivy-codemirror
+  mode='javascript'
+  theme='material'
+  lineWrapping=true
+  value=(mut object.value)}}
+{{/if}}
+
+

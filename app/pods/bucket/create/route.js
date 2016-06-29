@@ -30,8 +30,10 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
   setupController: function(controller, model) {
     this._super(controller, model);
+    let objectType = model.get('bucketType').get('objectType');
 
     controller.clearState();
+    controller.set('object.type', objectType);
   },
 
   actions: {
@@ -40,5 +42,4 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       bucketType.destroyRecord();
     }
   }
-
 });

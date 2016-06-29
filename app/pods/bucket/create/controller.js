@@ -9,6 +9,13 @@ export default Ember.Controller.extend({
 
   errors: [],
 
+  object: {
+    key: '',
+    value: '',
+    contentType: 'application/json',
+    type: null
+  },
+
   clearState: function() {
     this.set('showSpinner', false);
     this.set('properties', []);

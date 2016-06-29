@@ -1,6 +1,6 @@
 {{alert.error-alert errors=errors}}
 
-{{#dashboard-module.container class='medium-width bucket-create-container'}}
+{{#dashboard-module.container class='small-width bucket-create-container'}}
   {{#dashboard-module.header label='Create Bucket Form'}}
     <div class="module-actions">
       {{#link.explorer-resource resourceType='bucket-type' resourceObj=model.bucketType linkClass="cancel action-button"}}
@@ -13,8 +13,18 @@
     {{#if showSpinner}}
       {{loading-spinner statusMessage=spinnerMessage}}
     {{else}}
-      {{form.explorer-input label='Name' value=model.name}}
-      {{form.add-custom-properties properties=properties}}
+      {{#dashboard-module.section title='Bucket Info'}}
+        {{form.explorer-input label='Name' value=model.name}}
+        {{form.add-custom-properties properties=properties}}
+      {{/dashboard-module.section}}
+
+      {{#dashboard-module.section title='Object Info'}}
+        {{#alert.base-alert type='info'}}
+          In order to be created, a bucket must contain at least one object. Create that first object below.
+        {{/alert.base-alert}}
+        {{new-object-inputs object=object}}
+      {{/dashboard-module.section}}
+
       {{form.explorer-button label='Create Bucket' onButtonClick=(action 'createBucketType')}}
     {{/if}}
   {{/dashboard-module.body}}

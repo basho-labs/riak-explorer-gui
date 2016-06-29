@@ -1,5 +1,5 @@
 .bucket-create-container {
-  .name-input {
+  input[type='text'], input[type='number'] {
     max-width: 350px;
   }
 
@@ -17,5 +17,14 @@
   .add-property {
     @extend a;
     cursor: pointer;
+  }
+
+  .alert {
+    max-width: 350px;
+  }
+
+  .CodeMirror {
+    min-height: 100px;
+    margin-bottom: 5px;
   }
 }
