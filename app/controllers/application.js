@@ -50,6 +50,7 @@ export default Ember.Controller.extend({
       case 'bucket-type.create':
       case 'bucket-type.edit':
       case 'bucket':
+      case 'bucket.create':
       case 'riak-object':
       case 'riak-object.edit':
       case 'riak-object.counter':

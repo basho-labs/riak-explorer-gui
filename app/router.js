@@ -16,6 +16,7 @@ Router.map(function() {
   this.route('bucket-type.create', {path: '/cluster/:clusterName/data/bucket_type/create'});
   this.route('bucket-type.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/edit'});
   this.route('bucket', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName'});
+  this.route('bucket.create', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/create'});
   this.route('riak-object', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:objectName'});
   this.route('riak-object.edit', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/key/:objectName/edit'});
   this.route('riak-object.counter', {path: '/cluster/:clusterName/data/bucket_type/:bucketTypeName/bucket/:bucketName/counter/:objectName'});

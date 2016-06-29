@@ -40,6 +40,11 @@
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Buckets'}}
         <div class="module-actions">
+          {{#link-to 'bucket.create' model.cluster.name model.name class='action-button create'}}
+            <span class="ion-plus-circled" aria-hidden="true"></span>
+            Create New Bucket
+          {{/link-to}}
+
           {{#if model.cluster.developmentMode}}
             <button type="button" class="action-button refresh" {{action 'showModal'}}>
               <span class="ion-refresh" aria-hidden="true"></span>
@@ -105,7 +110,6 @@
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
-
 
 {{!-- Modal Template --}}
 {{#if modalVisible}}

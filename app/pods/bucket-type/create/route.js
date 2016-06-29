@@ -25,7 +25,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.setViewLabel({
       preLabel: 'Create Bucket Type'
     });
-    this.simulateLoad();
   },
 
   setupController: function(controller, model) {

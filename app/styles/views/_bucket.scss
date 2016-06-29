@@ -1,0 +1,23 @@
+.bucket-create-container {
+  .bucket-create-form {
+    .name-input {
+      max-width: 350px;
+    }
+
+    .property-input {
+      max-width: 170px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .remove-property {
+      font-size: 9px;
+      cursor: pointer;
+    }
+
+    .add-property {
+      @extend a;
+      cursor: pointer;
+    }
+  }
+}

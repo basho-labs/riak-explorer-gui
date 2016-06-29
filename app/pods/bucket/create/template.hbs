@@ -1,0 +1,65 @@
+{{#if errors}}
+  {{#alert-component type="danger"}}
+    <h4><span class="label label-danger">Errors</span></h4>
+    <ul>
+      {{#each errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+  {{/alert-component}}
+{{/if}}
+
+<div class="bucket-create-container">
+  {{#dashboard-module.container class='medium-width'}}
+    {{#dashboard-module.header label='Create Bucket Form'}}
+      <div class="module-actions">
+        {{#link-to 'bucket-type' model.cluster.name model.name class="cancel action-button"}}
+          <span class="ion-close-round" aria-hidden="true"></span>
+          Cancel
+        {{/link-to}}
+      </div>
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      {{#if showSpinner}}
+        {{loading-spinner statusMessage=spinnerMessage}}
+      {{else}}
+        <form class="bucket-create-form">
+          <div class="form-group name-input">
+            <label>Name</label>
+            {{input value=(mut model.name) class='form-control'}}
+          </div>
+
+          {{#each properties as |property index|}}
+            <div class="property-container">
+              <div class="form-group property-input">
+                <label>Property Key</label>
+                {{input value=property.key class='form-control'}}
+              </div>
+              <div class="form-group property-input">
+                <label>Property Value</label>
+                {{input value=property.value class='form-control'}}
+              </div>
+
+            <span class="remove-property label label-danger" {{action 'removeProperty' index}}>
+              remove
+            </span>
+            </div>
+          {{/each}}
+
+          <div class="form-group add-property">
+          <span {{action 'addNewProperty'}}>
+            <span class="ion-plus-circled" aria-hidden="true"></span>
+            Add bucket type property
+          </span>
+          </div>
+
+          <div class="form-group create-button">
+            <button class="btn btn-primary" {{action 'createBucketType'}}>
+              Create Bucket
+            </button>
+          </div>
+        </form>
+      {{/if}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+</div>
