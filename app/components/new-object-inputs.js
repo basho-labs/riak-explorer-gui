@@ -1,5 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  object: null
+  object: {
+    key: null,
+    value: null,
+    contentType: null,
+    type: null
+  }
 });

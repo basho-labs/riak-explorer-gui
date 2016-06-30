@@ -22,10 +22,13 @@
         {{#alert.base-alert type='info'}}
           In order to be created, a bucket must contain at least one object. Create that first object below.
         {{/alert.base-alert}}
-        {{new-object-inputs object=object}}
+
+        {{#each model.objects as |object|}}
+          {{new-object-inputs object=object}}
+        {{/each}}
       {{/dashboard-module.section}}
 
-      {{form.explorer-button label='Create Bucket' onButtonClick=(action 'createBucketType')}}
+      {{form.explorer-button label='Create Bucket' buttonClick='createBucket'}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

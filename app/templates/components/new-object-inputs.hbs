@@ -1,28 +1,35 @@
+{{form.explorer-input label='Key' value=object.name}}
+
+<div class="form-group">
+  <label>Value</label>
+
+  {{#if (eq object.type 'Counter')}}
+    {{input type='number' value=object.contents class='form-control'}}
+  {{else if (eq object.type 'Set')}}
+    {{ivy-codemirror
+    mode='javascript'
+    theme='material'
+    lineWrapping=true
+    value=(mut object.contents)}}
+    <p class="help-block">Set items should be entered in comma seperated value format</p>
+  {{else if (eq object.type 'Map')}}
+    {{ivy-codemirror
+    mode='javascript'
+    theme='material'
+    lineWrapping=true
+    value=(mut object.contents)}}
+    <p class="help-block">Map must be formatted as valid json</p>
+  {{else}}
+    {{ivy-codemirror
+    mode='javascript'
+    theme='material'
+    lineWrapping=true
+    value=(mut object.contents)}}
+  {{/if}}
+</div>
+
 {{#if (eq object.type 'Default')}}
   {{form.explorer-input label='Content Type' value=object.contentType}}
-{{/if}}
-
-{{form.explorer-input label='Key' value=object.key}}
-
-{{#if (eq object.type 'Counter')}}
-  {{form.explorer-input type='number' label='Value' value=object.value}}
-{{else if (eq object.type 'Set')}}
-  <p>Some set stuff goes here</p>
-{{else if (eq object.type 'Map')}}
-  <label>Value</label>
-  {{ivy-codemirror
-  mode='javascript'
-  theme='material'
-  lineWrapping=true
-  value=(mut object.value)}}
-  <p class="help-block">Map must be formatted as valid json.</p>
-{{else}}
-  <label>Value</label>
-  {{ivy-codemirror
-  mode='javascript'
-  theme='material'
-  lineWrapping=true
-  value=(mut object.value)}}
 {{/if}}
 
 

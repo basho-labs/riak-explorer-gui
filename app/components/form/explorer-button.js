@@ -5,5 +5,11 @@ export default Ember.Component.extend({
 
   type: 'primary',
 
-  label: null
+  label: null,
+
+  actions: {
+    handleButtonClick: function() {
+      this.sendAction('buttonClick');
+    }
+  }
 });

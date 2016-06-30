@@ -9,9 +9,13 @@ export default RiakObjectRoute.extend({
      */
     addSetElement: function(item) {
       let set = this.currentModel;
+      let contents = set.get('contents');
 
-      set.get('contents').pushObject(item);
-      this.explorer.updateCRDT(set, { add: item });
+      this.explorer.updateCRDT(set, { add: item }).then(function() {
+        // TODO: items are alphasorted on load, should these be injected alphabetically???
+        //       may not be as obvious to user that the object was inserted. Maybe add loading state?
+        contents.pushObject(item);
+      });
 
       // Empty out any lingering warnings on success
       this.removeAlert();
@@ -19,18 +23,18 @@ export default RiakObjectRoute.extend({
 
     /**
      * Removes specified element from the set.
-     * @event removeElement
-     * @param {DS.Model} set
+     * @event removeSetElement
      * @param {String} item
      */
     removeSetElement: function(item) {
-      let setItems = set.get('contents');
-      let indexOfItem = setItems.indexOf(item);
+      let set = this.currentModel;
+      let contents = set.get('contents');
+      let index = contents.indexOf(item);
 
-      if (indexOfItem > -1) {
-        setItems.removeAt(indexOfItem, 1);
-        this.explorer.updateCRDT(set, { remove: item });
-      }
+
+      this.explorer.updateCRDT(set, { remove: item }).then(function() {
+        contents.removeAt(index, 1);
+      });
     },
 
     nonUniqueSetElement: function() {
