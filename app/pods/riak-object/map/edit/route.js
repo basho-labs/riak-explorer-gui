@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import RiakObjectRoute from '../../route';
 import _ from 'lodash/lodash';
 
@@ -19,7 +20,7 @@ export default RiakObjectRoute.extend({
 
   // recursive function that iterates through a map and creates the appropriate object
   // for the explorer service call
-  mapData: function(map) {
+  serializeMap: function(map) {
     let self = this;
     let updateObj = { "update": {} };
 
@@ -36,7 +37,7 @@ export default RiakObjectRoute.extend({
           updateObj.update[key] = { "add_all": map[key] };
           break;
         case key.endsWith('_map'):
-          updateObj.update[key] =  self.mapData(map[key]);
+          updateObj.update[key] =  self.serializeMap(map[key]);
           break;
         default:
           break;
@@ -46,22 +47,101 @@ export default RiakObjectRoute.extend({
     return updateObj;
   },
 
-  // TODO: Add validation for correct name endings in keys
-  isValid: function() {
-    let map = this.currentModel;
-    let controller = this.controller;
-    let isValid;
+  isJsonParseable: function(string) {
+    let errors = this.controller.get('errors');
+    let isParseable;
 
     try {
-      map.set('contents', JSON.parse(controller.get('stringifiedContents')));
-
-      isValid = true;
+      JSON.parse(string);
+      isParseable = true;
     } catch(e) {
+      errors.pushObject(`Invalid JSON, must be parseable. Make sure to wrap any keys in double quotes. You can use a linter at <a href="http://jsonlint.com/" target="_blank">JSONLint</a>.`);
       this.scrollToTop();
-      this.showAlert('alerts.error-must-be-json-parseable');
-
-      isValid = false;
+      isParseable = false;
     }
+
+    return isParseable;
+  },
+
+  isObject: function(data) {
+    let isObject = _.isPlainObject(data);
+
+    if (!isObject) {
+      this.scrollToTop();
+      alert('Map must be in javascript object notation.');
+    }
+
+    return isObject;
+  },
+
+  hasCorrectKeyNameEndingsAndValues: function(object) {
+    let errors = this.controller.get('errors');
+    let invalidKeys;
+    let isValid;
+
+    invalidKeys = Object.keys(object).filter(function(key) {
+      let value = object[key];
+      let valid;
+
+      switch(true) {
+        case key.endsWith('_counter'):
+          valid = _.isNumber(value);
+          if (!valid) { errors.pushObject(`The value of ${key} must be a number value.`); }
+          break;
+        case key.endsWith('_register'):
+          valid = _.isString(value);
+          if (!valid) { errors.pushObject(`The value of ${key} must be a string value.`); }
+          break;
+        case key.endsWith('_flag'):
+          valid = _.isBoolean(value);
+          if (!valid) { errors.pushObject(`The value of ${key} must be a boolean value.`); }
+          break;
+        case key.endsWith('_set'):
+          valid = _.isArray(value);
+          if (!valid) { errors.pushObject(`The value of ${key} must be a array.`); }
+          break;
+        case key.endsWith('_map'):
+          valid = _.isPlainObject(value);
+          if (!valid) { errors.pushObject(`The value of ${key} must be a js object.`); }
+          break;
+        default:
+          valid = false;
+          errors.pushObject(`${key} property is not named correctly. The property must end with '_counter', '_register', '_flag', '_set', or '_map' based on the desired type.`);
+          break;
+      }
+
+      return !valid;
+    });
+
+    isValid = !invalidKeys.length;
+
+    return isValid;
+  },
+
+  isValid: function(map, stringContents) {
+    let isJSON;
+    let contents;
+    let isObject;
+    let correctValues;
+    let isValid;
+
+    // First step validations
+    isJSON = this.isJsonParseable(stringContents);
+
+    if (isJSON) {
+      contents = JSON.parse(stringContents);
+
+      // Second step validations
+      isObject = this.isObject(contents);
+      correctValues = this.hasCorrectKeyNameEndingsAndValues(contents);
+    }
+
+    isValid = isJSON &&
+              isObject &&
+              correctValues;
+
+    // Set valid contents on map object
+    if (isValid) { map.set('contents', contents); }
 
     return isValid;
   },
@@ -75,13 +155,15 @@ export default RiakObjectRoute.extend({
       let self = this;
       let map = this.currentModel;
       let controller = this.controller;
-      let clusterName = map.get('cluster').get('name');
-      let bucketTypeName = map.get('bucketType').get('name');
-      let bucketName = map.get('bucket').get('name');
-      let objectName = map.get('name');
 
-      if (this.isValid()) {
-        let data = this.mapData(map.get('contents'));
+      controller.set('errors', []);
+
+      if (this.isValid(map, controller.get('stringifiedContents'))) {
+        let clusterName = map.get('cluster').get('name');
+        let bucketTypeName = map.get('bucketType').get('name');
+        let bucketName = map.get('bucket').get('name');
+        let objectName = map.get('name');
+        let data = this.serializeMap(map.get('contents'));
         let createNewMap = _.partial(self.explorer.createCRDT, clusterName, bucketTypeName, bucketName, objectName, data);
 
         controller.set('loadingMessage', 'Updating Map ...');

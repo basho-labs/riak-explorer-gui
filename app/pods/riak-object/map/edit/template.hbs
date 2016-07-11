@@ -1,3 +1,14 @@
+{{#if errors}}
+  {{#alert-component type="danger"}}
+    <h4><span class="label label-danger">Errors</span></h4>
+    <ul>
+      {{#each errors as |error|}}
+        <li>{{{error}}}</li>
+      {{/each}}
+    </ul>
+  {{/alert-component}}
+{{/if}}
+
 {{#dashboard-module.container class='medium-width'}}
   {{#dashboard-module.header label='Edit Map'}}
     <div class="module-actions">
