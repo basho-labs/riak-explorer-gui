@@ -3,8 +3,13 @@ import Alerts from '../../../mixins/routes/alerts';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
+import Validations from '../../../utils/validations';
+import Formatter from '../../../utils/riak-object-formatter';
+import _ from 'lodash/lodash';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
+  firstObjectRef: null,
+
   model: function(params) {
     let self = this;
 
@@ -19,6 +24,9 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         bucket: bucket,
         type: bucketType.get('dataTypeName')
       });
+
+      // Save a reference to this object as we need it in other instances
+      self.set('firstObjectRef', riakObject);
 
       return bucket;
     });
@@ -36,110 +44,93 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
-  serializeObjectContents: function(riakObject) {
-    let type = riakObject.get('type');
-    let content = riakObject.get('contents');
-    let parsed;
-    let serialized;
+  isValidBucket: function(bucket) {
+    let bucketName = bucket.get('name');
 
-    // TODO: Make mixin
+    return Validations.hasName('bucket', bucketName) &&
+           Validations.noWhiteSpaceInName('bucket', bucketName);
+  },
+
+  isValidObject: function(object) {
+    let objectType = object.get('type');
+    let objectName = object.get('name');
+
+    return Validations.hasName('buckets object', objectName) &&
+           Validations.noWhiteSpaceInName('buckets object', objectName) &&
+           Validations.objectHasCorrectValueType(objectType, objectName, Validations.isJsonParseable(object.get('contents')));
+  },
+
+  isValid: function(bucket, object) {
+    let isValid;
+
     try {
-      parsed = JSON.parse(content);
-    } catch (e) {
-      // json parse error
+      isValid = this.isValidBucket(bucket) && this.isValidObject(object);
+    } catch(e) {
+      this.controller.get('errors').pushObject(e.message);
+      this.scrollToTop();
     }
 
-    switch(type) {
-      case 'Map':
-        serialized = {"update": parsed};
-        break;
-      case 'Set':
-        serialized = {"add_all": parsed};
-        break;
-      case 'Counter':
-        serialized = {"increment": parsed};
-        break;
-      case 'Default':
-        serialized = parsed;
-        break;
-    }
-
-    return serialized;
-  },
-
-  createCRDTBucket: function(bucket) {
-    if (this.isValidCRDT(bucket)) {
-      let self = this;
-      let controller = this.controller;
-
-      controller.set('errors', []);
-      controller.set('spinnerMessage', 'Creating Bucket-Type ...');
-      controller.set('showSpinner', true);
-
-      let riakObject = bucket.get('objects').toArray()[0]; // TODO: This assumes only one object....
-      let data = this.serializeObjectContents(riakObject);
-
-      // TODO: Add create function that proxies update
-      this.explorer.updateCRDT(riakObject, data)
-        .then(function() {
-          let bucketType = bucket.get('bucketType');
-
-          // TODO: For bucket list, should actually be updating the existing cache list verses creating new, but need service created first
-          return Ember.RSVP.allSettled([
-            self.explorer.refreshObjectList(bucket),
-            self.explorer.refreshBucketList(bucketType)
-          ]);
-        })
-        .then(
-          function onSuccess() {
-            let clusterName = bucket.get('cluster').get('name');
-            let bucketTypeName = bucket.get('bucketType').get('name');
-            let bucketName = bucket.get('name');
-
-            self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
-          },
-          function onFail() {
-            controller.set('showSpinner', false);
-            self.render('alerts.error-request-was-not-processed', {
-              into: 'application',
-              outlet: 'alert'
-            });
-          }
-      );
-    }
-  },
-
-  createDefaultBucket: function(bucket) {
-
-  },
-
-  // TODO: Add validations
-  isValidDefault: function(bucket) {
-    // Needs to validate that it is json parseable
-    return true;
-  },
-
-  // TODO: Add validations
-  isValidCRDT: function(bucket) {
-    // needs to validate based on the type
-    return true;
+    return isValid;
   },
 
   actions: {
     willTransition: function() {
-      //let bucket = this.currentModel;
-      //bucket.get('objects').forEach(function(obj) { obj.destroyRecord(); });
-      //bucket.destroyRecord();
+      let bucket = this.currentModel;
+      let object = this.get('firstObjectRef');
+
+      bucket.destroyRecord();
+      object.destroyRecord();
     },
 
     didTransition: function() {
-      return this.controller.set('showSpinner', false);
+      this.controller.set('errors', []);
+      this.controller.set('showSpinner', false);
     },
 
     createBucket: function() {
+      let self = this;
+      let controller = this.controller;
       let bucket = this.currentModel;
+      let riakObject = this.get('firstObjectRef');
 
-      return (bucket.get('bucketType').get('isCRDT')) ? this.createCRDTBucket(bucket) : this.createDefaultBucket(bucket);
+      controller.set('errors', []);
+
+      if (this.isValid(bucket, riakObject)) {
+        let JSON = Validations.isJsonParseable(riakObject.get('contents'));
+        let serializedData = Formatter.formatRiakObject(riakObject.get('type'), JSON);
+        let createBucket = bucket.get('bucketType').get('isCRDT') ? _.partial(this.explorer.updateCRDT, riakObject, serializedData) : _.partial(riakObject.save);
+
+        controller.set('spinnerMessage', 'Creating Bucket-Type ...');
+        controller.set('showSpinner', true);
+
+        // TODO: Add create function that proxies update
+        createBucket()
+          .then(function() {
+            let bucketType = bucket.get('bucketType');
+
+            return Ember.RSVP.allSettled([
+              self.explorer.refreshBucketList(bucketType),
+              self.explorer.refreshObjectList(bucket)
+            ]);
+          })
+          .then(
+            function onSuccess() {
+              let clusterName = bucket.get('cluster').get('name');
+              let bucketTypeName = bucket.get('bucketType').get('name');
+              let bucketName = bucket.get('name');
+
+              self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
+            },
+            function onFail() {
+              controller.set('showSpinner', false);
+              // TODO: Don't use template
+              self.render('alerts.error-request-was-not-processed', {
+                into: 'application',
+                outlet: 'alert'
+              });
+            }
+          );
+      }
     }
   }
 });

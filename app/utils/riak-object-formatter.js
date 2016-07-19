@@ -1,4 +1,3 @@
-// recursive function that formats a raw js object into a map object for the explorer service
 export function formatNewMap(map) {
   let formatted = { "update": {} };
 
@@ -15,12 +14,31 @@ export function formatNewMap(map) {
         formatted.update[key] = { "add_all": map[key] };
         break;
       case key.endsWith('_map'):
+        // recursively call this function again
         formatted.update[key] =  formatNewMap(map[key]);
         break;
       default:
         break;
     }
   });
+
+  return formatted;
+}
+
+export function formatRiakObject(type, value) {
+  let formatted = {};
+
+  switch(type) {
+    case 'Counter':
+      formatted["increment"] = value;
+      break;
+    case 'Set':
+      formatted["add_all"] = value;
+      break;
+    case 'Map':
+      formatted = formatNewMap(value);
+      break;
+  }
 
   return formatted;
 }

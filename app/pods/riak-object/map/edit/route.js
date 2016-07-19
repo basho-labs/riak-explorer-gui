@@ -38,7 +38,7 @@ export default RiakObjectRoute.extend({
   },
 
   actions: {
-    // TODO: Ineffecient function
+    // TODO: Inefficient function
     //  Destroys and then immediately creates new record. Update directly is possible but requires
     //  creating a in memory version of the new map and comparing against the previous version, and creating all the differences
     //  for each field. Replace if performance becomes an issue.

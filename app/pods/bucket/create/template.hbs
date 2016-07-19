@@ -18,11 +18,11 @@
         {{form.add-custom-properties properties=properties}}
       {{/dashboard-module.section}}
 
-      {{#dashboard-module.section title='Object Info'}}
-        {{#alert.base-alert type='info'}}
-          In order to be created, a bucket must contain at least one object. Create that first object below.
-        {{/alert.base-alert}}
+      {{#alert.base-alert type='info'}}
+        In order to be created, a bucket must contain at least one object. Create that first object below.
+      {{/alert.base-alert}}
 
+      {{#dashboard-module.section title='Object Info'}}
         {{#each model.objects as |object|}}
           {{new-object-inputs object=object}}
         {{/each}}
