@@ -8,8 +8,6 @@ import Formatter from '../../../utils/riak-object-formatter';
 import _ from 'lodash/lodash';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
-  firstObjectRef: null,
-
   model: function(params) {
     let self = this;
 
@@ -24,9 +22,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
         bucket: bucket,
         type: bucketType.get('dataTypeName')
       });
-
-      // Save a reference to this object as we need it in other instances
-      self.set('firstObjectRef', riakObject);
 
       return bucket;
     });
@@ -73,13 +68,19 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     return isValid;
   },
 
+  bucketsFirstObject: function(bucket) {
+    return _.head(bucket.get('objects').toArray());
+  },
+
   actions: {
     willTransition: function() {
       let bucket = this.currentModel;
-      let object = this.get('firstObjectRef');
+      let object = this.bucketsFirstObject(bucket);
 
-      bucket.destroyRecord();
-      object.destroyRecord();
+      // Order of removal matters here, as object dependencies are looked up during the removal process
+      object.destroyRecord().then(function() {
+        bucket.destroyRecord();
+      });
     },
 
     didTransition: function() {
@@ -91,23 +92,28 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       let self = this;
       let controller = this.controller;
       let bucket = this.currentModel;
-      let riakObject = this.get('firstObjectRef');
+      let riakObject = this.bucketsFirstObject(bucket);
+      let clusterName = bucket.get('cluster').get('name');
+      let bucketType = bucket.get('bucketType');
+      let bucketTypeName = bucketType.get('name');
+      let bucketName = bucket.get('name');
+      let objectName = riakObject.get('name');
 
       controller.set('errors', []);
 
       if (this.isValid(bucket, riakObject)) {
-        let JSON = Validations.isJsonParseable(riakObject.get('contents'));
-        let serializedData = Formatter.formatRiakObject(riakObject.get('type'), JSON);
-        let createBucket = bucket.get('bucketType').get('isCRDT') ? _.partial(this.explorer.updateCRDT, riakObject, serializedData) : _.partial(riakObject.save);
+        let contents = riakObject.set('contents', Validations.isJsonParseable(riakObject.get('contents'))); // set contents of the object as the JSON parsed version;
+        let serializedData = Formatter.formatRiakObject(riakObject.get('type'), contents);
+        let createBucket = bucketType.get('isCRDT') ?
+          _.partial(this.explorer.createCRDT, clusterName, bucketTypeName, bucketName, objectName, serializedData) :
+          _.bind(riakObject.save, riakObject);
 
         controller.set('spinnerMessage', 'Creating Bucket-Type ...');
         controller.set('showSpinner', true);
 
-        // TODO: Add create function that proxies update
+        // createBucket()
         createBucket()
           .then(function() {
-            let bucketType = bucket.get('bucketType');
-
             return Ember.RSVP.allSettled([
               self.explorer.refreshBucketList(bucketType),
               self.explorer.refreshObjectList(bucket)
@@ -115,10 +121,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
           })
           .then(
             function onSuccess() {
-              let clusterName = bucket.get('cluster').get('name');
-              let bucketTypeName = bucket.get('bucketType').get('name');
-              let bucketName = bucket.get('name');
-
               self.transitionTo('bucket', clusterName, bucketTypeName, bucketName);
             },
             function onFail() {

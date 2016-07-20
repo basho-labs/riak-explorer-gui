@@ -115,7 +115,7 @@ export default Ember.Mixin.create({
    */
   isCRDT: function() {
     if (this.get('props')) {
-      return this.get('props').datatype;
+      return this.get('props').datatype || false;
     }
   }.property('props'),
 

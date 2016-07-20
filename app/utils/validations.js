@@ -134,6 +134,9 @@ export function objectHasCorrectValueType(type, objectName, value) {
     case 'Map':
       valid = _.isPlainObject(value) && this.mapHasCorrectKeyNameEndingsAndValues(value);
       break;
+    default:
+      valid = _.isPlainObject(value);
+      break;
   }
 
   if (!valid) { throw new Error(this.errorMessageForType(type, objectName)); }

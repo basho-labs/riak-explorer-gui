@@ -28,6 +28,10 @@ export default ApplicationAdapter.extend({
     return promise;
   },
 
+  createRecord(store, type, snapshot) {
+    return this.updateRecord(store, type, snapshot);
+  },
+
   /**
    * Performs a limited 'Delete Bucket' command via the Explorer API.
    * (This is done as a convenience operation for Devs, since Riak doesn't
@@ -84,7 +88,7 @@ export default ApplicationAdapter.extend({
     return Ember.$.ajax({
       type: 'PUT',
       processData: false,
-      contentType: object.get('contentType'),
+      contentType: object.get('contentType') || 'application/json',
       url: url,
       headers: headers,
       data: JSON.stringify(object.get('contents'))
