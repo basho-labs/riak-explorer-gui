@@ -32,6 +32,7 @@ Router.map(function() {
   this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});
   this.route('log-file', {path: '/cluster/:clusterName/ops/nodes/:nodeName/logs/:logName'});
   this.route('config-file', {path: '/cluster/:clusterName/ops/nodes/:nodeName/configs/:configName'});
+  this.route('stats-graphs', {path: '/cluster/:clusterName/ops/nodes/:nodeName/stats-graphs'});
 
   // Cluster-Query Routes
   this.route('search-index', {path: '/cluster/:clusterName/query/index/:searchIndexName'});

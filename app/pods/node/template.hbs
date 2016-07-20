@@ -9,6 +9,7 @@
         {{#tablist.tab}}Statistics{{/tablist.tab}}
         {{#tablist.tab}}Log Files{{/tablist.tab}}
         {{#tablist.tab}}Config Files{{/tablist.tab}}
+        {{link-to 'Graphs' 'stats-graphs' model.cluster.name model.name}}
       {{/tabs.tablist}}
 
       {{#if model.cluster.isEnterpriseEdition}}
