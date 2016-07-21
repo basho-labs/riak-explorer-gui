@@ -1,8 +1,13 @@
 import DS from 'ember-data';
 import _ from 'lodash/lodash';
 import NodeStatsHelp from '../../utils/riak-help/riak_status';
+import { storageFor } from 'ember-local-storage';
 
 export default DS.Model.extend({
+  init: function() {
+    this.set('statsHistory', []);
+  },
+
   /**
    * Cluster the node belongs to.
    * @property cluster
@@ -61,6 +66,14 @@ export default DS.Model.extend({
    */
   stats: DS.attr(),
 
+  /**
+   * Array of stats property objects with an associated timestamp
+   *
+   * @property statsHistory
+   * @type Array
+   */
+  statsHistory: storageFor('node-stats'),
+
   statsByCategory: DS.attr(),
 
   /**
@@ -81,6 +94,14 @@ export default DS.Model.extend({
   isHealthy: function() {
     return !!(this.get('available') && this.get('status') === 'valid');
   }.property('available', 'status'),
+
+  logStatHistory: function() {
+    // Storing a lot of large objects, may want to only store diffs and restore when needed
+    return this.get('statsHistory').pushObject({
+      timestamp: Date.now(),
+      stats: this.get('stats')
+    });
+  }.observes('stats'),
 
   setStatsByCategory: function() {
     if (!this.get('statsByCategory')) {
