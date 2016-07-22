@@ -1,1 +1,6 @@
-Hello World
+{{#dashboard-module.container}}
+  {{dashboard-module.header label='Node Graph Data'}}
+  {{#dashboard-module.body}}
+    {{high-charts chartOptions=chartOptions content=chartData}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
