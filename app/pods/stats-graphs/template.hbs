@@ -1,6 +1,24 @@
-{{#dashboard-module.container}}
-  {{dashboard-module.header label='Node Graph Data'}}
-  {{#dashboard-module.body}}
-    {{high-charts chartOptions=chartOptions content=chartData}}
-  {{/dashboard-module.body}}
-{{/dashboard-module.container}}
+{{#each currentGraphs as |statName|}}
+  {{#dashboard-module.container}}
+
+    {{#dashboard-module.header}}
+      <div class="module-label">
+        {{#power-select
+        selected=statName
+        options=currentlyAvailableStats
+        searchEnabled=true
+        onchange=(action "updateGraphName" statName)
+        class='node-chart-select'
+        as |statOption|}}
+          {{statOption}}
+        {{/power-select}}
+      </div>
+
+
+
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      {{charts.node-stat node=model statToGraph=statName}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+{{/each}}
