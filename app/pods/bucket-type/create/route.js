@@ -106,14 +106,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   },
 
   actions: {
-    willTransition: function() {
-      let bucketType = this.currentModel;
-
-      // Destroy in memory model.
-      // If the bucket-type is successfully created, it will be saved through the normal Ember Data flow.
-      bucketType.destroyRecord();
-    },
-
     createBucketType: function() {
       let self = this;
       let controller = this.controller;

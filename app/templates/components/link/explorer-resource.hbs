@@ -3,3 +3,10 @@
     {{yield}}
   {{/link-to}}
 {{/if}}
+
+{{#if (eq resourceType 'bucket')}}
+  {{#link-to 'bucket' resourceObj.cluster.name resourceObj.bucketType.name resourceObj.name class=linkClass}}
+    {{yield}}
+  {{/link-to}}
+{{/if}}
+

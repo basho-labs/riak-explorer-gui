@@ -25,12 +25,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   },
 
   actions: {
-    willTransition: function() {
-      let schema = this.currentModel;
-
-      schema.destroyRecord();
-    },
-
     createSchema: function(clusterName, schemaName, schemaContent) {
       let self = this;
       let xmlDoc = null;

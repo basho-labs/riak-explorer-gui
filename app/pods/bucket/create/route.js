@@ -73,16 +73,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   },
 
   actions: {
-    willTransition: function() {
-      let bucket = this.currentModel;
-      let object = this.bucketsFirstObject(bucket);
-
-      // Order of removal matters here, as object dependencies are looked up during the removal process
-      object.destroyRecord().then(function() {
-        bucket.destroyRecord();
-      });
-    },
-
     didTransition: function() {
       this.controller.set('errors', []);
       this.controller.set('showSpinner', false);

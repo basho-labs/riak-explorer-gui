@@ -55,13 +55,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   },
 
   actions: {
-    willTransition: function() {
-      let table = this.currentModel;
-
-      // Destroy in memory model. If the table is successfully created, it will be saved through the normal Ember Data flow.
-      table.destroyRecord();
-    },
-
     createTable: function(table, statement) {
       let self = this;
       let controller = this.controller;
