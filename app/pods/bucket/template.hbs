@@ -43,6 +43,11 @@
   {{#dashboard-module.container class='medium-width'}}
     {{#dashboard-module.header label='Objects'}}
       <div class="module-actions">
+        {{#link-to 'riak-object.create' model.cluster.name model.bucketType.name model.name class='action-button create'}}
+          <span class="ion-plus-circled" aria-hidden="true"></span>
+          Create New Object
+        {{/link-to}}
+
         {{#if model.cluster.developmentMode}}
           <button type="button" class="action-button refresh" {{action 'showModal'}}>
               <span class="ion-refresh" aria-hidden="true"></span>
