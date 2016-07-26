@@ -169,7 +169,3 @@ export function errorMessageForType(type, objectName) {
 
   return message;
 }
-
-// Default Riak Object
-
-

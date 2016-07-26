@@ -30,35 +30,3 @@ export default Ember.Component.extend({
     }
   }
 });
-
-// addElement: function(set, newItem) {
-//   let itemToBeSubmitted = newItem.trim();
-//   let setItems = set.get('contents');
-//
-//   if (itemToBeSubmitted.length &&
-//     setItems.indexOf(itemToBeSubmitted) === -1) {
-//
-//     setItems.pushObject(itemToBeSubmitted);
-//     this.explorer.updateCRDT(set, { add: itemToBeSubmitted });
-//
-//     // Empty out any lingering warnings on success
-//     this.removeAlert();
-//   } else {
-//     this.showAlert('alerts.error-set-items-unique');
-//   }
-// },
-
-// /**
-//  * Removes specified element from the set.
-//  * @event removeElement
-//  * @param {DS.Model} set
-//  * @param {String} item
-//  */
-// removeElement: function(item) {
-//   if (this.get('contents').indexOf(item) > -1) {
-//     this.sendAction('addSetElement', trimmedItem);
-//
-//     setItems.removeAt(indexOfItem, 1);
-//     this.explorer.updateCRDT(set, { remove: item });
-//   }
-// }

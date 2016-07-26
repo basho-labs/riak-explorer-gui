@@ -31,7 +31,6 @@ export default RiakObjectRoute.extend({
       let contents = set.get('contents');
       let index = contents.indexOf(item);
 
-
       this.explorer.updateCRDT(set, { remove: item }).then(function() {
         contents.removeAt(index, 1);
       });
