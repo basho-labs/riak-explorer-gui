@@ -4,41 +4,40 @@ export default RiakObjectRoute.extend({
   actions: {
     /**
      * Adds an element to the set.
-     * @event addElement
-     * @param {DS.Model} set
-     * @param {String} newItem
+     * @event addSetElement
+     * @param {String} item
      */
-    addElement: function(set, newItem) {
-      let itemToBeSubmitted = newItem.trim();
-      let setItems = set.get('contents');
+    addSetElement: function(item) {
+      let set = this.currentModel;
+      let contents = set.get('contents');
 
-      if (itemToBeSubmitted.length &&
-        setItems.indexOf(itemToBeSubmitted) === -1) {
+      this.explorer.updateCRDT(set, { add: item }).then(function() {
+        // TODO: items are alphasorted on load, should these be injected alphabetically???
+        //       may not be as obvious to user that the object was inserted. Maybe add loading state?
+        contents.pushObject(item);
+      });
 
-        setItems.pushObject(itemToBeSubmitted);
-        this.explorer.updateCRDT(set, { add: itemToBeSubmitted });
-
-        // Empty out any lingering warnings on success
-        this.removeAlert();
-      } else {
-        this.showAlert('alerts.error-set-items-unique');
-      }
+      // Empty out any lingering warnings on success
+      this.removeAlert();
     },
 
     /**
      * Removes specified element from the set.
-     * @event removeElement
-     * @param {DS.Model} set
+     * @event removeSetElement
      * @param {String} item
      */
-    removeElement: function(set, item) {
-      let setItems = set.get('contents');
-      let indexOfItem = setItems.indexOf(item);
+    removeSetElement: function(item) {
+      let set = this.currentModel;
+      let contents = set.get('contents');
+      let index = contents.indexOf(item);
 
-      if (indexOfItem > -1) {
-        setItems.removeAt(indexOfItem, 1);
-        this.explorer.updateCRDT(set, { remove: item });
-      }
+      this.explorer.updateCRDT(set, { remove: item }).then(function() {
+        contents.removeAt(index, 1);
+      });
+    },
+
+    nonUniqueSetElement: function() {
+      this.showAlert('alerts.error-set-items-unique');
     }
   }
 });

@@ -1,0 +1,25 @@
+<label>Custom Properties</label>
+
+{{#each properties as |property index|}}
+  <div class="property-container">
+    <div class="form-group property-input">
+      <label>Property Key</label>
+      {{input value=property.key class='form-control'}}
+    </div>
+    <div class="form-group property-input">
+      <label>Property Value</label>
+      {{input value=property.value class='form-control'}}
+    </div>
+
+    <span class="remove-property label label-danger" {{action 'removeProperty' index}}>
+      remove
+    </span>
+  </div>
+{{/each}}
+
+<div class="form-group add-property">
+  <span {{action 'addNewProperty'}}>
+    <span class="ion-plus-circled" aria-hidden="true"></span>
+    Add property
+  </span>
+</div>

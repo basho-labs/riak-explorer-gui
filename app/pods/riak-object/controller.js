@@ -5,5 +5,7 @@ export default Ember.Controller.extend({
 
   showLoadingSpinner: false,
 
-  stringifiedContents: ''
+  stringifiedContents: '',
+
+  errors: []
 });
