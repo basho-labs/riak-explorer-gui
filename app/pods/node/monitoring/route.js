@@ -1,8 +1,7 @@
 import Ember from 'ember';
-import LoadingSlider from '../../mixins/routes/loading-slider';
-import ScrollReset from '../../mixins/routes/scroll-reset';
-import WrapperState from '../../mixins/routes/wrapper-state';
-import _ from 'lodash/lodash';
+import LoadingSlider from '../../../mixins/routes/loading-slider';
+import ScrollReset from '../../../mixins/routes/scroll-reset';
+import WrapperState from '../../../mixins/routes/wrapper-state';
 
 export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   model: function(params) {
@@ -14,10 +13,10 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
       node: model,
-      crudAction: 'stats-graphs'
+      crudAction: 'monitoring'
     });
     this.setViewLabel({
-      preLabel: 'Stats Graphs',
+      preLabel: 'Node Monitoring',
       label: model.get('name')
     });
   },
