@@ -8,63 +8,83 @@
 
 <div class='cluster-ops-container'>
 
-  {{#if (and model.developmentMode model.isEnterpriseEdition)}}
-    {{#dashboard-module.container class='small-width'}}
-      {{dashboard-module.header label='Multi Data Center Replication'}}
-      {{#dashboard-module.body}}
-        <form class="mdc-repl">
-          <div class="form-group repl-action-select">
-            <label>Available Actions</label>
-            {{#power-select
-            selected=currentlySelectedAction
-            options=availableReplActions
-            searchEnabled=false
-            onchange=(action "warnReplAction")
-            as |replAction|}}
-              {{replAction}}
-            {{/power-select}}
-          </div>
-
-          {{#if currentReplOutput}}
-            <div>
-              <label>Output</label>
-              {{ivy-codemirror
-                mode='javascript'
-                theme='material'
-                lineWrapping=true
-                readOnly=true
-                value=currentReplOutput}}
-            </div>
-          {{/if}}
-        </form>
-      {{/dashboard-module.body}}
-    {{/dashboard-module.container}}
-  {{/if}}
-
-  {{#dashboard-module.container class='small-width'}}
-    {{dashboard-module.header label='Nodes'}}
+  {{#dashboard-module.container}}
+    {{#dashboard-module.header}}
+      <div class="module-label">Cluster: {{model.name}}</div>
+    {{/dashboard-module.header}}
     {{#dashboard-module.body}}
-      {{#if model.nodes}}
-        <ul class="button-list">
-          {{#each model.nodes as |node|}}
-            <li>
-              {{#if node.available}}
-                {{#link-to 'node' model.name node.name }}
-                  <span class="ion-checkmark-circled" aria-hidden="true"></span>
-                  {{node.name}}
-                {{/link-to}}
-              {{else}}
-                {{#link-to 'node' model.name node.name class='danger'}}
-                  <span class="ion-alert-circled" aria-hidden="true"></span>
-                  {{node.name}}
-                {{/link-to}}
+      {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
+        {{#tabs.tablist as |tablist|}}
+          {{#tablist.tab}}Monitoring{{/tablist.tab}}
+
+          {{#if (and model.developmentMode model.isEnterpriseEdition)}}
+            {{#tablist.tab}}MDC Operations{{/tablist.tab}}
+          {{/if}}
+
+          {{#tablist.tab}}Individual Node Details{{/tablist.tab}}
+        {{/tabs.tablist}}
+
+        {{#tabs.tabpanel}}
+          Monitoring goes here
+        {{/tabs.tabpanel}}
+
+        {{#if (and model.developmentMode model.isEnterpriseEdition)}}
+          {{#tabs.tabpanel}}
+            <form class="mdc-repl">
+              <div class="form-group repl-action-select">
+                <label>Available Actions</label>
+                {{#power-select
+                selected=currentlySelectedAction
+                options=availableReplActions
+                searchEnabled=false
+                onchange=(action "warnReplAction")
+                as |replAction|}}
+                  {{replAction}}
+                {{/power-select}}
+              </div>
+
+              {{#if currentReplOutput}}
+                <div>
+                  <label>Output</label>
+                  {{ivy-codemirror
+                  mode='javascript'
+                  theme='material'
+                  lineWrapping=true
+                  readOnly=true
+                  value=currentReplOutput}}
+                </div>
               {{/if}}
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        <p>No nodes detected</p>
-      {{/if}}
+            </form>
+          {{/tabs.tabpanel}}
+        {{/if}}
+
+        {{#tabs.tabpanel}}
+          {{#if model.nodes}}
+            <p style="margin-bottom: 30px">Select any of the nodes below to dive into node specific details (stats, configuration, monitoring, etc.)</p>
+
+            <ul class="button-list">
+              {{#each model.nodes as |node|}}
+                <li>
+                  {{#if node.available}}
+                    {{#link-to 'node' model.name node.name }}
+                      <span class="ion-checkmark-circled" aria-hidden="true"></span>
+                      {{node.name}}
+                    {{/link-to}}
+                  {{else}}
+                    {{#link-to 'node' model.name node.name class='danger'}}
+                      <span class="ion-alert-circled" aria-hidden="true"></span>
+                      {{node.name}}
+                    {{/link-to}}
+                  {{/if}}
+                </li>
+              {{/each}}
+            </ul>
+          {{else}}
+            <p>No nodes detected</p>
+          {{/if}}
+        {{/tabs.tabpanel}}
+      {{/ivy-tabs}}
+
     {{/dashboard-module.body}}
   {{/dashboard-module.container}}
 </div>
