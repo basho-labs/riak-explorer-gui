@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import Modal from '../../../mixins/controller/modal';
+import _ from 'lodash/lodash';
 
 export default Ember.Controller.extend(Modal, {
+  // MDC
   availableReplActions: [
     'Cluster Stats',
     'Cluster Manager',
@@ -19,7 +21,21 @@ export default Ember.Controller.extend(Modal, {
 
   currentReplOutput: '',
 
+  // Monitoring
+  currentGraphs: [],
+
+  allAvailableStats: [],
+
+  currentlyAvailableStats: [],
+
+  setGraphOptions: function() {
+    let currentlyGraphedStats = this.get('currentGraphs');
+
+    return this.set('currentlyAvailableStats', _.difference(this.get('allAvailableStats'), currentlyGraphedStats));
+  }.observes('currentGraphs'),
+
   actions: {
+    // MDC
     cancelReplAction: function() {
       this.set('currentlySelectedAction', '');
       this.set('currentReplOutput', '');
@@ -35,6 +51,24 @@ export default Ember.Controller.extend(Modal, {
       this.set('currentlySelectedAction', action);
       this.set('currentReplOutput', '');
       this.send('showModal');
+    },
+
+    updateGraphName: function(graph, newStat) {
+      return this.set('currentGraphs', this.get('currentGraphs').map(function(graphName) {
+        return (graphName === graph) ? newStat : graphName;
+      }));
+    },
+
+    addNewGraph: function(graph) {
+      this.get('currentGraphs').pushObject(graph);
+      this.setGraphOptions();
+      this.send('hideModal');
+    },
+
+    removeGraph: function(graph) {
+      this.set('currentGraphs', this.get('currentGraphs').filter(function(graphName) {
+        return graphName !== graph;
+      }));
     }
   }
 });

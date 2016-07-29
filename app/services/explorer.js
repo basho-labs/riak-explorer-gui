@@ -753,9 +753,11 @@ export default Ember.Service.extend({
   getNodesStats(cluster) {
     let self = this;
 
-    return cluster.get('nodes').forEach(function(node) {
-      return self.getNodeStats(node);
-    });
+    return Ember.RSVP.allSettled(
+      cluster.get('nodes').map(function(node) {
+        return self.getNodeStats(node);
+      })
+    );
   },
 
   /**
