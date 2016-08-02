@@ -4,6 +4,8 @@ import _ from 'lodash/lodash';
 
 export default Ember.Controller.extend(Modal, {
   // MDC
+  replActionModalVisible: false,
+
   availableReplActions: [
     'Cluster Stats',
     'Cluster Manager',
@@ -22,6 +24,8 @@ export default Ember.Controller.extend(Modal, {
   currentReplOutput: '',
 
   // Monitoring
+  newGraphModalVisible: false,
+
   currentGraphs: [],
 
   allAvailableStats: [],
@@ -36,21 +40,42 @@ export default Ember.Controller.extend(Modal, {
 
   actions: {
     // MDC
-    cancelReplAction: function() {
-      this.set('currentlySelectedAction', '');
-      this.set('currentReplOutput', '');
+    showReplActionModal: function() {
+      this.set('replActionModalVisible', true);
+      this.send('showModal');
+    },
+
+    hideReplActionModal: function() {
+      this.set('replActionModalVisible', false);
       this.send('hideModal');
     },
 
+    cancelReplAction: function() {
+      this.set('currentlySelectedAction', '');
+      this.set('currentReplOutput', '');
+      this.send('hideReplActionModal');
+    },
+
     confirmReplAction: function() {
-      this.send('hideModal');
+      this.send('hideReplActionModal');
       this.send('getReplicationOutput', this.get('currentlySelectedAction'));
     },
 
     warnReplAction: function(action) {
       this.set('currentlySelectedAction', action);
       this.set('currentReplOutput', '');
+      this.send('showReplActionModal');
+    },
+
+    // Monitoring
+    showNewGraphModal: function() {
+      this.set('newGraphModalVisible', true);
       this.send('showModal');
+    },
+
+    hideNewGraphModal: function() {
+      this.set('newGraphModalVisible', false);
+      this.send('hideModal');
     },
 
     updateGraphName: function(graph, newStat) {
@@ -62,7 +87,7 @@ export default Ember.Controller.extend(Modal, {
     addNewGraph: function(graph) {
       this.get('currentGraphs').pushObject(graph);
       this.setGraphOptions();
-      this.send('hideModal');
+      this.send('hideNewGraphModal');
     },
 
     removeGraph: function(graph) {

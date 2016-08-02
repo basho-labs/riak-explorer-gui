@@ -52,6 +52,10 @@
                 {{charts.cluster-stat cluster=model statToGraph=statName}}
               </div>
             {{/each}}
+            <button class="btn btn-primary" {{action 'showNewGraphModal'}}>
+              <span class="ion-plus-circled" aria-hidden="true"></span>
+              Add new graph
+            </button>
           {{else}}
             <p>No nodes detected</p>
           {{/if}}
@@ -120,29 +124,60 @@
   {{/dashboard-module.container}}
 </div>
 
-{{!-- Modal Template --}}
+{{!-- Modal Templates --}}
 {{#if modalVisible}}
-  {{#modal-dialog
-  close='cancelReplAction'
-  translucentOverlay=true}}
-    <div class="modal-content-container">
-      <header class="modal-header">
-        <h3><span class="label label-danger"><i
-          class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
-        </h3>
-      </header>
+  {{#if replActionModalVisible}}
+    {{#modal-dialog
+    close='cancelReplAction'
+    translucentOverlay=true}}
+      <div class="modal-content-container">
+        <header class="modal-header">
+          <h3><span class="label label-danger"><i
+            class="ion-alert-circled"></i> Potentially Dangerous Operation</span>
+          </h3>
+        </header>
 
-      <section class="modal-body">
-        <p>Are you sure you want to perform a <strong>{{currentlySelectedAction}}</strong> operation?</p>
-        <p>MDC replication operations can effect cluster performance and should only be done by a cluster administrator.</p>
-      </section>
+        <section class="modal-body">
+          <p>Are you sure you want to perform a <strong>{{currentlySelectedAction}}</strong> operation?</p>
+          <p>MDC replication operations can effect cluster performance and should only be done by a cluster administrator.</p>
+        </section>
 
-      <footer class="modal-footer">
-        <button class="btn btn-default" {{action 'cancelReplAction'}}>Cancel</button>
-        <button class="btn btn-primary" {{action 'confirmReplAction' model}}>Confirm</button>
-      </footer>
-    </div>
-  {{/modal-dialog}}
+        <footer class="modal-footer">
+          <button class="btn btn-default" {{action 'cancelReplAction'}}>Cancel</button>
+          <button class="btn btn-primary" {{action 'confirmReplAction' model}}>Confirm</button>
+        </footer>
+      </div>
+    {{/modal-dialog}}
+  {{/if}}
+
+  {{#if newGraphModalVisible}}
+    {{#modal-dialog
+    close='hideNewGraphModal'
+    translucentOverlay=true}}
+      <div class="modal-content-container">
+        <header class="modal-header">
+          <h3>New Graph</h3>
+        </header>
+
+        <section class="modal-body" style="min-width: 300px;">
+          <p>
+            Select a new statistic to add it to the dashboard.
+          </p>
+
+          {{#power-select
+          selected=''
+          options=currentlyAvailableStats
+          searchEnabled=true
+          onchange=(action "addNewGraph")
+          as |statOption|}}
+            {{statOption}}
+          {{/power-select}}
+        </section>
+
+        <footer class="modal-footer">
+          <button class="btn btn-default" {{action 'hideNewGraphModal'}}>Cancel</button>
+        </footer>
+      </div>
+    {{/modal-dialog}}
+  {{/if}}
 {{/if}}
-
-
