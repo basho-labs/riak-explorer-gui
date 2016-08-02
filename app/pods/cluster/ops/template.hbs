@@ -22,40 +22,42 @@
           {{#tablist.tab}}Individual Node Details{{/tablist.tab}}
         {{/tabs.tablist}}
 
-
         {{!--Monitoring Tab--}}
         {{#tabs.tabpanel}}
           {{#if model.nodes.length}}
             {{#each currentGraphs as |statName|}}
               <div class="cluster-graph">
-
-                <div style="margin-bottom: 30px;">
-                  <span>Displayed Graph:</span>
-                  {{#power-select
-                  selected=statName
-                  options=currentlyAvailableStats
-                  searchEnabled=true
-                  onchange=(action "updateGraphName" statName)
-                  class='node-chart-select'
-                  as |statOption|}}
-                    {{statOption}}
-                  {{/power-select}}
-                </div>
-
-                <div>
-                  <button type="button" class="btn btn-danger" {{action 'removeGraph' statName}}>
-                    <span class="ion-ios-trash" aria-hidden="true"></span>
-                    Remove Graph
-                  </button>
-                </div>
+                <header>
+                  <div class="header-left">
+                    <span>Displayed Graph:</span>
+                    {{#power-select
+                    selected=statName
+                    options=currentlyAvailableStats
+                    searchEnabled=true
+                    onchange=(action "updateGraphName" statName)
+                    class='node-chart-select'
+                    as |statOption|}}
+                      {{statOption}}
+                    {{/power-select}}
+                  </div>
+                  <div class="header-right">
+                    <button type="button" class="btn btn-danger" {{action 'removeGraph' statName}}>
+                      <span class="ion-ios-trash" aria-hidden="true"></span>
+                      Remove Graph
+                    </button>
+                  </div>
+                </header>
 
                 {{charts.cluster-stat cluster=model statToGraph=statName}}
               </div>
             {{/each}}
-            <button class="btn btn-primary" {{action 'showNewGraphModal'}}>
-              <span class="ion-plus-circled" aria-hidden="true"></span>
-              Add new graph
-            </button>
+
+            <div class="add-new-graph">
+              <button class="btn btn-primary" {{action 'showNewGraphModal'}}>
+                <span class="ion-plus-circled" aria-hidden="true"></span>
+                Add new graph
+              </button>
+            </div>
           {{else}}
             <p>No nodes detected</p>
           {{/if}}

@@ -2,4 +2,40 @@
   .repl-action-select {
     max-width: 250px;
   }
+
+  .cluster-graph {
+    margin-top: 40px;
+    padding-bottom: 40px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid $grayscale-color-x-light;
+
+    header {
+      .header-left {
+        float: left;
+        font-weight: bold;
+      }
+
+      .header-right {
+        float: right;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .cluster-ops-container {
+    .cluster-graph {
+      header {
+        .header-left {
+          float: none;
+          margin-bottom: 10px;
+        }
+
+        .header-right {
+          float: none;
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
 }

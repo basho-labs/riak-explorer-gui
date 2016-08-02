@@ -34,10 +34,7 @@ export default EmberHighChartsComponent.extend({
       }
     },
     legend: {
-      enabled: false
-    },
-    exporting: {
-      enabled: false
+      enabled: true
     }
   },
 
