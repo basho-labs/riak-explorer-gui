@@ -12,6 +12,12 @@
         as |statOption|}}
           {{statOption}}
         {{/power-select}}
+
+        <div>
+          {{#tooltip.node-stats itemKey=statName useIcon=false}}
+            Graph Descritpion
+          {{/tooltip.node-stats}}
+        </div>
       </div>
 
       <div class="module-actions">
@@ -28,7 +34,7 @@
 {{/each}}
 
 
-{{!--Add Graph component--}}
+{{!--Add Graph Button--}}
 {{#dashboard-module.container class='no-border'}}
   {{#dashboard-module.body}}
     <button class="btn btn-primary" {{action 'showModal'}}>

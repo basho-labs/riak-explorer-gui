@@ -5,6 +5,12 @@
     font-size: 10px;
   }
 
+  .tooltip-text {
+    @extend a;
+    cursor: help;
+    font-size: 10px;
+  }
+
   .tooltip {
     &.in {
       opacity: 1;

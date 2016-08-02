@@ -1058,7 +1058,7 @@ export default Ember.Service.extend({
     Ember.run.later(this, function() {
       self.monitorCluster(this._clusterRef);
       self.pollCluster(this._clusterRef);
-    }, 4000);
+    }, 10000);
   },
 
   queryTable(table, data) {

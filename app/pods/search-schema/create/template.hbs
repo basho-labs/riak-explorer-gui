@@ -2,7 +2,7 @@
   {{#dashboard-module.container}}
     {{#dashboard-module.header label='New Schema'}}
       <div class="module-actions">
-        {{#link-to 'cluster.query' model.name class='cancel action-button' }}
+        {{#link-to 'cluster.query' model.cluster.name class='cancel action-button' }}
           <span class="ion-close-round" aria-hidden="true"></span>
           Cancel
         {{/link-to}}
