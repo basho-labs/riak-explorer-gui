@@ -84,7 +84,6 @@ export default EmberHighChartsComponent.extend({
   },
 
   streamNewDataIntoChart: function() {
-    console.log('here');
     let chart = this.get('chart');
     let allSeries = chart.series;
     let data = this.getMostRecentData();

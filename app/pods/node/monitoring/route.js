@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
+import Monitoring from '../../../mixins/routes/monitoring';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
 
-export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
+export default Ember.Route.extend(LoadingSlider, Monitoring, ScrollReset, WrapperState, {
   model: function(params) {
     return this.explorer.getNode(params.clusterName, params.nodeName);
   },
@@ -24,8 +25,7 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
   setupController: function(controller, model) {
     this._super(controller, model);
 
-    // TODO: Set available stats to be more curated
-    controller.set('allAvailableStats', Object.keys(model.get('stats')));
-    controller.set('currentGraphs', ['cpu_avg1']);
+    this.setPossibleGraphOptions(model.get('stats'));
+    this.setDefaultGraph();
   }
 });

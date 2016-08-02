@@ -5,7 +5,7 @@
         <span>Displayed Graph:</span>
         {{#power-select
         selected=statName
-        options=currentlyAvailableStats
+        options=availableGraphs
         searchEnabled=true
         onchange=(action "updateGraphName" statName)
         class='node-chart-select'
@@ -61,7 +61,7 @@
 
         {{#power-select
         selected=''
-        options=currentlyAvailableStats
+        options=availableGraphs
         searchEnabled=true
         onchange=(action "addNewGraph")
         as |statOption|}}

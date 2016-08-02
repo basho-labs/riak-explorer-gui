@@ -3,6 +3,8 @@ import _ from 'lodash/lodash';
 /*globals Highcharts */
 
 export default EmberHighChartsComponent.extend({
+  
+
   defaultOptions: {
     chart: {
       type: 'spline',

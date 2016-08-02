@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
+import Monitoring from '../../../mixins/routes/monitoring';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
+
 import _ from 'lodash/lodash';
 
-export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
+export default Ember.Route.extend(LoadingSlider, Monitoring, ScrollReset, WrapperState, {
   model: function(params) {
     let self = this;
 
@@ -38,8 +40,8 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
     if (model.get('nodes').get('length')) {
       let firstNode = _.head(model.get('nodes').toArray());
 
-      controller.set('allAvailableStats', Object.keys(firstNode.get('stats')));
-      controller.set('currentGraphs', ['cpu_avg1']);
+      this.setPossibleGraphOptions(firstNode.get('stats'));
+      this.setDefaultGraph();
     }
   },
 

@@ -1,19 +1,10 @@
 import Ember from 'ember';
 import Modal from '../../../mixins/controller/modal';
-import _ from 'lodash/lodash';
 
 export default Ember.Controller.extend(Modal, {
   currentGraphs: [],
 
-  allAvailableStats: [],
-
-  currentlyAvailableStats: [],
-
-  setGraphOptions: function() {
-    let currentlyGraphedStats = this.get('currentGraphs');
-
-    return this.set('currentlyAvailableStats', _.difference(this.get('allAvailableStats'), currentlyGraphedStats));
-  }.observes('currentGraphs'),
+  availableGraphs: [],
 
   actions: {
     updateGraphName: function(graph, newStat) {
@@ -24,7 +15,6 @@ export default Ember.Controller.extend(Modal, {
 
     addNewGraph: function(graph) {
       this.get('currentGraphs').pushObject(graph);
-      this.setGraphOptions();
       this.send('hideModal');
     },
 
