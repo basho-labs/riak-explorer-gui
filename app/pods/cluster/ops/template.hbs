@@ -28,6 +28,7 @@
           {{#if model.nodes.length}}
             {{#each currentGraphs as |statName|}}
               <div class="cluster-graph">
+
                 <div style="margin-bottom: 30px;">
                   <span>Displayed Graph:</span>
                   {{#power-select
@@ -47,6 +48,8 @@
                     Remove Graph
                   </button>
                 </div>
+
+                {{charts.cluster-stat cluster=model statToGraph=statName}}
               </div>
             {{/each}}
           {{else}}
