@@ -1,16 +1,52 @@
 import Ember from 'ember';
-import ClusterRoute from '../route';
+import LoadingSlider from '../../../mixins/routes/loading-slider';
+import Monitoring from '../../../mixins/routes/monitoring';
+import ScrollReset from '../../../mixins/routes/scroll-reset';
+import WrapperState from '../../../mixins/routes/wrapper-state';
 
-export default ClusterRoute.extend({
+import _ from 'lodash/lodash';
+
+export default Ember.Route.extend(LoadingSlider, Monitoring, ScrollReset, WrapperState, {
+  model: function(params) {
+    let self = this;
+
+    return this.explorer.getCluster(params.clusterName)
+      .then(function(cluster) {
+        return Ember.RSVP.allSettled([
+          cluster,
+          self.explorer.getNodesStats(cluster)
+        ]);
+      })
+      .then(function(PromiseArray) {
+        let cluster = PromiseArray[0].value;
+
+        return cluster;
+      });
+  },
+
   afterModel: function(model, transition) {
-    this._super(model, transition);
+    this.setSidebarCluster(model);
+    this.setBreadCrumbs(null);
     this.setViewLabel({
       preLabel: 'Cluster Ops',
       label: model.get('name')
     });
+    this.simulateLoad();
+  },
+
+  setupController: function(controller, model) {
+    this._super(controller, model);
+
+    if (model.get('nodes').get('length')) {
+      let firstNode = _.head(model.get('nodes').toArray());
+
+      this.setPossibleGraphOptions(firstNode.get('stats'));
+      this.setDefaultGraph();
+    }
   },
 
   actions: {
+    // TODO: Move this logic elsewhere
     getReplicationOutput: function(action) {
       let controller = this.controller;
       let cluster = this.currentModel;
@@ -75,3 +111,4 @@ export default ClusterRoute.extend({
     }
   }
 });
+

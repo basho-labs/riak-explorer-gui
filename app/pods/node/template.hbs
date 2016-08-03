@@ -1,5 +1,7 @@
+{{!--Node Detail Dashboard Module--}}
 {{#dashboard-module.container}}
   {{#dashboard-module.body}}
+    {{!--Node Detail Tabs--}}
     {{#ivy-tabs on-select=(action (mut selectedIndex)) selected-index=selectedIndex as |tabs|}}
       {{#tabs.tablist as |tablist|}}
         {{#if model.cluster.isEnterpriseEdition}}
@@ -9,8 +11,10 @@
         {{#tablist.tab}}Statistics{{/tablist.tab}}
         {{#tablist.tab}}Log Files{{/tablist.tab}}
         {{#tablist.tab}}Config Files{{/tablist.tab}}
+        {{link-to 'Monitoring' 'node.monitoring' model.cluster.name model.name class='ivy-tab'}}
       {{/tabs.tablist}}
 
+      {{!--Replication Status Tab--}}
       {{#if model.cluster.isEnterpriseEdition}}
         {{#tabs.tabpanel}}
           <table class="key-value-table">
@@ -26,6 +30,7 @@
         {{/tabs.tabpanel}}
       {{/if}}
 
+      {{!--Configuration Tab--}}
       {{#tabs.tabpanel}}
         {{#if model.advancedConfig}}
           <h4>Advanced</h4>
@@ -53,7 +58,10 @@
         </table>
       {{/tabs.tabpanel}}
 
+      {{!--Statistics Tab--}}
       {{#tabs.tabpanel}}
+
+        {{!--Statistics Sub-Group Tabs--}}
         {{#ivy-tabs on-select=(action (mut nestedSelectedIndex)) selected-index=nestedSelectedIndex class='vertical' as |tabs|}}
           {{#tabs.tablist class='capitalize' as |tablist|}}
             {{#each-in model.statsByCategory as |category stats|}}
@@ -85,6 +93,7 @@
         {{/ivy-tabs}}
       {{/tabs.tabpanel}}
 
+      {{!--Log Files Tab--}}
       {{#tabs.tabpanel}}
         {{#if model.logFiles}}
           <ul class="button-list">
@@ -99,6 +108,7 @@
         {{/if}}
       {{/tabs.tabpanel}}
 
+      {{!--Config Files Tab--}}
       {{#tabs.tabpanel}}
         {{#if model.configFiles}}
           <ul class="button-list">

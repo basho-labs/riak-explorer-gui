@@ -1,0 +1,78 @@
+{{#each currentGraphs as |statName|}}
+  {{#dashboard-module.container}}
+    {{#dashboard-module.header}}
+      <div class="module-label">
+        <span>Displayed Graph:</span>
+        {{#power-select
+        selected=statName
+        options=availableGraphs
+        searchEnabled=true
+        onchange=(action "updateGraphName" statName)
+        class='node-chart-select'
+        as |statOption|}}
+          {{statOption}}
+        {{/power-select}}
+
+        <div>
+          {{#tooltip.node-stats itemKey=statName useIcon=false}}
+            Graph Descritpion
+          {{/tooltip.node-stats}}
+        </div>
+      </div>
+
+      <div class="module-actions">
+        <button type="button" class="action-button delete" {{action 'removeGraph' statName}}>
+          <span class="ion-ios-trash" aria-hidden="true"></span>
+          Remove Graph
+        </button>
+      </div>
+    {{/dashboard-module.header}}
+    {{#dashboard-module.body}}
+      {{charts.node-stat node=model statToGraph=statName}}
+    {{/dashboard-module.body}}
+  {{/dashboard-module.container}}
+{{/each}}
+
+
+{{!--Add Graph Button--}}
+{{#dashboard-module.container class='no-border'}}
+  {{#dashboard-module.body}}
+    <button class="btn btn-primary" {{action 'showModal'}}>
+      <span class="ion-plus-circled" aria-hidden="true"></span>
+      Add new graph
+    </button>
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
+
+{{!-- Modal Template --}}
+{{#if modalVisible}}
+  {{#modal-dialog
+  close='hideModal'
+  translucentOverlay=true}}
+    <div class="modal-content-container">
+      <header class="modal-header">
+        <h3>New Graph</h3>
+      </header>
+
+      <section class="modal-body" style="min-width: 300px;">
+        <p>
+          Select a new statistic to add it to the dashboard.
+        </p>
+
+        {{#power-select
+        selected=''
+        options=availableGraphs
+        searchEnabled=true
+        onchange=(action "addNewGraph")
+        as |statOption|}}
+          {{statOption}}
+        {{/power-select}}
+      </section>
+
+      <footer class="modal-footer">
+        <button class="btn btn-default" {{action 'hideModal'}}>Cancel</button>
+      </footer>
+    </div>
+  {{/modal-dialog}}
+{{/if}}
+

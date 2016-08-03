@@ -66,6 +66,7 @@ export default Ember.Controller.extend({
       case 'node':
       case 'log-file':
       case 'config-file':
+      case 'node.monitoring':
         this.set('clusterSubSection', 'ops');
         break;
       case 'cluster.query':

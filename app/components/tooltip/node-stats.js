@@ -5,11 +5,17 @@ import NodeStatsHelp from '../../utils/riak-help/riak_status';
 export default Ember.Component.extend({
   tagName: 'span',
 
-  classNames: ['tooltip-icon', 'node-stats-tooltip', 'ion-information-circled'],
+  classNameBindings: ['setClassNames'],
+
+  useIcon: true,
 
   itemKey: null,
 
   tooltipInstance: null,
+
+  setClassNames: function() {
+    return this.get('useIcon') ? 'tooltip-icon node-stats-tooltip ion-information-circled' : 'tooltip-text';
+  }.property('useIcon'),
 
   didRender: function() {
     let key  = this.get('itemKey');

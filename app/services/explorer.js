@@ -57,14 +57,16 @@ export default Ember.Service.extend({
   /**
    * Checks availability and validity of nodes in a given cluster.
    *
-   * @method checkNodes
+   * @method monitorCluster
    * @param {DS.Model} cluster
    */
-  checkNodes(cluster) {
+  monitorCluster(cluster) {
     // Ping each node in cluster
     this.pingNodes(cluster);
     // Get status of each node in cluster
     this.getNodesStatus(cluster);
+    // Get node statistics for historical analysis
+    this.getNodesStats(cluster);
   },
 
   /**
@@ -382,10 +384,10 @@ export default Ember.Service.extend({
           self.associateSchemasWithIndexes(cluster);
 
           // Check on node health of the cluster
-          self.checkNodes(cluster);
+          self.monitorCluster(cluster);
 
           // Continue to check on node health
-          self.pollNodes(cluster);
+          self.pollCluster(cluster);
         }
 
         cluster.hasBeenInitialized = true;
@@ -748,6 +750,16 @@ export default Ember.Service.extend({
     }
   },
 
+  getNodesStats(cluster) {
+    let self = this;
+
+    return Ember.RSVP.allSettled(
+      cluster.get('nodes').map(function(node) {
+        return self.getNodeStats(node);
+      })
+    );
+  },
+
   /**
    * TODO: Make stats own model, flow through ember data
    * Gets and sets the node stats property. Returns the node model object.
@@ -1032,10 +1044,10 @@ export default Ember.Service.extend({
   /**
    * Checks node health in a given cluster, every 10 seconds
    *
-   * @method pollNodes
+   * @method pollCluster
    * @param {DS.Model} cluster
    */
-  pollNodes(cluster) {
+  pollCluster(cluster) {
     let self = this;
 
     // This check makes sure that only one cluster can be polled at any given time
@@ -1044,8 +1056,8 @@ export default Ember.Service.extend({
     }
 
     Ember.run.later(this, function() {
-      self.checkNodes(this._clusterRef);
-      self.pollNodes(this._clusterRef);
+      self.monitorCluster(this._clusterRef);
+      self.pollCluster(this._clusterRef);
     }, 10000);
   },
 

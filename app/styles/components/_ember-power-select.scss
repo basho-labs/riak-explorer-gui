@@ -4,4 +4,9 @@
       outline: none;
     }
   }
+
+  &.node-chart-select {
+    min-width: 250px;
+    display: inline-block;
+  }
 }
