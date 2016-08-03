@@ -4,6 +4,14 @@ import _ from 'lodash/lodash';
 export default Ember.Mixin.create({
   groupedSelectOptions: [
     {
+      groupName: 'Erlang Resource Usage Metrics',
+      options: [
+        'memory_processes',
+        'memory_processes_used',
+        'sys_process_count'
+      ]
+    },
+    {
       groupName: 'Throughput Metrics',
       options: [
         'node_gets',
@@ -32,14 +40,6 @@ export default Ember.Mixin.create({
       ]
     },
     {
-      groupName: 'Erlang Resource Usage Metrics',
-      options: [
-        'sys_process_count',
-        'memory_processes',
-        'memory_processes_used'
-      ]
-    },
-    {
       groupName: 'General Riak Load/Health Metrics',
       options: [
         'node_get_fsm_siblings_mean',
@@ -55,7 +55,7 @@ export default Ember.Mixin.create({
       ]
     }
   ],
-  
+
   setPossibleGraphOptions: function(nodeStats) {
     let groupedStats = this.get('groupedSelectOptions');
     let existingNodeStats = Object.keys(nodeStats);
