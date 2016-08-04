@@ -1,0 +1,21 @@
+{{alert.error-alert errors=errors}}
+
+{{#dashboard-module.container class='small-width bucket-create-container'}}
+  {{#dashboard-module.header label='Create Object Form'}}
+    <div class="module-actions">
+      {{#link.explorer-resource resourceType='bucket' resourceObj=model.bucket linkClass="cancel action-button"}}
+        <span class="ion-close-round" aria-hidden="true"></span>
+        Cancel
+      {{/link.explorer-resource}}
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#if showSpinner}}
+      {{loading-spinner statusMessage=spinnerMessage}}
+    {{else}}
+      {{new-object-inputs object=model}}
+
+      {{form.explorer-button label='Create Object' buttonClick='createObject'}}
+    {{/if}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
