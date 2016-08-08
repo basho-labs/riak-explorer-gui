@@ -35,7 +35,7 @@ export default Ember.Service.extend({
    * @method associateSchemasWithIndexes
    * @param {DS.Model} cluster
    */
-  associateSchemasWithIndexes(cluster) {
+  _associateSchemasWithIndexes(cluster) {
     let self = this;
 
     cluster.get('searchIndexes').forEach(function(index) {
@@ -54,55 +54,82 @@ export default Ember.Service.extend({
     });
   },
 
-  /**
-   * Checks availability and validity of nodes in a given cluster.
-   *
-   * @method monitorCluster
-   * @param {DS.Model} cluster
-   */
-  monitorCluster(cluster) {
-    // Ping each node in cluster
-    this.pingNodes(cluster);
-    // Get status of each node in cluster
-    this.getNodesStatus(cluster);
-    // Get node statistics for historical analysis
-    this.getNodesStats(cluster);
+  _refreshCacheList(resource, url) {
+    resource.set('isListLoaded', false);
+    resource.set('hasListBeenRequested', true);
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'POST'
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(jqXHR) {
+        if (jqXHR.status === 202) {
+          resolve(jqXHR.status);
+        } else {
+          resource.set('hasListBeenRequested', false); // Since the request failed, set value to false
+          reject(jqXHR);
+        }
+      });
+    });
   },
 
-  /**
-   * Creates a Schema instance
-   *
-   * @method createSchema
-   * @param {String} clusterName
-   * @param {String} schemaName
-   * @param {XML.String} data
-   */
-  createSchema(clusterName, schemaName, data) {
-    let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
+  _getCacheList(type, params, owner, propertyName) {
+    return this.store.queryRecord(type, params)
+      .then(
+        function onSuccess(list) {
+          owner.set('isListLoaded', true);
+          owner.set(propertyName, list);
 
+          return owner.get(propertyName);
+        }
+      );
+  },
+
+  _getResourceProps(resource, url) {
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        resource.set('props', data.props);
+
+        resolve(data);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
+  _getResources(type, params, owner, propertyName) {
+    return this.store.query(type, params)
+      .then(function(resources) {
+        owner.set(propertyName, resources);
+
+        return owner.get(propertyName);
+      });
+  },
+
+  // TODO: Have JSON stringify happen here
+  _putResource(url, data, type='application/json') {
     return Ember.$.ajax({
       type: 'PUT',
       url: url,
-      contentType: 'application/xml',
-      processData: false,
+      contentType: type,
       data: data
     });
   },
 
-  createBucketType(clusterName, bucketType) {
-    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
-
-    return Ember.$.ajax({
-      type: 'PUT',
-      url: url,
-      contentType: 'application/json',
-      data: JSON.stringify(bucketType.data)
-    });
-  },
-
-  createCRDT(clusterName, bucketTypeName, bucketName, objectName, data) {
-    let url = `riak/clusters/${clusterName}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`;
-
+  _postResource(url, data) {
     return new Ember.RSVP.Promise(function(resolve, reject) {
       let request = Ember.$.ajax({
         contentType: 'application/json',
@@ -126,6 +153,49 @@ export default Ember.Service.extend({
     });
   },
 
+  /**
+   * Checks availability and validity of nodes in a given cluster.
+   *
+   * @method monitorCluster
+   * @param {DS.Model} cluster
+   */
+  _monitorCluster(cluster) {
+    // Ping each node in cluster
+    this.pingNodes(cluster);
+    // Get status of each node in cluster
+    this.getNodesStatus(cluster);
+    // Get node statistics for historical analysis
+    this.getNodesStats(cluster);
+  },
+
+  /**
+   * Creates a Schema instance
+   *
+   * @method createSchema
+   * @param {String} clusterName
+   * @param {String} schemaName
+   * @param {XML.String} data
+   */
+  createSchema(clusterName, schemaName, data) {
+    let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
+
+    return this._putResource(url, data, 'application/xml');
+  },
+
+  createBucketType(clusterName, bucketType) {
+    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
+    let data = JSON.stringify(bucketType.data);
+
+    return this._putResource(url, data);
+  },
+
+  createCRDT(clusterName, bucketTypeName, bucketName, objectName, data) {
+    let url = `riak/clusters/${clusterName}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`;
+
+    return this._postResource(url, data);
+  },
+
+  // TODO: Get Resource
   /**
    *
    * @method getBucket
@@ -163,18 +233,16 @@ export default Ember.Service.extend({
    * @return {DS.Model} BucketList
    */
   getBucketList(bucketType) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let bucketTypeName = bucketType.get('name');
+    let type = 'bucket-list';
+    let params = {
+      clusterName:  bucketType.get('cluster').get('name'),
+      bucketTypeName: bucketType.get('name')
+    };
+    let owner = bucketType;
+    let propertyName = 'bucketList';
 
-    return this.store.queryRecord('bucket-list', { clusterName: clusterName, bucketTypeName: bucketTypeName })
-      .then(
-        function onSuccess(bucketList) {
-          bucketType.set('isListLoaded', true);
-          bucketType.set('bucketList', bucketList);
 
-          return bucketType.get('bucketList');
-        }
-      );
+    return this._getCacheList(type, params, owner, propertyName);
   },
 
   /**
@@ -189,22 +257,7 @@ export default Ember.Service.extend({
     let bucketName = bucket.get('name');
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/props`;
 
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        url: url,
-        type: 'GET'
-      });
-
-      request.done(function(data) {
-        bucket.set('props', data.props);
-
-        resolve(data);
-      });
-
-      request.fail(function(data) {
-        reject(data);
-      });
-    });
+    return this._getResourceProps(bucket, url);
   },
 
   /**
@@ -214,17 +267,18 @@ export default Ember.Service.extend({
    * @return {DS.Array} Bucket
    */
   getBuckets(bucketType) {
-    let clusterName = bucketType.get('cluster').get('name');
-    let bucketTypeName = bucketType.get('name');
+    let type = 'bucket';
+    let params = {
+      clusterName: bucketType.get('cluster').get('name'),
+      bucketTypeName: bucketType.get('name')
+    };
+    let owner = bucketType;
+    let proertyName = 'buckets';
 
-    return this.store.query('bucket', { clusterName: clusterName, bucketTypeName: bucketTypeName })
-      .then(function(buckets) {
-        bucketType.set('buckets', buckets);
-
-        return bucketType.get('buckets');
-      });
+    return this._getResources(type, params, owner, proertyName);
   },
 
+  // TODO: Get Resource
   /**
    *
    * @method getBucketType
@@ -261,14 +315,17 @@ export default Ember.Service.extend({
    * @return {DS.Array} BucketType
    */
   getBucketTypes(cluster) {
-    return this.store.query('bucket-type', { clusterName: cluster.get('name') })
-      .then(function(bucketTypes) {
-        cluster.set('bucketTypes', bucketTypes);
+    let type = 'bucket-type';
+    let params = {
+      clusterName: cluster.get('name')
+    };
+    let owner = cluster;
+    let propertyName = 'bucketTypes';
 
-        return cluster.get('bucketTypes');
-      });
+    return this._getResources(type, params, owner, propertyName);
   },
 
+  // TODO: Get Resource
   /**
    * Fetches a given config file and its dependencies
    *
@@ -306,18 +363,18 @@ export default Ember.Service.extend({
    * @return {DS.Array} ConfigFile
    */
   getConfigFiles(node) {
-    if (Ember.isEmpty(node.get('configFiles'))) {
-      return this.store.query('config-file', {clusterName: node.get('cluster').get('name'), nodeName: node.get('name')})
-        .then(function(configFiles) {
-          node.set('configFiles', configFiles);
+    let type = 'config-file';
+    let params = {
+      clusterName: node.get('cluster').get('name'),
+      nodeName: node.get('name')
+    };
+    let owner = node;
+    let propertyName = 'configFiles';
 
-          return node.get('configFiles');
-        });
-    } else {
-      return node.get('configFiles');
-    }
+    return this._getResources(type, params, owner, propertyName);
   },
 
+  // TODO: Refactor with similar
   /**
    * Fetches and sets a  given config files contents
    *
@@ -352,6 +409,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Get Resource
   /**
    * Creates and returns a Cluster object and initializes it with dependent
    * data (including all its Bucket Types and Search Indexes).
@@ -381,10 +439,10 @@ export default Ember.Service.extend({
 
         if (!cluster.hasBeenInitialized) {
           // Create search-schemas from index references
-          self.associateSchemasWithIndexes(cluster);
+          self._associateSchemasWithIndexes(cluster);
 
           // Check on node health of the cluster
-          self.monitorCluster(cluster);
+          self._monitorCluster(cluster);
 
           // Continue to check on node health
           self.pollCluster(cluster);
@@ -406,6 +464,7 @@ export default Ember.Service.extend({
     return this.store.findAll('cluster');
   },
 
+  // TODO: Get Resource (Use this as a base template
   /**
    *
    * @method getIndex
@@ -431,21 +490,17 @@ export default Ember.Service.extend({
    * @return {DS.Array} SearchIndex
    */
   getIndexes(cluster) {
-    if (Ember.isEmpty(cluster.get('searchIndexes'))) {
-      // If this page was accessed directly
-      //  (via a bookmark and not from a link), bucket types are likely
-      //  to be not loaded yet. Load them.
-      return this.store.query('search-index', {clusterName: cluster.get('name')})
-        .then(function(indexes) {
-          cluster.set('searchIndexes', indexes);
+    let type = 'search-index';
+    let params = {
+      clusterName: cluster.get('name')
+    };
+    let owner = cluster;
+    let propertyName = 'searchIndexes';
 
-          cluster.get('searchIndexes');
-        });
-    } else {
-      return cluster.get('searchIndexes');
-    }
+    return this._getResources(type, params, owner, propertyName);
   },
 
+  // TODO: Get Resource
   /**
    * Fetches a given log file and its dependencies
    *
@@ -484,18 +539,18 @@ export default Ember.Service.extend({
    * @return {DS.Array} LogFile
    */
   getLogFiles(node) {
-    if (Ember.isEmpty(node.get('logFiles'))) {
-      return this.store.query('log-file', {clusterName: node.get('cluster').get('name'), nodeName: node.get('name')})
-        .then(function(logFiles) {
-          node.set('logFiles', logFiles);
+    let type = 'log-file';
+    let params = {
+      clusterName: node.get('cluster').get('name'),
+      nodeName: node.get('name')
+    };
+    let owner = node;
+    let propertyName = 'logFiles';
 
-          return node.get('logFiles');
-        });
-    } else {
-      return node.get('logFiles');
-    }
+    return this._getResources(type, params, owner, propertyName);
   },
 
+  // TODO: Refactor with similar
   /**
    * Fetches a given log files contents
    *
@@ -532,6 +587,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Refactor with similar
   /**
    * Fetches and sets the amount of lines in a given log file
    *
@@ -566,6 +622,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Get Resource
   /**
    * Fetches a given node and all its basic dependencies: stats, configuration, and log files
    *
@@ -597,8 +654,8 @@ export default Ember.Service.extend({
       });
   },
 
+  // TODO: Refactor with similar
   /**
-   * TODO: Make stats own model, flow through ember data
    * Fetches a given nodes basic configuration stats
    *
    * @method getNodeConfig
@@ -642,6 +699,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Refactor with similar
   /**
    * Returns the results of a Riak node HTTP ping result.
    *
@@ -668,6 +726,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Refactor with similar
   getNodeReplicationStatus(node) {
     let url = `control/nodes/${node.get('name')}/status`;
 
@@ -696,6 +755,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Refactor with similar
   /**
    * Gets and sets the "status" property of each node in a cluster. Status is detrmined by whether or not
    *  the node's ring file is valid.
@@ -738,16 +798,14 @@ export default Ember.Service.extend({
    * @return {DS.Array} Node
    */
   getNodes(cluster) {
-    if (Ember.isEmpty(cluster.get('nodes'))) {
-      return this.store.query('node', {clusterName: cluster.get('name')})
-        .then(function(nodes) {
-          cluster.set('nodes', nodes);
+    let type = 'node';
+    let params = {
+      clusterName: cluster.get('name')
+    };
+    let owner = cluster;
+    let propertyName = 'nodes';
 
-          cluster.get('nodes');
-        });
-    } else {
-      return cluster.get('nodes');
-    }
+    return this._getResources(type, params, owner, propertyName);
   },
 
   getNodesStats(cluster) {
@@ -760,8 +818,8 @@ export default Ember.Service.extend({
     );
   },
 
+  // TODO: Refactor with similar
   /**
-   * TODO: Make stats own model, flow through ember data
    * Gets and sets the node stats property. Returns the node model object.
    *
    * @method getNodeStats
@@ -789,6 +847,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Get Resource
   getObject(clusterName, bucketTypeName, bucketName, objectName) {
     let self = this;
 
@@ -809,9 +868,6 @@ export default Ember.Service.extend({
       });
   },
 
-  // TODO: This can probably be ported over to be used the adapter findRecord
-  //        method once moved over to ED 2.0 using the 'include' object
-  //        Ref: https://github.com/emberjs/data/pull/3976
   getObjectContents(object)   {
     let clusterUrl = object.get('cluster').get('proxyUrl');
     let bucketTypeName = object.get('bucketType').get('name');
@@ -858,20 +914,16 @@ export default Ember.Service.extend({
    * @return {DS.Model} ObjectList
    */
   getObjectList(bucket) {
-    let clusterName = bucket.get('cluster').get('name');
-    let bucketTypeName = bucket.get('bucketType').get('name');
-    let bucketName = bucket.get('name');
-    let self = this;
+    let type = 'object-list';
+    let params = {
+      clusterName: bucket.get('cluster').get('name'),
+      bucketTypeName: bucket.get('bucketType').get('name'),
+      bucketName: bucket.get('name')
+    };
+    let owner = bucket;
+    let propertyName = 'objectList';
 
-    return this.store.queryRecord('object-list', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName })
-      .then(
-        function onSuccess(objectList) {
-          bucket.set('isListLoaded', true);
-          bucket.set('objectList', objectList);
-
-          return bucket.get('objectList');
-        }
-      );
+    return this._getCacheList(type, params, owner, propertyName);
   },
 
   /**
@@ -881,18 +933,19 @@ export default Ember.Service.extend({
    * @return {DS.Array} RiakObject
    */
   getObjects(bucket) {
-    let clusterName = bucket.get('cluster').get('name');
-    let bucketTypeName = bucket.get('bucketType').get('name');
-    let bucketName = bucket.get('name');
+    let type = 'riak-object';
+    let params = {
+      clusterName: bucket.get('cluster').get('name'),
+      bucketTypeName: bucket.get('bucketType').get('name'),
+      bucketName: bucket.get('name')
+    };
+    let owner = bucket;
+    let propertyName = 'objects';
 
-    return this.store.query('riak-object', { clusterName: clusterName, bucketTypeName: bucketTypeName, bucketName: bucketName})
-      .then(function(objects) {
-        bucket.set('objects', objects);
-
-        return bucket.get('objects');
-      });
+    return this._getResources(type, params, owner, propertyName);
   },
 
+  // TODO: Get Resource
   /**
    *
    * @method getSearchSchema
@@ -920,6 +973,7 @@ export default Ember.Service.extend({
       });
   },
 
+  // TODO: Refactor with similar
   /**
    *
    * @method getSearchSchemaContent
@@ -949,6 +1003,7 @@ export default Ember.Service.extend({
     });
   },
 
+  // TODO: Get Resource
   /**
    *
    * @method getTab;e
@@ -976,31 +1031,27 @@ export default Ember.Service.extend({
   },
 
   getTableRows(table) {
-    let clusterName = table.get('cluster').get('name');
-    let tableName = table.get('name');
+    let type = 'row';
+    let params = {
+      clusterName: table.get('cluster').get('name'),
+      tableName: table.get('name')
+    };
+    let owner = table;
+    let propertyName = 'rows';
 
-    return this.store.query('row', { clusterName: clusterName, tableName: tableName})
-      .then(function(rows) {
-        table.set('rows', rows);
-
-        return table.get('rows');
-      });
+    return this._getResources(type, params, owner, propertyName);
   },
 
   getTableRowsList(table) {
-    let cluster = table.get('cluster');
-    let clusterName = table.get('cluster').get('name');
-    let tableName = table.get('name');
+    let type = 'row-list';
+    let params = {
+      clusterName: table.get('cluster').get('name'),
+      tableName: table.get('name')
+    };
+    let owner = table;
+    let propertyName = 'rowsList';
 
-    return this.store.queryRecord('row-list', { clusterName: clusterName, tableName: tableName})
-      .then(
-        function onSuccess(list) {
-          table.set('isListLoaded', true);
-          table.set('rowsList', list);
-
-          return table.get('rowsList');
-        }
-      );
+    return this._getCacheList(type, params, owner, propertyName);
   },
 
   /**
@@ -1011,12 +1062,14 @@ export default Ember.Service.extend({
    * @return {DS.Array} Table
    */
   getTables(cluster) {
-    return this.store.query('table', { clusterName: cluster.get('name') })
-      .then(function(tables) {
-        cluster.set('tables', tables);
+    let type = 'table';
+    let params = {
+      clusterName: cluster.get('name')
+    };
+    let owner = cluster;
+    let propertyName = 'tables';
 
-        return cluster.get('tables');
-      });
+    return this._getResources(type, params, owner, propertyName);
   },
 
   /**
@@ -1056,11 +1109,12 @@ export default Ember.Service.extend({
     }
 
     Ember.run.later(this, function() {
-      self.monitorCluster(this._clusterRef);
+      self._monitorCluster(this._clusterRef);
       self.pollCluster(this._clusterRef);
     }, 10000);
   },
 
+  // TODO: Can we just use this._postResource???
   queryTable(table, data) {
     let clusterName = table.get('cluster').get('name');
     let url = `/explore/clusters/${clusterName}/tables/query`;
@@ -1082,29 +1136,7 @@ export default Ember.Service.extend({
     let bucketTypeName = bucketType.get('name');
     let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/refresh_buckets/source/riak_kv`;
 
-    // Setup state from request
-    bucketType.set('isListLoaded', false);
-    bucketType.set('hasListBeenRequested', true);
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        url: url,
-        type: 'POST'
-      });
-
-      request.done(function(data) {
-        resolve(data);
-      });
-
-      request.fail(function(jqXHR) {
-        if (jqXHR.status === 202) {
-          resolve(jqXHR.status);
-        } else {
-          bucketType.set('hasListBeenRequested', false); // Since the request failed, set value to false
-          reject(jqXHR);
-        }
-      });
-    });
+    return this._refreshCacheList(bucketType, url);
   },
 
   /**
@@ -1118,29 +1150,7 @@ export default Ember.Service.extend({
     let bucketName = bucket.get('name');
     let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}/buckets/${bucketName}/refresh_keys/source/riak_kv`;
 
-    // Setup state from request
-    bucket.set('isListLoaded', false);
-    bucket.set('hasListBeenRequested', true);
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        url: url,
-        type: 'POST'
-      });
-
-      request.done(function(data) {
-        resolve(data);
-      });
-
-      request.fail(function(jqXHR) {
-        if (jqXHR.status === 202) {
-          resolve(jqXHR.status);
-        } else {
-          bucket.set('hasListBeenRequested', false); // Since the request failed, set value to false
-          reject(jqXHR);
-        }
-      });
-    });
+    return this._refreshCacheList(bucket, url);
   },
 
   refreshTableRowsList(table) {
@@ -1148,29 +1158,7 @@ export default Ember.Service.extend({
     let tableName = table.get('name');
     let url = `explore/clusters/${clusterName}/tables/${tableName}/refresh_keys/source/riak_kv`;
 
-    // Setup state from request
-    table.set('isListLoaded', false);
-    table.set('hasListBeenRequested', true);
-
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        url: url,
-        type: 'POST'
-      });
-
-      request.done(function(data) {
-        resolve(data);
-      });
-
-      request.fail(function(jqXHR) {
-        if (jqXHR.status === 202) {
-          resolve(jqXHR.status);
-        } else {
-          table.set('hasListBeenRequested', false); // Since the request failed, set value to false
-          reject(jqXHR);
-        }
-      });
-    });
+    return this._refreshCacheList(table, url);
   },
 
   updateBucketType(bucketType, props) {
@@ -1179,12 +1167,7 @@ export default Ember.Service.extend({
     let data = { props: props };
     let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
 
-    return Ember.$.ajax({
-      type: 'PUT',
-      url: url,
-      contentType: 'application/json',
-      data: JSON.stringify(data)
-    });
+    return this._putResource(url, JSON.stringify(data));
   },
 
   /**
@@ -1201,29 +1184,10 @@ export default Ember.Service.extend({
     let objectName = object.get('name');
     let url = `${clusterUrl}/types/${bucketTypeName}/buckets/${bucketName}/datatypes/${objectName}`;
 
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      let request = Ember.$.ajax({
-        contentType: 'application/json',
-        type: 'POST',
-        dataType: 'json',
-        url: url,
-        data: JSON.stringify(operation)
-      });
-
-      request.done(function(data) {
-        resolve(data);
-      });
-
-      request.fail(function(jqXHR) {
-        if (jqXHR.status === 204) {
-          resolve(jqXHR.status);
-        } else {
-          reject(jqXHR);
-        }
-      });
-    });
+    return this._postResource(url, operation);
   },
 
+  // TODO: Refactor to similar
   /**
    *
    * @method updateSchema
@@ -1245,11 +1209,6 @@ export default Ember.Service.extend({
     let tableName = table.get('name');
     let url = `/explore/clusters/${clusterName}/tables/${tableName}`;
 
-    return Ember.$.ajax({
-      type: 'PUT',
-      url: url,
-      contentType: 'application/json',
-      data: JSON.stringify(data)
-    });
+    return this._putResource(url, JSON.stringify(data));
   }
 });
