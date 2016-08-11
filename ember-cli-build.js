@@ -7,6 +7,15 @@ module.exports = function(defaults) {
     codemirror: {
       modes: ['javascript', 'sql', 'erlang', 'xml'],
       themes: ['material']
+    },
+
+    emberHighCharts: {
+      includeHighCharts: false,
+      includeHighStock: true
+      /* available modules:
+       boost, broken-axis, canvas-tools, data, drilldown, exporting, funnel,
+       heatmap, map, no-data-to-display, offline-exporting, solid-gauge, treemap
+       */
     }
   });
 

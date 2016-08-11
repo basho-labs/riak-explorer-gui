@@ -37,11 +37,8 @@
     "ember-cli-uglify": "^1.2.0",
     "ember-data": "^2.5.0",
     "ember-export-application-global": "^1.0.5",
-    "ember-highcharts": "0.4.4",
     "ember-load-initializers": "^0.5.1",
-    "ember-local-storage": "1.3.1",
     "ember-resolver": "^2.0.3",
-    "highcharts": "4.2.5",
     "loader.js": "^4.0.1"
   },
   "dependencies": {
@@ -49,6 +46,8 @@
     "ember-cli-loading-slider": "^1.3.0",
     "ember-cli-sass": "^5.1.0",
     "ember-content-editable": "0.7.0",
+    "ember-highcharts": "0.4.4",
+    "ember-local-storage": "1.3.1",
     "ember-lodash": "0.0.6",
     "ember-modal-dialog": "0.8.4",
     "ember-power-select": "0.7.2",
@@ -56,6 +55,7 @@
     "ember-truth-helpers": "1.2.0",
     "ember-validations": "0.0.0",
     "ember-wormhole": "^0.3.5",
+    "highcharts": "4.2.6",
     "ivy-codemirror": "1.4.0",
     "ivy-tabs": "2.0.0"
   }

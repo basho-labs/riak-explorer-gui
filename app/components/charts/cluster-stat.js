@@ -5,33 +5,32 @@ import _ from 'lodash/lodash';
 
 export default EmberHighChartsComponent.extend({
   defaultOptions: {
-    chart: {
-      type: 'spline',
-      animation: Highcharts.svg
-    },
     title: {
       text: 'Cluster Data'
     },
-    xAxis: {
-      type: 'datetime',
-      tickPixelInterval: 150
-    },
-    yAxis: {
-      title: {
-        text: 'Value'
-      },
-      plotLines: [{
-        value: 0,
-        width: 1,
-        color: '#808080'
-      }]
-    },
-    tooltip: {
-      formatter: function () {
-        return '<b>' + this.series.name + '</b><br/>' +
-          Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-          Highcharts.numberFormat(this.y, 2);
-      }
+    rangeSelector: {
+      buttons: [{
+        count: 1,
+        type: 'minute',
+        text: '1M'
+      }, {
+        count: 5,
+        type: 'minute',
+        text: '5M'
+      }, {
+        count: 10,
+        type: 'minute',
+        text: '10M'
+      }, {
+        count: 30,
+        type: 'minute',
+        text: '30M'
+      }, {
+        type: 'all',
+        text: 'All'
+      }],
+      inputEnabled: false,
+      selected: 0
     },
     legend: {
       enabled: true
@@ -42,11 +41,11 @@ export default EmberHighChartsComponent.extend({
 
   statToGraph: null,
 
-  plotThreshold: 10,
-
   content: null,
 
   chartOptions: null,
+
+  mode: "StockChart",
 
   getMostRecentData: function() {
     let self = this;
@@ -54,7 +53,7 @@ export default EmberHighChartsComponent.extend({
     return this.get('cluster').get('nodes').map(function(node) {
       return {
         name: node.get('name'),
-        stats: _.takeRight(node.get('statsHistory'), self.get('plotThreshold'))
+        stats: node.get('statsHistory')
       };
     });
   },
@@ -73,7 +72,9 @@ export default EmberHighChartsComponent.extend({
             x: stat.timestamp,
             y: stat.stats[statName]
           };
-        })
+        }),
+        type: 'spline',
+        turboThreshold: 0
       };
     }));
   },
@@ -85,28 +86,20 @@ export default EmberHighChartsComponent.extend({
 
   streamNewDataIntoChart: function() {
     let chart = this.get('chart');
-    let allSeries = chart.series;
+    let allSeries = chart.series.filter(node => node.name !== 'Navigator');
     let data = this.getMostRecentData();
     let statName = this.get('chartOptions.title.text');
-    let plotThreshold = this.get('plotThreshold');
-    let pointsToPlot = _.head(data).stats.length; // All series have the same amount of points, so grab the first and find out how many
 
     allSeries.forEach(function(series, index) {
       let redraw = (index + 1 === allSeries.length);
       let newData = data.findBy('name', series.name);
 
-      if (pointsToPlot < plotThreshold) {
-        series.setData(newData.stats.map(function(stat) {
-          return {
-            x: stat.timestamp,
-            y: stat.stats[statName]
-          };
-        }), redraw);
-      } else {
-        let latestStat = _.last(newData.stats);
-
-        series.addPoint([latestStat.timestamp, latestStat.stats[statName]], true, true);
-      }
+      series.setData(newData.stats.map(function(stat) {
+        return {
+          x: stat.timestamp,
+          y: stat.stats[statName]
+        };
+      }), redraw);
     });
   },
 
