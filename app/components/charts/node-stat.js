@@ -57,6 +57,7 @@ export default EmberHighChartsComponent.extend({
           y: stat.stats[statName]
         };
       }),
+      type: 'spline',
       turboThreshold: 0
     }]);
   },
