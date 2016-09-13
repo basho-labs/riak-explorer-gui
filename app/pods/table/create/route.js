@@ -3,6 +3,7 @@ import Alerts from '../../../mixins/routes/alerts';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
+import insert from '../../../utils/string-helpers';
 import _ from 'lodash/lodash';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
@@ -67,6 +68,13 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
                                       .replace(/(\r\n|\n|\r)/gm, ' ') // removes any leftover newlines
                                       .replace(/\( /g, '(')           // removes any spacing following left parenthesis
                                       .replace(/ \)/g, ')'));         // removes any spacing preceding right parenthesis
+
+      // Add space before first parenthesis if needed
+      let indexOfFirstParenthesis = formatted.indexOf('(');
+      let indexOfCharacterBeforeFirstParenthesis = indexOfFirstParenthesis - 1;
+      let characterBeforeFirstParenthesis = formatted[indexOfCharacterBeforeFirstParenthesis];
+
+      if (characterBeforeFirstParenthesis !== ' ') { formatted = insert(formatted, indexOfFirstParenthesis, ' '); }
 
       let tableName = formatted.split(' ')[2]; // Table name should always come after CREATE TABLE
 
