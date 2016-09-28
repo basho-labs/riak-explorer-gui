@@ -78,7 +78,7 @@ export default Ember.Service.extend({
    * @param {XML.String} data
    */
   createSchema(clusterName, schemaName, data) {
-    let url = `/riak/clusters/${clusterName}/search/schema/${schemaName}`;
+    let url = `riak/clusters/${clusterName}/search/schema/${schemaName}`;
 
     return Ember.$.ajax({
       type: 'PUT',
@@ -90,7 +90,7 @@ export default Ember.Service.extend({
   },
 
   createBucketType(clusterName, bucketType) {
-    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
+    let url = `explore/clusters/${clusterName}/bucket_types/${bucketType.name}`;
 
     return Ember.$.ajax({
       type: 'PUT',
@@ -1063,7 +1063,7 @@ export default Ember.Service.extend({
 
   queryTable(table, data) {
     let clusterName = table.get('cluster').get('name');
-    let url = `/explore/clusters/${clusterName}/tables/query`;
+    let url = `explore/clusters/${clusterName}/tables/query`;
 
     return Ember.$.ajax({
       type: 'POST',
@@ -1177,7 +1177,7 @@ export default Ember.Service.extend({
     let clusterName = bucketType.get('cluster').get('name');
     let bucketTypeName = bucketType.get('name');
     let data = { props: props };
-    let url = `/explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
+    let url = `explore/clusters/${clusterName}/bucket_types/${bucketTypeName}`;
 
     return Ember.$.ajax({
       type: 'PUT',
@@ -1243,7 +1243,7 @@ export default Ember.Service.extend({
   updateTable(table, data) {
     let clusterName = table.get('cluster').get('name');
     let tableName = table.get('name');
-    let url = `/explore/clusters/${clusterName}/tables/${tableName}`;
+    let url = `explore/clusters/${clusterName}/tables/${tableName}`;
 
     return Ember.$.ajax({
       type: 'PUT',
