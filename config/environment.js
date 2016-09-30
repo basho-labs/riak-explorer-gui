@@ -8,6 +8,7 @@ module.exports = function(environment) {
     baseURL: null,
     locationType: 'hash',
     pageSize: 500,
+    rootURL: '/',
 
     EmberENV: {
       FEATURES: {
