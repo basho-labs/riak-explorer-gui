@@ -1,12 +1,17 @@
 .ember-power-select {
-  .ember-power-select-trigger {
-    &:focus {
-      outline: none;
-    }
-  }
-
   &.node-chart-select {
     min-width: 250px;
     display: inline-block;
+    margin-top: -9px;
+
+    .ember-power-select-trigger {
+      top: 9px;
+    }
+  }
+}
+
+.ember-power-select-trigger {
+  &:focus {
+    outline: none;
   }
 }
