@@ -1,13 +1,11 @@
 {
   "name": "ember-riak-explorer",
-  "dependencies": {
-    "ember": "~2.5.0",
+  "dependencies": {},
+  "resolutions": {
+    "ember": "~2.8.0",
     "ember-cli-shims": "0.1.1",
-    "ember-cli-test-loader": "0.2.2",
-    "ember-qunit-notifications": "0.1.0",
     "bootstrap-sass": "~3.3.5",
     "highlightjs": "~9.0.0",
-    "codemirror": "~5.13.0",
-    "blob-polyfill": "^1.0.20150320"
+    "codemirror": "~5.13.0"
   }
 }

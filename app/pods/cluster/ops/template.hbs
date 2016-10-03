@@ -33,15 +33,17 @@
                 <header>
                   <div class="header-left">
                     <span>Displayed Graph:</span>
-                    {{#power-select
-                    selected=statName
-                    options=availableGraphs
-                    searchEnabled=true
-                    onchange=(action "updateGraphName" statName)
-                    class='node-chart-select'
-                    as |statOption|}}
-                      {{statOption}}
-                    {{/power-select}}
+                    <div class="ember-power-select node-chart-select">
+                      {{#power-select
+                      selected=statName
+                      options=availableGraphs
+                      searchEnabled=true
+                      onchange=(action "updateGraphName" statName)
+                      as |statOption|}}
+                        {{statOption}}
+                      {{/power-select}}
+                    </div>
+
                     <div>
                       {{#tooltip.node-stats itemKey=statName useIcon=false}}
                         Graph Descritpion
