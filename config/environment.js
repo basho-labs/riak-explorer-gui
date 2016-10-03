@@ -5,10 +5,9 @@ module.exports = function(environment) {
     modulePrefix: 'ember-riak-explorer',
     podModulePrefix: 'ember-riak-explorer/pods',
     environment: environment,
-    baseURL: null,
+    rootURL: null,
     locationType: 'hash',
     pageSize: 500,
-    rootURL: '/',
 
     EmberENV: {
       FEATURES: {
@@ -33,7 +32,7 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
+    ENV.rootURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter

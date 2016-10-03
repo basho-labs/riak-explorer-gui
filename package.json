@@ -1,6 +1,6 @@
 {
   "name": "ember-riak-explorer",
-  "version": "0.2.0",
+  "version": "1.2.3",
   "description": "A frontend application which allows the exploration of a Riak cluster.",
   "private": false,
   "directories": {
@@ -40,7 +40,6 @@
     "ember-export-application-global": "^1.0.5",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
-    "ember-welcome-page": "^1.0.1",
     "loader.js": "^4.0.1"
   },
   "dependencies": {
