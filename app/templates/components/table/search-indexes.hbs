@@ -8,7 +8,11 @@
 <tbody>
 {{#each indexes as |index|}}
   <tr>
-    <td>{{link.link-index searchIndex=index}}</td>
+    <td>
+      {{#link.explorer-resource resourceType='index' resourceObj=index linkClass='cluster-resource-link'}}
+        {{index.name}}
+      {{/link.explorer-resource}}
+    </td>
     <td>
       {{#link-to 'search-schema' index.cluster.name index.schema.name class='btn btn-small btn-primary'}}
         {{index.schema.name}}

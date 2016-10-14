@@ -1,7 +1,0 @@
-{{#if obj.markedDeleted}}
-  <strike>{{obj.key}}</strike>
-{{else}}
-  {{#link-to obj.bucket.objectModelName obj}}
-    {{obj.key}}
-  {{/link-to}}
-{{/if}}

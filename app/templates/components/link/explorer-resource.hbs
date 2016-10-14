@@ -1,3 +1,9 @@
+{{#if (eq resourceType 'cluster')}}
+  {{#link-to 'bucket-type' resourceObj.name}}
+    {{yield}}
+  {{/link-to}}
+{{/if}}
+
 {{#if (eq resourceType 'bucket-type')}}
   {{#link-to 'bucket-type' resourceObj.cluster.name resourceObj.name class=linkClass}}
     {{yield}}
@@ -6,6 +12,12 @@
 
 {{#if (eq resourceType 'bucket')}}
   {{#link-to 'bucket' resourceObj.cluster.name resourceObj.bucketType.name resourceObj.name class=linkClass}}
+    {{yield}}
+  {{/link-to}}
+{{/if}}
+
+{{#if (eq resourceType 'index')}}
+  {{#link-to 'search-index' resourceObj.cluster.name resourceObj.name class=linkClass}}
     {{yield}}
   {{/link-to}}
 {{/if}}

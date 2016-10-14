@@ -10,7 +10,9 @@
 {{#each bucketTypes as |bt|}}
   <tr>
     <td>
-      {{link.bucket-type bucketType=bt btnBlock=true}}
+      {{#link.explorer-resource resourceType='bucket-type' resourceObj=bucketType linkClass='cluster-resource-link'}}
+        {{bucketType.name}}
+      {{/link.explorer-resource}}
     </td>
     <td>
       {{bt.objectType}}
