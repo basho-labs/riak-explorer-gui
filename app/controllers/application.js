@@ -1,7 +1,20 @@
 import Ember from 'ember';
 
+/**
+ * Base controller that sets UI state for all views.
+ *
+ * @class ApplicationController
+ * @namespace Controllers
+ * @extends Ember.Controller
+ */
 export default Ember.Controller.extend({
   actions: {
+    /**
+     * @method clusterSelected
+     * @param cluster {DS.Model} Expects a cluster model object
+     *
+     * Updates UI when a new cluster has been selected.
+     */
     clusterSelected(cluster) {
       this.set('currentCluster', cluster);
       // Default to data view since no cluster overview view
@@ -13,33 +26,36 @@ export default Ember.Controller.extend({
    * Current Cluster selected. Used to track sidebar state. Null if no sidebar.
    *
    * @property currentCluster
+   * @type {DS.Object} Ember cluster model
    */
   currentCluster: null,
 
   /**
-   * Which subsection of the cluster the UI is currently in. Options are "data", "ops", or "query"
+   * Which subsection of the cluster the UI is currently in.
    *
    * @property clusterSubSection
+   * @type {String} Options are "data", "ops", or "query"
    */
   clusterSubSection: null,
 
   /**
-   * Object that hold the current breadcrumb information
+   * Object that holds the current breadcrumb state.
    *
    * @property breadCrumbMap
+   * @type {Object}
    */
   breadCrumbMap: {},
 
   /**
-   * Object that holds the current view-label information
+   * Object that holds the current view-label information.
    *
    * @property viewLabelMap
    */
   viewLabelMap: {},
 
   /**
-   * Observes routes and will set the cluster sub-section, based on the route name. Must be updated
-   *  any time a new route is added to a subsection
+   * Observes routes and will set the cluster sub-section, based on the route name.
+   * Must be updated any time a new route is added to a subsection (code smell).
    *
    * @method setClusterSubSection
    */
@@ -85,7 +101,7 @@ export default Ember.Controller.extend({
   }.observes('currentPath'),
 
   /**
-   * Determines if the UI should show the view-header
+   * Determines if the UI should show the view-header template.
    *
    * @method showViewHeader
    * @returns Boolean
@@ -96,7 +112,8 @@ export default Ember.Controller.extend({
 
   /**
    * Observes routes and makes sure that if on the index route, to set the current cluster state
-   *  to null. Since all routes are nested under the index route, this is the only way we can
+   *  to null.
+   * Since all routes are nested under the index route, this is the only way we can
    *  reliably ensure that this method is called every time the route is visited.
    *
    * @method resetIndexState
