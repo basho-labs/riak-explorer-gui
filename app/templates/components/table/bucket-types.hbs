@@ -7,7 +7,7 @@
 </tr>
 </thead>
 <tbody>
-{{#each bucketTypes as |bt|}}
+{{#each bucketTypes as |bucketType|}}
   <tr>
     <td>
       {{#link.explorer-resource resourceType='bucket-type' resourceObj=bucketType linkClass='cluster-resource-link'}}
@@ -15,13 +15,13 @@
       {{/link.explorer-resource}}
     </td>
     <td>
-      {{bt.objectType}}
+      {{bucketType.objectType}}
     </td>
     <td>
-      <code>{{bt.nVal}}</code>
+      <code>{{bucketType.nVal}}</code>
     </td>
     <td>
-      <code>{{bt.resolutionStrategy}}</code>
+      <code>{{bucketType.resolutionStrategy}}</code>
     </td>
   </tr>
 {{/each}}
