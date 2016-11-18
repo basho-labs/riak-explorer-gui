@@ -95,7 +95,11 @@
                 sectionRequest='bucketsPageRequest'}}
                   <ul class='button-list'>
                     {{#each currentBuckets as |bucket|}}
-                      <li>{{link.link-bucket bucket=bucket}}</li>
+                      <li>
+                        {{#link.explorer-resource resourceType='bucket' resourceObj=bucket}}
+                          {{bucket.name}}
+                        {{/link.explorer-resource}}
+                      </li>
                     {{/each}}
                   </ul>
                 {{/pagination-component}}

@@ -1,13 +1,21 @@
 import ApplicationAdapter from './application';
 import config from '../config/environment';
 
+/**
+ * @class ObjectListAdapter
+ * @namespace Adapters
+ * @extends ApplicationAdapter
+ */
 export default ApplicationAdapter.extend({
-  urlForQueryRecord(query, modelName) {
-    return `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
-  },
-
+  /**
+   * Overrides application adapter queryRecord method.
+   * Used to get a buckets cached object list. Please refer to cached lists in the read me for more info on explorer cached lists.
+   *
+   * @method queryRecord
+   * @return {Object} Promise object of the requested bucket list
+   */
   queryRecord(store, type, query) {
-    let url = this.urlForQueryRecord(query, type.modelName);
+    let url = `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
 
     let promise = this.ajax(url, 'GET').then(function(data) {
       if (data.keys) {
@@ -25,6 +33,12 @@ export default ApplicationAdapter.extend({
     return promise;
   },
 
+  /**
+   * Overrides application adapter urlForDeleteRecord method.
+   *
+   * @method queryRecord
+   * @return {String} Url string of DELETE request
+   */
   urlForDeleteRecord(id, modelName, snapshot) {
     let clusterName = snapshot.belongsTo('bucket').belongsTo('bucketType').belongsTo('cluster').id;
     let bucketTypeName = snapshot.belongsTo('bucket').belongsTo('bucketType').attr('name');

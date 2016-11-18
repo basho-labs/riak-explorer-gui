@@ -2,16 +2,25 @@ import Ember from "ember";
 import ApplicationAdapter from './application';
 import config from '../config/environment';
 
+/**
+ * @class RiakObjectAdapter
+ * @namespace Adapters
+ * @extends ApplicationAdapter
+ */
 export default ApplicationAdapter.extend({
-  buildURL(modelName, id, snapshot, requestType, query) {
-    return `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
-  },
-
+  /**
+   * Overrides application adapter query method.
+   * Used to read objects from a given bucket.
+   *
+   * @method query
+   * @return {Object} Promise object of the requested object
+   */
   query(store, type, query) {
-    let url = this.buildURL(type.modelName, null, null, 'query', query);
+    let url = `explore/clusters/${query.clusterName}/bucket_types/${query.bucketTypeName}/buckets/${query.bucketName}/keys?start=1&rows=${config.pageSize}`;
 
     let promise = this.ajax(url, 'GET').then(function(data) {
       if (data.keys && data.keys.keys) {
+        // Use compound key strategy to form name/id
         data.riak_objects = data.keys.keys.map(function(key) {
           return {
             id: `${query.clusterName}/${query.bucketTypeName}/${query.bucketName}/${key}`,
@@ -28,6 +37,12 @@ export default ApplicationAdapter.extend({
     return promise;
   },
 
+  /**
+   * Overrides application adapter createRecord method.
+   * Creating a record and updating a record use same api, forward this method to that one
+   *
+   * @method createRecord
+   */
   createRecord(store, type, snapshot) {
     return this.updateRecord(store, type, snapshot);
   },
@@ -46,6 +61,9 @@ export default ApplicationAdapter.extend({
    *
    * Note: This means that the object list cache must already be populated for a delete action to be taken on the
    *  bucket
+   *
+   * @method deleteRecord
+   * @return {Object} Promise object of the request
    */
   deleteRecord(store, type, snapshot) {
     let object = snapshot.record;
@@ -62,6 +80,13 @@ export default ApplicationAdapter.extend({
     });
   },
 
+  /**
+   * Overrides application adapter updateRecord method.
+   * Creates new riak object for a given bucket
+   *
+   * @method updateRecord
+   * @return {Object} Promise object of the request
+   */
   updateRecord(store, type, snapshot) {
     let object = snapshot.record;
     let clusterUrl = object.get('cluster').get('proxyUrl');

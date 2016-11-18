@@ -26,7 +26,9 @@
             <ul class="button-list">
               {{#each model.bucketTypesUsing as |bucketType|}}
                 <li>
-                  {{link.bucket-type bucketType=bucketType}}
+                  {{#link.explorer-resource resourceType='bucket-type' resourceObj=bucketType linkClass='cluster-resource-link'}}
+                    {{bucketType.name}}
+                  {{/link.explorer-resource}}
                 </li>
               {{/each}}
             </ul>
