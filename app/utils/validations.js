@@ -132,6 +132,7 @@ const Validations = {
         valid = _.isBoolean(value);
         break;
       case 'Set':
+      case 'HyperLogLog':
         valid = _.isArray(value) && Validations.setHasCorrectValues(objectName, value);
         break;
       case 'Map':
@@ -167,7 +168,7 @@ const Validations = {
         message = `The value of "${objectName}" must be a javascript object.`;
         break;
       default:
-        message = `The valye of "${objectName}" is incorrect, please check the input to make sure it is the correct type`;
+        message = `The value of "${objectName}" is incorrect, please check the input to make sure it is the correct type`;
     }
 
     return message;
