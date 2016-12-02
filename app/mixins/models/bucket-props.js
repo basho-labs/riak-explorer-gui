@@ -124,6 +124,16 @@ export default Ember.Mixin.create({
   }.property('props'),
 
   /**
+   * Does this bucket store HyperLogLog data type objects?
+   *
+   * @method isHLL
+   * @return {Boolean}
+   */
+  isHLL: function() {
+    return this.get('dataTypeName') === 'HyperLogLog';
+  }.property('dataTypeName'),
+
+  /**
    * Has this Bucket Type not been activated via `riak-admin bucket-types activate`?
    * (Buckets inherit this setting from their parent bucket types.)
    * Inverse of the isActive method

@@ -1,0 +1,34 @@
+{{#dashboard-module.container class='medium-width'}}
+  {{#dashboard-module.header label='Object Details'}}
+    <div class="module-actions">
+      <a href="{{model.url}}" class="action-button raw">
+        <span class="ion-eye" aria-hidden="true"></span>
+        View Raw Data
+      </a>
+      <button type="button" class="action-button delete" {{action 'deleteObject' model}}>
+        <span class="ion-trash-a" aria-hidden="true"></span>
+        Delete Object
+      </button>
+    </div>
+  {{/dashboard-module.header}}
+  {{#dashboard-module.body}}
+    {{#if showLoadingSpinner}}
+      {{loading-spinner statusMessage=loadingMessage}}
+    {{else}}
+      <table class="key-value-table">
+        <tbody>
+        <tr>
+          <td class="key">Cardinality</td>
+          <td class="value">{{model.contents}}</td>
+        </tr>
+        <tr>
+          <td class="key">Add Item to {{model.name}} list</td>
+          <td class="value">
+            {{hll-editor addElement='addElement'}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    {{/if}}
+  {{/dashboard-module.body}}
+{{/dashboard-module.container}}
