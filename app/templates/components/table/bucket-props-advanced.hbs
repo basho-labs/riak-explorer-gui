@@ -1,7 +1,16 @@
 {{#each model.propsWithHelp as |prop|}}
   <tr>
     <td class='key'>
-      {{prop.name}}
+      {{#if (or prop.name prop.key)}}
+        {{#if prop.name}}
+          {{prop.name}}
+        {{/if}}
+
+        {{#if (not prop.name)}}
+          {{prop.key}}
+        {{/if}}
+      {{/if}}
+
       {{tooltip.bucket-props
       itemKey=prop.key
       itemDescription=prop.description
