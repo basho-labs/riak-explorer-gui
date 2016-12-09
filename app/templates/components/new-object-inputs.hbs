@@ -11,14 +11,21 @@
     theme='material'
     lineWrapping=true
     value=(mut object.contents)}}
-    <p class="help-block">Set items should be entered in comma seperated value format</p>
+    <p class="help-block">The set value must be entered as a valid javascript array. All array values should be strings. (i.e. <code>['foo', 'bar', 'baz']</code>)</p>
   {{else if (eq object.type 'Map')}}
     {{ivy-codemirror
     mode='javascript'
     theme='material'
     lineWrapping=true
     value=(mut object.contents)}}
-    <p class="help-block">Map must be formatted as valid json</p>
+    <p class="help-block">The map value must be entered as a javascript object and be valid json.</p>
+  {{else if (eq object.type 'HyperLogLog')}}
+    {{ivy-codemirror
+    mode='javascript'
+    theme='material'
+    lineWrapping=true
+    value=(mut object.contents)}}
+    <p class="help-block">The HLL object must be given a list to calculate cardinality from. The list must be entered as a valid javascript array. All array values should be strings. (i.e. <code>['foo', 'bar', 'baz']</code>)</p>
   {{else}}
     {{ivy-codemirror
     mode='javascript'

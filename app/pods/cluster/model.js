@@ -208,6 +208,12 @@ var Cluster = DS.Model.extend({
     return status;
   }.property('nodes.@each.isHealthy'),
 
+  supportsHyperLogLogs: function() {
+    let currentVersion = parseFloat(this.get('riakVersion'));
+
+    return currentVersion >= 2.2;
+  }.property('riakVersion'),
+
   warnings: function() {
     let warnings = {};
 

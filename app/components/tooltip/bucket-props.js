@@ -4,7 +4,7 @@ import renderTooltip from 'ember-tooltips/utils/render-tooltip';
 export default Ember.Component.extend({
   tagName: 'span',
 
-  classNames: ['tooltip-icon', 'bucket-props-tooltip', 'ion-information-circled'],
+  classNameBindings: ['toolTipClass'],
 
   itemKey: undefined,
 
@@ -18,26 +18,46 @@ export default Ember.Component.extend({
 
   tooltipInstance: null,
 
-  didRender: function() {
+  shouldRenderToolTip: function() {
     let key = this.get('itemKey');
+    let description = this.get('itemDescription');
+    let itemDefault = this.get('itemDefaultValue');
+    let editable = this.get('itemIsEditable');
+    let type = this.get('itemSchemaType');
 
-    if (key) {
+    return !!(key && (description || itemDefault || editable || type));
+  }.property('itemKey', 'itemDescription', 'itemDefaultValue', 'itemIsEditable', 'itemSchemaType'),
+
+  toolTipClass: function() {
+    if (this.get('shouldRenderToolTip')) {
+      return 'tooltip-icon bucket-props-tooltip ion-information-circled';
+    }
+  }.property('shouldRenderToolTip'),
+
+  didRender: function() {
+    if (this.get('shouldRenderToolTip')) {
       const element = this.$()[0];
+      let key = this.get('itemKey');
+      let description = this.get('itemDescription');
+      let itemDefault = this.get('itemDefaultValue');
+      let editable = this.get('itemIsEditable');
+      let type = this.get('itemSchemaType');
+
       let wrapperStart = `<div class='tooltip-content-wrapper'>`;
-      let title = `<div class='title-wrapper'><div class='title'>${key}</div></div>`;
-      let description = (this.get('itemDescription') !== undefined) ? `<div class='description-wrapper'><div class='description'>${this.get('itemDescription')}</div></div>` : '';
-      let itemDefault = (this.get('itemDefaultValue') !== undefined) ? `<div class='default small'>Default Value: ${this.get('itemDefaultValue')}</div>` : '';
-      let editable = (this.get('itemIsEditable') !== undefined) ? `<div class='editable small'>Editable: ${this.get('itemIsEditable')}</div>` : '';
-      let type = (this.get('itemSchemaType') !== undefined) ? `<div class='type small'>Type: ${this.get('itemSchemaType')}</div>` : '';
+      let ttTitle = `<div class='title-wrapper'><div class='title'>${key}</div></div>`;
+      let ttDescription = (description !== undefined) ? `<div class='description-wrapper'><div class='description'>${description}</div></div>` : '';
+      let ttItemDefault = (itemDefault !== undefined) ? `<div class='default small'>Default Value: ${itemDefault}</div>` : '';
+      let ttEditable = (editable !== undefined) ? `<div class='editable small'>Editable: ${editable}</div>` : '';
+      let ttType = (type !== undefined) ? `<div class='type small'>Type: ${type}</div>` : '';
       let wrapperEnd = `</div>`;
 
       const toolTipTemplate =
         wrapperStart +
-          title +
-          description +
-          itemDefault +
-          editable +
-          type +
+        ttTitle +
+        ttDescription +
+        ttItemDefault +
+        ttEditable +
+        ttType +
         wrapperEnd;
 
       this.set('tooltipInstance', renderTooltip(element, {

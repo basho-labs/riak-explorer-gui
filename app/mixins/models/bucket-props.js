@@ -23,7 +23,7 @@ export default Ember.Mixin.create({
    * @see http://docs.basho.com/riak/latest/theory/concepts/crdts/
    *
    * @method dataTypeName
-   * @return {String|Null} One of: [ 'Map', 'Set', 'Counter', null ]
+   * @return {String|Null} One of: [ 'Map', 'Set', 'Counter', 'HyperLogLog', null ]
    */
   dataTypeName: function() {
     if (this.get('props')) {
@@ -31,6 +31,10 @@ export default Ember.Mixin.create({
 
       if (this.get('isCRDT')) {
         name = this.get('props').datatype;
+      }
+
+      if (name === 'hll') {
+        name = 'HyperLogLog';
       }
 
       if (name) {
@@ -118,6 +122,16 @@ export default Ember.Mixin.create({
       return this.get('props').datatype || false;
     }
   }.property('props'),
+
+  /**
+   * Does this bucket store HyperLogLog data type objects?
+   *
+   * @method isHLL
+   * @return {Boolean}
+   */
+  isHLL: function() {
+    return this.get('dataTypeName') === 'HyperLogLog';
+  }.property('dataTypeName'),
 
   /**
    * Has this Bucket Type not been activated via `riak-admin bucket-types activate`?

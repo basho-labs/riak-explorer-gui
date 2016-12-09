@@ -20,6 +20,10 @@
           <li>
             {{link-to data.riakObject.name 'riak-object.counter' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
           </li>
+        {{else if (eq data.riakObject.type 'hll')}}
+          <li>
+            {{link-to data.riakObject.name 'riak-object.hll' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}
+          </li>
         {{else if (eq data.riakObject.type 'set')}}
           <li>
             {{link-to data.riakObject.name 'riak-object.set' data.cluster.name data.bucketType.name data.bucket.name data.riakObject.name}}

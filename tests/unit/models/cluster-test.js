@@ -108,3 +108,24 @@ test('status', function(assert) {
     assert.equal(model.get('status'), 'warning');
   });
 });
+
+test('supportsHyperLogLogs', function(assert) {
+  let model = this.subject();
+
+  Ember.run(function() {
+    model.set('riakVersion', '1.2.0');
+    assert.equal(model.get('supportsHyperLogLogs'), false);
+
+    model.set('riakVersion', '2.0.0');
+    assert.equal(model.get('supportsHyperLogLogs'), false);
+
+    model.set('riakVersion', '2.1.0');
+    assert.equal(model.get('supportsHyperLogLogs'), false);
+
+    model.set('riakVersion', '2.2.0');
+    assert.equal(model.get('supportsHyperLogLogs'), true);
+
+    model.set('riakVersion', '2.3.0');
+    assert.equal(model.get('supportsHyperLogLogs'), true);
+  });
+});

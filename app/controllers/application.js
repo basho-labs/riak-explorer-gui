@@ -71,6 +71,7 @@ export default Ember.Controller.extend({
       case 'riak-object.create':
       case 'riak-object.edit':
       case 'riak-object.counter':
+      case 'riak-object.hll':
       case 'riak-object.set':
       case 'riak-object.map':
       case 'riak-object.map.edit':

@@ -30,6 +30,10 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   setupController: function(controller, model) {
     this._super(controller, model);
 
+    if (model.get('cluster').get('supportsHyperLogLogs')) {
+      controller.get('dataTypes').pushObject('hyperloglog');
+    }
+
     controller.clearState();
   },
 
@@ -50,7 +54,11 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
 
     if (btType !== 'default') {
-      bucketType.data.props.datatype = btType;
+      if (btType === 'hyperloglog') {
+        bucketType.data.props.datatype = 'hll';
+      } else {
+        bucketType.data.props.datatype = btType;
+      }
     }
 
     return bucketType;

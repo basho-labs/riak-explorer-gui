@@ -33,6 +33,7 @@ export function formatRiakObject(type, value) {
       formatted["increment"] = value;
       break;
     case 'Set':
+    case 'HyperLogLog':
       formatted["add_all"] = value;
       break;
     case 'Map':

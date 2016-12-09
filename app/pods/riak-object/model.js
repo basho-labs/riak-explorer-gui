@@ -123,6 +123,9 @@ export default DS.Model.extend(ObjectHeaders, MapObject, {
       case bucket.get('isMap'):
         routePath = 'riak-object.map';
         break;
+      case bucket.get('isHLL'):
+        routePath = 'riak-object.hll';
+        break;
       default:
         routePath = 'riak-object';
         break;
