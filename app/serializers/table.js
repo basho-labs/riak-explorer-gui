@@ -19,22 +19,24 @@ export default ApplicationSerializer.extend({
 
       // Assign partition key
       table.partition_key = [];
-      ddl.partition_key.forEach(function(pk) {
-        let isQuanta = pk.indexOf('quantum') > -1;
-
-        // Reformat quantum to have spaces after commas
-        if (isQuanta) {
-          pk = pk.split(',').join(', ');
-        }
+      Object.keys(ddl.partition_key).forEach(function(pk_field) {
+        let isQuanta = (pk_field.indexOf('quantum') !== -1);
+        let name = isQuanta ? pk_field.split(',').join(', ') : pk_field;
 
         table.partition_key.push({
-          name: pk,
+          name: name,
           quantum: isQuanta
         });
       });
 
       // Assign local key
-      table.local_key = ddl.local_key;
+      table.local_key = [];
+      Object.keys(ddl.local_key).forEach(function(lk_field) {
+        table.local_key.push({
+          name: lk_field,
+          ordering: ddl.local_key[lk_field].ordering
+        });
+      });
 
       delete table.props.ddl;
     });
