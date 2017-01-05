@@ -92,17 +92,21 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
         [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
       ],
-      timestamp: [
-        [1464024810, 1464024811, 1464024812, 1464024813, 1464024814, 1464024815, 1464024816, 1464024817, 1464024818, 1464024819],
-        [1464024820, 1464024821, 1464024822, 1464024823, 1464024824, 1464024825, 1464024826, 1464024827, 1464024828, 1464024829],
-        [1464024830, 1464024831, 1464024832, 1464024833, 1464024834, 1464024835, 1464024836, 1464024837, 1464024838, 1464024839]
-      ],
+      timestamp: _.times(3, function(i) {
+          return _.times(10, function(j) {
+            let ts = Math.round(new Date().getTime() / 1000);
+            // Creates unique timestamps that are each one second apart
+            return ts - (60 * (i + j + 1));
+          });
+        }
+      ),
       varchar: [
         [`'foo'`, `'bar'`, `'Lorem'`, `'ipsum'`, `'dolor'`, `'sit'`, `'amet'`, `'consectetur'`, `'adipiscing'`, `'elit'`],
         [`'Aliquam'`, `'sit'`, `'amet'`, `'tincidunt'`, `'felis'`, `'Curabitur'`, `'at;`, `'gravida'`, `'est'`, `'Quisque'`],
         [`'vehicula'`, `'mi'`, `'sed'`, `'libero'`, `'hendrerit'`, `'vel'`, `'mollis'`, `'lorem'`, `'euismod'`, `'Donec'`]
       ]
     };
+
     let columns = this.currentModel.get('columns');
 
     // Creates three sample writes by going through each column and using a sample of that columns type

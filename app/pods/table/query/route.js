@@ -83,9 +83,12 @@ export default Ember.Route.extend(LoadingSlider, ScrollReset, WrapperState, {
         "felis"
       ];
       let example = '';
+      let currentTime = Math.round(new Date().getTime() / 1000);
+      let oneDayAgo = currentTime - (24 * 3600);
+      let oneDayAhead = currentTime + (24 * 3600);
 
       // Set Query Base
-      example = `select * from ${tableName} where ${quantumName} > 1 and ${quantumName} < 9999`;
+      example = `select * from ${tableName} where ${quantumName} > ${oneDayAgo} and ${quantumName} < ${oneDayAhead}`;
 
       // Add a comparison for each partition key column that isn't the quantum column
       partitionKey
