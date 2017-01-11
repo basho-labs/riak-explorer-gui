@@ -25,6 +25,13 @@ var Cluster = DS.Model.extend({
   nodes: DS.hasMany('node'),
 
   /**
+   * Protocol Buffer Files created on the cluster
+   * @property protoBuffFiles
+   * @type Array<BucketType>
+   */
+  protoBuffFiles: DS.hasMany('pb-file'),
+
+  /**
    * Search indexes created on the cluster
    * @property searchIndexes
    * @type Array<BucketType>

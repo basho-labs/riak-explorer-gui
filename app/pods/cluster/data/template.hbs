@@ -37,6 +37,10 @@
     {{#dashboard-module.container class='medium-width'}}
       {{#dashboard-module.header label='TS Tables'}}
         <div class="module-actions">
+          {{#link-to 'pb-file.create' model.name class='action-button create'}}
+            <span class="ion-plus-circled" aria-hidden="true"></span>
+            Upload New Protocol Buffer File
+          {{/link-to}}
           {{#link-to 'table.create' model.name class='action-button create'}}
             <span class="ion-plus-circled" aria-hidden="true"></span>
             Create New Table
