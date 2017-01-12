@@ -10,5 +10,9 @@ export default DS.Model.extend({
    */
   cluster: DS.belongsTo('cluster'),
 
-  name: DS.attr('string')
+  name: DS.attr('string'),
+
+  uploadUrl: function() {
+    return `explore/clusters/${this.get('cluster').get('name')}/pb-messages/create/`;
+  }.property('cluster')
 });
