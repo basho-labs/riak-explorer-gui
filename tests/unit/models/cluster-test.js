@@ -10,7 +10,7 @@ moduleForModel('cluster', 'Unit | Model | cluster', {
     'model:config-file',
     'model:log-file',
     'model:table',
-    'model:pb-file'
+    'model:table-schema'
   ]
 });
 
@@ -62,11 +62,11 @@ test('tables relationship', function(assert) {
   assert.equal(relationship.kind, 'hasMany');
 });
 
-test('pb-files relationship', function(assert) {
+test('table-schema relationship', function(assert) {
   let klass = this.subject({}).constructor;
-  let relationship = Ember.get(klass, 'relationshipsByName').get('protoBuffFiles');
+  let relationship = Ember.get(klass, 'relationshipsByName').get('tableSchemas');
 
-  assert.equal(relationship.key, 'protoBuffFiles');
+  assert.equal(relationship.key, 'tableSchemas');
   assert.equal(relationship.kind, 'hasMany');
 });
 

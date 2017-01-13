@@ -1,7 +1,7 @@
 import { moduleForModel, test } from 'ember-qunit';
 import Ember from 'ember';
 
-moduleForModel('search-schema', 'Unit | Model | pb-file', {
+moduleForModel('search-schema', 'Unit | Model | table-schema', {
   // Specify the other units that are required for this test.
   needs: ['model:cluster']
 });

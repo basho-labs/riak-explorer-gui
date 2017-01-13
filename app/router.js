@@ -29,8 +29,7 @@ Router.map(function() {
   this.route('table.query', {path: '/cluster/:clusterName/data/table/:tableName/query'});
   this.route('table.write', {path: '/cluster/:clusterName/data/table/:tableName/write'});
   this.route('table.create', {path: '/cluster/:clusterName/data/table/create'});
-  // this.route('pb-file', {path: '/cluster/:clusterName/pb-file/:pbFileName'});
-  this.route('pb-file.create', {path: '/cluster/:clusterName/pb-file/create'});
+  this.route('table-schema.create', {path: '/cluster/:clusterName/table-schema/create'});
 
   // Cluster-Ops Routes
   this.route('node', {path: '/cluster/:clusterName/ops/nodes/:nodeName/'});
@@ -50,6 +49,7 @@ Router.map(function() {
 
   // Misc. Routes
   this.route('help');
+
 });
 
 export default Router;

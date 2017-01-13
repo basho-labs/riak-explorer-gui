@@ -9,7 +9,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     let self = this;
 
     return this.explorer.getCluster(params.clusterName).then(function(cluster) {
-      return self.store.createRecord('pb-file', { cluster: cluster });
+      return self.store.createRecord('table-schema', { cluster: cluster });
     });
   },
 
@@ -17,11 +17,11 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     this.setSidebarCluster(model.get('cluster'));
     this.setBreadCrumbs({
       cluster: model.get('cluster'),
-      crudAction: 'PB file upload'
+      crudAction: 'create schema template'
     });
     this.setViewLabel({
-      preLabel: 'New Protocol Buffer File',
-      label: 'Upload'
+      preLabel: 'Schema Template',
+      label: 'Create'
     });
   }
 });

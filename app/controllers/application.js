@@ -78,7 +78,7 @@ export default Ember.Controller.extend({
       case 'table':
       case 'table.create':
       case 'table.write':
-      case 'pb-file.create':
+      case 'table-schema.create':
         this.set('clusterSubSection', 'data');
         break;
       case 'cluster.ops':

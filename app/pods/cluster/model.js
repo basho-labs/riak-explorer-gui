@@ -25,13 +25,6 @@ var Cluster = DS.Model.extend({
   nodes: DS.hasMany('node'),
 
   /**
-   * Protocol Buffer Files created on the cluster
-   * @property protoBuffFiles
-   * @type Array<BucketType>
-   */
-  protoBuffFiles: DS.hasMany('pb-file'),
-
-  /**
    * Search indexes created on the cluster
    * @property searchIndexes
    * @type Array<BucketType>
@@ -51,6 +44,13 @@ var Cluster = DS.Model.extend({
    * @type Array<Table>
    */
   tables: DS.hasMany('table'),
+
+  /**
+   * Table schema templates created on the cluster
+   * @property protoBuffFiles
+   * @type Array<BucketType>
+   */
+  tableSchemas: DS.hasMany('table-schema'),
 
   /**
    * Is this cluster in Dev Mode? Set in the Explorer config file.
