@@ -23,5 +23,19 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       preLabel: 'Schema Template',
       label: 'Create'
     });
+  },
+
+  actions: {
+    incorrectExtension: function() {
+      this.controller.set('errors', "File must have an extension of .proto and be a protocol buffer file to be read.");
+    },
+
+    uploadFail(errorObj) {
+      this.controller.set('errors', errorObj.error);
+    },
+
+    uploadSuccess(data) {
+      this.controller.set('fileUploaded', true);
+    }
   }
 });
