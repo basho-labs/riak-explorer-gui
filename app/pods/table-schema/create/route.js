@@ -31,11 +31,21 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     },
 
     uploadFail(errorObj) {
-      this.controller.set('errors', errorObj.error);
+      // let errorMessage = (Ember.isPresent(errorObj.error)) ? errorObj.error : 'Riak Explorer was not able to parse the uploaded protobuff file. Please check to make sure it is formatted correctly.';
+      let errorMessage = 'Riak Explorer was not able to parse the uploaded protobuff file. Please check to make sure it is formatted correctly.';
+
+      this.controller.set('errors', errorMessage);
     },
 
     uploadSuccess(data) {
-      this.controller.set('fileUploaded', true);
+      let self = this;
+      let clusterName = this.get('currentModel').get('cluster').get('name');
+      let fileSha = data.create;
+
+      this.explorer.getProtoBuffMessages(clusterName, fileSha).then(function(data) {
+        self.controller.set('errors', null);
+        self.controller.set('fileUploaded', true);
+      });
     }
   }
 });

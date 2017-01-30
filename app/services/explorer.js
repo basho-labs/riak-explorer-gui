@@ -893,6 +893,25 @@ export default Ember.Service.extend({
       });
   },
 
+  getProtoBuffMessages(clusterName, fileSha) {
+    let url = `explore/clusters/${clusterName}/pb-messages/messages/${fileSha}`;
+
+    return new Ember.RSVP.Promise(function(resolve, reject) {
+      let request = Ember.$.ajax({
+        url: url,
+        type: 'GET'
+      });
+
+      request.done(function(data) {
+        resolve(data);
+      });
+
+      request.fail(function(data) {
+        reject(data);
+      });
+    });
+  },
+
   /**
    *
    * @method getSearchSchema
