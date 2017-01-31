@@ -28,7 +28,13 @@
       onUploadFail=(route-action "uploadFail")
       onUploadSuccess=(route-action "uploadSuccess")}}
     {{else}}
-      file uploaded!
+      Parsed file contents:
+      
+      {{ivy-codemirror
+      mode='javascript'
+      theme='material'
+      lineWrapping=true
+      value=parsedContents}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}

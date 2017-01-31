@@ -45,6 +45,7 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       this.explorer.getProtoBuffMessages(clusterName, fileSha).then(function(data) {
         self.controller.set('errors', null);
         self.controller.set('fileUploaded', true);
+        self.controller.set('parsedContents', JSON.stringify(data, null, ' '));
       });
     }
   }

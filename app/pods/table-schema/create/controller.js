@@ -7,5 +7,7 @@ export default Ember.Controller.extend({
 
   showSpinner: false,
 
-  validExtensions: ['proto']
+  validExtensions: ['proto'],
+
+  parsedContents: ''
 });
