@@ -3,6 +3,7 @@ import Alerts from '../../../mixins/routes/alerts';
 import LoadingSlider from '../../../mixins/routes/loading-slider';
 import ScrollReset from '../../../mixins/routes/scroll-reset';
 import WrapperState from '../../../mixins/routes/wrapper-state';
+import _ from 'lodash/lodash';
 
 export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperState, {
   model(params) {
@@ -25,6 +26,45 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
+  // parseMessageFields(fields, originalJSON) {
+  //   return fields.map(function(field) {
+  //     let fieldType = field.type;
+  //
+  //     if (_.isObject(fieldType) && Ember.isPresent(fieldType.ref)) {
+  //       // TODO: Start back here. Prob filter out any ref field types but make sure the references are recursively added to the fields object
+  //       // TODO: Ask Glick to clarify how this will work
+  //     }
+  //
+  //     return field;
+  //   });
+  // },
+
+  retrieveMessages(data) {
+    let self = this;
+    let messages;
+
+    if (Ember.isPresent(data.messages)) {
+      messages = data.messages
+        .map(function(message) {
+          return {
+            name: message.name,
+            // TODO: Actually build out messages based on references
+            //fields: self.parseFields(message.fields, messageJSON)
+            fields: message.fields
+              .filter(function(field) { return _.isString(field.type); })
+          };
+        })
+        .map(function(message) {
+          return JSON.stringify(message, null, ' ');
+        });
+    } else {
+      // TODO: Send upload fail action or invoke controller errors
+      messages = null;
+    }
+
+    return messages;
+  },
+
   actions: {
     incorrectExtension: function() {
       this.controller.set('errors', "File must have an extension of .proto and be a protocol buffer file to be read.");
@@ -43,9 +83,13 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
       let fileSha = data.create;
 
       this.explorer.getProtoBuffMessages(clusterName, fileSha).then(function(data) {
-        self.controller.set('errors', null);
-        self.controller.set('fileUploaded', true);
-        self.controller.set('parsedContents', JSON.stringify(data, null, ' '));
+        let messages = self.retrieveMessages(data[fileSha]);
+
+        if (messages) {
+          self.controller.set('errors', null);
+          self.controller.set('fileUploaded', true);
+          self.controller.set('messages', messages);
+        }
       });
     }
   }

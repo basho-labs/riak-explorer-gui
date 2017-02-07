@@ -9,5 +9,5 @@ export default Ember.Controller.extend({
 
   validExtensions: ['proto'],
 
-  parsedContents: ''
+  messages: []
 });

@@ -28,13 +28,15 @@
       onUploadFail=(route-action "uploadFail")
       onUploadSuccess=(route-action "uploadSuccess")}}
     {{else}}
-      Parsed file contents:
-      
-      {{ivy-codemirror
-      mode='javascript'
-      theme='material'
-      lineWrapping=true
-      value=parsedContents}}
+      {{#each messages as |message index|}}
+        <h2>Message #{{index}}:</h2>
+        {{ivy-codemirror
+        mode='javascript'
+        theme='material'
+        lineWrapping=true
+        value=message}}
+        <br/>
+      {{/each}}
     {{/if}}
   {{/dashboard-module.body}}
 {{/dashboard-module.container}}
