@@ -54,15 +54,24 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
               .filter(function(field) { return _.isString(field.type); })
           };
         })
-        .map(function(message) {
-          return JSON.stringify(message, null, ' ');
-        });
     } else {
       // TODO: Send upload fail action or invoke controller errors
       messages = null;
     }
 
     return messages;
+  },
+
+  formatMessagesIntoTableString(messages) {
+    return messages.map(function(message) {
+      let fields = message.fields
+        .map(function(field) {
+          return `  ${field.name} ${field.type.toUpperCase()} NOT NULL`;
+        })
+        .join(',\n');
+
+      return `CREATE TABLE ${message.name}\n(\n${fields}\n  PRIMARY KEY (\n    (##,##, quantum(##, ##, ##),\n    ##, ##, ##)\n)`;
+    });
   },
 
   actions: {
@@ -84,11 +93,12 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
       this.explorer.getProtoBuffMessages(clusterName, fileSha).then(function(data) {
         let messages = self.retrieveMessages(data[fileSha]);
+        let quasiTables = self.formatMessagesIntoTableString(messages);
 
         if (messages) {
           self.controller.set('errors', null);
           self.controller.set('fileUploaded', true);
-          self.controller.set('messages', messages);
+          self.controller.set('messages', quasiTables);
         }
       });
     }
