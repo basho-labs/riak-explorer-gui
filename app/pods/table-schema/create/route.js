@@ -39,6 +39,14 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
   //   });
   // },
 
+  setupController: function(controller, model) {
+    this._super(controller, model);
+
+    controller.set('messages', []);
+    controller.set('fileUploaded', false);
+    controller.set('errors', null);
+  },
+
   retrieveMessages(data) {
     let self = this;
     let messages;
@@ -74,6 +82,19 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
+  validateTableClientSide: function(tableName, tableData) {
+    let isValid = true;
+    let controller = this.controller;
+
+    // Check if table name already exists
+    if (this.currentModel.get('cluster').get('tables').filterBy('name', tableName).length) {
+      isValid = false;
+      controller.set('errors', `A table named '${tableName}' already exits on the '${this.currentModel.get('cluster').get('name')}' cluster. Please use a unique name for your table.`);
+    }
+
+    return isValid;
+  },
+
   actions: {
     incorrectExtension: function() {
       this.controller.set('errors', "File must have an extension of .proto and be a protocol buffer file to be read.");
@@ -101,6 +122,62 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
           self.controller.set('messages', quasiTables);
         }
       });
+    },
+
+    createTable: function(table, index) {
+      let self = this;
+      let controller = this.controller;
+      let clusterName = table.get('cluster').get('name');
+      let statement = controller.get('schemas')[index];
+
+      controller.set('errors', null);
+      controller.set('showSpinner', true);
+
+      let formatted = _.trim(statement.replace(/\s\s+/g, ' ')         // reduces multiple whitespaces into one
+        .replace(/(\r\n|\n|\r)/gm, ' ') // removes any leftover newlines
+        .replace(/\( /g, '(')           // removes any spacing following left parenthesis
+        .replace(/ \)/g, ')'));         // removes any spacing preceding right parenthesis
+
+      // Add space before first parenthesis if needed
+      let indexOfFirstParenthesis = formatted.indexOf('(');
+      let indexOfCharacterBeforeFirstParenthesis = indexOfFirstParenthesis - 1;
+      let characterBeforeFirstParenthesis = formatted[indexOfCharacterBeforeFirstParenthesis];
+
+      if (characterBeforeFirstParenthesis !== ' ') { formatted = insert(formatted, indexOfFirstParenthesis, ' '); }
+
+      let tableName = formatted.split(' ')[2]; // Table name should always come after CREATE TABLE
+
+      let data = {
+        name: tableName,
+        data: { props: { table_def: formatted } }
+      };
+
+      debugger;
+      if (this.validateTableClientSide(tableName, data)) {
+        this.explorer.createBucketType(clusterName, data).then(
+          function onSuccess() {
+            debugger;
+            self.transitionTo('table',clusterName, tableName).then(function() {
+              controller.set('showSpinner', false);
+            });
+          },
+          function onFail(error) {
+            debugger;
+            self.scrollToTop();
+            controller.set('showSpinner', false);
+
+            try {
+              controller.set('errors', JSON.parse(error.responseText).error
+                .replace(/\s\s+/g, ' ') // reduces multiple whitespaces into one
+                .replace(/<<"/g, '')    // removes erlang starting brackets
+                .replace(/">>/g, ''));  // removes erlang ending brackets
+            } catch(err) {
+              controller.set('errors', 'Sorry, something went wrong. Your table was not created');
+            }
+          });
+      } else {
+        controller.set('showSpinner', false);
+      }
     }
   }
 });

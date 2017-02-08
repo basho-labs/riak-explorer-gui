@@ -39,18 +39,28 @@
     {{#dashboard-module.container class='medium-width'}}
       {{#dashboard-module.header label='Table Schema'}}
         <div class="module-actions">
-          {{#link-to 'cluster.data' model.cluster.name class="cancel action-button"}}
+          <button type="submit" class="btn btn-danger action-button" {{action 'removeSchema' index}}>
             <span class="ion-close-round" aria-hidden="true"></span>
-            Cancel
-          {{/link-to}}
+            Remove Schema
+          </button>
         </div>
       {{/dashboard-module.header}}
       {{#dashboard-module.body}}
-        {{ivy-codemirror
-        mode='text'
-        theme='material'
-        lineWrapping=true
-        value=message}}
+        <div class="ts-table-container">
+
+          {{ivy-codemirror
+          mode='sql'
+          theme='material'
+          lineWrapping=true
+          value=message
+          valueUpdated=(action "updateSchema" index)}}
+
+          <div class="submit-button-container">
+            <button type="submit" class="btn btn-primary" {{action 'createTable' model index}}>
+              Create Table
+            </button>
+          </div>
+        </div>
       {{/dashboard-module.body}}
     {{/dashboard-module.container}}
   {{/each}}
