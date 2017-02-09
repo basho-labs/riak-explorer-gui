@@ -39,27 +39,46 @@
     {{#dashboard-module.container class='medium-width'}}
       {{#dashboard-module.header label='Table Schema'}}
         <div class="module-actions">
-          <button type="submit" class="btn btn-danger action-button" {{action 'removeSchema' index}}>
-            <span class="ion-close-round" aria-hidden="true"></span>
-            Remove Schema
-          </button>
+          {{#if (not message.showSpinner)}}
+              <button type="submit" class="btn btn-danger action-button" {{action 'removeSchema' index}}>
+                <span class="ion-close-round" aria-hidden="true"></span>
+                Remove Schema
+              </button>
+          {{/if}}
         </div>
       {{/dashboard-module.header}}
       {{#dashboard-module.body}}
         <div class="ts-table-container">
+          {{#if message.showSpinner}}
+            {{loading-spinner statusMessage='Attempting to create table...'}}
+          {{else}}
 
-          {{ivy-codemirror
-          mode='sql'
-          theme='material'
-          lineWrapping=true
-          value=message
-          valueUpdated=(action "updateSchema" index)}}
+            {{#if message.error}}
+              {{#alert-component type="danger" dismissible=false}}
+                <h4><span class="label label-danger">Error</span></h4>
+                <p>{{message.error}}</p>
+              {{/alert-component}}
+            {{/if}}
 
-          <div class="submit-button-container">
-            <button type="submit" class="btn btn-primary" {{action 'createTable' model index}}>
-              Create Table
-            </button>
-          </div>
+            {{#if message.success}}
+              {{#alert-component type="success" dismissible=true}}
+                <h4><span class="label label-success">Table Created</span></h4>
+                <p>The table was created from the schema. you can create another table from this schema if you would like.</p>
+              {{/alert-component}}
+            {{/if}}
+
+            {{ivy-codemirror
+            mode='sql'
+            theme='material'
+            lineWrapping=true
+            value=message.schema}}
+
+            <div class="submit-button-container">
+              <button type="submit" class="btn btn-primary" {{action 'createTable' model message index}}>
+                Create Table
+              </button>
+            </div>
+          {{/if}}
         </div>
       {{/dashboard-module.body}}
     {{/dashboard-module.container}}

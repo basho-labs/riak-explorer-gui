@@ -9,17 +9,21 @@ export default Ember.Controller.extend({
 
   validExtensions: ['proto'],
 
+  // Each message is an object that looks like this:
+  // {
+  //   name: 'Some string',
+  //   fields: [...],
+  //   error: 'some string',
+  //   success: (boolean),
+  //   initialSchema: 'schema in string format',
+  //   schema: 'schema in string format',
+  //   showSpinner: (boolean)
+  // }
   messages: [],
-
-  schemas: [],
 
   actions: {
     removeSchema: function(index) {
       return this.get('messages').removeAt(index, 1);
-    },
-
-    updateSchema(schemaIndex, newSchema) {
-      return this.get('schemas').replace(schemaIndex, 1, newSchema);
     }
   }
 });
