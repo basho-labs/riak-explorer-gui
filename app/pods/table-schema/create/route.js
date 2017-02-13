@@ -27,19 +27,6 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     });
   },
 
-  // parseMessageFields(fields, originalJSON) {
-  //   return fields.map(function(field) {
-  //     let fieldType = field.type;
-  //
-  //     if (_.isObject(fieldType) && Ember.isPresent(fieldType.ref)) {
-  //       // TODO: Start back here. Prob filter out any ref field types but make sure the references are recursively added to the fields object
-  //       // TODO: Ask Glick to clarify how this will work
-  //     }
-  //
-  //     return field;
-  //   });
-  // },
-
   setupController: function(controller, model) {
     this._super(controller, model);
 
@@ -48,27 +35,54 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
     controller.set('errors', null);
   },
 
-  retrieveMessages(data) {
+  parseMessageFields(fields, data) {
     let self = this;
-    let messages;
+    let parsedFields = [];
 
-    if (Ember.isPresent(data.messages)) {
-      messages = data.messages
-        .map(function(message) {
-          return {
-            name: message.name,
-            // TODO: Actually build out messages based on references
-            //fields: self.parseFields(message.fields, messageJSON)
-            fields: message.fields
-              .filter(function(field) { return _.isString(field.type); })
-          };
+    fields.map(function(field) {
+      if (_.isObject(field.type) && Ember.isPresent(field.type.ref)) {
+        field.type.ref.forEach(function(reference) {
+          let referencesThatAreMessages = data.messages.filter(function(message) {
+            return message.name === reference;
+          });
+          let referencesThatAreEnums = data.enums.filter(function(message) {
+            return message.name === reference;
+          });
+
+          if (Ember.isPresent(referencesThatAreMessages)) {
+            referencesThatAreMessages.forEach(function(r) {
+              self.parseMessageFields(r.fields).forEach(function(field) {
+                parsedFields.push(field);
+              });
+            });
+          }
+
+          if (Ember.isPresent(referencesThatAreEnums)) {
+            referencesThatAreEnums.forEach(function(r) {
+
+              parsedFields.push({
+                'name': field.name,
+                'type': 'sint64'
+              });
+            });
+          }
         });
-    } else {
-      // TODO: Send upload fail action or invoke controller errors
-      messages = null;
-    }
+      } else {
+        return parsedFields.push(field);
+      }
+    });
 
-    return messages;
+    return parsedFields;
+  },
+
+  parseMessages(data) {
+    let self = this;
+
+    return data.messages.map(function(message) {
+      message.fields = self.parseMessageFields(message.fields, data);
+
+      return message;
+    });
   },
 
   formatMessageIntoTableString(message) {
@@ -100,9 +114,9 @@ export default Ember.Route.extend(Alerts, LoadingSlider, ScrollReset, WrapperSta
 
       this.controller.set('errors', null);
       this.explorer.getProtoBuffMessages(clusterName, fileSha).then(function(data) {
-        let messages = self.retrieveMessages(data[fileSha]);
+        let messages = self.parseMessages(data[fileSha]);
 
-        if (messages) {
+        if (Ember.isPresent(messages)) {
           messages.map(function(message) {
             message.initialSchema = self.formatMessageIntoTableString(message);
             message.error = null;
