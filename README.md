@@ -7,8 +7,7 @@
 This is the GUI component of the [Riak Explorer](https://github.com/basho-labs/riak_explorer)
 project.
 
-If you would like to see a demo of a explorer running on a simple one node cluster, [click here](http://104.236.156.86/). 
-If you would like to try it out on one of your own clusters, follow the [Riak Explorer install Instructions](https://github.com/basho-labs/riak_explorer#installation)
+If you would like to try Riak Explorer on one of your own clusters, follow the [Riak Explorer install Instructions](https://github.com/basho-labs/riak_explorer#installation)
 For development instructions, see below.
 
 
